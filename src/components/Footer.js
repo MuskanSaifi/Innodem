@@ -1,6 +1,8 @@
 
 const Footer = () => {
+
   return (
+    
 <footer className="bg-dark text-light pt-5 pb-4">
   <div className="container text-center text-md-start">
     <div className="row">

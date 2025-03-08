@@ -3,6 +3,7 @@ import User from "@/models/User";
 import BusinessProfile from "@/models/BusinessProfile";
 import connectdb from "@/lib/dbConnect";
 import Bankdetails from "@/models/BankDetails";
+import Product from "@/models/Product";
 
 export async function POST(req) {
     try {
@@ -10,12 +11,12 @@ export async function POST(req) {
         const body = await req.json();
         console.log("Request Body:", body);
 
-        const { fullname, email, mobileNumber, pincode, companyName } = body;
+        const { productname, fullname, email, mobileNumber, pincode, companyName } = body;
 
         if (!fullname || !email || !mobileNumber || !pincode || !companyName) {
-            return new Response(JSON.stringify({ error: "All fields are required" }), { 
-                status: 400, 
-                headers: { "Content-Type": "application/json" } 
+            return new Response(JSON.stringify({ error: "All fields are required" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" }
             });
         }
 
@@ -26,9 +27,9 @@ export async function POST(req) {
         let existingUser = await User.findOne({ mobileNumber });
 
         if (existingUser) {
-            return new Response(JSON.stringify({ error: "This number already exists. Please sign in." }), { 
-                status: 400, 
-                headers: { "Content-Type": "application/json" } 
+            return new Response(JSON.stringify({ error: "This number already exists. Please sign in." }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" }
             });
         }
 
@@ -104,6 +105,17 @@ export async function POST(req) {
             await newBankDetails.save();
         }
 
+        if (productname) {
+            // Save Product Name In Product, if not create one
+            const addproduct = new Product({
+                userId: user._id,
+                name: productname,
+                category: "679a65c59a30cb344bae901e", // ✅ Add default category
+            });
+            await addproduct.save();
+        }
+
+
         // Send OTP via Twilio
         try {
             const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
@@ -113,23 +125,23 @@ export async function POST(req) {
                 to: formattedMobile,
             });
 
-            return new Response(JSON.stringify({ message: "OTP sent successfully", mobileNumber }), { 
-                status: 200, 
-                headers: { "Content-Type": "application/json" } 
+            return new Response(JSON.stringify({ message: "OTP sent successfully", mobileNumber }), {
+                status: 200,
+                headers: { "Content-Type": "application/json" }
             });
         } catch (twilioError) {
             console.error("Twilio Error:", twilioError);
-            return new Response(JSON.stringify({ error: "Failed to send OTP via Twilio" }), { 
-                status: 500, 
-                headers: { "Content-Type": "application/json" } 
+            return new Response(JSON.stringify({ error: "Failed to send OTP via Twilio" }), {
+                status: 500,
+                headers: { "Content-Type": "application/json" }
             });
         }
 
     } catch (error) {
-        console.error("Error sending OTP:", error);
-        return new Response(JSON.stringify({ error: "Internal Server Error" }), { 
-            status: 500, 
-            headers: { "Content-Type": "application/json" } 
+        console.error("❌ Error sending OTP:", error);
+        return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
         });
     }
 }

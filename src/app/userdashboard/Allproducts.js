@@ -5,8 +5,6 @@ import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import { Modal, Button } from "react-bootstrap"; // ✅ Import Bootstrap Modal
 
-
-
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -28,7 +26,6 @@ const AllProducts = () => {
           toast.error("User not authenticated");
           return;
         }
-
         const res = await axios.get("http://localhost:3000/api/userprofile/manageproducts", {
           headers: { Authorization: `Bearer ${token}` },
         });

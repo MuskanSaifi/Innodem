@@ -115,8 +115,7 @@ const AddProduct = () => {
         }
     };
 
-
-
+    
     const [loading, setLoading] = useState(false);
 
     // Handle form field changes

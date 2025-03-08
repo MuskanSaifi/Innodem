@@ -13,7 +13,6 @@ const userSchema = new mongoose.Schema({
     otp: String,
     otpExpires: Date,
     isVerified: { type: Boolean, default: false },
-    
     // ✅ Add this line to reference products
     products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }] 
 });

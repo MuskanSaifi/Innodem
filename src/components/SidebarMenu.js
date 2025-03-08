@@ -1,15 +1,14 @@
 "use client";
-
-import React, { useState, useEffect, useRef } from "react";
-import "../styles/header.css";
-import Link from "next/link"; // ✅ Import Link for navigation
+import React, { useState, useRef } from "react";
+import { useSelector } from "react-redux";
+import Link from "next/link";
 
 const SidebarMenu = () => {
-  const [activeCategory, setActiveCategory] = useState("TopCategories"); // Set default category
-  const [allcategories, setAllcategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [activeCategory, setActiveCategory] = useState("TopCategories");
   const menuRef = useRef(null);
+
+  // ✅ Get categories from Redux store
+  const { data: allcategories, loading, error } = useSelector((state) => state.categories);
 
   const handleMouseEnterCategory = (id) => {
     setActiveCategory(id);
@@ -17,32 +16,9 @@ const SidebarMenu = () => {
 
   const handleOutsideClick = (event) => {
     if (menuRef.current && !menuRef.current.contains(event.target)) {
-      setActiveCategory("TopCategories"); // Keep default category visible
+      setActiveCategory("TopCategories"); // Reset to default
     }
   };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  }, []);
-
-  useEffect(() => {
-    const fetchdata = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/api/adminprofile/category");
-        const data = await response.json();
-        setAllcategories(data);
-      } catch (error) {
-        setError("Failed to load categories");
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchdata();
-  }, []);
 
   if (loading) return <div className="spinner">Loading...</div>;
   if (error) return <p className="error-message">{error}</p>;
@@ -79,11 +55,9 @@ const SidebarMenu = () => {
                       <ul>
                         {subcategory.products.map((product) => (
                           <li key={product._id}>
-                            {/* ✅ Clicking product name opens new page `/products/[name]` */}
                             <Link href={`/products/${encodeURIComponent(product.name.toLowerCase().replace(/\s+/g, "-"))}`}>
                               {product.name}
                             </Link>
-
                           </li>
                         ))}
                       </ul>
