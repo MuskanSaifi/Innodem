@@ -83,16 +83,22 @@ export async function POST(req) {
 export async function GET(req) {
   try {
     await connectDB();
-    const products = await Product.find({});
+
+    const products = await Product.find()
+      .populate("category")
+      .populate("subCategory") // Ensure subCategory is populated
+      .exec();
+
+    console.log("Products with Subcategory:", products);
 
     return new Response(JSON.stringify(products), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("❌ Error fetching products:", error);
     return new Response(
-      JSON.stringify({ error: "Failed to fetch products", details: error.message }),
+      JSON.stringify({ error: "Failed to fetch products" }),
       { status: 500 }
     );
   }

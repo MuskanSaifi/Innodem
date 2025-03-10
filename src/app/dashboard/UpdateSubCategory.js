@@ -4,13 +4,16 @@ import toast from "react-hot-toast";
 
 const UpdateSubCategory = () => {
   const [selectedSubCategory, setSelectedSubCategory] = useState([]); // Store subcategories
-  const [allProducts, setAllProducts] = useState([]); // Store products
+  const [allProducts, setAllProducts] = useState([]); // Store all products
+  const [filteredProducts, setFilteredProducts] = useState([]); // Store filtered products
+  const [selectedDate, setSelectedDate] = useState(""); // Store selected filter date
+
   const [productData, setProductData] = useState({
-    id: "", // Store selected subcategory ID
+    id: "",
     name: "",
     category: "",
     subcategory: "",
-    products: [], // Store multiple selected products
+    products: [],
   });
 
   useEffect(() => {
@@ -18,84 +21,98 @@ const UpdateSubCategory = () => {
     fetchProducts();
   }, []);
 
+  // ✅ Fetch all subcategories
   const fetchCategories = async () => {
     try {
       const result = await axios.get("http://localhost:3000/api/adminprofile/subcategory");
-      setSelectedSubCategory(result.data); // Store fetched subcategories
+      setSelectedSubCategory(result.data);
     } catch (error) {
       toast.error("Error fetching subcategories:", error);
     }
   };
 
+  // ✅ Fetch all products
   const fetchProducts = async () => {
     try {
       const result = await axios.get("http://localhost:3000/api/adminprofile/seller");
-      setAllProducts(result.data); // Store fetched products
+
+      console.log("Fetched products:", result.data); // Debugging
+
+      // Sort products by creation time (latest first)
+      const sortedProducts = result.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      setAllProducts(sortedProducts);
+      setFilteredProducts(sortedProducts);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
 
-  // Handle submitting the form
+  // ✅ Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!productData.id || !productData.name || !productData.category || !productData.subcategory || productData.products.length === 0) {
-      toast.error("Please fill in all required fields and select at least one product.");
+      toast.error("Please fill in all fields and select at least one product.");
       return;
     }
 
     try {
-      console.log("Submitting data: ", productData); // Log data for debugging
+      console.log("Submitting data: ", productData);
 
       const response = await axios.patch("http://localhost:3000/api/adminprofile/subcategory", {
-        id: productData.id, // Ensure id is passed
+        id: productData.id,
         name: productData.name,
         category: productData.category,
         subcategory: productData.subcategory,
-        products: productData.products, // Send the selected products as an array
+        products: productData.products,
       });
 
-      console.log("Response from server: ", response); // Log response for debugging
+      console.log("Response from server: ", response);
 
       if (response.status === 200 || response.status === 201) {
-        toast.success("Product Updated successfully!");
-        setProductData({
-          id: "",
-          name: "",
-          category: "",
-          subcategory: "",
-          products: [],
-        });
+        toast.success("Product updated successfully!");
+        setProductData({ id: "", name: "", category: "", subcategory: "", products: [] });
       } else {
-        toast.error("Failed to update Sub Category. Please try again.");
+        toast.error("Failed to update subcategory.");
       }
     } catch (error) {
-      toast.error("Error updating Sub Category:", error);
-      toast.error("Failed to update Sub Category. Please try again.");
+      toast.error("Error updating subcategory:", error);
     }
   };
 
-  // Handle changing the subcategory
+  // ✅ Handle subcategory selection
   const handleSubCategoryChange = (e) => {
     const selectedSubCat = selectedSubCategory.find((cat) => cat._id === e.target.value);
     if (selectedSubCat) {
       setProductData({
         ...productData,
-        id: selectedSubCat._id, // Store subcategory ID
+        id: selectedSubCat._id,
         subcategory: selectedSubCat._id,
-        category: selectedSubCat.category?._id || "", // Ensure category ID is set correctly
+        category: selectedSubCat.category?._id || "",
       });
     }
   };
 
-  // Handle selecting multiple products
+  // ✅ Handle selecting multiple products
   const handleProductChange = (e) => {
     const selectedProducts = Array.from(e.target.selectedOptions, (option) => option.value);
-    setProductData({
-      ...productData,
-      products: selectedProducts, // Store the selected product IDs as an array
-    });
+    setProductData({ ...productData, products: selectedProducts });
+  };
+
+  // ✅ Handle date filter
+  const handleDateFilter = (e) => {
+    const selected = e.target.value;
+    setSelectedDate(selected);
+
+    if (!selected) {
+      setFilteredProducts(allProducts);
+      return;
+    }
+
+    const selectedDate = new Date(selected).toDateString();
+    const filtered = allProducts.filter((product) => new Date(product.createdAt).toDateString() === selectedDate);
+    setFilteredProducts(filtered);
   };
 
   return (
@@ -106,21 +123,13 @@ const UpdateSubCategory = () => {
       <input
         className="form-control mb-3"
         type="text"
-        id="product-name"
         placeholder="Enter product name"
         value={productData.name}
-        onChange={(e) =>
-          setProductData({ ...productData, name: e.target.value })
-        }
+        onChange={(e) => setProductData({ ...productData, name: e.target.value })}
       />
 
       {/* Subcategory Dropdown */}
-      <select
-        className="form-control mb-3"
-        id="product-subcategory"
-        value={productData.subcategory}
-        onChange={handleSubCategoryChange} // Handle subcategory selection
-      >
+      <select className="form-control mb-3" value={productData.subcategory} onChange={handleSubCategoryChange}>
         <option value="">Select Subcategory</option>
         {selectedSubCategory.map((category) => (
           <option key={category._id} value={category._id}>
@@ -129,16 +138,8 @@ const UpdateSubCategory = () => {
         ))}
       </select>
 
-      {/* Category Dropdown */}
-      <select
-        className="form-control mb-3"
-        id="product-category"
-        value={productData.category}
-        onChange={(e) =>
-          setProductData({ ...productData, category: e.target.value })
-        }
-        disabled // This is auto-filled from subcategory selection
-      >
+      {/* Category Dropdown (Auto-filled) */}
+      <select className="form-control mb-3" value={productData.category} disabled>
         <option value="">Select Category</option>
         {selectedSubCategory
           .filter((cat) => cat._id === productData.subcategory)
@@ -149,26 +150,50 @@ const UpdateSubCategory = () => {
           ))}
       </select>
 
-      {/* Products Dropdown (Multiple Selection) */}
-      <select
-        className="form-control mb-3"
-        id="product-category"
-        multiple
-        value={productData.products}
-        onChange={handleProductChange} // Handle multiple product selection
-      >
-        <option value="">Select Products</option>
-        {allProducts.map((product) => (
+      {/* Date Filter */}
+      <input className="form-control mb-3" type="date" value={selectedDate} onChange={handleDateFilter} />
+
+      {/* Product Selection */}
+      <select className="form-control mb-3" multiple value={productData.products} onChange={handleProductChange}>
+        {filteredProducts.map((product) => (
           <option key={product._id} value={product._id}>
-            {product.name}
+            {product.name} - {product.userId?.fullname || "Unknown"} ({new Date(product.createdAt).toLocaleString()})
           </option>
         ))}
       </select>
 
       {/* Submit Button */}
-      <button className="btn btn-primary" onClick={handleSubmit}>
+      <button className="btn btn-primary w-100 shadow" onClick={handleSubmit}>
         Update Product
       </button>
+
+      {/* Products Table */}
+      <table className="table mt-4 shadow">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Creator</th>
+            <th>Created At</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredProducts.map((product) => {
+            const hasSubcategory = product.subCategory && product.subCategory._id
+              ? product.subCategory._id.toString() === productData.subcategory.toString()
+              : false;
+
+            return (
+              <tr key={product._id} className={hasSubcategory ? "table-success" : "table-danger"}>
+                <td>{product.name}</td>
+                <td>{product.userId?.fullname || "Unknown"}</td>
+                <td>{new Date(product.createdAt).toLocaleString()}</td>
+                <td>{hasSubcategory ? "✅ Subcategory Assigned" : "❌ No Subcategory"}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 };
