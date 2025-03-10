@@ -72,8 +72,13 @@ const UpdateSubCategory = () => {
 
       if (response.status === 200 || response.status === 201) {
         toast.success("Product updated successfully!");
+      
+        // Refresh product list
+        fetchProducts();
+      
         setProductData({ id: "", name: "", category: "", subcategory: "", products: [] });
-      } else {
+      }
+       else {
         toast.error("Failed to update subcategory.");
       }
     } catch (error) {
@@ -178,21 +183,28 @@ const UpdateSubCategory = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredProducts.map((product) => {
-            const hasSubcategory = product.subCategory && product.subCategory._id
-              ? product.subCategory._id.toString() === productData.subcategory.toString()
-              : false;
+  {filteredProducts.map((product) => {
+    const hasSubcategory = product.subCategory && product.subCategory._id
+      ? product.subCategory._id.toString() === productData.subcategory.toString()
+      : false;
 
-            return (
-              <tr key={product._id} className={hasSubcategory ? "table-success" : "table-danger"}>
-                <td>{product.name}</td>
-                <td>{product.userId?.fullname || "Unknown"}</td>
-                <td>{new Date(product.createdAt).toLocaleString()}</td>
-                <td>{hasSubcategory ? "✅ Subcategory Assigned" : "❌ No Subcategory"}</td>
-              </tr>
-            );
-          })}
-        </tbody>
+    return (
+      <tr key={product._id} className={hasSubcategory ? "table-success" : "table-danger"}>
+        <td>{product.name}</td>
+        <td>{product.userId?.fullname || "Unknown"}</td>
+        <td>{new Date(product.createdAt).toLocaleString()}</td>
+        <td>
+          {hasSubcategory ? (
+            <span className="text-success fw-bold">✅ Subcategory Assigned</span>
+          ) : (
+            <span className="text-danger fw-bold">❌ No Subcategory</span>
+          )}
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
+
       </table>
     </div>
   );

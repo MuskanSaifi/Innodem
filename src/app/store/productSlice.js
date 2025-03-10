@@ -1,55 +1,69 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// ✅ Async function to fetch products by subcategory
+// ✅ Fetch products by subcategory
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
   async (subcategory, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/api/products?subcategory=${encodeURIComponent(subcategory)}`);
-
-      if (!response.data || response.status !== 200) {
-        throw new Error("Invalid response from server");
-      }
-
-      console.log("📌 API Response:", response.data); // ✅ Debugging API response
-
-      return response.data; // API returns an array, not { products: [...] }
+      const response = await axios.get(
+        `/api/products?subcategory=${encodeURIComponent(subcategory.trim().toLowerCase())}`
+      );
+      console.log("✅ API Response:", response.data);
+      return response.data.products || [];
     } catch (error) {
-      return rejectWithValue(error.response?.data?.error || "Failed to fetch products");
+      console.error("❌ Error fetching products:", error);
+      return rejectWithValue(error.response?.data || "Failed to fetch products");
     }
   }
 );
 
-// ✅ Redux Slice
 const productSlice = createSlice({
   name: "products",
   initialState: {
-    products: [], // Stores all products
-    filteredProducts: [], // Stores filtered products (same as products initially)
+    products: [],
+    filteredProducts: [],
     loading: false,
     error: null,
+    filters: {
+      priceRange: [0, 100000], // Default price range
+      time: "", // Default time filter
+    },
   },
-  reducers: {}, // Add reducers here if needed
+
+  reducers: {
+    setFilters: (state, action) => {
+      state.filters = { ...state.filters, ...action.payload };
+      // ✅ Apply filters to products
+      state.filteredProducts = state.products.filter((product) => {
+        const { priceRange, time } = state.filters;
+        return (
+          product.price >= priceRange[0] &&
+          product.price <= priceRange[1] &&
+          (time ? product.addedTime?.includes(time) : true)
+        );
+      });
+    },
+  },
+
   extraReducers: (builder) => {
     builder
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
         state.error = null;
-        console.log("🕒 Fetching products...");
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload; // ✅ API returns array, assign directly
-        state.filteredProducts = action.payload; // ✅ Ensure filteredProducts is set
-        console.log("✅ Products Fetched:", action.payload); // ✅ Debugging
+        state.products = action.payload;
+        state.filteredProducts = action.payload;
+        console.log("✅ Updated State:", state.filteredProducts);
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        console.error("❌ Error Fetching Products:", action.payload); // ✅ Log errors
       });
   },
 });
 
+export const { setFilters } = productSlice.actions;
 export default productSlice.reducer;

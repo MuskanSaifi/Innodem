@@ -1,57 +1,46 @@
 import { NextResponse } from "next/server";
-import SubCategory from "@/models/SubCategory";
 import Product from "@/models/Product";
 import connectdb from "@/lib/dbConnect";
 
 export async function GET(req) {
   try {
-    // ✅ Ensure database is connected
     await connectdb();
 
-    // ✅ Extract subcategory name from the request
     const { searchParams } = new URL(req.url);
-    const subcategoryName = searchParams.get("subcategory");
+    const searchQuery = searchParams.get("subcategory");
 
-    if (!subcategoryName) {
-      return NextResponse.json(
-        { error: "Subcategory name is required" },
-        { status: 400 }
-      );
+    if (!searchQuery) {
+      return NextResponse.json({ error: "Query is required" }, { status: 400 });
     }
 
-    console.log("🔍 Searching for subcategory:", subcategoryName);
+    console.log(`🔍 Searching for: ${searchQuery}`);
 
-    // ✅ Find the subcategory using a case-insensitive partial match
-    const subcategory = await SubCategory.findOne({
-      name: { $regex: new RegExp(`^.*${subcategoryName}.*$`, "i") }, // Matches any part of the name
-    });
-    
+    // ✅ Fetch products including category, subcategory, and images
+    const products = await Product.find({ name: { $regex: searchQuery, $options: "i" } })
+      .populate("category", "name")
+      .populate("subCategory", "name")
+      .select("-__v");
 
-    if (!subcategory) {
-      console.log(`❌ Subcategory not found: ${subcategoryName}`);
-      return NextResponse.json(
-        { error: `Subcategory '${subcategoryName}' not found` },
-        { status: 404 }
-      );
+    if (products.length === 0) {
+      console.log(`❌ No products found for: ${searchQuery}`);
+      return NextResponse.json({ error: "No products found" }, { status: 404 });
     }
 
-    console.log(`✅ Found subcategory: ${subcategory.name}`);
+    // ✅ Convert image Buffer data to Base64
+    const formattedProducts = products.map((product) => ({
+      ...product.toObject(),
+      images: product.images.map((img) =>
+        img.data
+          ? `data:${img.contentType};base64,${img.data.toString("base64")}`
+          : null
+      ),
+    }));
 
-    // ✅ Fetch products linked to the subcategory
-    const products = await Product.find({ subCategory: subcategory._id })
-      .populate("category", "name") // Populate category details
-      .populate("subCategory", "name") // Populate subcategory details
-      .select("-__v"); // Exclude unnecessary fields
-
-    console.log(`✅ Fetched ${products.length} products`);
-
-    return NextResponse.json(products, { status: 200 });
+    console.log(`✅ Found ${products.length} products`);
+    return NextResponse.json(formattedProducts, { status: 200 });
 
   } catch (error) {
-    console.error("❌ Error fetching products:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error("❌ API Error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
