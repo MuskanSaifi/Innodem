@@ -1,66 +1,55 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// ✅ Async function to fetch products by subcategory
 export const fetchProducts = createAsyncThunk(
-    "products/fetchProducts",
-    async (subcategory, { rejectWithValue }) => {
-      try {
-        const response = await axios.get(`/api/products?subcategory=${encodeURIComponent(subcategory)}`);
-        return response.data.products;
-      } catch (error) {
-        return rejectWithValue(error.response?.data || "Failed to fetch products");
-      }
-    }
-  );
-  
+  "products/fetchProducts",
+  async (subcategory, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`/api/products?subcategory=${encodeURIComponent(subcategory)}`);
 
+      if (!response.data || response.status !== 200) {
+        throw new Error("Invalid response from server");
+      }
+
+      console.log("📌 API Response:", response.data); // ✅ Debugging API response
+
+      return response.data; // API returns an array, not { products: [...] }
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || "Failed to fetch products");
+    }
+  }
+);
+
+// ✅ Redux Slice
 const productSlice = createSlice({
   name: "products",
   initialState: {
-    products: [],
-    filteredProducts: [],
+    products: [], // Stores all products
+    filteredProducts: [], // Stores filtered products (same as products initially)
     loading: false,
     error: null,
-    filters: {
-      priceRange: [0, 100000], // Default price range
-      time: "", // Default time filter
-    },
   },
-  reducers: {
-    setFilters: (state, action) => {
-      state.filters = { ...state.filters, ...action.payload };
-
-      // ✅ Apply filters to products
-      state.filteredProducts = state.products.filter((product) => {
-        const { priceRange, time } = state.filters;
-
-        // ✅ Filter by Price Range
-        const isWithinPriceRange = product.price >= priceRange[0] && product.price <= priceRange[1];
-
-        // ✅ Filter by Time (if applicable)
-        const isTimeMatch = time ? product.addedTime?.includes(time) : true;
-
-        return isWithinPriceRange && isTimeMatch;
-      });
-    },
-  },
+  reducers: {}, // Add reducers here if needed
   extraReducers: (builder) => {
     builder
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
         state.error = null;
+        console.log("🕒 Fetching products...");
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload;
-        state.filteredProducts = action.payload; // Initially set filtered products
+        state.products = action.payload; // ✅ API returns array, assign directly
+        state.filteredProducts = action.payload; // ✅ Ensure filteredProducts is set
+        console.log("✅ Products Fetched:", action.payload); // ✅ Debugging
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        console.error("❌ Error Fetching Products:", action.payload); // ✅ Log errors
       });
   },
 });
 
-export const { setFilters } = productSlice.actions;
 export default productSlice.reducer;

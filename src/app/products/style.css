@@ -39,8 +39,8 @@
     border-radius: 8px;
     display: flex;
     flex-direction: column;
+    height: 300px !important;
     justify-content: center;
-    height: 380px !important; /* Full height */
 }
 
 

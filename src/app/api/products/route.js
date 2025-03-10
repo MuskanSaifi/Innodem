@@ -1,46 +1,57 @@
-import connectDB from "@/lib/dbConnect";
-import Category from "@/models/Category";
 import { NextResponse } from "next/server";
+import SubCategory from "@/models/SubCategory";
+import Product from "@/models/Product";
+import connectdb from "@/lib/dbConnect";
 
 export async function GET(req) {
   try {
-    await connectDB();
+    // ✅ Ensure database is connected
+    await connectdb();
+
+    // ✅ Extract subcategory name from the request
     const { searchParams } = new URL(req.url);
-    const subcategoryName = searchParams.get("subcategory"); // ✅ Get subcategory
+    const subcategoryName = searchParams.get("subcategory");
 
     if (!subcategoryName) {
-      return NextResponse.json({ success: false, error: "Subcategory is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Subcategory name is required" },
+        { status: 400 }
+      );
     }
 
-    // Fetch categories with subcategories and products
-    const categories = await Category.find()
-      .populate({
-        path: "subcategories",
-        populate: { path: "products" },
-      });
+    console.log("🔍 Searching for subcategory:", subcategoryName);
 
-    let matchedProducts = [];
-
-    // Find matching subcategory and its products
-    categories.forEach((category) => {
-      category.subcategories.forEach((subCategory) => {
-        if (subCategory.name.toLowerCase() === subcategoryName.toLowerCase()) {
-          matchedProducts = subCategory.products.map((product) => ({
-            ...product._doc,
-            category: category.name,
-            subcategory: subCategory.name,
-            images: product.images.map((img) => ({
-              data: img.data.toString("base64"),
-              contentType: img.contentType,
-            })),
-          }));
-        }
-      });
+    // ✅ Find the subcategory using a case-insensitive partial match
+    const subcategory = await SubCategory.findOne({
+      name: { $regex: new RegExp(`^.*${subcategoryName}.*$`, "i") }, // Matches any part of the name
     });
+    
 
-    return NextResponse.json({ success: true, products: matchedProducts }, { status: 200 });
+    if (!subcategory) {
+      console.log(`❌ Subcategory not found: ${subcategoryName}`);
+      return NextResponse.json(
+        { error: `Subcategory '${subcategoryName}' not found` },
+        { status: 404 }
+      );
+    }
+
+    console.log(`✅ Found subcategory: ${subcategory.name}`);
+
+    // ✅ Fetch products linked to the subcategory
+    const products = await Product.find({ subCategory: subcategory._id })
+      .populate("category", "name") // Populate category details
+      .populate("subCategory", "name") // Populate subcategory details
+      .select("-__v"); // Exclude unnecessary fields
+
+    console.log(`✅ Fetched ${products.length} products`);
+
+    return NextResponse.json(products, { status: 200 });
+
   } catch (error) {
-    console.error("Error fetching products by subcategory:", error);
-    return NextResponse.json({ success: false, error: "Failed to fetch products." }, { status: 500 });
+    console.error("❌ Error fetching products:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
