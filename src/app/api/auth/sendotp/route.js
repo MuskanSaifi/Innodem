@@ -13,7 +13,7 @@ export async function POST(req) {
 
         const { productname, fullname, email, mobileNumber, pincode, companyName } = body;
 
-        if (!fullname || !email || !mobileNumber || !pincode || !companyName) {
+        if (!fullname || !mobileNumber || !pincode) {
             return new Response(JSON.stringify({ error: "All fields are required" }), {
                 status: 400,
                 headers: { "Content-Type": "application/json" }

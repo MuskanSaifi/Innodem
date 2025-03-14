@@ -1,3 +1,4 @@
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { NextResponse } from "next/server";
 import connectdb from "@/lib/dbConnect";
 import { requireSignIn } from "@/middlewares/requireSignIn";
@@ -6,71 +7,68 @@ import Category from "@/models/Category";
 import SubCategory from "@/models/SubCategory";
 import User from "@/models/User";
 
-export async function GET(req) {
-  try {
-    await connectdb();
-    const user = await requireSignIn(req);
-    if (!user) {
-      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-    }
-
-    const products = await Product.find({ userId: user.id });
-
-    if (!products.length) {
-      return NextResponse.json({ success: false, message: "No products found" }, { status: 404 });
-    }
-
-    const productsWithDetails = products.map((product) => {
-      // ✅ Convert Image to Base64
-      let base64Image = "https://via.placeholder.com/200";
-      if (product.images[0]?.data) {
-        base64Image = `data:${product.images[0].contentType};base64,${Buffer.from(
-          product.images[0].data.buffer
-        ).toString("base64")}`;
-      }
-
-      // ✅ Check if product has required details
-      const hasDetails =
-        product.price &&
-        product.category &&
-        product.description &&
-        product.images.length > 0 &&
-        Object.keys(product.specifications || {}).length > 0;
-
-      // ✅ Improve Product Strength Calculation
-      let strength = "Low";
-      if ((product.stock > 50 || product.salesCount > 100) && hasDetails) {
-        strength = "High";
-      } else if ((product.stock > 20 || product.salesCount > 50) && hasDetails) {
-        strength = "Medium";
-      } else if (hasDetails) {
-        strength = "Medium"; // Upgraded from Low to Medium if details exist
-      }
-
-      return { ...product._doc, image: base64Image, strength };
-    });
-
-    return NextResponse.json({ success: true, products: productsWithDetails }, { status: 200 });
-  } catch (error) {
-    console.error("Error fetching product details:", error);
-    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
-  }
+// ✅ Validate AWS Credentials Before Initialization
+if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY || !process.env.AWS_REGION || !process.env.AWS_BUCKET_NAME) {
+  throw new Error("❌ AWS Credentials Missing! Check your .env file.");
 }
 
+// ✅ Initialize AWS S3 Client
+const s3 = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
 
+// ✅ Upload Image to S3 Function
+const uploadToS3 = async (image) => {
+  console.log("🔍 Checking Image Type:", image);
 
+  if (typeof image !== "string") {
+    throw new Error("❌ Invalid Image Format: Image must be a string (Base64 or URL)");
+  }
+
+  if (image.startsWith("http")) {
+    return image; // ✅ Already a valid URL
+  }
+
+  if (!image.includes(",")) {
+    throw new Error("❌ Invalid Image Format: Expected Base64 string");
+  }
+
+  const base64Image = image.split(",")[1]; // Extract Base64 Data
+  if (!base64Image) throw new Error("❌ Invalid Image Data");
+
+  const buffer = Buffer.from(base64Image, "base64");
+  const key = `products/${Date.now()}.jpg`;
+
+  const uploadParams = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: key,
+    Body: buffer,
+    ContentType: "image/jpeg",
+  };
+  
+  // ✅ Correct AWS SDK v3 Upload Method
+  const command = new PutObjectCommand(uploadParams);
+  await s3.send(command);
+
+  // ✅ Return the uploaded file URL
+  return `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+};
 
 
 export async function POST(req) {
   try {
     await connectdb();
+    
     // ✅ Authorization
     const user = await requireSignIn(req);
     if (!user) {
       console.error("❌ Authorization failed. User not found.");
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
-    console.log("✅ User Authorized:", user.id);
 
     // ✅ JSON Parsing with Error Handling
     let body;
@@ -80,6 +78,7 @@ export async function POST(req) {
       console.error("❌ JSON Parsing Error:", error);
       return NextResponse.json({ success: false, message: "Invalid JSON format" }, { status: 400 });
     }
+
 
     // ✅ Extracting Fields
     const {
@@ -97,6 +96,7 @@ export async function POST(req) {
       specifications = {},
       tradeShopping = {},
     } = body;
+    
 
     // ✅ Validate Required Fields
     if (!name || !minimumOrderQuantity || !Array.isArray(images) || images.length === 0) {
@@ -142,22 +142,6 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: "Invalid selling price type" }, { status: 400 });
     }
 
-    // ✅ Convert Base64 Images to Buffer (Consider using Cloudinary instead)
-    let processedImages = [];
-    try {
-      processedImages = images.map((image) => {
-        if (!image.includes(",")) throw new Error("Invalid Base64 format");
-        const [metadata, base64Data] = image.split(",");
-        if (!base64Data) throw new Error("Base64 data is missing");
-        return {
-          data: Buffer.from(base64Data, "base64"),
-          contentType: metadata.split(":")[1].split(";")[0],
-        };
-      });
-    } catch (error) {
-      console.error("❌ Image processing error:", error);
-      return NextResponse.json({ success: false, message: "Invalid image format" }, { status: 400 });
-    }
 
     // ✅ Validate Category & SubCategory
     const categoryExists = await Category.findById(category);
@@ -173,6 +157,16 @@ export async function POST(req) {
       }
     }
 
+    // Ensure images array contains valid strings
+    const validImages = images.map((img) => {
+      if (typeof img === "string") return img; // Already valid
+      if (typeof img === "object" && img.url) return img.url; // Extract URL
+      throw new Error("❌ Invalid Image Data: Each image must be a Base64 string or URL");
+    });
+
+    
+const imageUrls = await Promise.all(validImages.map(uploadToS3));
+
     // ✅ Create & Save Product
     const newProduct = new Product({
       userId: user.id,
@@ -181,7 +175,7 @@ export async function POST(req) {
       currency,
       minimumOrderQuantity,
       moqUnit,
-      images: processedImages,
+      images: imageUrls.map((url) => ({ url })),  // ✅ Convert to correct schema
       description,
       category: categoryExists._id,
       subCategory: subCategoryExists ? subCategoryExists._id : null,
@@ -218,6 +212,57 @@ export async function POST(req) {
 
   } catch (error) {
     console.error("❌ Error creating product:", error);
+    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
+  }
+}
+
+
+
+
+export async function GET(req) {
+  try {
+    await connectdb();
+    const user = await requireSignIn(req);
+    if (!user) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+
+    const products = await Product.find({ userId: user.id });
+
+    if (!products.length) {
+      return NextResponse.json({ success: false, message: "No products found" }, { status: 404 });
+    }
+
+    const productsWithDetails = products.map((product) => {
+  // ✅ Ensure Image URL from S3 or Fallback Placeholder
+  let imageUrl = "https://upload-images-in-bucket.s3.eu-north-1.amazonaws.com/products";
+  if (product.images.length > 0 && product.images[0].url) {
+    imageUrl = product.images[0].url;
+  }
+      // ✅ Check if product has required details
+      const hasDetails =
+        product.price &&
+        product.category &&
+        product.description &&
+        product.images.length > 0 &&
+        Object.keys(product.specifications || {}).length > 0;
+
+      // ✅ Improve Product Strength Calculation
+      let strength = "Low";
+      if ((product.stock > 50 || product.salesCount > 100) && hasDetails) {
+        strength = "High";
+      } else if ((product.stock > 20 || product.salesCount > 50) && hasDetails) {
+        strength = "Medium";
+      } else if (hasDetails) {
+        strength = "Medium"; // Upgraded from Low to Medium if details exist
+      }
+
+      return { ...product._doc, image: imageUrl, strength };
+    });
+
+    return NextResponse.json({ success: true, products: productsWithDetails }, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching product details:", error);
     return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }
 }

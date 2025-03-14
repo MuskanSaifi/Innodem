@@ -17,7 +17,6 @@ const AddProduct = () => {
             minimumOrderQuantity: "",
             moqUnit: "",
             description: "",
-            category: "",
             stock: "",
             images: [],
             // ✅ Trade Information (Fix enum defaults)
@@ -175,16 +174,16 @@ const AddProduct = () => {
           tradeShopping: { ...prev.tradeShopping, slabPricing: updatedSlabs },
         }));
       };
-      
-    // Handle image upload
-    const handleImageChange = async (e) => {
+
+
+      const handleImageChange = async (e) => {
         const files = e.target.files;
         if (!files.length) return;
         if (files.length + product.images.length > 6) {
             toast.error("You can upload a maximum of 6 images.");
             return;
         }
-
+    
         const imagePromises = Array.from(files).map((file) => {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -193,7 +192,7 @@ const AddProduct = () => {
                 reader.onerror = (error) => reject(error);
             });
         });
-
+    
         try {
             const base64Images = await Promise.all(imagePromises);
             setProduct((prev) => ({ ...prev, images: [...prev.images, ...base64Images] }));
@@ -201,73 +200,81 @@ const AddProduct = () => {
             toast.error("Error processing images.");
         }
     };
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
     
-        try {
-            const token = localStorage.getItem("token");
-            if (!token) {
-                toast.error("User not authenticated");
-                setLoading(false);
-                return;
-            }
     
-            const formattedProduct = {
-                ...product,
-                price: Number(product.price) || 0,
-                minimumOrderQuantity: Number(product.minimumOrderQuantity) || 0,
-                specifications: {
-                    ...product.specifications,
-                    weight: Number(product.specifications.weight) || 0,
-                    metalsType: Array.isArray(product.specifications.metalsType)
-                        ? product.specifications.metalsType
-                        : [],
-                    foldable: product.specifications.foldable === "Yes",
-                },
-                tradeInformation: {
-                    ...product.tradeInformation,
-                    mainExportMarkets: product.tradeInformation.mainExportMarkets
-                        ? product.tradeInformation.mainExportMarkets.split(",").map((m) => m.trim())
-                        : [],
-                },
-                tradeShopping: {
-                    ...product.tradeShopping,
-                    fixedSellingPrice: Number(product.tradeShopping.fixedSellingPrice) || null,  // ✅ Always send this
-                    packageDimensions: {
-                        length: product.tradeShopping.packageDimensions.length ? Number(product.tradeShopping.packageDimensions.length) : null,
-                        width: product.tradeShopping.packageDimensions.width ? Number(product.tradeShopping.packageDimensions.width) : null,
-                        height: product.tradeShopping.packageDimensions.height ? Number(product.tradeShopping.packageDimensions.height) : null,
-                        unit: product.tradeShopping.packageDimensions.unit || "cm",
-                    },
-                },
-            };
-    
-            console.log("🟢 Submitting Product:", JSON.stringify(formattedProduct, null, 2)); // Debugging log
-    
-            const response = await axios.post(
-                "http://localhost:3000/api/userprofile/manageproducts",
-                formattedProduct,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-    
-            if (response.data.success) {
-                toast.success("✅ Product created successfully!");
-            } else {
-                toast.error(`${response.data.message || "Failed to create product."}`);
-            }
-        } catch (error) {
-            console.error("❌ Error submitting product:", error);
-        } finally {
+
+const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            toast.error("User not authenticated");
             setLoading(false);
+            return;
         }
-    };
-    
+
+        const formattedProduct = {
+            ...product,
+            images: product.images.map((img) => ({ url: img })),  // ✅ Convert strings to objects
+            specifications: {
+                ...product.specifications,
+                weight: Number(product.specifications.weight) || 0,
+                metalsType: Array.isArray(product.specifications.metalsType)
+                    ? product.specifications.metalsType
+                    : [],
+                foldable: product.specifications.foldable === "Yes",
+            },
+            tradeInformation: {
+                ...product.tradeInformation,
+                mainExportMarkets: product.tradeInformation.mainExportMarkets
+                    ? product.tradeInformation.mainExportMarkets.split(",").map((m) => m.trim())
+                    : [],
+            },
+            tradeShopping: {
+                ...product.tradeShopping,
+                fixedSellingPrice: Number(product.tradeShopping.fixedSellingPrice) || null,  
+                packageDimensions: {
+                    length: product.tradeShopping.packageDimensions.length 
+                        ? Number(product.tradeShopping.packageDimensions.length) 
+                        : null,
+                    width: product.tradeShopping.packageDimensions.width 
+                        ? Number(product.tradeShopping.packageDimensions.width) 
+                        : null,
+                    height: product.tradeShopping.packageDimensions.height 
+                        ? Number(product.tradeShopping.packageDimensions.height) 
+                        : null,
+                    unit: product.tradeShopping.packageDimensions.unit || "cm",
+                },
+            },
+        };
+        
+        console.log("🟢 Submitting Product:", JSON.stringify(formattedProduct, null, 2));
+
+        const response = await axios.post(
+            "http://localhost:3000/api/userprofile/manageproducts",
+            formattedProduct,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        if (response.data.success) {
+            toast.success("✅ Product created successfully!");
+        } else {
+            toast.error(`${response.data.message || "Failed to create product."}`);
+        }
+    } catch (error) {
+        console.error("❌ Error submitting product:", error);
+    } finally {
+        setLoading(false);
+    }
+};
+
         
 
 

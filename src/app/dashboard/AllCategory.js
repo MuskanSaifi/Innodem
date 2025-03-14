@@ -4,6 +4,8 @@ import Swal from "sweetalert2";
 
 const AllCategory = () => {
   const [categories, setCategories] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(""); // ✅ Search state
+  const [searchDate, setSearchDate] = useState(""); // ✅ Date filter
 
   useEffect(() => {
     fetchCategories();
@@ -12,8 +14,7 @@ const AllCategory = () => {
   // Fetch categories
   const fetchCategories = async () => {
     try {
-      const result = await axios.get("http://localhost:3000/api/adminprofile/category");  
-      // Ensure data is an array
+      const result = await axios.get("http://localhost:3000/api/adminprofile/category");
       if (Array.isArray(result.data)) {
         setCategories(result.data);
       } else {
@@ -25,7 +26,27 @@ const AllCategory = () => {
       Swal.fire("Error", "Failed to fetch categories", "error");
     }
   };
-  
+
+  // ✅ Handle search input change
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value.toLowerCase());
+  };
+
+  // ✅ Handle date filter change
+  const handleDateChange = (e) => {
+    setSearchDate(e.target.value);
+  };
+
+  // ✅ Filter categories based on searchTerm and date
+  const filteredCategories = categories.filter((category) => {
+    const categoryDate = category.createdAt ? new Date(category.createdAt).toISOString().split("T")[0] : null;
+
+    return (
+      (category.name.toLowerCase().includes(searchTerm) || 
+        category.subcategories.some((sub) => sub.name.toLowerCase().includes(searchTerm))) &&
+      (searchDate === "" || (categoryDate && categoryDate === searchDate))
+    );
+  });
 
   // Handle delete category
   const handleDelete = async (categoryId) => {
@@ -43,7 +64,7 @@ const AllCategory = () => {
       try {
         const response = await axios.delete(`http://localhost:3000/api/adminprofile/category?id=${categoryId}`);
         if (response.status === 200) {
-          setCategories(categories.filter((category) => category._id !== categoryId)); // Update UI
+          setCategories(categories.filter((category) => category._id !== categoryId));
           Swal.fire("Deleted!", "Category has been deleted.", "success");
         } else {
           Swal.fire("Error", response.data.error || "Failed to delete category", "error");
@@ -57,24 +78,50 @@ const AllCategory = () => {
 
   return (
     <div className="container mt-4">
-      <h3 className="mb-4">All Categories</h3>
+      {/* ✅ Search Filters */}
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search by category or subcategory name"
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+        </div>
+        <div className="col-md-4">
+          <input
+            type="date"
+            className="form-control"
+            value={searchDate}
+            onChange={handleDateChange}
+          />
+        </div>
+        <div className="col-md-2">
+          <button className="btn btn-secondary w-100" onClick={() => setSearchTerm("")}>
+            Clear Filter
+          </button>
+        </div>
+      </div>
+
+      {/* Table Section */}
       <table className="table table-striped table-bordered table-responsive text-center">
         <thead className="bg-dark text-white">
           <tr>
-            <th>ID</th>
+            {/* <th>ID</th> */}
             <th>Name</th>
             <th>Icon</th>
             <th>Subcategories</th>
             <th>Created At</th>
-            <th>Updated At</th>
+            {/* <th>Updated At</th> */}
             <th>Operations</th>
           </tr>
         </thead>
         <tbody>
-          {categories.length > 0 ? (
-            categories.map((category) => (
+          {filteredCategories.length > 0 ? (
+            filteredCategories.map((category) => (
               <tr key={category._id}>
-                <td>{category._id}</td>
+                {/* <td>{category._id}</td> */}
                 <td>{category.name}</td>
                 <td>
                   {category.icon && <img src={category.icon} alt={category.name} width={50} />}
@@ -83,7 +130,7 @@ const AllCategory = () => {
                   {category.subcategories.length > 0 ? (
                     <ul className="list-unstyled">
                       {category.subcategories.map((sub) => (
-                        <li key={sub._id}>{sub.name}</li>
+                        <li className="common-shad m-1 rounded-1 text-dark" key={sub._id}>{sub.name}</li>
                       ))}
                     </ul>
                   ) : (
@@ -91,7 +138,7 @@ const AllCategory = () => {
                   )}
                 </td>
                 <td>{new Date(category.createdAt).toLocaleString()}</td>
-                <td>{new Date(category.updatedAt).toLocaleString()}</td>
+                {/* <td>{new Date(category.updatedAt).toLocaleString()}</td> */}
                 <td>
                   <button className="btn btn-success btn-sm w-100 shadow mb-2">
                     Update Category
@@ -108,7 +155,7 @@ const AllCategory = () => {
           ) : (
             <tr>
               <td colSpan="7" className="text-center">
-                No categories found.
+                No matching categories found.
               </td>
             </tr>
           )}

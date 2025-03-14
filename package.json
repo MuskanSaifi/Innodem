@@ -9,10 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.758.0",
     "@reduxjs/toolkit": "^2.6.1",
+    "aws-sdk": "^2.1692.0",
     "axios": "^1.7.9",
     "bcryptjs": "^2.4.3",
     "bootstrap": "^5.3.3",
+    "crypto": "^1.0.1",
     "dotenv": "^16.4.7",
     "formidable": "^3.5.2",
     "gridfs-stream": "^1.1.1",

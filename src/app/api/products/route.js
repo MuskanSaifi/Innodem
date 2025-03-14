@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import Product from "@/models/Product";
 import connectdb from "@/lib/dbConnect";
-
 export async function GET(req) {
   try {
     await connectdb();
@@ -26,14 +25,16 @@ export async function GET(req) {
       return NextResponse.json({ error: "No products found" }, { status: 404 });
     }
 
-    // ✅ Convert image Buffer data to Base64
+    // ✅ Format product images correctly
     const formattedProducts = products.map((product) => ({
       ...product.toObject(),
-      images: product.images.map((img) =>
-        img.data
-          ? `data:${img.contentType};base64,${img.data.toString("base64")}`
-          : null
-      ),
+      images: product.images
+        .filter((img) => img && (img.url || img.data)) // ✅ Remove null images
+        .map((img) =>
+          img.url
+            ? img.url // ✅ Return URL if available
+            : `data:${img.contentType};base64,${Buffer.from(img.data).toString("base64")}`
+        ),
     }));
 
     console.log(`✅ Found ${products.length} products`);

@@ -6,6 +6,7 @@ import SubCategory from "@/models/SubCategory";
 // POST method - Create a new product
 export async function POST(req) {
   try {
+    
     const body = await req.json();
 
     // Required fields validation
@@ -79,6 +80,7 @@ export async function POST(req) {
     );
   }
 }
+
 // GET method - Fetch all products
 export async function GET(req) {
   try {

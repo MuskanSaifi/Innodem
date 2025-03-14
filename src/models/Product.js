@@ -10,12 +10,7 @@ const productSchema = new mongoose.Schema(
     currency: { type: String, default: "INR" },
     minimumOrderQuantity: { type: Number },
     moqUnit: { type: String, default:"Number" },
-    images: [
-      {
-        data: { type: Buffer },
-        contentType: { type: String },
-      },
-    ],
+    images: [{ url: String }],  
     video: { type: String },
     youtubeUrl: { type: String },
     description: { type: String },
