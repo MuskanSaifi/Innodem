@@ -89,7 +89,7 @@ const BuySellForm = () => {
       const fullMobileNumber = `${countryCode.value}${mobileNumber.replace(/\s/g, "")}`;
       const apiUrl = buySell === "buy" 
         ? "/api/auth/verifyotpbuyer" 
-        : "http://localhost:3000/api/auth/verifyotp"; // Seller API
+        : `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/verifyotp`; // Seller API
   
       const res = await fetch(apiUrl, {
         method: "POST",

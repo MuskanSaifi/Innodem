@@ -26,7 +26,7 @@ const AllProducts = () => {
           toast.error("User not authenticated");
           return;
         }
-        const res = await axios.get("http://localhost:3000/api/userprofile/manageproducts", {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/userprofile/manageproducts`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -65,7 +65,7 @@ const AllProducts = () => {
             return;
           }
           const res = await axios.delete(
-            `http://localhost:3000/api/userprofile/manageproducts/${id}`,
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/userprofile/manageproducts/${id}`,
             {
               headers: { Authorization: `Bearer ${token}` },
             }
@@ -150,7 +150,7 @@ const AllProducts = () => {
         }
     
         const res = await axios.patch(
-          `http://localhost:3000/api/userprofile/manageproducts/${selectedProduct._id}`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/userprofile/manageproducts/${selectedProduct._id}`,
           updateData,
           { headers: { Authorization: `Bearer ${token}` } }
         );

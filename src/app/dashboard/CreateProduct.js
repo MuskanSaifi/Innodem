@@ -20,7 +20,7 @@ const CreateProduct = () => {
 
   const fetchCategories = async () => {
     try {
-      const result = await axios.get("http://localhost:3000/api/adminprofile/category");
+
       setSelectedCategory(result.data);
     } catch (error) {
       console.log(error);
@@ -36,7 +36,7 @@ const CreateProduct = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:3000/api/adminprofile/seller", {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/seller`, {
         name: productData.name,
         description: productData.description,
         price: parseFloat(productData.price),

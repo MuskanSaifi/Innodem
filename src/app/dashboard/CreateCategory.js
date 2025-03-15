@@ -37,9 +37,9 @@ const CreateCategory = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/adminprofile/category",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/category`,
         formattedData
-      );
+      );      
 
       if (response.status === 201) {
         toast.success("Category created successfully!");

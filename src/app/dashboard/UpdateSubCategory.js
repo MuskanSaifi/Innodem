@@ -24,7 +24,7 @@ const UpdateSubCategory = () => {
   // ✅ Fetch all subcategories
   const fetchCategories = async () => {
     try {
-      const result = await axios.get("http://localhost:3000/api/adminprofile/subcategory");
+      const result = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/subcategory`);
       setSelectedSubCategory(result.data);
     } catch (error) {
       toast.error("Error fetching subcategories:", error);
@@ -34,7 +34,7 @@ const UpdateSubCategory = () => {
   // ✅ Fetch all products
   const fetchProducts = async () => {
     try {
-      const result = await axios.get("http://localhost:3000/api/adminprofile/seller");
+      const result = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/seller`);
 
       console.log("Fetched products:", result.data); // Debugging
 
@@ -60,7 +60,7 @@ const UpdateSubCategory = () => {
     try {
       console.log("Submitting data: ", productData);
 
-      const response = await axios.patch("http://localhost:3000/api/adminprofile/subcategory", {
+      const response = await axios.patch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/subcategory`, {
         id: productData.id,
         name: productData.name,
         category: productData.category,

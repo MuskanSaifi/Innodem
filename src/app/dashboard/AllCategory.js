@@ -14,7 +14,7 @@ const AllCategory = () => {
   // Fetch categories
   const fetchCategories = async () => {
     try {
-      const result = await axios.get("http://localhost:3000/api/adminprofile/category");
+      const result = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/category`);
       if (Array.isArray(result.data)) {
         setCategories(result.data);
       } else {
@@ -62,7 +62,10 @@ const AllCategory = () => {
 
     if (confirmDelete.isConfirmed) {
       try {
-        const response = await axios.delete(`http://localhost:3000/api/adminprofile/category?id=${categoryId}`);
+        const response = await axios.delete(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/category?id=${categoryId}`
+        );
+        
         if (response.status === 200) {
           setCategories(categories.filter((category) => category._id !== categoryId));
           Swal.fire("Deleted!", "Category has been deleted.", "success");

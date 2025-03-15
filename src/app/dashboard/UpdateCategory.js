@@ -19,7 +19,7 @@ const UpdateCategory = () => {
   // Fetch categories
   const fetchCategories = async () => {
     try {
-      const result = await axios.get("http://localhost:3000/api/adminprofile/category");
+      const result = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/category`);
       setCategories(result.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -55,7 +55,7 @@ const UpdateCategory = () => {
 
     try {
       console.log("Submitting data: ", categoryData);
-      const response = await axios.patch("http://localhost:3000/api/adminprofile/category", categoryData);
+      const response = await axios.patch(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/adminprofile/category`, categoryData);
       console.log("Response from server: ", response);
 
       if (response.status === 200) {

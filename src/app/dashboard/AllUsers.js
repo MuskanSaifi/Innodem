@@ -15,7 +15,10 @@ const AllUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/adminprofile/users");
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/users`
+      );
+      
       if (response.data.success) {
         setUsers(response.data.users);
       }

@@ -6,8 +6,6 @@
 .fs-sm{
   font-size: 15px;
 }
-
-
 /* city scrollbar */
 
 .product-image {
@@ -16,7 +14,6 @@
     object-fit: cover;
     border-radius: 5px;
   }
-  
   .supplier-box {
     background: #f8f9fa;
     padding: 15px;

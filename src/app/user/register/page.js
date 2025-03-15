@@ -41,7 +41,7 @@ export default function Register() {
         try {
             const fullMobileNumber = `${countryCode.value}${mobileNumber}`; // ✅ FIXED
     
-            const res = await fetch("http://localhost:3000/api/auth/sendotp", {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/sendotp`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ fullname, email, mobileNumber: fullMobileNumber, pincode, companyName }),
@@ -71,7 +71,7 @@ export default function Register() {
         setError("");
 
         try {
-            const res = await fetch("http://localhost:3000/api/auth/verifyotp", {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/verifyotp`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ mobileNumber: loginnumber, otp }),
