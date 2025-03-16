@@ -22,7 +22,7 @@ const Userprofile = () => {
     console.log("Sending token:", token); // Debugging
   
     try {
-      const response = await axios.get("http://localhost:3000/api/userprofile/profile/userprofile", {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/userprofile/profile/userprofile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

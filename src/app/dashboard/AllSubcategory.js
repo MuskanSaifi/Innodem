@@ -10,7 +10,9 @@ const AllSubcategory = () => {
   // Fetch all subcategories
   const fetchSubCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/adminprofile/subcategory/allsubcategory");
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/subcategory/allsubcategory`
+      );
       setSubCategories(response.data);
       setLoading(false);
     } catch (error) {
@@ -33,7 +35,9 @@ const AllSubcategory = () => {
 
     if (confirmDelete.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:3000/api/adminprofile/subcategory/allsubcategory?id=${id}`);
+        await axios.delete(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/subcategory/allsubcategory?id=${id}`
+        );        
         Swal.fire("Deleted!", "Subcategory has been deleted.", "success");
         setSubCategories(subCategories.filter((subcategory) => subcategory._id !== id)); // Remove from UI
       } catch (error) {

@@ -140,9 +140,9 @@ export async function GET() {
 export async function DELETE(req) {
   try {
     // Parse the query parameter from the request URL
-    const url = new URL(req.url, `http://localhost:3000`);
-    const id = url.searchParams.get("id");  // Get the 'id' query parameter
-
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const id = url.searchParams.get("id");
+    
     if (!id) {
       return new Response(
         JSON.stringify({ error: "Category ID is required" }),
