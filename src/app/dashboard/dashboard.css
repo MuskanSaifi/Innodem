@@ -110,11 +110,19 @@
   .res-color{
     background-color: #7da0fa;
   }
+  .res-color1{
+    background-color: #CFE2FF;
+  }
+
   .res-color2{
     background-color: #4747a1;
   }
   .res-color3{
     background-color: #f3797e;
+  }
+
+  .res1-text-color{
+    color: #052c65;
   }
   
   
@@ -183,4 +191,19 @@
 .resdes-dynamic-content{
   max-height: 80vh !important;
   overflow-y: scroll;
+}
+
+
+.nnn{
+  position: absolute;
+  top: -5px;
+  right: -7px;
+}
+
+.td-bg{
+  background-color: #ECECEC !important;
+}
+
+.text-sm{
+  font-size: 13px;
 }

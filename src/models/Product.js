@@ -16,6 +16,9 @@ const productSchema = new mongoose.Schema(
     description: { type: String },
     stock: { type: Number, default: 0 },
 
+    // for admin
+    tags: { type: [String], default: [] },
+
     // ✅ Trade Information
     tradeInformation: {
       supplyAbility: { type: String },

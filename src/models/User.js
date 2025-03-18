@@ -15,6 +15,8 @@ const userSchema = new mongoose.Schema({
     isVerified: { type: Boolean, default: false },
     // ✅ Add this line to reference products
     products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }] 
-});
+},
+{ timestamps: true }
+);
 
 export default mongoose.models.User || mongoose.model("User", userSchema);

@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import CitySearchBar from "@/components/CitySearchBar";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import "../style.css";
+import "./style.css";
 import BuySellForm from "@/components/BuySellform";
 
 const ProductPage = () => {
@@ -44,8 +44,8 @@ const ProductPage = () => {
 
   return (
     <>
-      <BuySellForm />
-      <div className="container mt-2">
+<BuySellForm productname={products.length > 0 ? products[0].name : formattedSubcategory} />
+<div className="container mt-2">
         <p className="m-0 fs-esm">
           Innodem / {products.length > 0 ? products[0]?.category?.name : <Skeleton width={100} />}
           / {products.length > 0 ? products[0]?.subCategory?.name : <Skeleton width={100} />}

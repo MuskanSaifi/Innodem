@@ -80,7 +80,7 @@ const SidebarMenu = () => {
           <ul>
             {filteredProducts.map((product) => (
               <li key={product._id}>
-                <Link href={`/products/${encodeURIComponent(product.name.toLowerCase().replace(/\s+/g, "-"))}`}>
+                <Link href={`/${encodeURIComponent(product.name.toLowerCase().replace(/\s+/g, "-"))}`}>
                   {product.name}
                 </Link>
               </li>

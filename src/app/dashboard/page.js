@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import "./dashboard.css";
 import Sidebar from "./Sidebar";
 import Dashboard from "./Dashboard";
-import CreateProduct from "./CreateProduct";
 import CreateSubCategory from "./CreateSubCategory";
 import UpdateSubCategory from "./UpdateSubCategory";
 import UpdateCategory from "./UpdateCategory";
@@ -12,6 +11,7 @@ import CreateCategory from "./CreateCategory";
 import AllCategory from "./AllCategory";
 import AllUsers from "./AllUsers";
 import AllSubcategory from "./AllSubcategory";
+import AllProducts from "./AllProducts";
 
 function ResponsiveDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -35,7 +35,7 @@ function ResponsiveDashboard() {
 
         <div className="resdes-dynamic-content">
           {activeContent === "Dashboard" && <Dashboard />}
-          {activeContent === "Create Product" && <CreateProduct />}
+          {activeContent === "All Products" && <AllProducts />}
           {activeContent === "Create Sub Category" && <CreateSubCategory />}
           {activeContent === "Update Sub Category" && <UpdateSubCategory />}
           {activeContent === "Create Category" && <CreateCategory />}

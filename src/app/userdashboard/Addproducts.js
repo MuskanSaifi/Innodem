@@ -17,6 +17,7 @@ const AddProduct = () => {
             minimumOrderQuantity: "",
             moqUnit: "",
             description: "",
+            city: "",
             stock: "",
             images: [],
             // ✅ Trade Information (Fix enum defaults)

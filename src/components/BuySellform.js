@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Select from "react-select";
+import toast from "react-hot-toast";
 
 const countryCodes = [
   { value: "+1", label: "\ud83c\uddfa\ud83c\uddf8 +1", name: "United States" },
@@ -10,10 +11,10 @@ const countryCodes = [
   { value: "+971", label: "\ud83c\udde6\ud83c\uddea +971", name: "UAE" },
 ];
 
-const BuySellForm = () => {
+const BuySellForm = ({ productname: initialProductName }) => {
+  const [productname, setProductname] = useState(initialProductName || "");
   const [showModal, setShowModal] = useState(false);
   const [buySell, setBuySell] = useState("buy");
-  const [productname, setProductname] = useState("");
   const [fullname, setFullname] = useState("");
   const [countryCode, setCountryCode] = useState(countryCodes[1]);
   const [mobileNumber, setMobileNumber] = useState("");
@@ -107,9 +108,8 @@ const BuySellForm = () => {
           localStorage.setItem("user", JSON.stringify(data.user));
           router.push("/userdashboard");
         } else {
-alert("verified")
+          toast.success("verified")
         }
-  np
         setShowModal(false);
       } else {
         setError(data.error || "Invalid OTP. Please try again.");

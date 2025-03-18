@@ -19,7 +19,7 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
     },
     {
       icon: "➕",
-      label: "Create Product",
+      label: "All Products",
     },
  
   ];
