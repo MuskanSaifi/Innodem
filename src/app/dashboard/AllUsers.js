@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { FaTimesCircle, FaTrash } from "react-icons/fa";
+import { FaTimesCircle } from "react-icons/fa";
 import { Table, Spinner, Button, Accordion, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
+import ProductTags from "./components/ProductTags";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // ✅ Search state for name, email, company, mobile
   const [searchDate, setSearchDate] = useState(""); // ✅ Search state for registration date
   const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     fetchUsers();
@@ -159,6 +161,8 @@ const AllUsers = () => {
   };
 
 
+
+
   return (
     <div className="container mt-4">
       <h2 className="text-center mb-4 res-color2 text-light w-50 rounded-5	m-auto  p-2 common-shad">All Users & Their Products</h2>
@@ -186,7 +190,7 @@ const AllUsers = () => {
           <Spinner animation="border" variant="primary" />
         </div>
       ) : (
-        <Table striped bordered hover responsive className="common-shad">
+        <Table className="common-shad striped bordered hover responsive ">
           <thead className="table-dark">
             <tr>
               <th>#</th>
@@ -224,8 +228,19 @@ const AllUsers = () => {
                           {user.products.map((product, i) => {
                             const progress = calculateProgress(product);
                             const strength = getStrengthLabel(progress);
-                            return (
 
+                            const formatDate = (date) =>
+                              new Date(date).toLocaleString("en-GB", {
+                                day: "2-digit",
+                                month: "2-digit",
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                second: "2-digit",
+                                hour12: true,
+                                timeZone: "Asia/Kolkata",
+                              });
+                            return (
                               <Accordion.Item key={product._id} eventKey={i.toString()} className="mb-2">
                                 <Accordion.Header>
                                   <strong>{product.name}</strong>
@@ -234,8 +249,19 @@ const AllUsers = () => {
                                   </div>
                                 </Accordion.Header>
                                 <Accordion.Body>
-                                  <div className="row mb-2">
+
+                                  <div className="d-flex justify-content-between">
+                                    <span className="res-color2 text-light text-sm common-shad px-3 py-1 rounded-2">
+                                      Created At: {formatDate(product.createdAt)}
+                                    </span>
+                                    <span className="res-color2 text-light text-sm common-shad px-3 py-1 rounded-2">
+                                      Updated At: {formatDate(product.updatedAt)}
+                                    </span>
+                                  </div>
+
+                                  <div className="row mb-3 mt-3">
                                     <div className="col-md-2">
+
                                       <img
                                         src={product.images[0].url}
                                         alt="Product"
@@ -246,34 +272,31 @@ const AllUsers = () => {
 
                                     <div className="col-md-2">
                                       <div className="res-color1 text-center p-2 rounded-3 common-shad">
-                                      <span className="text-sm d-block">Product Name</span>  <span className="res1-text-color fw-bold">  {product.name}</span> 
+                                        <span className="text-sm d-block">Product Name</span>  <span className="res1-text-color fw-bold">  {product.name}</span>
                                       </div>
                                     </div>
 
                                     <div className="col-md-2">
                                       <div className="res-color1 text-center p-2 rounded-3 common-shad">
-                                      <span className="text-sm d-block">Product Price</span>  <span className="res1-text-color fw-bold">{product.currency}  ₹{product.price} </span>     
+                                        <span className="text-sm d-block">Product Price</span>  <span className="res1-text-color fw-bold">{product.currency}  ₹{product.price} </span>
                                       </div>
                                     </div>
 
                                     <div className="col-md-2">
                                       <div className="res-color1 text-center p-2 rounded-3 common-shad">
-                                      <span className="text-sm d-block">MOQ</span>   <span className="res1-text-color fw-bold"> {product.minimumOrderQuantity}</span>   
+                                        <span className="text-sm d-block">MOQ</span>   <span className="res1-text-color fw-bold"> {product.minimumOrderQuantity}</span>
                                       </div>
                                     </div>
                                     <div className="col-md-2">
                                       <div className="res-color1 text-center p-2 rounded-3 common-shad">
-                                      <span className="text-sm d-block">Category</span>   <span className="res1-text-color fw-bold"> {product.category.name}</span>   
+                                        <span className="text-sm d-block">Category</span>   <span className="res1-text-color fw-bold"> {product.category.name}</span>
                                       </div>
                                     </div>
                                     <div className="col-md-2">
                                       <div className="res-color1 text-center p-2 rounded-3 common-shad">
-                                      <span className="text-sm d-block">Sub Category</span>   <span className="res1-text-color fw-bold"> {product.subCategory.name}</span>   
+                                        <span className="text-sm d-block">Sub Category</span>   <span className="res1-text-color fw-bold"> {product.subCategory.name}</span>
                                       </div>
                                     </div>
-
-
-
                                   </div>
                                   <div className="progress">
                                     <div className={`progress-bar ${strength.color}`} style={{ width: `${progress}%` }}>
@@ -349,7 +372,6 @@ const AllUsers = () => {
                                           </li>
                                         </ul>
                                       </div>
-
                                       {/* Specifications */}
                                       <div className="col-md-4">
                                         <h6 className="common-shad mt-2 mb-2 rounded-2 p-2 text-light res-color2">Specifications</h6>
@@ -439,7 +461,6 @@ const AllUsers = () => {
                                             </div>
                                           </li>
                                         </ul>
-
                                       </div>
 
                                       {/* Trade Shopping */}
@@ -567,6 +588,9 @@ const AllUsers = () => {
 
                                       </div>
                                     </div>
+
+                                    <ProductTags productId={product._id} existingTags={product.tags} />
+
 
                                   </div>
 

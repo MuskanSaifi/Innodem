@@ -24,9 +24,7 @@ const ProductPage = () => {
 
         const response = await fetch(`/api/products?subcategory=${encodeURIComponent(formattedSubcategory)}`);
         const data = await response.json();
-
         if (!response.ok) throw new Error(data.error || "Failed to fetch products.");
-
         setProducts(data);
       } catch (err) {
         setError(err.message);
@@ -91,15 +89,37 @@ const ProductPage = () => {
                       <div className="col-md-5">
                         <h5 className="text-primary bg-light p-1">{product.name}</h5>
                         <div className="table-responsive">
-                          <table className="table fs-esm">
-                            <tbody>
-                              <tr><th>Price</th><td>₹{product.price} {product.currency || "INR"}</td></tr>
-                              <tr><th>MOQ</th><td>{product.minimumOrderQuantity || "N/A"}</td></tr>
-                              <tr><th>Colour</th><td>{product.specifications?.color || "N/A"}</td></tr>
-                              <tr><th>Category</th><td>{product.category ? product.category.name : "Not Available"}</td></tr>
-                              <tr><th>Subcategory</th><td>{product.subCategory ? product.subCategory.name : "Not Available"}</td></tr>
-                            </tbody>
-                          </table>
+                        <table className="table fs-esm">
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Price</th>
+      <td>₹{product?.price} {product?.currency || "INR"}</td>
+    </tr>
+    <tr>
+      <th>MOQ</th>
+      <td>{product?.minimumOrderQuantity || "N/A"}</td>
+    </tr>
+    <tr>
+      <th>Colour</th>
+      <td>{product?.specifications?.color || "N/A"}</td>
+    </tr>
+    <tr>
+      <th>Category</th>
+      <td>{product?.category?.name || "Not Available"}</td>
+    </tr>
+    <tr>
+      <th>Subcategory</th>
+      <td>{product?.subCategory?.name || "Not Available"}</td>
+    </tr>
+  </tbody>
+</table>
+
                         </div>
                         <a href="#" className="text-info">More details...</a>
                       </div>

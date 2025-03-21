@@ -35,7 +35,7 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
     if (storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
-        console.log("Parsed User Data:", parsedUser);
+        // console.log("Parsed User Data:", parsedUser);
         setUserdata(parsedUser);
       } catch (error) {
         console.error("Error parsing user data:", error);

@@ -17,7 +17,13 @@ const productSchema = new mongoose.Schema(
     stock: { type: Number, default: 0 },
 
     // for admin
-    tags: { type: [String], default: [] },
+     // ✅ Tags with default value false
+  tags: {
+    trending: { type: Boolean, default: false },
+    upcoming: { type: Boolean, default: false },
+    diwaliOffer: { type: Boolean, default: false },
+    holiOffer: { type: Boolean, default: false }
+  },
 
     // ✅ Trade Information
     tradeInformation: {

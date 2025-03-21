@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Link from "next/link";
 
@@ -19,6 +19,14 @@ const SidebarMenu = () => {
       setActiveCategory("TopCategories"); // Reset to default
     }
   };
+
+  // ✅ Attach and remove event listener for outside clicks
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
 
   if (loading) return <div className="spinner">Loading...</div>;
   if (error) return <p className="error-message">{error}</p>;
@@ -48,50 +56,52 @@ const SidebarMenu = () => {
           activeCategory === category._id && (
             <div key={category._id} className="mega-menu">
               <div className="row">
+                {(() => {
+                  // ✅ Use a Set to ensure unique subcategory names
+                  const uniqueSubcategories = new Set();
+                  const filteredSubcategories = [];
 
-{(() => {
-  // ✅ Use a Set to ensure unique subcategory names
-  const uniqueSubcategories = new Set();
-  const filteredSubcategories = [];
-  
-  category.subcategories.forEach((subcategory) => {
-    const name = subcategory.name.toLowerCase();
-    if (!uniqueSubcategories.has(name)) {
-      uniqueSubcategories.add(name);
-      filteredSubcategories.push(subcategory);
-    }
-  });
+                  category.subcategories.forEach((subcategory) => {
+                    const name = subcategory.name.toLowerCase();
+                    if (!uniqueSubcategories.has(name)) {
+                      uniqueSubcategories.add(name);
+                      filteredSubcategories.push(subcategory);
+                    }
+                  });
 
-  return filteredSubcategories.map((subcategory) => {
-    // ✅ Use a Set to ensure unique product names within each subcategory
-    const uniqueProductNames = new Set();
-    const filteredProducts = subcategory.products.filter((product) => {
-      if (!uniqueProductNames.has(product.name.toLowerCase())) {
-        uniqueProductNames.add(product.name.toLowerCase());
-        return true;
-      }
-      return false;
-    });
+                  return filteredSubcategories.map((subcategory) => {
+                    // ✅ Use a Set to ensure unique product names within each subcategory
+                    const uniqueProductNames = new Set();
+                    const filteredProducts = subcategory.products.filter((product) => {
+                      if (!uniqueProductNames.has(product.name.toLowerCase())) {
+                        uniqueProductNames.add(product.name.toLowerCase());
+                        return true;
+                      }
+                      return false;
+                    });
 
-    return (
-      <div key={subcategory._id} className="col-md-4">
-        <div className="subcategory">
-          <h3>{subcategory.name}</h3>
-          <ul>
-            {filteredProducts.map((product) => (
-              <li key={product._id}>
-                <Link href={`/${encodeURIComponent(product.name.toLowerCase().replace(/\s+/g, "-"))}`}>
-                  {product.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    );
-  });
-})()}
-
+                    return (
+                      <div key={subcategory._id} className="col-md-4">
+                        <div className="subcategory">
+                          <h3>{subcategory.name}</h3>
+                          <ul>
+                            {filteredProducts.map((product) => (
+                              <li key={product._id}>
+                                <Link
+                                  href={`/seller/${encodeURIComponent(
+                                    product.name.toLowerCase().replace(/\s+/g, "-")
+                                  )}`}
+                                >
+                                  {product.name}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    );
+                  });
+                })()}
               </div>
             </div>
           )

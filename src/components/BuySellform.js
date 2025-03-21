@@ -42,7 +42,6 @@ const BuySellForm = ({ productname: initialProductName }) => {
     try {
       const fullMobileNumber = `${countryCode.value}${mobileNumber.replace(/\s/g, "")}`;
       const apiUrl = buySell === "buy" ? "/api/auth/sendotpbuyer" : "/api/auth/sendotp";
-
       const requestBody = {
         fullname,
       email,

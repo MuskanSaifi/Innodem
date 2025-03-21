@@ -36,8 +36,6 @@ const UpdateSubCategory = () => {
     try {
       const result = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/seller`);
 
-      console.log("Fetched products:", result.data); // Debugging
-
       // Sort products by creation time (latest first)
       const sortedProducts = result.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
@@ -58,7 +56,6 @@ const UpdateSubCategory = () => {
     }
 
     try {
-      console.log("Submitting data: ", productData);
 
       const response = await axios.patch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/subcategory`, {
         id: productData.id,
@@ -68,7 +65,6 @@ const UpdateSubCategory = () => {
         products: productData.products,
       });
 
-      console.log("Response from server: ", response);
 
       if (response.status === 200 || response.status === 201) {
         toast.success("Product updated successfully!");
@@ -174,38 +170,40 @@ const UpdateSubCategory = () => {
 
       {/* Products Table */}
       <table className="table mt-4 shadow">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Creator</th>
-            <th>Created At</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-  {filteredProducts.map((product) => {
-    const hasSubcategory = product.subCategory && product.subCategory._id
-      ? product.subCategory._id.toString() === productData.subcategory.toString()
-      : false;
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Creator</th>
+      <th>Created At</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {filteredProducts.map((product) => {
+      const productSubcategory = product?.subCategory?._id;
+      const selectedSubcategory = productData?.subcategory;
+      const hasSubcategory = productSubcategory && selectedSubcategory
+        ? String(productSubcategory) === String(selectedSubcategory)
+        : false;
 
-    return (
-      <tr key={product._id} className={hasSubcategory ? "table-success" : "table-danger"}>
-        <td>{product.name}</td>
-        <td>{product.userId?.fullname || "Unknown"}</td>
-        <td>{new Date(product.createdAt).toLocaleString()}</td>
-        <td>
-          {hasSubcategory ? (
-            <span className="text-success fw-bold">✅ Subcategory Assigned</span>
-          ) : (
-            <span className="text-danger fw-bold">❌ No Subcategory</span>
-          )}
-        </td>
-      </tr>
-    );
-  })}
-</tbody>
+      return (
+        <tr key={product._id} className={hasSubcategory ? "table-success" : "table-danger"}>
+          <td>{product.name}</td>
+          <td>{product.userId?.fullname || "Unknown"}</td>
+          <td>{product.createdAt ? new Date(product.createdAt).toLocaleString() : "N/A"}</td>
+          <td>
+            {hasSubcategory ? (
+              <span className="text-success fw-bold">✅ Subcategory Assigned</span>
+            ) : (
+              <span className="text-danger fw-bold">❌ No Subcategory</span>
+            )}
+          </td>
+        </tr>
+      );
+    })}
+  </tbody>
+</table>
 
-      </table>
     </div>
   );
 };

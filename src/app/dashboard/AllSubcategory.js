@@ -57,7 +57,7 @@ const AllSubcategory = () => {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <Table striped bordered hover responsive>
+        <Table className="striped bordered hover responsive">
           <thead className="bg-dark text-white">
             <tr>
               <th>#</th>

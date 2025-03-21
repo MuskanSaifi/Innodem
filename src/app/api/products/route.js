@@ -38,7 +38,7 @@ export async function GET(req) {
         ),
     }));
 
-    console.log(`✅ Found ${products.length} products`);
+    // console.log(`✅ Found ${products.length} products`);
     return NextResponse.json(formattedProducts, { status: 200 });
 
   } catch (error) {
