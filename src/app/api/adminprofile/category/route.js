@@ -7,45 +7,106 @@ import Product from "@/models/Product"; // ✅ Import Product to ensure it's reg
 import { URL } from "url";  // Import URL for parsing query
 
 
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+
+// ✅ Validate AWS Credentials Before Initialization
+if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY || !process.env.AWS_REGION || !process.env.AWS_BUCKET_NAME) {
+  throw new Error("❌ AWS Credentials Missing! Check your .env file.");
+}
+
+// ✅ Initialize AWS S3 Client
+const s3 = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
+
+// ✅ Function to Upload Image to AWS S3
+const uploadToS3 = async (image) => {
+  console.log("🔍 Checking Image Type:", image);
+
+  if (typeof image !== "string") {
+    throw new Error("❌ Invalid Image Format: Image must be a string (Base64 or URL)");
+  }
+
+  if (image.startsWith("http")) {
+    return image; // ✅ Already a valid URL, return as is
+  }
+
+  if (!image.includes(",")) {
+    throw new Error("❌ Invalid Image Format: Expected Base64 string");
+  }
+
+  const base64Image = image.split(",")[1]; // Extract Base64 Data
+  if (!base64Image) throw new Error("❌ Invalid Image Data");
+
+  const buffer = Buffer.from(base64Image, "base64");
+  const key = `categories/${Date.now()}.jpg`;
+
+  const uploadParams = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: key,
+    Body: buffer,
+    ContentType: "image/jpeg",
+  };
+
+  // ✅ Upload to S3
+  const command = new PutObjectCommand(uploadParams);
+  await s3.send(command);
+
+  // ✅ Return the uploaded file URL
+  return `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+};
+
 export async function PATCH(req) {
   try {
     await connectDB(); // Ensure DB connection
     const body = await req.json();
     const { id, name, icon, subcategories } = body;
 
-    //  Validate if ID is provided and a valid MongoDB ObjectId
+    // ✅ Validate if ID is provided and a valid MongoDB ObjectId
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return new Response(JSON.stringify({ error: "Invalid category ID." }), {
         status: 400,
       });
     }
 
-    //  Find the category and update the fields provided
+    // ✅ Find existing category
+    const existingCategory = await Category.findById(id);
+    if (!existingCategory) {
+      return new Response(JSON.stringify({ error: "Category not found." }), { status: 404 });
+    }
+
+    let uploadedIconUrl = existingCategory.icon; // Default to existing icon
+
+    // ✅ Upload new image if a new one is provided
+    if (icon && icon !== existingCategory.icon) {
+      uploadedIconUrl = await uploadToS3(icon);
+    }
+
+    // ✅ Update category with new image
     const updatedCategory = await Category.findByIdAndUpdate(
       id,
-      { name, icon, subcategories },
+      { name, icon: uploadedIconUrl, subcategories },
       { new: true, runValidators: true }
     );
-
-    //  If category not found, return error
-    if (!updatedCategory) {
-      return new Response(JSON.stringify({ error: "Category not found." }), {
-        status: 404,
-      });
-    }
 
     return new Response(JSON.stringify(updatedCategory), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
+
   } catch (error) {
-    console.error("Error updating category:", error);
+    console.error("❌ Error updating category:", error);
     return new Response(
       JSON.stringify({ error: error.message || "Failed to update category." }),
       { status: 500 }
     );
   }
 }
+
 
 
 // Create category

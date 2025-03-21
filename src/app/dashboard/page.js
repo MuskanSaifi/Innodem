@@ -12,6 +12,7 @@ import AllCategory from "./AllCategory";
 import AllUsers from "./AllUsers";
 import AllSubcategory from "./AllSubcategory";
 import AllProducts from "./AllProducts";
+import Buyers from "./Buyers";
 
 function ResponsiveDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -43,6 +44,7 @@ function ResponsiveDashboard() {
           {activeContent === "All Category" && <AllCategory />}
           {activeContent === "All Sub Category" && <AllSubcategory />}
           {activeContent === "All Users" && <AllUsers />}
+          {activeContent === "All Buyers" && <Buyers />}
         </div>
       </div>
     </div>

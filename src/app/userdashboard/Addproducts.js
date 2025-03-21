@@ -147,7 +147,6 @@ const AddProduct = () => {
         }));
     };
     
-    
       
       const updateSlabPricing = (index, key, value) => {
         const updatedSlabs = [...product.tradeShopping.slabPricing];

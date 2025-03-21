@@ -6,6 +6,7 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
   const sidebarItems = [
     { icon: "💼", label: "Dashboard" },
     { icon: "💰", label: "Payments" },
+    { icon: "👤", label: "All Buyers" },
     { icon: "👤", label: "All Users" },
     {
       icon: "📎",

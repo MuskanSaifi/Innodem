@@ -1,51 +1,99 @@
+import { useState, useEffect } from "react";
 
 const Footer = () => {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    // Fetch categories from API
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(`/api/adminprofile/category`); // API endpoint
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   return (
-    
-<footer className="bg-dark text-light pt-5 pb-4">
-  <div className="container text-center text-md-start">
-    <div className="row">
-      {/* Logo & About */}
-      <div className="col-md-4 col-lg-3 mx-auto">
-        <h5 className="text-uppercase fw-bold">Your Logo</h5>
-        <p className="small">
-          We provide high-quality services and innovative solutions to help you grow your business.
-        </p>
+    <footer className="bg-gray-900 text-gray-300 py-10">
+      <div className="container mx-auto px-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          
+          {/* Directory (Categories from API) */}
+          <div>
+            <h5 className="text-lg font-semibold text-white mb-3">Directory</h5>
+            <ul className="space-y-2">
+              {categories.length > 0 ? (
+                categories.map((category) => (
+<li key={category._id || category.slug || category.name}>
+<a href={`/category/${category.slug}`} className="hover:text-gray-400 transition">
+                      {category.name}
+                    </a>
+                  </li>
+                ))
+              ) : (
+                <li className="text-gray-500">Loading categories...</li>
+              )}
+            </ul>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h5 className="text-lg font-semibold text-white mb-3">Quick Links</h5>
+            <ul className="space-y-2">
+              <li><a href="#" className="hover:text-gray-400 transition">About Us</a></li>
+              <li><a href="#" className="hover:text-gray-400 transition">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-gray-400 transition">Terms of Use</a></li>
+              <li><a href="#" className="hover:text-gray-400 transition">Shipping & Delivery</a></li>
+              <li><a href="#" className="hover:text-gray-400 transition">Contact Us</a></li>
+              <li><a href="#" className="hover:text-gray-400 transition">Submit a Complaint</a></li>
+            </ul>
+          </div>
+
+          {/* Contact Info */}
+          <div>
+            <h5 className="text-lg font-semibold text-white mb-3">Contact</h5>
+            <p className="text-sm my-2"><i className="fas fa-map-marker-alt mr-2"></i> Ramnagar, Ramgarh, Alwar, Delhi Road 301026</p>
+            <p className="text-sm my-2"><i className="fas fa-phone mr-2"></i> +91-85-1097-1098</p>
+            <p className="text-sm my-2 text-red-400 font-semibold">Mon - Fri, 9 AM - 6 PM (IST)</p>
+            <p className="text-sm my-2"><i className="fas fa-envelope mr-2"></i> support@example.com</p>
+            <p className="text-sm my-2"><i className="fas fa-globe mr-2"></i> www.example.com</p>
+          </div>
+
+          {/* Social Media */}
+          <div className="text-center lg:text-left">
+            <h5 className="text-lg font-semibold text-white mb-3">Follow Us</h5>
+            <div className="flex flex-wrap justify-center lg:justify-start gap-3">
+              <a href="#" className="bg-gray-800 hover:bg-gray-700 p-2 rounded"><i className="fab fa-facebook-f"></i></a>
+              <a href="#" className="bg-gray-800 hover:bg-gray-700 p-2 rounded"><i className="fab fa-youtube"></i></a>
+              <a href="#" className="bg-gray-800 hover:bg-gray-700 p-2 rounded"><i className="fab fa-twitter"></i></a>
+              <a href="#" className="bg-gray-800 hover:bg-gray-700 p-2 rounded"><i className="fab fa-linkedin-in"></i></a>
+              <a href="#" className="bg-gray-800 hover:bg-gray-700 p-2 rounded"><i className="fab fa-instagram"></i></a>
+              <a href="#" className="bg-gray-800 hover:bg-gray-700 p-2 rounded"><i className="fab fa-pinterest"></i></a>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Divider */}
+        <hr className="border-gray-700 my-6" />
+
+        {/* Copyright & Apps */}
+        <div className="flex flex-col md:flex-row items-center justify-between">
+          <p className="text-sm">&copy; 2025 Your Company. All Rights Reserved.</p>
+          <div className="flex gap-4 mt-3 md:mt-0">
+            <a href="#"><img src="/google-play.png" alt="Google Play" className="w-32" /></a>
+            <a href="#"><img src="/app-store.png" alt="App Store" className="w-32" /></a>
+          </div>
+        </div>
+
       </div>
-      {/* Quick Links */}
-      <div className="col-md-2 col-lg-2 mx-auto">
-        <h5 className="text-uppercase fw-bold">Quick Links</h5>
-        <ul className="list-unstyled">
-          <li><a href="#" className="text-light text-decoration-none">Home</a></li>
-          <li><a href="#" className="text-light text-decoration-none">About Us</a></li>
-          <li><a href="#" className="text-light text-decoration-none">Services</a></li>
-          <li><a href="#" className="text-light text-decoration-none">Contact</a></li>
-        </ul>
-      </div>
-      {/* Contact Info */}
-      <div className="col-md-4 col-lg-3 mx-auto">
-        <h5 className="text-uppercase fw-bold">Contact</h5>
-        <p className="small"><i className="fas fa-map-marker-alt me-2" /> 123 Street, City, Country</p>
-        <p className="small"><i className="fas fa-envelope me-2" /> info@example.com</p>
-        <p className="small"><i className="fas fa-phone me-2" /> +123 456 7890</p>
-      </div>
-      {/* Social Media */}
-      <div className="col-md-3 col-lg-3 mx-auto text-center text-md-start">
-        <h5 className="text-uppercase fw-bold">Follow Us</h5>
-        <a href="#" className="btn btn-outline-light btn-sm me-2"><i className="fab fa-facebook-f" /></a>
-        <a href="#" className="btn btn-outline-light btn-sm me-2"><i className="fab fa-twitter" /></a>
-        <a href="#" className="btn btn-outline-light btn-sm me-2"><i className="fab fa-instagram" /></a>
-        <a href="#" className="btn btn-outline-light btn-sm"><i className="fab fa-linkedin-in" /></a>
-      </div>
-    </div>
-    {/* Copyright */}
-    <div className="text-center pt-3 border-top mt-4">
-      <p className="small m-0">© 2024 Your Company. All Rights Reserved.</p>
-    </div>
-  </div>
-</footer>
-);
+    </footer>
+  );
 };
 
 export default Footer;

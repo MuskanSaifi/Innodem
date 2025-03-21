@@ -3,20 +3,21 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const UpdateCategory = () => {
-  const [categories, setCategories] = useState([]); // Store all categories
-  const [filteredSubCategories, setFilteredSubCategories] = useState([]); // Subcategories of selected category
+  const [categories, setCategories] = useState([]);
+  const [filteredSubCategories, setFilteredSubCategories] = useState([]);
   const [categoryData, setCategoryData] = useState({
-    id: "", // Selected category ID
+    id: "",
     name: "",
     icon: "",
     subcategories: [],
   });
+  const [previewImage, setPreviewImage] = useState(""); // To show selected image preview
 
   useEffect(() => {
     fetchCategories();
   }, []);
 
-  // Fetch categories
+  // ✅ Fetch categories
   const fetchCategories = async () => {
     try {
       const result = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/category`);
@@ -26,7 +27,7 @@ const UpdateCategory = () => {
     }
   };
 
-  // Handle category selection
+  // ✅ Handle category selection
   const handleCategoryChange = (e) => {
     const selectedCategory = categories.find((cat) => cat._id === e.target.value);
     if (selectedCategory) {
@@ -34,17 +35,30 @@ const UpdateCategory = () => {
         id: selectedCategory._id,
         name: selectedCategory.name,
         icon: selectedCategory.icon || "",
-        subcategories: selectedCategory.subcategories.map((sub) => sub._id), // Store only subcategory IDs
+        subcategories: selectedCategory.subcategories.map((sub) => sub._id),
       });
 
-      // ✅ Filter only subcategories belonging to selected category
+      setPreviewImage(selectedCategory.icon || ""); // Show existing category image
       setFilteredSubCategories(selectedCategory.subcategories);
     } else {
-      setFilteredSubCategories([]); // Reset subcategories if no category is selected
+      setFilteredSubCategories([]);
     }
   };
 
-  // Handle form submission
+  // ✅ Handle image selection & convert to Base64
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCategoryData({ ...categoryData, icon: reader.result });
+        setPreviewImage(reader.result); // Show preview
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // ✅ Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -55,13 +69,14 @@ const UpdateCategory = () => {
 
     try {
       console.log("Submitting data: ", categoryData);
-      const response = await axios.patch(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/adminprofile/category`, categoryData);
-      console.log("Response from server: ", response);
+      const response = await axios.patch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/category`, categoryData);
 
       if (response.status === 200) {
         toast.success("Category updated successfully!");
         setCategoryData({ id: "", name: "", icon: "", subcategories: [] });
-        setFilteredSubCategories([]); // Reset subcategories after update
+        setPreviewImage(""); // Reset preview
+        setFilteredSubCategories([]);
+        fetchCategories(); // Refresh categories list
       } else {
         toast.error("Failed to update category.");
       }
@@ -94,16 +109,17 @@ const UpdateCategory = () => {
         onChange={(e) => setCategoryData({ ...categoryData, name: e.target.value })}
       />
 
-      {/* Icon Input */}
-      <input
-        className="form-control mb-3"
-        type="text"
-        placeholder="Enter category icon URL (optional)"
-        value={categoryData.icon}
-        onChange={(e) => setCategoryData({ ...categoryData, icon: e.target.value })}
-      />
+      {/* Icon Upload */}
+      <input type="file" className="form-control mb-3" accept="image/*" onChange={handleImageChange} />
 
-      {/* Select Subcategories of Selected Category */}
+      {/* Image Preview */}
+      {previewImage && (
+        <div className="mb-3">
+          <img src={previewImage} alt="Category Preview" style={{ width: "100px", height: "100px", objectFit: "cover" }} />
+        </div>
+      )}
+
+      {/* Select Subcategories */}
       <select
         className="form-control mb-3"
         multiple
@@ -121,7 +137,7 @@ const UpdateCategory = () => {
           </option>
         ))}
       </select>
-      
+
       {/* Submit Button */}
       <button className="btn btn-primary" onClick={handleSubmit}>
         Update Category

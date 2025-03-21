@@ -3,10 +3,11 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const UpdateSubCategory = () => {
-  const [selectedSubCategory, setSelectedSubCategory] = useState([]); // Store subcategories
-  const [allProducts, setAllProducts] = useState([]); // Store all products
-  const [filteredProducts, setFilteredProducts] = useState([]); // Store filtered products
-  const [selectedDate, setSelectedDate] = useState(""); // Store selected filter date
+  const [selectedSubCategory, setSelectedSubCategory] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [previewImage, setPreviewImage] = useState("");
 
   const [productData, setProductData] = useState({
     id: "",
@@ -14,6 +15,7 @@ const UpdateSubCategory = () => {
     category: "",
     subcategory: "",
     products: [],
+    icon: "",
   });
 
   useEffect(() => {
@@ -21,68 +23,70 @@ const UpdateSubCategory = () => {
     fetchProducts();
   }, []);
 
-  // ✅ Fetch all subcategories
   const fetchCategories = async () => {
     try {
       const result = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/subcategory`);
       setSelectedSubCategory(result.data);
     } catch (error) {
-      toast.error("Error fetching subcategories:", error);
+      toast.error("❌ Error fetching subcategories: " + error.message);
     }
   };
 
-  // ✅ Fetch all products
   const fetchProducts = async () => {
     try {
       const result = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/seller`);
-
-      // Sort products by creation time (latest first)
       const sortedProducts = result.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
       setAllProducts(sortedProducts);
       setFilteredProducts(sortedProducts);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error("❌ Error fetching products:", error);
     }
   };
 
-  // ✅ Handle form submission
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProductData((prev) => ({ ...prev, icon: reader.result }));
+        setPreviewImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!productData.id || !productData.name || !productData.category || !productData.subcategory || productData.products.length === 0) {
-      toast.error("Please fill in all fields and select at least one product.");
+      toast.error("⚠️ Please fill all fields and select at least one product.");
       return;
     }
 
     try {
-
       const response = await axios.patch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/subcategory`, {
         id: productData.id,
         name: productData.name,
         category: productData.category,
         subcategory: productData.subcategory,
         products: productData.products,
+        icon: productData.icon,
       });
 
-
       if (response.status === 200 || response.status === 201) {
-        toast.success("Product updated successfully!");
-      
-        // Refresh product list
+        toast.success("Subcategory updated successfully!");
         fetchProducts();
-      
-        setProductData({ id: "", name: "", category: "", subcategory: "", products: [] });
-      }
-       else {
-        toast.error("Failed to update subcategory.");
+        fetchCategories();
+        setProductData({ id: "", name: "", category: "", subcategory: "", products: [], icon: "" });
+        setPreviewImage("");
+      } else {
+        toast.error("❌ Failed to update subcategory.");
       }
     } catch (error) {
-      toast.error("Error updating subcategory:", error);
+      toast.error("❌ Error updating subcategory: " + error.message);
     }
   };
 
-  // ✅ Handle subcategory selection
   const handleSubCategoryChange = (e) => {
     const selectedSubCat = selectedSubCategory.find((cat) => cat._id === e.target.value);
     if (selectedSubCat) {
@@ -91,17 +95,25 @@ const UpdateSubCategory = () => {
         id: selectedSubCat._id,
         subcategory: selectedSubCat._id,
         category: selectedSubCat.category?._id || "",
+        icon: selectedSubCat.icon || "",
       });
+      setPreviewImage(selectedSubCat.icon || "");
+
+      // ✅ Highlight Products of Selected Subcategory
+      const updatedFilteredProducts = allProducts.map((product) => ({
+        ...product,
+        isSelected: product.subCategory?._id === selectedSubCat._id,
+      }));
+
+      setFilteredProducts(updatedFilteredProducts);
     }
   };
 
-  // ✅ Handle selecting multiple products
   const handleProductChange = (e) => {
     const selectedProducts = Array.from(e.target.selectedOptions, (option) => option.value);
     setProductData({ ...productData, products: selectedProducts });
   };
 
-  // ✅ Handle date filter
   const handleDateFilter = (e) => {
     const selected = e.target.value;
     setSelectedDate(selected);
@@ -117,93 +129,86 @@ const UpdateSubCategory = () => {
   };
 
   return (
-    <div className="create-product-form">
-      <h3>Add Product and Update in SubCategory</h3>
+    <div className="container mt-3">
+      <div className="card p-3 shadow">
+        <h3 className="text-center mb-3">🛍️ Add Product and Update SubCategory</h3>
 
-      {/* Product Name Input */}
-      <input
-        className="form-control mb-3"
-        type="text"
-        placeholder="Enter product name"
-        value={productData.name}
-        onChange={(e) => setProductData({ ...productData, name: e.target.value })}
-      />
+        <input className="form-control mb-3" type="text" placeholder="Enter product name"
+          value={productData.name} onChange={(e) => setProductData({ ...productData, name: e.target.value })}
+        />
 
-      {/* Subcategory Dropdown */}
-      <select className="form-control mb-3" value={productData.subcategory} onChange={handleSubCategoryChange}>
-        <option value="">Select Subcategory</option>
-        {selectedSubCategory.map((category) => (
-          <option key={category._id} value={category._id}>
-            {category.name}
-          </option>
-        ))}
-      </select>
+        <select className="form-control mb-3" value={productData.subcategory} onChange={handleSubCategoryChange}>
+          <option value="">Select Subcategory</option>
+          {selectedSubCategory.map((category) => (
+            <option key={category._id} value={category._id}>{category.name}</option>
+          ))}
+        </select>
 
-      {/* Category Dropdown (Auto-filled) */}
-      <select className="form-control mb-3" value={productData.category} disabled>
-        <option value="">Select Category</option>
-        {selectedSubCategory
-          .filter((cat) => cat._id === productData.subcategory)
-          .map((subCategory) => (
-            <option key={subCategory.category._id} value={subCategory.category._id}>
-              {subCategory.category.name}
+        <select className="form-control mb-3" value={productData.category} disabled>
+          {selectedSubCategory.filter((cat) => cat._id === productData.subcategory)
+            .map((subCategory) => (
+              <option key={subCategory.category._id} value={subCategory.category._id}>
+                {subCategory.category.name}
+              </option>
+          ))}
+        </select>
+
+<p>Subcategory Icon</p>
+        <input type="file" className="form-control mb-3" accept="image/*" onChange={handleImageChange} />
+
+        {previewImage && (
+          <div className="mb-3 text-center">
+            <img src={previewImage} alt="Subcategory Preview" 
+              style={{ width: "120px", height: "120px", objectFit: "cover", borderRadius: "8px" }} 
+            />
+          </div>
+        )}
+
+        
+
+
+
+        <input className="form-control mb-3" type="date" value={selectedDate} onChange={handleDateFilter} />
+
+
+        <p>Select Product want to update in Subcategory</p>
+        <select className="form-control mb-3 text-sm" multiple value={productData.products} onChange={handleProductChange}>
+          {filteredProducts.map((product) => (
+            <option key={product._id} value={product._id}>
+              {product.name} - {product.userId?.fullname || "Unknown"} ({new Date(product.createdAt).toLocaleString()})
             </option>
           ))}
-      </select>
+        </select>
 
-      {/* Date Filter */}
-      <input className="form-control mb-3" type="date" value={selectedDate} onChange={handleDateFilter} />
+        <button className="btn btn-success w-100 shadow" onClick={handleSubmit}>
+          ✅ Update Subcategory
+        </button>
+      </div>
 
-      {/* Product Selection */}
-      <select className="form-control mb-3" multiple value={productData.products} onChange={handleProductChange}>
-        {filteredProducts.map((product) => (
-          <option key={product._id} value={product._id}>
-            {product.name} - {product.userId?.fullname || "Unknown"} ({new Date(product.createdAt).toLocaleString()})
-          </option>
-        ))}
-      </select>
-
-      {/* Submit Button */}
-      <button className="btn btn-primary w-100 shadow" onClick={handleSubmit}>
-        Update Product
-      </button>
-
-      {/* Products Table */}
-      <table className="table mt-4 shadow">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Creator</th>
-      <th>Created At</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    {filteredProducts.map((product) => {
-      const productSubcategory = product?.subCategory?._id;
-      const selectedSubcategory = productData?.subcategory;
-      const hasSubcategory = productSubcategory && selectedSubcategory
-        ? String(productSubcategory) === String(selectedSubcategory)
-        : false;
-
-      return (
-        <tr key={product._id} className={hasSubcategory ? "table-success" : "table-danger"}>
-          <td>{product.name}</td>
-          <td>{product.userId?.fullname || "Unknown"}</td>
-          <td>{product.createdAt ? new Date(product.createdAt).toLocaleString() : "N/A"}</td>
-          <td>
-            {hasSubcategory ? (
-              <span className="text-success fw-bold">✅ Subcategory Assigned</span>
-            ) : (
-              <span className="text-danger fw-bold">❌ No Subcategory</span>
-            )}
-          </td>
-        </tr>
-      );
-    })}
-  </tbody>
-</table>
-
+      <div className="mt-4 card p-3 shadow">
+        <h4 className="text-center mb-2">📦 Products List</h4>
+        <table className="table table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Creator</th>
+              <th>Created At</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody className="text-sm">
+            {[...filteredProducts].sort((a, b) => a.isSelected === b.isSelected ? 0 : a.isSelected ? -1 : 1)
+              .map((product) => (
+                <tr key={product._id} className={product.isSelected ? "table-success" : "table-danger"}>
+                  <td>{product.name}</td>
+                  <td>{product.userId?.fullname || "Unknown"}</td>
+                  <td>{product.createdAt ? new Date(product.createdAt).toLocaleString() : "N/A"}</td>
+                  <td>{product.isSelected ? "✅ Subcategory Assigned" : "❌ No Subcategory"}</td>
+                </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

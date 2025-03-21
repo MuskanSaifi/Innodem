@@ -26,6 +26,7 @@
     "multer-gridfs-storage": "^5.0.2",
     "multiparty": "^4.2.3",
     "next": "^15.1.5",
+    "rc-slider": "^11.1.8",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^19.0.0",
@@ -35,7 +36,10 @@
     "react-redux": "^9.2.0",
     "react-responsive-carousel": "^3.2.23",
     "react-select": "^5.10.1",
+    "react-slick": "^0.30.3",
+    "slick-carousel": "^1.8.1",
     "sweetalert2": "^11.17.2",
+    "swiper": "^11.2.6",
     "twilio": "^5.4.4"
   },
   "devDependencies": {

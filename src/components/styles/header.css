@@ -175,8 +175,9 @@
   }
   
   .subcategory ul li {
-    padding: 5px 0;
+    padding: 1px 0;
     font-size: 14px;
+    color: black;
     cursor: pointer;
     transition: color 0.3s ease;
   }
