@@ -9,7 +9,6 @@ export const fetchProducts = createAsyncThunk(
       const response = await axios.get(
         `/api/products?subcategory=${encodeURIComponent(subcategory.trim().toLowerCase())}`
       );
-      console.log("✅ API Response:", response.data);
       return response.data.products || [];
     } catch (error) {
       console.error("❌ Error fetching products:", error);
@@ -56,7 +55,6 @@ const productSlice = createSlice({
         state.loading = false;
         state.products = action.payload;
         state.filteredProducts = action.payload;
-        console.log("✅ Updated State:", state.filteredProducts);
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;

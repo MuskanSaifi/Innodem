@@ -6,7 +6,6 @@ export async function POST(req) {
   try {
     await connectdb();
     const { txnid, status } = await req.json();
-    console.log("Webhook Data Received:", txnid, status);
 
     const paymentStatus = status === "success" ? "Success" : "Failed";
     

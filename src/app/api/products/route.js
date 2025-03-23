@@ -13,7 +13,6 @@ export async function GET(req) {
       return NextResponse.json({ error: "Query is required" }, { status: 400 });
     }
 
-    console.log(`🔍 Searching for: ${searchQuery}`);
 
     // ✅ Fetch products including category, subcategory, and images
     const products = await Product.find({ name: { $regex: searchQuery, $options: "i" } })
@@ -22,7 +21,6 @@ export async function GET(req) {
       .select("-__v");
 
     if (products.length === 0) {
-      console.log(`❌ No products found for: ${searchQuery}`);
       return NextResponse.json({ error: "No products found" }, { status: 404 });
     }
 
@@ -38,7 +36,6 @@ export async function GET(req) {
         ),
     }));
 
-    // console.log(`✅ Found ${products.length} products`);
     return NextResponse.json(formattedProducts, { status: 200 });
 
   } catch (error) {

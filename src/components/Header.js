@@ -3,14 +3,24 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { FaChevronDown, FaSearch, FaMapMarkerAlt } from "react-icons/fa";
+
+
 export default function Header() {
   const [user, setUser] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [selectedCity, setSelectedCity] = useState("All Cities");
+  const [cityDropdownOpen, setCityDropdownOpen] = useState(false);
+  const [citySearch, setCitySearch] = useState("");
+
   const dropdownRef = useRef(null);
   const searchRef = useRef(null);
+  const cityDropdownRef = useRef(null);
   const router = useRouter();
+
+
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -44,19 +54,16 @@ export default function Header() {
     window.location.href = "/";
   };
 
-  // ✅ Fetch suggestions from API when the user types
   useEffect(() => {
     const fetchSuggestions = async () => {
       if (searchTerm.trim() === "") {
         setSuggestions([]);
         return;
       }
-
       try {
         const response = await fetch(`/api/adminprofile/seller`);
         const data = await response.json();
         if (response.ok) {
-          // ✅ Filter products by name
           const filtered = data.filter((product) =>
             product.name.toLowerCase().includes(searchTerm.toLowerCase())
           );
@@ -69,7 +76,7 @@ export default function Header() {
 
     const delayDebounceFn = setTimeout(() => {
       fetchSuggestions();
-    }, 300); // ⏳ Debounce API calls
+    }, 300); 
 
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm]);
@@ -77,18 +84,25 @@ export default function Header() {
   const handleSearchSelect = (product) => {
     const formatUrl = (name) =>
       encodeURIComponent(name.replace(/&/g, "and").replace(/\s+/g, "-").toLowerCase());
-  
+
     const categoryName = product.category?.name || "unknown";
     const subCategoryName = product.subCategory?.name || "general";
     const productName = formatUrl(product.name);
-  
+
     setSearchTerm(product.name);
     setSuggestions([]);
     router.push(`/${formatUrl(categoryName)}/${formatUrl(subCategoryName)}/${productName}`);
   };
 
+
+  const cities = [
+    "All Cities", "Delhi", "Gurugram", "Noida", "Bengaluru", "Chennai",
+    "Mumbai", "Ahmedabad", "Kolkata", "Pune", "Surat", "Hyderabad"
+  ];
+  
   return (
-    <header className="bg-light shadow-sm">
+    <>
+    <header className="bg-light shadow-sm Main-header">
       <div className="container-fluid p-2 text-center top-bar text-dark">
         <p className="mb-0">
           Due to the COVID-19 epidemic, orders may be processed with a slight delay
@@ -96,26 +110,76 @@ export default function Header() {
       </div>
 
       <div className="container d-flex align-items-center justify-content-between py-3">
-
+        
         {/* Logo */}
         <Link href="/">
-  <img
-    src="/assets/logo.png"  // ✅ Correct path
-    className="img-fluid"
-    alt="Innodem Logo"
-    style={{ height: "60px" }}
-  />
+          <img
+            src="/assets/logo.png"
+            className="img-fluid"
+            alt="Innodem Logo"
+            style={{ height: "60px" }}
+          />
         </Link>
 
-        {/* ✅ Search Bar with Suggestions */}
-        <div className="position-relative flex-grow-1 mx-3" ref={searchRef}>
+      
+        {/* 🔍 City Dropdown Search */}
+        <div className="relative  ml-10" ref={cityDropdownRef}>
+          <button
+            className="flex items-center gap-2 city-search border rounded-lg bg-white shadow-sm text-gray-700 hover:bg-gray-100"
+            onClick={() => setCityDropdownOpen(!cityDropdownOpen)}
+          >
+            <FaMapMarkerAlt className="text-gray-500" />
+            {selectedCity}
+            <FaChevronDown className="text-gray-500" />
+          </button>
+
+          {cityDropdownOpen && (
+            <div className="absolute left-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-50">
+              <div className="flex items-center px-3 py-2 border-b">
+                <FaSearch className="text-gray-400" />
+                <input
+                  type="text"
+                  className="w-full px-2 py-1 outline-none"
+                  placeholder="Search City..."
+                  value={citySearch}
+                  onChange={(e) => setCitySearch(e.target.value)}
+                />
+              </div>
+
+              <ul className="max-h-60 overflow-y-auto">
+                {cities
+                  .filter((city) =>
+                    city.toLowerCase().includes(citySearch.toLowerCase())
+                  )
+                  .map((city, index) => (
+                    <li key={index}>
+                      <button
+                        className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                        onClick={() => {
+                          setSelectedCity(city);
+                          setCityDropdownOpen(false);
+                        }}
+                      >
+                        {city}
+                      </button>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+
+        {/* ✅ New Product Search Bar with Suggestions */}
+        <div className="position-relative flex-grow-1 mx-3 product-search-input" ref={searchRef}>
           <input
-            className="form-control w-50"
+            className="product-search"
             type="text"
-            placeholder="Search for products..."
+            placeholder="📦 Search for products..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+          
           {suggestions.length > 0 && (
             <ul className="list-group position-absolute w-100 shadow-sm bg-white text-sm">
               {suggestions.map((product) => (
@@ -131,6 +195,12 @@ export default function Header() {
           )}
         </div>
 
+        <div className="registered-users-box">
+  <h3>Registered Users</h3>
+  <p>1,11,48,647</p>
+</div>
+
+
         {/* User Section with Dropdown */}
         <div className="d-flex align-items-center">
           {user ? (
@@ -144,19 +214,40 @@ export default function Header() {
                 👤 Hi! {user.fullname || "User"}
               </button>
               {dropdownOpen && (
-                <ul className="dropdown-menu show">
-                  <li className="dropdown-header text-center fw-bold">Welcome!</li>
-                  <li><Link className="dropdown-item" href="/userdashboard">Dashboard</Link></li>
-                  <li><Link className="dropdown-item" href="/profile">Profile</Link></li>
-                  <li><Link className="dropdown-item" href="/inquiries">Inquiries</Link></li>
-                  <li><Link className="dropdown-item" href="/buy-leads">Buy Leads</Link></li>
-                  <li><Link className="dropdown-item" href="/membership">My Membership</Link></li>
-                  <li>
-                    <button className="dropdown-item text-danger" onClick={handleLogout}>
-                      Sign Out
-                    </button>
-                  </li>
-                </ul>
+        <ul className="dropdown-menu show">
+        <li className="dropdown-header text-center fw-bold">👋 Welcome!</li>
+        <li>
+          <Link className="dropdown-item" href="/userdashboard">
+            🏠 Dashboard
+          </Link>
+        </li>
+        <li>
+          <Link className="dropdown-item" href="/profile">
+            🧑‍💼 Profile
+          </Link>
+        </li>
+        <li>
+          <Link className="dropdown-item" href="/inquiries">
+            📩 Inquiries
+          </Link>
+        </li>
+        <li>
+          <Link className="dropdown-item" href="/buy-leads">
+            🛒 Buy Leads
+          </Link>
+        </li>
+        <li>
+          <Link className="dropdown-item" href="/membership">
+            🎟️ My Membership
+          </Link>
+        </li>
+        <li>
+          <button className="dropdown-item text-danger" onClick={handleLogout}>
+            🚪 Sign Out
+          </button>
+        </li>
+      </ul>
+      
               )}
             </div>
           ) : (
@@ -170,8 +261,9 @@ export default function Header() {
             </>
           )}
         </div>
-
+        
       </div>
     </header>
+    </>
   );
 }

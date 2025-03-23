@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Slider from "rc-slider";
@@ -22,12 +23,12 @@ const ProductFilter = () => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
-  // ✅ Handle Slider Change
+  // ✅ Handle price change
   const handlePriceChange = (value) => {
     setFilters((prev) => ({ ...prev, price: value }));
   };
 
-  // ✅ Apply filters only when a filter is selected
+  // ✅ Apply filters
   useEffect(() => {
     const query = new URLSearchParams();
 
@@ -37,13 +38,11 @@ const ProductFilter = () => {
       filters.colors.length > 0 ||
       filters.materials.length > 0 ||
       filters.metalTypes.length > 0 ||
-      filters.isReturnable !== "" ||
-      filters.shippingType !== ""
+      filters.isReturnable ||
+      filters.shippingType
     ) {
-      if (filters.price[0] > 0 || filters.price[1] < 100000) {
-        query.append("priceMin", filters.price[0]);
-        query.append("priceMax", filters.price[1]);
-      }
+      query.append("priceMin", filters.price[0]);
+      query.append("priceMax", filters.price[1]);
 
       filters.colors.forEach((color) => query.append("color", color));
       filters.materials.forEach((material) =>
@@ -60,14 +59,14 @@ const ProductFilter = () => {
 
       router.push(`/products?${query.toString()}`);
     }
-  }, [filters]);
+  }, [filters, router]);
 
   return (
-    <div className="p-4 border rounded-lg w-80">
+    <div className="p-4 border rounded-lg w-80 bg-white shadow">
       <h3 className="text-lg font-bold mb-4">Filter Products</h3>
 
       {/* ✅ Price Range Slider */}
-      <div>
+      <div className="mb-4">
         <label className="block text-sm font-medium">Price Range:</label>
         <Slider
           range
@@ -83,10 +82,10 @@ const ProductFilter = () => {
       </div>
 
       {/* ✅ Multi-Select Colors */}
-      <div>
+      <div className="mb-4">
         <label className="block text-sm font-medium">Colors:</label>
         {["Red", "Blue", "Green", "Black", "White"].map((color) => (
-          <div key={color}>
+          <div key={color} className="flex items-center gap-2">
             <input
               type="checkbox"
               value={color}
@@ -106,10 +105,10 @@ const ProductFilter = () => {
       </div>
 
       {/* ✅ Multi-Select Materials */}
-      <div>
+      <div className="mb-4">
         <label className="block text-sm font-medium">Materials:</label>
         {["Steel", "Wood", "Plastic"].map((material) => (
-          <div key={material}>
+          <div key={material} className="flex items-center gap-2">
             <input
               type="checkbox"
               value={material}
@@ -129,11 +128,12 @@ const ProductFilter = () => {
       </div>
 
       {/* ✅ Is Returnable */}
-      <div>
+      <div className="mb-4">
         <label className="block text-sm font-medium">Returnable:</label>
         <select
           value={filters.isReturnable}
           onChange={(e) => handleChange("isReturnable", e.target.value)}
+          className="border p-2 w-full rounded"
         >
           <option value="">All</option>
           <option value="Yes">Yes</option>
@@ -142,11 +142,12 @@ const ProductFilter = () => {
       </div>
 
       {/* ✅ Shipping Type */}
-      <div>
+      <div className="mb-4">
         <label className="block text-sm font-medium">Shipping Type:</label>
         <select
           value={filters.shippingType}
           onChange={(e) => handleChange("shippingType", e.target.value)}
+          className="border p-2 w-full rounded"
         >
           <option value="">All</option>
           <option value="Free">Free</option>
@@ -156,13 +157,11 @@ const ProductFilter = () => {
       </div>
 
       {/* ✅ Clear Filters */}
-      <a href="/products">      <button
-        className="bg-red-500 text-white mt-4 p-2 rounded"
-      >
-        Clear Filters
-      </button>
+      <a href="/products">
+        <button className="bg-red-500 text-white p-2 rounded w-full">
+          Clear Filters
+        </button>
       </a>
-
     </div>
   );
 };

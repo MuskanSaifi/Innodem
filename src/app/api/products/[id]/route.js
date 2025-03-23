@@ -12,7 +12,6 @@ export async function GET(req, { params }) {
       return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
     }
 
-    console.log(`🔍 Fetching product with ID: ${id}`);
 
     // ✅ Fetch product with category, subcategory, and images populated
     const product = await Product.findById(id)
@@ -21,7 +20,6 @@ export async function GET(req, { params }) {
       .select("-__v");
 
     if (!product) {
-      console.log(`❌ Product not found for ID: ${id}`);
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
@@ -37,7 +35,6 @@ export async function GET(req, { params }) {
         ),
     };
 
-    console.log(`✅ Product fetched successfully`);
     return NextResponse.json(formattedProduct, { status: 200 });
 
   } catch (error) {

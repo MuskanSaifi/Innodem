@@ -36,5 +36,25 @@
 }
 
 
+.global-btn{
+  background-color: #6d4aae;
+}
+
+.google-partner{
+  background-image: url("../../public/assets/google-partner.jpg");
+  background-size: cover; 
+  background-position: center; /* Centers the image */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-repeat: no-repeat; /* Prevents image repetition */
+  width: 100%;
+  padding: 20px;
+  height: 200px;
+}
 
 
+.gp-img{
+  height: 100px;
+  /* width: 100px; */
+}

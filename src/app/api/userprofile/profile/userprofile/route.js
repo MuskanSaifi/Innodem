@@ -7,11 +7,8 @@ export async function GET(req) {
   try {
     await connectdb();
 
-    console.log("Request Headers:", req.headers);
-
     // Extract Authorization header
     const authorizationHeader = req.headers.get("Authorization");
-
     if (!authorizationHeader) {
       return new Response(
         JSON.stringify({ success: false, message: "No token provided" }),
@@ -35,7 +32,6 @@ export async function GET(req) {
     let decoded;
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log("Decoded Token:", decoded);
     } catch (error) {
       console.error("JWT verification failed:", error);
       return new Response(

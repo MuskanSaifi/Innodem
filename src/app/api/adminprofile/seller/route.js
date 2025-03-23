@@ -91,7 +91,6 @@ export async function GET(req) {
       .populate("subCategory") // Ensure subCategory is populated
       .exec();
 
-    console.log("Products with Subcategory:", products);
 
     return new Response(JSON.stringify(products), {
       status: 200,

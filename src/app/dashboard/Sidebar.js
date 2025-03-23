@@ -18,10 +18,10 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
       label: "Create Sub Category",
       subItems: ["All Sub Category", "Create Sub Category", "Update Sub Category"],
     },
-    {
-      icon: "➕",
-      label: "All Products",
-    },
+    // {
+    //   icon: "➕",
+    //   label: "All Products",
+    // },
  
   ];
 

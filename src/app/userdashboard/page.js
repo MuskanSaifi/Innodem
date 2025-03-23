@@ -9,6 +9,7 @@ import BusinessProfile from "./Businessprofile"; // ✅ Corrected import
 import BankDetails from "./Bankdetails";
 import AddProducts from "./Addproducts";
 import AllProducts from "./Allproducts";
+import Payments from "./Payments";
 
 function UserDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -32,6 +33,7 @@ function UserDashboard() {
 
         <div className="resdes-dynamic-content">
           {activeContent === "Dashboard" && <Dashboard/>}
+          {activeContent === "Payments" && <Payments/>}
           {activeContent === "User Profile" && <Userprofile/>}
           {activeContent === "Business Profile" && <BusinessProfile />}
           {activeContent === "Bank Details" && <BankDetails />}

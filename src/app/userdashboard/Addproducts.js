@@ -273,7 +273,6 @@ const handleSubmit = async (e) => {
             },
         };
         
-        console.log("🟢 Submitting Product:", JSON.stringify(formattedProduct, null, 2));
 
         const response = await axios.post(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/userprofile/manageproducts`,

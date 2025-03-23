@@ -9,7 +9,6 @@ export async function POST(req) {
     try {
         await connectdb(); // Connect to the database first
         const body = await req.json();
-        console.log("Request Body:", body);
 
         const { productname, fullname, email, mobileNumber, pincode, companyName } = body;
 

@@ -8,7 +8,6 @@ export async function POST(req) {
     try {
         await connectdb();
         const body = await req.json();
-        console.log("✅ Received Request Body:", body);
 
         const { fullname, email, mobileNumber, countryCode, companyName, productname, otp } = body;
 

@@ -106,10 +106,12 @@ const BusinessProfile = () => {
             <div className="mb-3">
               <button
                 type="button"
-                className={`btn w-100 text-start ${openSection === "companyDetails" ? "btn-success" : "btn-danger"}`}
+                className={`btn w-100 text-start ${openSection === "companyDetails" ? "btn-success" : "res-coloruser text-light"}`}
                 onClick={() => toggleSection("companyDetails")}
               >
-                <strong>Company Details</strong> {openSection === "companyDetails" ? "▲" : "▼"}
+                          <div className="d-flex justify-content-between">
+                             <strong>Company Details</strong> <span>{openSection === "companyDetails" ? "▲" : "▼"}</span>
+                        </div>
               </button>
               {openSection === "companyDetails" && (
                 <div className="p-3 border rounded mt-2">
@@ -129,10 +131,12 @@ const BusinessProfile = () => {
             <div className="mb-3">
               <button
                 type="button"
-                className={`btn w-100 text-start ${openSection === "addressDetails" ? "btn-success" : "btn-danger"}`}
+                className={`btn w-100 text-start ${openSection === "addressDetails" ? "btn-success" : "res-coloruser text-light"}`}
                 onClick={() => toggleSection("addressDetails")}
               >
-                <strong>Address Details</strong> {openSection === "addressDetails" ? "▲" : "▼"}
+                <div className="d-flex justify-content-between">
+                <strong>Address Details</strong> <span>  {openSection === "addressDetails" ? "▲" : "▼"}</span>
+              </div>
               </button>
               {openSection === "addressDetails" && (
                 <div className="p-3 border rounded mt-2">
@@ -152,10 +156,12 @@ const BusinessProfile = () => {
             <div className="mb-3">
               <button
                 type="button"
-                className={`btn w-100 text-start ${openSection === "taxationDetails" ? "btn-success" : "btn-danger"}`}
+                className={`btn w-100 text-start ${openSection === "taxationDetails" ? "btn-success" : "res-coloruser text-light"}`}
                 onClick={() => toggleSection("taxationDetails")}
               >
-                <strong>Taxation Details</strong> {openSection === "taxationDetails" ? "▲" : "▼"}
+                <div className="d-flex justify-content-between">
+                <strong>Taxation Details</strong> <span>{openSection === "taxationDetails" ? "▲" : "▼"}</span> 
+                </div>
               </button>
               {openSection === "taxationDetails" && (
                 <div className="p-3 border rounded mt-2">

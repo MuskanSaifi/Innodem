@@ -35,7 +35,6 @@ export async function POST(req) {
     });
 
     if (existingPayment) {
-      console.log("⚠️ Existing User:", existingPayment);
       return NextResponse.json(
         { error: "User already has an active package." },
         { status: 400 }

@@ -45,7 +45,6 @@ const uploadToS3 = async (image) => {
     await s3.send(new PutObjectCommand(uploadParams));
     // ✅ Log the uploaded image URL
     const uploadedUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
-    console.log("✅ Uploaded Image URL:", uploadedUrl);
     return uploadedUrl;
   } catch (error) {
     console.error("❌ S3 Upload Error:", error);

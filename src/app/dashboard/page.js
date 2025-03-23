@@ -13,6 +13,7 @@ import AllUsers from "./AllUsers";
 import AllSubcategory from "./AllSubcategory";
 import AllProducts from "./AllProducts";
 import Buyers from "./Buyers";
+import Payments from "./Payments";
 
 function ResponsiveDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -36,6 +37,7 @@ function ResponsiveDashboard() {
 
         <div className="resdes-dynamic-content">
           {activeContent === "Dashboard" && <Dashboard />}
+          {activeContent === "Payments" && <Payments />}
           {activeContent === "All Products" && <AllProducts />}
           {activeContent === "Create Sub Category" && <CreateSubCategory />}
           {activeContent === "Update Sub Category" && <UpdateSubCategory />}

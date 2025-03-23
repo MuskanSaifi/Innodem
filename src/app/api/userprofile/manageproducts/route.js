@@ -24,7 +24,6 @@ const s3 = new S3Client({
 
 // ✅ Upload Image to S3 Function
 const uploadToS3 = async (image) => {
-  console.log("🔍 Checking Image Type:", image);
 
   if (typeof image !== "string") {
     throw new Error("❌ Invalid Image Format: Image must be a string (Base64 or URL)");
@@ -206,12 +205,10 @@ const imageUrls = await Promise.all(validImages.map(uploadToS3));
             
     });
 
-    console.log("Final Product Data:", JSON.stringify(newProduct, null, 2));
 
     await newProduct.save();
     await User.findByIdAndUpdate(user.id, { $push: { products: newProduct._id } });
 
-    console.log("✅ Product Created Successfully:", newProduct._id);
     return NextResponse.json({ success: true, message: "Product created successfully", data: newProduct }, { status: 201 });
 
   } catch (error) {

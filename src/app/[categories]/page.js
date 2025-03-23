@@ -9,37 +9,35 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 const CategoryPage = () => {
   const { categories: encodedCategory } = useParams();
-  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Function to correctly format category names from the URL
-  const formatCategoryName = (name) => {
-    return decodeURIComponent(name)
-      .replace(/-/g, " ") // Replace hyphens with spaces
-      .replace(/and/g, "&") // Convert "and" back to "&" if used
+  const formatCategoryName = (name) =>
+    decodeURIComponent(name)
+      .replace(/-/g, " ")
+      .replace(/and/g, "&")
       .trim()
       .toLowerCase();
-  };
 
   useEffect(() => {
-    if (!encodedCategory) return;
-
-    const fetchCategoryData = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        // Fetch all categories
-        const response = await fetch(`/api/adminprofile/category`);
+        const response = await fetch("/api/adminprofile/category");
         if (!response.ok) throw new Error("Failed to fetch category data");
 
-        const categories = await response.json();
-        const formattedCategory = formatCategoryName(encodedCategory);
+        const data = await response.json();
+        setCategories(data);
 
-        // Find the matched category
-        const category = categories.find(
+        if (!encodedCategory) return;
+
+        const formattedCategory = formatCategoryName(encodedCategory);
+        const category = data.find(
           (cat) => cat.name.trim().toLowerCase() === formattedCategory
         );
 
@@ -47,12 +45,11 @@ const CategoryPage = () => {
 
         setSubcategories(category.subcategories || []);
 
-        // Extract products from subcategories and attach subcategory reference
         const allProducts =
           category.subcategories?.flatMap((sub) =>
             (sub.products || []).map((product) => ({
               ...product,
-              subcategory: sub.name, // Add subcategory name reference
+              subcategory: sub.name,
             }))
           ) || [];
 
@@ -64,65 +61,127 @@ const CategoryPage = () => {
       }
     };
 
-    fetchCategoryData();
+    fetchData();
   }, [encodedCategory]);
 
   return (
-    <div className="container mt-2">
-      <div className="row">
-        {/* Sidebar with Subcategories */}
-        <div className="col-md-3">
-          <h5>Subcategories</h5>
-          {loading ? (
-            <Skeleton count={5} height={20} />
-          ) : (
-            <ul className="list-group">
-              {subcategories.map((sub) => (
-                <li key={sub._id} className="list-group-item">
-                  <Link href={`/${encodedCategory}/${encodeURIComponent(sub.name.replace(/&/g, "and").replace(/ /g, "-"))}`}>
-                    {sub.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+    <div className="container mt-4">
+      {/* Breadcrumb */}
+      <nav className="breadcrumb bg-light p-3 rounded">
+        <span className="text-secondary">Home / {formatCategoryName(encodedCategory)}</span>
+      </nav>
 
-        {/* Main Content - Product List */}
-        <div className="col-md-9">
-          <h4>{formatCategoryName(encodedCategory)} Products</h4>
-          <p>({loading ? <Skeleton width={30} /> : products.length})</p>
-          <div className="row">
+      <div className="row mt-4">
+        {/* Left Sidebar: All Categories */}
+        <aside className="col-md-3">
+          <div className="bg-white p-3 rounded shadow-sm">
+            <h5 className="mb-3 text-primary">All Categories</h5>
+            {loading ? (
+              <Skeleton count={5} height={20} />
+            ) : (
+              <ul className="list-group">
+                {categories.map((cat) => {
+                  const isActive = formatCategoryName(cat.name) === formatCategoryName(encodedCategory);
+                  return (
+                    <li key={cat._id} className="list-group-item border-0">
+                      <Link
+                        href={`/${encodeURIComponent(cat.name.replace(/&/g, "and").replace(/ /g, "-"))}`}
+                        className={`text-decoration-none list-group-item ${isActive ? "active text-white bg-primary fw-bold" : "text-dark"}`}
+                      >
+                        {cat.name}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        </aside>
+
+        {/* Main Content: Products */}
+        <main className="col-md-6">
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h4 className="text-uppercase text-secondary">{formatCategoryName(encodedCategory)} Products</h4>
+            <span className="badge bg-primary text-white fs-6">{loading ? <Skeleton width={30} /> : products.length}</span>
+          </div>
+
+          <div className="row g-4">
             {loading ? (
               <Skeleton count={6} height={150} />
             ) : error ? (
-              <p className="error-message">{error}</p>
+              <p className="text-danger">{error}</p>
             ) : products.length > 0 ? (
               products.map((product) => (
-                <div key={product._id} className="col-md-4 mb-4">
-                  <div className="card p-3">
-                    <Image
-                      src={product.images?.[0]?.url || "/placeholder.jpg"}
-                      alt={product.name}
-                      width={200}
-                      height={200}
-                      className="rounded product-image"
-                      style={{ objectFit: "cover", borderRadius: "5px" }}
-                      priority={false}
-                    />
-                    <h5 className="mt-2 text-primary">{product.name}</h5>
-                    <p>₹{product.price} {product.currency || "INR"}</p>
-                    <Link href={`/${encodedCategory}/${encodeURIComponent(product.subcategory.replace(/&/g, "and").replace(/ /g, "-"))}/${product._id}`}>
-                      More details...
+                <div key={product._id} className="col-md-6">
+                  <div className="card border-0 shadow-sm p-3 rounded-3">
+                    <div className="position-relative text-center">
+                      <Image
+                        src={product.images?.[0]?.url || "placeholder.png"}
+                        alt={product.name}
+                        width={180}
+                        height={180}
+                        className="rounded img-fluid"
+                        style={{ objectFit: "cover" }}
+                        priority={false}
+                      />
+                    </div>
+                    <h6 className="mt-2 text-primary text-center">{product.name}</h6>
+                    <table className="table table-sm mt-2">
+                      <tbody>
+                        <tr>
+                          <th>Price</th>
+                          <td>₹{product.price} {product.currency || "INR"}</td>
+                        </tr>
+                        <tr>
+                          <th>MOQ</th>
+                          <td>{product.minimumOrderQuantity || "N/A"}</td>
+                        </tr>
+                        <tr>
+                          <th>Subcategory</th>
+                          <td>{product.subcategory || "N/A"}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <Link
+                      href={`/products/${product._id}`}
+                      className="btn btn-outline-primary btn-sm mt-2 w-100"
+                    >
+                      More details
                     </Link>
                   </div>
                 </div>
               ))
             ) : (
-              <p>No products found for this category.</p>
+              <p className="text-warning text-center">No products found for this category.</p>
             )}
           </div>
-        </div>
+        </main>
+
+        {/* Right Sidebar: Subcategories */}
+        <aside className="col-md-3">
+          <div className="bg-white p-3 rounded shadow-sm">
+            <h5 className="mb-3 text-primary">Subcategories</h5>
+            {loading ? (
+              <Skeleton count={5} height={20} />
+            ) : (
+              <ul className="list-group">
+                {subcategories.map((sub) => {
+                  const isActive = sub.name.toLowerCase() === formatCategoryName(encodedCategory);
+                  return (
+                    <li key={sub._id} className="list-group-item border-0">
+                      <Link
+                        href={`/${encodedCategory}/${encodeURIComponent(sub.name.replace(/&/g, "and").replace(/ /g, "-"))}`}
+                        className={`text-decoration-none list-group-item ${isActive ? "active text-white bg-primary fw-bold" : "text-dark"}`}
+                      >
+                        {sub.name}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        </aside>
       </div>
     </div>
   );

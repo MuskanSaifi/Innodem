@@ -29,7 +29,7 @@ const BuySellForm = ({ productname: initialProductName }) => {
   const router = useRouter();
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowModal(true), 4000);
+    const timer = setTimeout(() => setShowModal(true), 9000);
     return () => clearTimeout(timer);
   }, []);
 

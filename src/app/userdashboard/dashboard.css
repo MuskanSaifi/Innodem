@@ -68,6 +68,10 @@
     padding: 4px 30px;
   }
   
+  .common-shad{
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+  }
+
   .resdes-hamburger {
     font-size: 24px;
     background: none;
@@ -214,4 +218,16 @@
 }
 .text-sm{
   font-size: 13px;
+}
+
+
+.welcome-admin{
+  background-color: #663399 !important;
+padding: 20px;
+border-radius: 10px;
+height: 100% !important;
+}
+
+.admin{
+  color: #fff;
 }

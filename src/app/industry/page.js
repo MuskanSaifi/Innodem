@@ -22,27 +22,22 @@ const IndustryPage = () => {
         if (!categoryResponse.ok) throw new Error("Failed to fetch categories");
 
         const categories = await categoryResponse.json();
-        console.log("Categories Data:", categories); // Debugging log
 
-        // Extract all subcategory IDs
-        const subcategoryIds = categories.flatMap((cat) => cat.subcategories);
-
-        // Fetch subcategories separately
+        // Fetch subcategories
         const subcategoryResponse = await fetch("/api/adminprofile/subcategory", { cache: "no-store" });
         if (!subcategoryResponse.ok) throw new Error("Failed to fetch subcategories");
 
         const subcategories = await subcategoryResponse.json();
-        console.log("Subcategories Data:", subcategories); // Debugging log
 
         // Convert subcategory list into a map for quick lookup
-        const subcategoryMap = {};
-        subcategories.forEach((sub) => {
-          subcategoryMap[sub._id] = {
+        const subcategoryMap = subcategories.reduce((acc, sub) => {
+          acc[sub._id] = {
             id: sub._id,
             name: sub.name,
             productsCount: sub.products.length || 0,
           };
-        });
+          return acc;
+        }, {});
 
         // Attach full subcategory details to categories
         const formattedIndustries = categories.map((category) => ({
@@ -54,10 +49,9 @@ const IndustryPage = () => {
             .filter(Boolean), // Remove undefined values
         }));
 
-        console.log("Final Processed Industries:", formattedIndustries); // Debugging log
         setIndustries(formattedIndustries);
       } catch (err) {
-        console.error("Error fetching industries:", err); // Debugging log
+        console.error("Error fetching industries:", err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -80,34 +74,41 @@ const IndustryPage = () => {
 
       <div className="row">
         {loading ? (
-          <Skeleton count={6} height={100} />
+          [...Array(6)].map((_, index) => (
+            <div key={index} className="col-md-4 mb-4">
+              <Skeleton height={100} />
+            </div>
+          ))
         ) : error ? (
           <p className="text-danger">{error}</p>
-        ) : (
-          industries.length > 0 ? (
-            industries.map((industry) => (
-              <div key={industry.id} className="col-md-4 mb-4">
-                <div className="card p-3 border rounded">
-                  <div className="d-flex align-items-center mb-2">
-                    <Image src={industry.icon} alt={industry.name} width={40} height={40} className="me-2" />
-                    <h5 className="m-0 text-primary">{industry.name}</h5>
-                  </div>
-                  <ul className="list-unstyled">
-                    {industry.subcategories.slice(0, 4).map((sub) => (
-                      <li key={sub.id}>
-                        &gt; {sub.name} ({sub.productsCount} products)
-                      </li>
-                    ))}
-                  </ul>
-                  <Link href={`/industry/${encodeURIComponent(industry.id)}`} className="text-info">
-                    View More
-                  </Link>
+        ) : industries.length > 0 ? (
+          industries.map((industry) => (
+            <div key={industry.id} className="col-md-4 mb-4">
+              <div className="card p-3 border rounded">
+                <div className="d-flex align-items-center mb-2">
+                  <Image src={industry.icon} alt={industry.name} width={40} height={40} className="me-2" />
+                  <h5 className="m-0 text-primary">{industry.name}</h5>
                 </div>
+                <ul className="list-unstyled">
+                  {industry.subcategories.slice(0, 4).map((sub) => (
+                    <li key={sub.id}>
+                      &gt; {sub.name} ({sub.productsCount} products)
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href={`/${encodeURIComponent(
+                    industry.name.replace(/&/g, "and").replace(/\s+/g, "-").toLowerCase()
+                  )}`}
+                  className="text-info"
+                >
+                  View More
+                </Link>
               </div>
-            ))
-          ) : (
-            <p>No industries available.</p>
-          )
+            </div>
+          ))
+        ) : (
+          <p>No industries available.</p>
         )}
       </div>
     </div>

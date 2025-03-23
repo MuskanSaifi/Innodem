@@ -13,6 +13,8 @@
 
 }
 
+
+
 /* Main Header */
 .mainheader{
   border-bottom: 1px solid rgba(128, 128, 128, 0.6);
@@ -203,4 +205,82 @@
     color: #fff;
     border-radius: 4px;
     padding: 8px 12px;
+  }
+
+
+
+
+  /* Dearch Bar */
+
+  .product-search-input {
+    --icon-size: 28px;
+    position: relative;
+  }
+  
+
+
+  .product-search-input:is(:hover, :focus-within) .product-search-svg path {
+    animation: pop 0.5s var(--d);
+  }
+
+  
+  @keyframes pop {
+    50% {
+      scale: var(--s, 1);
+      rotate: var(--r, 0deg);
+    }
+  }
+  
+  .product-search::placeholder {
+    color: color-mix(in lch, canvas, canvasText 30%);
+  }
+  
+  .product-search {
+    font-family: inherit;
+    width: 600px;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    padding: 8px;
+    font-size: 1.025rem;
+    background:
+      linear-gradient(canvas, canvas) padding-box,
+      linear-gradient(120deg, hsl(278, 44%, 73%), hsl(35, 81%, 73%)) border-box;
+    border: 4px solid transparent;
+    border-radius: 12px;
+    outline: none;
+  }
+  
+
+  .registered-users-box {
+    display: flex;
+    flex-direction: column;
+    margin-right: 30px;
+    align-items: center;
+    justify-content: center;
+    width: 150px; /* Adjust as needed */
+    border: 2px solid #cce7f0; /* Light blue border */
+    border-radius: 10px;
+    background-color: #e0f2f8; /* Light blue background */
+    text-align: center;
+    padding: 4px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .registered-users-box h3 {
+    font-size: 13px;
+    margin: 0;
+    padding: 3px;
+    width: 100%;
+    background-color: white;
+    border-radius: 8px 8px 0 0;
+  }
+  
+  .registered-users-box p {
+    font-size: 13px;
+    font-weight: bold;
+    color: #2b6ea4; /* Dark blue text */
+  }
+  
+
+  .city-search{
+    padding: 12px 20px;
   }

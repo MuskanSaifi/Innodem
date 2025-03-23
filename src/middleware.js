@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 
 export function middleware(req) {
   console.log("Middleware executed"); // Debugging log
-
   // Example: Redirect if not authenticated (customize as needed)
   if (!req.cookies.get("authToken")) {
     return NextResponse.redirect(new URL("/login", req.url));

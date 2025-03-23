@@ -12,15 +12,11 @@ const Userprofile = () => {
 
   const userdata = async () => {
     const token = localStorage.getItem("token");
-  console.log(`${token}`)
     if (!token) {
-      console.log("No token found, redirecting to login...");
       setLoading(false);
       return;
     }
-  
-    console.log("Sending token:", token); // Debugging
-  
+    
     try {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/userprofile/profile/userprofile`, {
         headers: {
@@ -28,7 +24,6 @@ const Userprofile = () => {
         },
       });
   
-      console.log("API Response:", response.data);
       setUserdetail(response.data.user);
     } catch (error) {
       console.log("Error fetching user data:", error.response?.data || error.message);

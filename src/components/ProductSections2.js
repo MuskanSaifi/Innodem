@@ -83,7 +83,7 @@ const ProductSections2 = ({ tag, Name }) => {
                 <Link href={`/${formatUrl(categoryName)}/${formatUrl(subCategoryName)}/${productName}`}>
                   <div className="relative w-full h-40 mb-3 overflow-hidden rounded">
                     <Image
-                      src={product.images?.[0]?.url || "/placeholder.jpg"}
+                      src={product.images?.[0]?.url || "/placeholder.png"}
                       alt={product.name}
                       layout="fill"
                       objectFit="cover"

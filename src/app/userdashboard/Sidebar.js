@@ -10,12 +10,12 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
     { icon: "💼", label: "Dashboard" },
     { icon: "💰", label: "Payments" },
     {
-      icon: "📎",
+      icon: "👤",
       label: "Profile",
       subItems: ["User Profile", "Business Profile", "Bank Details", "Manage Users"],
     },
     {
-      icon: "📎",
+      icon: "📦",
       label: "Manage Products",
       subItems: ["Add New Product", "My Product", "My Catalog"],
     },
@@ -35,7 +35,6 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
     if (storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
-        // console.log("Parsed User Data:", parsedUser);
         setUserdata(parsedUser);
       } catch (error) {
         console.error("Error parsing user data:", error);
@@ -47,7 +46,7 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
     <>
       <div className="custon-sidebar">
         <div className={`resdes-sidebar ${isSidebarOpen ? "" : "resdes-closed"}`}>
-          <h6 className="text-center mt-2">👤 Welcome! {userdata?.fullname || "Guest"}</h6>
+          <h6 className="text-center mt-2">🧑‍🦱  Welcome! {userdata?.fullname || "Guest"}</h6>
           <ul>
             {sidebarItems.map((item, index) => (
               <li key={index} className={activeContent === item.label ? "active" : ""}>

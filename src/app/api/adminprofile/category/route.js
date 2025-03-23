@@ -25,7 +25,6 @@ const s3 = new S3Client({
 
 // ✅ Function to Upload Image to AWS S3
 const uploadToS3 = async (image) => {
-  console.log("🔍 Checking Image Type:", image);
 
   if (typeof image !== "string") {
     throw new Error("❌ Invalid Image Format: Image must be a string (Base64 or URL)");

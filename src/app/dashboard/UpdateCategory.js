@@ -68,7 +68,6 @@ const UpdateCategory = () => {
     }
 
     try {
-      console.log("Submitting data: ", categoryData);
       const response = await axios.patch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/category`, categoryData);
 
       if (response.status === 200) {

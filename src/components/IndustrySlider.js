@@ -94,7 +94,7 @@ const IndustrySlider = () => {
                     className="group block bg-gray-100 rounded-md p-2 hover:bg-gray-200 transition"
                   >
                     <Image 
-                      src={sub.icon || "/placeholder.jpg"} 
+                      src={sub.icon || "/placeholder.png"} 
                       alt={sub.name} 
                       width={80} 
                       height={80} 
