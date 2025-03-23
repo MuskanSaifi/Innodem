@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Tab, Nav } from "react-bootstrap";
+import { IndianLocation } from "./Indianlocation";
+
 
 const AddProduct = () => {
     // category
@@ -17,6 +19,7 @@ const AddProduct = () => {
             minimumOrderQuantity: "",
             moqUnit: "",
             description: "",
+            state: "",
             city: "",
             stock: "",
             images: [],
@@ -101,6 +104,26 @@ const AddProduct = () => {
         },
         });
 
+          // Handle state change
+          const handleStateChange = (e) => {
+            const selectedState = e.target.value;
+            setProduct((prev) => ({
+              ...prev,
+              state: selectedState,
+              city: "", // Reset city when state changes
+            }));
+          };
+          
+  // Handle city change
+  const handleCityChange = (e) => {
+    setProduct((prev) => ({
+      ...prev,
+      city: e.target.value,
+    }));
+  };
+  
+
+
     // fetch category
     useEffect(() => {
         fetchCategories();
@@ -179,7 +202,7 @@ const AddProduct = () => {
       const handleImageChange = async (e) => {
         const files = e.target.files;
         if (!files.length) return;
-        if (files.length + product.images.length > 6) {
+        if (files.length + product?.images?.length > 6) {
             toast.error("You can upload a maximum of 6 images.");
             return;
         }
@@ -217,7 +240,7 @@ const handleSubmit = async (e) => {
 
         const formattedProduct = {
             ...product,
-            images: product.images.map((img) => ({ url: img })),  // ✅ Convert strings to objects
+            images: product?.images.map((img) => ({ url: img })),  // ✅ Convert strings to objects
             specifications: {
                 ...product.specifications,
                 weight: Number(product.specifications.weight) || 0,
@@ -440,14 +463,54 @@ const handleSubmit = async (e) => {
                             <div className="mb-3">
                                 <label className="text-gray-600 text-sm">Product Images (Max 6)</label>
                                 <input type="file" className="form-control" name="images" onChange={handleImageChange} accept="image/*" multiple />
-                                {product.images.length > 0 && (
+                                {product?.images?.length > 0 && (
                                     <div className="mt-2 d-flex">
-                                        {product.images.map((img, index) => (
+                                        {product?.images.map((img, index) => (
                                             <img key={index} src={img} alt={`Preview ${index}`} className="me-2" style={{ width: 50, height: 50, borderRadius: 5 }} />
                                         ))}
                                     </div>
                                 )}
                             </div>
+
+                    <div>
+      {/* State Dropdown */}
+      <div className="mb-3">
+        <label className="text-gray-600 text-sm">State</label>
+        <select
+          className="w-full pl-3 pr-3 py-2 appearance-none bg-transparent outline-none border focus:border-slate-600 shadow-sm rounded-lg"
+          name="state"
+          value={product.state}
+          onChange={handleStateChange}
+        >
+          <option value="">Select State</option>
+          {IndianLocation.map((state, index) => (
+            <option key={index} value={state.state}>
+              {state.state}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* City Dropdown (Depends on Selected State) */}
+      <div className="mb-3">
+        <label className="text-gray-600 text-sm">City</label>
+        <select
+          className="w-full pl-3 pr-3 py-2 appearance-none bg-transparent outline-none border focus:border-slate-600 shadow-sm rounded-lg"
+          name="city"
+          value={product.city}
+          onChange={handleCityChange}
+          disabled={!product.state} // Disable if no state is selected
+        >
+          <option value="">Select City</option>
+          {IndianLocation.find((s) => s.state === product.state)?.cities.map((city, index) => (
+            <option key={index} value={city}>
+              {city}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
+
                         </div>
                     </Tab.Pane>
 

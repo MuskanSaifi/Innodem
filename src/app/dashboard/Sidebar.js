@@ -33,7 +33,17 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
     <>
     <div className="custon-sidebar">
     <div className={`resdes-sidebar ${isSidebarOpen ? "" : "resdes-closed"}`}>
-      <h2>Innodem Dashboard</h2>
+
+      <div className="d-flex justify-content-around align-items-center m-2">
+            <img
+          src="/assets/logo.png"  // ✅ Correct path
+          className="img-fluid"
+          alt="Innodem Logo"
+          style={{ height: "50px" }}
+            />     
+           <h1 className="fs-3">Admin 😎</h1>
+      </div>
+
       <ul>
         {sidebarItems.map((item, index) => (
           <li

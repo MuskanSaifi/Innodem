@@ -8,7 +8,9 @@ const BuyerSchema = new mongoose.Schema({
   productname: { type: String, required: true },
   otp: { type: Number },
   otpExpires: { type: Date },
-});
+},
+{ timestamps: true }
+);
 
 const Buyer = mongoose.models.Buyer || mongoose.model("Buyer", BuyerSchema);
 

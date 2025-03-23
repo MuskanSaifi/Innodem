@@ -21,6 +21,7 @@ const s3 = new S3Client({
   },
 });
 
+
 // ✅ Upload Image to S3 Function
 const uploadToS3 = async (image) => {
   console.log("🔍 Checking Image Type:", image);
@@ -58,7 +59,6 @@ const uploadToS3 = async (image) => {
   return `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
 };
 
-
 export async function POST(req) {
   try {
     await connectdb();
@@ -88,6 +88,8 @@ export async function POST(req) {
       minimumOrderQuantity,
       moqUnit,
       images,
+      state,
+      city,
       description = "",
       category,
       subCategory,
@@ -176,6 +178,8 @@ const imageUrls = await Promise.all(validImages.map(uploadToS3));
       minimumOrderQuantity,
       moqUnit,
       images: imageUrls.map((url) => ({ url })),  // ✅ Convert to correct schema
+      state,
+      city,
       description,
       category: categoryExists._id,
       subCategory: subCategoryExists ? subCategoryExists._id : null,

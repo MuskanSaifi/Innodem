@@ -15,7 +15,11 @@ const productSchema = new mongoose.Schema(
     youtubeUrl: { type: String },
     description: { type: String },
     stock: { type: Number, default: 0 },
-
+    state: {type: String},
+    city: {type: String},
+    cityimage: {type: String},
+    country: {type: String},
+   
     // for admin
      // ✅ Tags with default value false
   tags: {

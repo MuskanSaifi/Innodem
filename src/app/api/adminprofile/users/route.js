@@ -62,11 +62,21 @@ export async function GET() {
       }
     }
 
-    return NextResponse.json({ success: true, message: "Users retrieved successfully", users }, { status: 200 });
+    return NextResponse.json({
+      success: true,
+      message: "Users retrieved successfully",
+      users,
+      totalUsers: users.length, // ✅ Add total users count
+    }, { status: 200 });
+
 
   } catch (error) {
     console.error("❌ Error fetching users:", error);
-    return NextResponse.json({ success: false, message: `Internal Server Error: ${error.message}` }, { status: 500 });
+    return NextResponse.json({
+       success: false, 
+       totalUsers: 0,
+       message: `Internal Server Error: ${error.message}` },
+       { status: 500 });
   }
 }
 

@@ -43,30 +43,51 @@ export async function DELETE(req, context) {
 }
 
 
-
-
 export async function PATCH(req) {
   try {
     await connectdb();
-    const user = await requireSignIn(req);
-    if (!user) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
 
+    // ✅ Authenticate User
+    const user = await requireSignIn(req);
+    if (!user) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+
+    // ✅ Parse Request Body
     const body = await req.json();
     if (!body.productId) {
       return NextResponse.json({ success: false, message: "Product ID is required" }, { status: 400 });
     }
 
+    // ✅ Ensure only allowed fields are updated
+    const allowedFields = [
+      "name", "price", "currency", "minimumOrderQuantity", "moqUnit", "stock",
+      "state", "city", "description", "specifications", "tradeShopping"
+    ];
+    
+    const updateFields = {};
+    Object.keys(body).forEach((key) => {
+      if (allowedFields.includes(key)) {
+        updateFields[key] = body[key];
+      }
+    });
+    
+
+    // ✅ Find and Update Product
     const product = await Product.findOneAndUpdate(
       { _id: body.productId, userId: user.id },
-      body,
+      { $set: updateFields },
       { new: true }
     );
 
-    if (!product) return NextResponse.json({ success: false, message: "Product not found" }, { status: 404 });
+    if (!product) {
+      return NextResponse.json({ success: false, message: "Product not found" }, { status: 404 });
+    }
 
     return NextResponse.json({ success: true, message: "Product updated successfully", data: product }, { status: 200 });
+
   } catch (error) {
-    console.error("Error updating product:", error);
+    console.error("❌ Error updating product:", error);
     return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }
 }

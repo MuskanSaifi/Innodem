@@ -4,6 +4,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import { Modal, Button } from "react-bootstrap"; // ✅ Import Bootstrap Modal
+import LocationSelector from "./components/LocationSelector";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -11,12 +12,22 @@ const AllProducts = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedField, setSelectedField] = useState("");
+
   const [formData, setFormData] = useState({
+    basicDetails: {
+      name: "",
+      price: "",
+      currency: "INR",
+      minimumOrderQuantity: "",
+      moqUnit: "Number",
+      stock: "",
+      state: "",
+      city: "",
+    },
     tradeIndiaShopping: "",
     description: "",
     specifications: "",
   });
-
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -42,9 +53,8 @@ const AllProducts = () => {
       }
     };
 
-    fetchProducts();
+   fetchProducts();
   }, []);
-
 
   // ✅ Handle Delete Function
   const handleDelete = async (id) => {
@@ -83,11 +93,22 @@ const AllProducts = () => {
     });
   };
 
+
   // ✅ Open Modal Function
   const openModal = (product, field) => {
     setSelectedProduct(product);
     setSelectedField(field);
     setFormData({
+      basicDetails: {
+        name: product.name || "",
+        price: product.price || "",
+        currency: product.currency || "INR",
+        minimumOrderQuantity: product.minimumOrderQuantity || "",
+        moqUnit: product.moqUnit || "Number",
+        stock: product.stock || "",
+        state: product.state || "",
+        city: product.city || "",
+      },
       description: product.description || "",
       specifications: { ...product.specifications },
       tradeShopping: { ...product.tradeShopping },
@@ -95,8 +116,8 @@ const AllProducts = () => {
     setShowModal(true);
   };
   
-  
 
+  
     // ✅ Handle Input Change
     const handleChange = (e) => {
       const { name, value } = e.target;
@@ -118,8 +139,7 @@ const AllProducts = () => {
       });
     };
     
-  
-    // ✅ Handle Update
+
     const handleUpdate = async () => {
       if (!selectedProduct) return;
     
@@ -130,25 +150,40 @@ const AllProducts = () => {
           return;
         }
     
-        const updateData = { productId: selectedProduct._id };
+        // ✅ Merge with existing product data to prevent data loss
+        const updateData = {
+          ...selectedProduct, // Preserve all existing data
+          productId: selectedProduct._id, // Keep Product ID
+        };
     
-        if (selectedField === "description") {
+        if (selectedField === "basicDetails") {
+          updateData.name = formData.basicDetails.name;
+          updateData.price = formData.basicDetails.price;
+          updateData.currency = formData.basicDetails.currency;
+          updateData.minimumOrderQuantity = formData.basicDetails.minimumOrderQuantity;
+          updateData.moqUnit = formData.basicDetails.moqUnit;
+          updateData.stock = formData.basicDetails.stock;
+          updateData.state = formData.basicDetails.state;
+          updateData.city = formData.basicDetails.city;
+        } else if (selectedField === "description") {
           updateData.description = formData.description;
         } else if (selectedField === "specifications") {
-          updateData.specifications = { ...selectedProduct.specifications, ...formData.specifications };
+          updateData.specifications = {
+            ...selectedProduct.specifications,
+            ...formData.specifications,
+          };
         } else if (selectedField === "tradeShopping") {
           updateData.tradeShopping = {
-            ...selectedProduct.tradeShopping, 
+            ...selectedProduct.tradeShopping,
             ...formData.tradeShopping,
-    
-            // Ensure packageDimensions updates correctly
             packageDimensions: {
               ...selectedProduct.tradeShopping?.packageDimensions,
-              ...formData.tradeShopping?.packageDimensions
-            }
+              ...formData.tradeShopping?.packageDimensions,
+            },
           };
         }
     
+        // ✅ Send update request
         const res = await axios.patch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/userprofile/manageproducts/${selectedProduct._id}`,
           updateData,
@@ -157,26 +192,26 @@ const AllProducts = () => {
     
         if (res.data.success) {
           toast.success("Product updated successfully!");
-          
+    
+          // ✅ Ensure the updated product is correctly reflected in the state
           setProducts((prev) =>
-            prev.map((p) =>
-              p._id === selectedProduct._id
-                ? { ...p, ...updateData, tradeShopping: { ...p.tradeShopping, ...updateData.tradeShopping } }
-                : p
-            )
+            prev.map((p) => (p._id === selectedProduct._id ? updateData : p))
           );
+    
           setShowModal(false);
         } else {
           toast.error(res.data.message || "Failed to update product.");
         }
       } catch (error) {
+        console.error("❌ Error updating product:", error);
         toast.error("Failed to update product.");
       }
     };
     
 
+    
         // Function to determine badge color
-        const getBadgeClass = (strength) => {
+      const getBadgeClass = (strength) => {
           switch (strength) {
               case "High":
                   return "bg-success"; // Green
@@ -188,8 +223,6 @@ const AllProducts = () => {
                   return "bg-secondary"; // Gray
           }
       };
-
-      
 
 // Function to calculate progress percentage based on filled fields
 const calculateProgress = (product) => {
@@ -215,7 +248,6 @@ const calculateProgress = (product) => {
 
   return totalFields > 0 ? (completedFields / totalFields) * 100 : 0;
 };
-
     
   return (
     <div className="container mt-4">
@@ -244,7 +276,6 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
   }
 }
 
-
           return (
             <div key={product._id} className="bg-light p-3 mb-3 all-pro-img">
               <div className="d-flex align-items-start">
@@ -258,9 +289,32 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
                 <div className="w-100">
                   <div className="d-flex justify-content-between align-items-center">
                     <h6 className="mb-1">{product.name}</h6>
-                    <div>
-                      <FaEdit className="me-3 text-primary" role="button" />
-                      <FaTrash className="text-danger" role="button" onClick={() => handleDelete(product._id)} />
+                    <div  className="d-flex flex-column">
+                    <span className="text-grey text-sm common-shad px-3 rounded-2">
+                     <b>Created At:</b>   {product?.createdAt? new Date(product.createdAt).toLocaleString("en-IN", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              second: "2-digit",
+                              hour12: true,
+                            })
+                          : "null"}
+                  </span>
+                    <span className="text-grey text-sm common-shad px-3 rounded-2">
+                     <b>Updated At:</b>   {product?.updatedAt? new Date(product.updatedAt).toLocaleString("en-IN", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              second: "2-digit",
+                              hour12: true,
+                            })
+                          : "null"}
+                  </span>
+                      {/* <FaEdit className="me-3 text-primary" role="button" /> */}
                     </div>
                   </div>
 
@@ -271,7 +325,7 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
 
                   <div className="d-flex align-items-center">
                     <strong>INR {product.price ? product.price.toFixed(2) : "N/A"}</strong>
-                    <span className="ms-2 text-muted">{product.minimumOrderQuantity || "N/A"} Min Order</span>
+                    <span className="ms-2 text-muted text-sm">{product.minimumOrderQuantity || "N/A"} Min Order</span>
                   </div>
 
 <div className="progress mt-2" style={{ height: "6px" }}>
@@ -282,25 +336,35 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
 ></div>
 </div>
 
-                  <div className="d-flex justify-content-between mt-2">
+
+<div className="d-flex justify-content-between mt-2">
   <small className="text-muted">{Math.round(calculateProgress(product))}% Complete</small>
                     <span className={`badge ${getBadgeClass(product.strength)}`}>
                                 {product.strength} Strength
                             </span>
-                  </div>
+                   </div>
                   <hr></hr>
 
-<div className="mt-2">
-  <span className="text-primary me-3" role="button" onClick={() => openModal(product, "description")}>
+
+<div className="mt-2 position-relative">
+  <span className="text-primary me-3 text-sm" role="button" onClick={() => openModal(product, "basicDetails")}>
+    + Add Basic Details
+  </span>
+  <span className="text-primary me-3 text-sm" role="button" onClick={() => openModal(product, "description")}>
     + Add Description
   </span>
-  <span className="text-primary me-3" role="button" onClick={() => openModal(product, "specifications")}>
+  <span className="text-primary me-3 text-sm" role="button" onClick={() => openModal(product, "specifications")}>
     + Add Specifications
   </span>
-  <span className="text-primary" role="button" onClick={() => openModal(product, "tradeShopping")}>
+  <span className="text-primary text-sm" role="button" onClick={() => openModal(product, "tradeShopping")}>
     + Add Trade Shopping
   </span>
+
+
+  <FaTrash className="text-danger del-pro-btn" role="button" onClick={() => handleDelete(product._id)} />
+
 </div>
+
 
 
                 </div>
@@ -313,14 +377,14 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
 
 
             {/* ✅ Bootstrap Modal (Now works properly) */}
-            <Modal show={showModal} onHide={() => setShowModal(false)} centered
-                dialogClassName="custom-modal"
->
+<Modal show={showModal} onHide={() => setShowModal(false)} centered
+dialogClassName="custom-modal">
   <Modal.Header closeButton>
     <Modal.Title>Update {selectedField.replace(/([A-Z])/g, " $1")}</Modal.Title>
   </Modal.Header>
   <Modal.Body>
-    {selectedField === "description" && (
+
+{selectedField === "description" && (
       <div className="mb-3">
         <label className="form-label">Description</label>
         <textarea
@@ -331,9 +395,90 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
           rows="3"
         />
       </div>
-    )}
+)}
+
+{selectedField === "basicDetails" && (
+  <div>
+    {/* Product Name */}
+    <div className="mb-3">
+      <label className="form-label">Product Name</label>
+      <input
+        type="text"
+        className="form-control"
+        name="name"
+        value={formData.basicDetails.name}
+        onChange={(e) =>
+          setFormData({
+            ...formData,
+            basicDetails: { ...formData.basicDetails, name: e.target.value },
+          })
+        }
+      />
+    </div>
+
+    {/* Price */}
+    <div className="mb-3">
+      <label className="form-label">Price</label>
+      <input
+        type="number"
+        className="form-control"
+        name="price"
+        value={formData.basicDetails.price}
+        onChange={(e) =>
+          setFormData({
+            ...formData,
+            basicDetails: { ...formData.basicDetails, price: e.target.value },
+          })
+        }
+      />
+    </div>
+
+    {/* Currency Dropdown */}
+    <div className="mb-3">
+      <label className="form-label">Currency</label>
+      <select
+        className="form-control"
+        name="currency"
+        value={formData.basicDetails.currency}
+        onChange={(e) =>
+          setFormData({
+            ...formData,
+            basicDetails: { ...formData.basicDetails, currency: e.target.value },
+          })
+        }
+      >
+        <option value="INR">INR (₹)</option>
+        <option value="USD">USD ($)</option>
+        <option value="EUR">EUR (€)</option>
+        <option value="GBP">GBP (£)</option>
+      </select>
+    </div>
 
 
+    {/* Stock */}
+    <div className="mb-3">
+      <label className="form-label">Stock</label>
+      <input
+        type="number"
+        className="form-control"
+        name="stock"
+        value={formData.basicDetails.stock}
+        onChange={(e) =>
+          setFormData({
+            ...formData,
+            basicDetails: { ...formData.basicDetails, stock: e.target.value },
+          })
+        }
+      />
+    </div>
+
+
+    <LocationSelector formData={formData} setFormData={setFormData} />
+
+
+
+  </div>
+)}
 
 {/* Product Specifications Section */}
 {selectedField === "specifications" && (
@@ -782,7 +927,6 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
 )}
 
 
-
 {selectedField === "tradeShopping" && (
   <>
     <div className="mb-3">
@@ -1011,7 +1155,6 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
     </div>
   </>
 )}
-
 
   </Modal.Body>
   <Modal.Footer>

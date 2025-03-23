@@ -121,6 +121,7 @@
     background-color: #f3797e;
   }
 
+
   .res1-text-color{
     color: #052c65;
   }
@@ -206,4 +207,16 @@
 
 .text-sm{
   font-size: 13px;
+}
+
+
+.welcome-admin{
+  background-color: #FCD14B !important;
+padding: 20px;
+border-radius: 10px;
+height: 100% !important;
+}
+
+.admin{
+  color: #C85B2F;
 }

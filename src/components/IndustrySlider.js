@@ -67,10 +67,18 @@ const IndustrySlider = () => {
           <SwiperSlide key={category._id}>
             <div className="bg-white rounded-lg p-4 hover:shadow-lg transition w-[300px]">
               <div className="flex justify-between items-center mb-4">
+              <Image 
+                      src={category.icon} 
+                      alt={category.name} 
+                      width={30} 
+                      height={30} 
+                      className="rounded-md" 
+                    />
                 <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                   {category.name}
                 </h3>
                 {/* ✅ Use formatted URL for Category */}
+            
                 <Link href={`/${formatUrl(category.name)}`} className="text-blue-600 text-sm hover:underline">
                   View All
                 </Link>
@@ -79,13 +87,14 @@ const IndustrySlider = () => {
               {/* ✅ Subcategory Grid with Correct URLs */}
               <div className="grid grid-cols-3 gap-2">
                 {category.subcategories.slice(0, 6).map((sub) => (
+                  
                   <Link 
                     key={sub._id} 
                     href={`/${formatUrl(category.name)}/${formatUrl(sub.name)}`} 
                     className="group block bg-gray-100 rounded-md p-2 hover:bg-gray-200 transition"
                   >
                     <Image 
-                      src="https://images.unsplash.com/photo-1726056652663-8f1e42b2fc95?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                      src={sub.icon || "/placeholder.jpg"} 
                       alt={sub.name} 
                       width={80} 
                       height={80} 

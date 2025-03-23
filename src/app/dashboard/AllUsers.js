@@ -251,12 +251,21 @@ const AllUsers = () => {
                                 <Accordion.Body>
 
                                   <div className="d-flex justify-content-between">
+                                    <div>
                                     <span className="res-color2 text-light text-sm common-shad px-3 py-1 rounded-2">
-                                      Created At: {formatDate(product.createdAt)}
-                                    </span>
+                                    🕒 <b>Created At:</b> {formatDate(product.createdAt)}
+                                    </span> <br></br>
                                     <span className="res-color2 text-light text-sm common-shad px-3 py-1 rounded-2">
-                                      Updated At: {formatDate(product.updatedAt)}
+                                    🕒 <b>Updated At: </b>{formatDate(product.updatedAt)}
                                     </span>
+                                    </div>
+
+                                    <div>
+                                    <span className="text-sm rounded-2">
+                                     <b>📍 State:</b> {product?.state} <br></br>
+                                     <b>📍 City:</b> {product?.city}
+                                    </span>
+                                    </div>
                                   </div>
 
                                   <div className="row mb-3 mt-3">
@@ -272,7 +281,7 @@ const AllUsers = () => {
 
                                     <div className="col-md-2">
                                       <div className="res-color1 text-center p-2 rounded-3 common-shad">
-                                        <span className="text-sm d-block">Product Name</span>  <span className="res1-text-color fw-bold">  {product.name}</span>
+                                        <span className="text-sm d-block">Product Name</span>  <span className="res1-text-color fw-bold">  {product.name}</span> 
                                       </div>
                                     </div>
 
@@ -289,12 +298,12 @@ const AllUsers = () => {
                                     </div>
                                     <div className="col-md-2">
                                       <div className="res-color1 text-center p-2 rounded-3 common-shad">
-                                        <span className="text-sm d-block">Category</span>   <span className="res1-text-color fw-bold"> {product.category.name}</span>
+                                        <span className="text-sm d-block">Category</span>   <span className="res1-text-color fw-bold"> {product?.category?.name}</span>
                                       </div>
                                     </div>
                                     <div className="col-md-2">
                                       <div className="res-color1 text-center p-2 rounded-3 common-shad">
-                                        <span className="text-sm d-block">Sub Category</span>   <span className="res1-text-color fw-bold"> {product.subCategory.name}</span>
+                                        <span className="text-sm d-block">Sub Category</span>   <span className="res1-text-color fw-bold"> {product?.subCategory?.name}</span>
                                       </div>
                                     </div>
                                   </div>

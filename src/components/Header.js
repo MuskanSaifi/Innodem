@@ -55,7 +55,6 @@ export default function Header() {
       try {
         const response = await fetch(`/api/adminprofile/seller`);
         const data = await response.json();
-
         if (response.ok) {
           // ✅ Filter products by name
           const filtered = data.filter((product) =>
@@ -87,7 +86,6 @@ export default function Header() {
     setSuggestions([]);
     router.push(`/${formatUrl(categoryName)}/${formatUrl(subCategoryName)}/${productName}`);
   };
-  
 
   return (
     <header className="bg-light shadow-sm">
@@ -98,31 +96,32 @@ export default function Header() {
       </div>
 
       <div className="container d-flex align-items-center justify-content-between py-3">
+
         {/* Logo */}
         <Link href="/">
-          <img
-            src="https://www.digitalexportsmarketing.com/assets/images/logo/Innodem%20logo.png"
-            className="img-fluid"
-            alt="Innodem Logo"
-            style={{ height: "50px" }}
-          />
+  <img
+    src="/assets/logo.png"  // ✅ Correct path
+    className="img-fluid"
+    alt="Innodem Logo"
+    style={{ height: "60px" }}
+  />
         </Link>
 
         {/* ✅ Search Bar with Suggestions */}
         <div className="position-relative flex-grow-1 mx-3" ref={searchRef}>
           <input
-            className="form-control"
+            className="form-control w-50"
             type="text"
             placeholder="Search for products..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           {suggestions.length > 0 && (
-            <ul className="list-group position-absolute w-100 shadow-sm bg-white">
+            <ul className="list-group position-absolute w-100 shadow-sm bg-white text-sm">
               {suggestions.map((product) => (
                 <li
                   key={product._id}
-                  className="list-group-item list-group-item-action"
+                  className="list-group-item list-group-item-action cursor-pointer"
                   onClick={() => handleSearchSelect(product)}
                 >
                   {product.name}
@@ -171,6 +170,7 @@ export default function Header() {
             </>
           )}
         </div>
+
       </div>
     </header>
   );
