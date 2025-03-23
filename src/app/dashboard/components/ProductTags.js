@@ -23,7 +23,7 @@ const ProductTags = ({ productId, existingTags = {} }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/products/${productId}`, {
+      const response = await fetch(`/api/adminprofile/products/${productId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tags }),

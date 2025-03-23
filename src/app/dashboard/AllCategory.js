@@ -63,7 +63,7 @@ const AllCategory = () => {
     if (confirmDelete.isConfirmed) {
       try {
         const response = await axios.delete(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/category?id=${categoryId}`
+          `/api/adminprofile/category?id=${categoryId}`
         );
         
         if (response.status === 200) {
