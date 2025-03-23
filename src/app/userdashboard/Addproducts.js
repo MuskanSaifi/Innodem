@@ -131,7 +131,7 @@ const AddProduct = () => {
 
     const fetchCategories = async () => {
         try {
-            const result = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/category`); // ✅ Use the correct route
+            const result = await axios.get(`/api/adminprofile/category`); // ✅ Use the correct route
             setSelectedCategory(result.data);
         } catch (error) {
             console.error("Error fetching categories:", error);
@@ -275,7 +275,7 @@ const handleSubmit = async (e) => {
         
 
         const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/userprofile/manageproducts`,
+            `/api/userprofile/manageproducts`,
             formattedProduct,
             {
                 headers: {

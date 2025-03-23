@@ -28,9 +28,9 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     try {
       const [usersRes, buyersRes, productsRes] = await Promise.all([
-        axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/users`),
-        axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/buyers`),
-        axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/products`),
+        axios.get(`/api/adminprofile/users`),
+        axios.get(`/api/adminprofile/buyers`),
+        axios.get(`/api/adminprofile/products`),
       ]);
 
       // ✅ Update states only after all requests complete

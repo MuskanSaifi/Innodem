@@ -15,7 +15,7 @@ const CreateSubCategory = () => {
 
   const fetchCategories = async () => {
     try {
-      const result = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/category`);
+      const result = await axios.get(`/api/adminprofile/category`);
       setSelectedCategory(result.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -31,7 +31,7 @@ const CreateSubCategory = () => {
     }
 
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/subcategory`, {
+      const response = await axios.post(`/api/adminprofile/subcategory`, {
         name: productData.name,
         category: productData.category,
       });

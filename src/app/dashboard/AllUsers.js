@@ -21,7 +21,7 @@ const AllUsers = () => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/users`
+        `/api/adminprofile/users`
       );
       if (response.data.success) {
         setUsers(response.data.users);
@@ -86,7 +86,7 @@ const AllUsers = () => {
           //   return;
           // }
           const res = await axios.delete(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/userprofile/manageproducts/${id}`
+            `/api/userprofile/manageproducts/${id}`
             // ,
             // {
             //   headers: { Authorization: `Bearer ${token}` },

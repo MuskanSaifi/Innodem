@@ -25,7 +25,7 @@ const BankDetails = () => {
           return;
         }
 
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/userprofile/profile/bankdetails`, {
+        const response = await axios.get(`api/userprofile/profile/bankdetails`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -59,7 +59,7 @@ const BankDetails = () => {
       const token = localStorage.getItem("token");
       if (!token) return alert("User not authenticated");
 
-      const response = await axios.patch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/userprofile/profile/bankdetails`, formData, {
+      const response = await axios.patch(`/api/userprofile/profile/bankdetails`, formData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

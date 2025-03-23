@@ -6,7 +6,7 @@ export const fetchCategories = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/category`
+        `/api/adminprofile/category`
       );      
     
       if (!response.ok) throw new Error("Failed to fetch categories");

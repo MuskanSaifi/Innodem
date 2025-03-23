@@ -14,7 +14,7 @@ const AllCategory = () => {
   // Fetch categories
   const fetchCategories = async () => {
     try {
-      const result = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/adminprofile/category`);
+      const result = await axios.get(`/api/adminprofile/category`);
       if (Array.isArray(result.data)) {
         setCategories(result.data);
       } else {

@@ -35,7 +35,7 @@ const BusinessProfile = () => {
         }
 
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/userprofile/profile/businessprofile`,
+          `/api/userprofile/profile/businessprofile`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -79,7 +79,7 @@ const BusinessProfile = () => {
       }
 
       const response = await axios.patch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/userprofile/profile/businessprofile`,
+        `/api/userprofile/profile/businessprofile`,
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );

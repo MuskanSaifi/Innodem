@@ -42,7 +42,7 @@ const Dashboard = () => {
     }
 
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/userprofile/profile/userprofile`, {
+      const response = await axios.get(`/api/userprofile/profile/userprofile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -66,7 +66,7 @@ const Dashboard = () => {
   
       console.log("✅ Token found:", token);
   
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/userprofile/manageproducts`, {
+      const res = await axios.get(`/api/userprofile/manageproducts`, {
         headers: { Authorization: `Bearer ${token}` },
       });
   
