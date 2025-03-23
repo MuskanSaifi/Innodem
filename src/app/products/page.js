@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import CitySearchBar from "@/components/CitySearchBar";
 import Skeleton from "react-loading-skeleton";
@@ -8,7 +8,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import "./style.css";
 import ProductFilter from "./Filter";
 
-const Page = () => {
+const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -80,7 +80,7 @@ const Page = () => {
                 <div className="row g-3 align-items-center">
                   {/* Product Image */}
                   <div className="col-md-3 text-center">
-                  <img
+                    <img
                       src={product.images?.length > 0 ? product.images[0].url : "/placeholder.png"}
                       alt={product.name}
                       className="img-fluid rounded product-image"
@@ -132,5 +132,11 @@ const Page = () => {
     </div>
   );
 };
+
+const Page = () => (
+  <Suspense fallback={<div>Loading products...</div>}>
+    <ProductList />
+  </Suspense>
+);
 
 export default Page;
