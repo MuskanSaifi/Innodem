@@ -81,11 +81,11 @@ const SubcategoryProductPage = () => {
         </span>
       </nav>
 
-      <div className="row">
+      <div className="row mb-5">
         {/* Left Sidebar: Subcategories */}
         <aside className="col-md-3">
-          <div className="bg-white p-3 rounded shadow-sm">
-            <h5 className="mb-3 text-primary">Subcategories</h5>
+          <div className="bg-white p-3 rounded common-shad">
+            <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">Subcategories</h5>
             {loading ? (
               <Skeleton count={5} height={20} />
             ) : (
@@ -117,10 +117,10 @@ const SubcategoryProductPage = () => {
         </aside>
 
         {/* Main Content: Products */}
-        <div className="col-md-6">
-          <div className="d-flex justify-content-between align-items-center mb-3">
+        <div className="col-md-6 common-shad">
+          <div className="d-flex justify-content-between align-items-center mb-3 p-2 mt-3">
             <h4 className="text-uppercase text-secondary">
-              {loading ? <Skeleton width={200} /> : formatName(encodedSubcategory)} Products
+              {loading ? <Skeleton width={200} /> : formatName(encodedSubcategory)}
             </h4>
             <span className="badge bg-primary text-white fs-6">
               {loading ? <Skeleton width={30} /> : products.length}
@@ -142,7 +142,7 @@ const SubcategoryProductPage = () => {
                         alt={product.name}
                         width={180}
                         height={180}
-                        className="rounded img-fluid"
+                        className="rounded img-fluid m-auto"
                         style={{ objectFit: "cover" }}
                         priority={false}
                       />
@@ -179,8 +179,8 @@ const SubcategoryProductPage = () => {
 
         {/* Right Sidebar: Products in the Same Subcategory */}
         <aside className="col-md-3">
-          <div className="bg-white p-3 rounded shadow-sm">
-            <h5 className="mb-3 text-primary">
+          <div className="bg-white p-3 rounded common-shad">
+            <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
               Products in {formatName(encodedSubcategory)}
             </h5>
             {loading ? (
@@ -193,7 +193,7 @@ const SubcategoryProductPage = () => {
                       href={`/${encodedCategory}/${encodedSubcategory}/${encodeURIComponent(
                         product.name.replace(/\s+/g, "-").toLowerCase()
                       )}`}
-                      className="text-info text-decoration-none"
+                      className="text-web text-decoration-none common-shad d-block p-2 rounded-2"
                     >
                       {product.name}
                     </Link>

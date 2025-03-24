@@ -77,8 +77,8 @@ const ProductDetailPage = () => {
   }, [encodedCategory, encodedSubcategory, encodedProductName]);
 
   return (
-    <div className="container mt-4">
-      <nav className="breadcrumb">
+    <div className="container mt-4 mb-5">
+      <nav className="breadcrumb bg-light p-3 rounded text-sm">
         <Link href="/">Home</Link> /
         <Link href={`/${encodedCategory}`}>
           {loading ? <Skeleton width={100} /> : formatName(encodedCategory)}
@@ -92,8 +92,8 @@ const ProductDetailPage = () => {
 
       <div className="row">
         <aside className="col-md-3">
-          <div className="bg-white p-3 rounded shadow-sm">
-            <h5 className="mb-3 text-primary">Subcategories</h5>
+          <div className="bg-white p-3 rounded common-shad">
+            <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">Subcategories</h5>
             {loading ? (
               <Skeleton count={5} height={20} />
             ) : (
@@ -132,13 +132,13 @@ const ProductDetailPage = () => {
           ) : error ? (
             <p className="text-danger">{error}</p>
           ) : product ? (
-            <div className="card p-4 shadow-lg border-0 rounded">
+            <div className="card p-4 common-shad border-0 rounded">
               <Image
                 src={product.images?.[0]?.url || "/placeholder.png"}
                 alt={product.name}
                 width={400}
                 height={400}
-                className="rounded img-fluid"
+                className="rounded img-fluid m-auto"
                 style={{ objectFit: "cover" }}
               />
               <h2 className="mt-3 text-primary">{product.name}</h2>
@@ -165,8 +165,8 @@ const ProductDetailPage = () => {
         </div>
 
         <aside className="col-md-3">
-          <div className="bg-white p-3 rounded shadow-sm">
-            <h5 className="mb-3 text-primary">Suggested Products</h5>
+          <div className="bg-white p-3 rounded common-shad">
+            <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">Suggested Products</h5>
             {loading ? (
               <Skeleton count={5} height={20} />
             ) : (
@@ -177,7 +177,7 @@ const ProductDetailPage = () => {
                       href={`/${encodedCategory}/${encodedSubcategory}/${encodeURIComponent(
                         prod.name.replace(/ /g, "-")
                       )}`}
-                      className="text-info"
+                      className="text-web"
                     >
                       {prod.name}
                     </Link>

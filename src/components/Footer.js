@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { 
   FaFacebookF, FaYoutube, FaTwitter, FaLinkedinIn, 
-  FaInstagram, FaPinterest, FaTelegramPlane, FaWhatsapp, 
-  FaSnapchatGhost, FaRedditAlien, FaArrowUp 
+  FaInstagram,  FaTelegramPlane, FaWhatsapp, 
+  FaArrowUp 
 } from "react-icons/fa";
 
 const Footer = () => {
@@ -53,11 +53,8 @@ const Footer = () => {
     { icon: <FaTwitter />, link: "#" },
     { icon: <FaLinkedinIn />, link: "#" },
     { icon: <FaInstagram />, link: "#" },
-    { icon: <FaPinterest />, link: "#" },
-    { icon: <FaTelegramPlane />, link: "#" },
     { icon: <FaWhatsapp />, link: "#" },
-    { icon: <FaSnapchatGhost />, link: "#" },
-    { icon: <FaRedditAlien />, link: "#" },
+
   ];
 
   return (
@@ -102,28 +99,29 @@ const Footer = () => {
             {/* Contact Info */}
             <div>
               <h5 className="text-lg font-semibold text-white mb-3">Contact</h5>
-              <p className="text-sm my-2">📍 Ramnagar, Ramgarh, Alwar, Delhi Road 301026</p>
-              <p className="text-sm my-2">📞 +91-85-1097-1098</p>
+              <p className="text-sm my-2">📍 Rawat Plaza, Sector 7, Ramphal Chowk</p>
+              <p className="text-sm my-2">📞 +91 8448668076</p>
               <p className="text-sm my-2 text-red-400 font-semibold">Mon - Fri, 9 AM - 6 PM (IST)</p>
-              <p className="text-sm my-2">📧 support@example.com</p>
-              <p className="text-sm my-2">🌐 www.example.com</p>
+              <p className="text-sm my-2">📧 support@digitalexportsmarketing.com</p>
+              <p className="text-sm my-2">🌐 www.dialexportmart.com</p>
             </div>
 
             {/* Social Media */}
             <div className="text-center lg:text-left">
               <h5 className="text-lg font-semibold text-white mb-3">Follow Us</h5>
-              <div className="flex flex-wrap justify-center lg:justify-start gap-3">
-                {socialLinks.map((social, index) => (
-                  <a 
-                    key={index} 
-                    href={social.link} 
-                    className="bg-gray-800 hover:bg-gray-700 p-1 rounded-full text-white text-xl flex items-center justify-center"
-                    style={{ width: "40px", height: "40px" }}
-                  >
-                    {social.icon}
-                  </a>
-                ))}
-              </div>
+              <div className="flex flex-wrap gap-3 justify-center lg:justify-start m-auto" style={{ maxWidth: "130px" }}>
+  {socialLinks.map((social, index) => (
+    <a 
+      key={index} 
+      href={social.link} 
+      className="bg-gray-800 hover:bg-gray-700 p-1 rounded-full text-white text-xl flex items-center justify-center"
+      style={{ width: "40px", height: "40px" }}
+    >
+      {social.icon}
+    </a>
+  ))}
+</div>
+
             </div>
 
           </div>

@@ -65,7 +65,7 @@ const CategoryPage = () => {
   }, [encodedCategory]);
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 mb-5">
       {/* Breadcrumb */}
       <nav className="breadcrumb bg-light p-3 rounded">
         <span className="text-secondary">Home / {formatCategoryName(encodedCategory)}</span>
@@ -74,8 +74,8 @@ const CategoryPage = () => {
       <div className="row mt-4">
         {/* Left Sidebar: All Categories */}
         <aside className="col-md-3">
-          <div className="bg-white p-3 rounded shadow-sm">
-            <h5 className="mb-3 text-primary">All Categories</h5>
+          <div className="bg-white p-3 rounded common-shad">
+            <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">All Categories</h5>
             {loading ? (
               <Skeleton count={5} height={20} />
             ) : (
@@ -99,7 +99,7 @@ const CategoryPage = () => {
         </aside>
 
         {/* Main Content: Products */}
-        <main className="col-md-6">
+        <main className="col-md-6 common-shad rounded-2 p-3">
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h4 className="text-uppercase text-secondary">{formatCategoryName(encodedCategory)} Products</h4>
             <span className="badge bg-primary text-white fs-6">{loading ? <Skeleton width={30} /> : products.length}</span>
@@ -120,7 +120,7 @@ const CategoryPage = () => {
                         alt={product.name}
                         width={180}
                         height={180}
-                        className="rounded img-fluid"
+                        className="rounded img-fluid m-auto"
                         style={{ objectFit: "cover" }}
                         priority={false}
                       />
@@ -159,8 +159,8 @@ const CategoryPage = () => {
 
         {/* Right Sidebar: Subcategories */}
         <aside className="col-md-3">
-          <div className="bg-white p-3 rounded shadow-sm">
-            <h5 className="mb-3 text-primary">Subcategories</h5>
+          <div className="bg-white p-3 rounded common-shad">
+            <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">Subcategories</h5>
             {loading ? (
               <Skeleton count={5} height={20} />
             ) : (

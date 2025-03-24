@@ -40,6 +40,16 @@
   background-color: #6d4aae;
 }
 
+.global-heading
+{
+  background-color: #6d4aae;
+
+}
+
+.text-web{
+  color: #6d4aae;
+}
+
 .google-partner{
   background-image: url("../../public/assets/google-partner.jpg");
   background-size: cover; 

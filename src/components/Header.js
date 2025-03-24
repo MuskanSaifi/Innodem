@@ -11,7 +11,7 @@ export default function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [selectedCity, setSelectedCity] = useState("All Cities");
+  const [selectedCity, setSelectedCity] = useState("All City");
   const [cityDropdownOpen, setCityDropdownOpen] = useState(false);
   const [citySearch, setCitySearch] = useState("");
 
@@ -20,7 +20,19 @@ export default function Header() {
   const cityDropdownRef = useRef(null);
   const router = useRouter();
 
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        cityDropdownRef.current && !cityDropdownRef.current.contains(event.target)
+      ) {
+        setCityDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
+  
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -55,11 +67,12 @@ export default function Header() {
   };
 
   useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setSuggestions([]); // Immediately clear suggestions when empty
+      return;
+    }
+  
     const fetchSuggestions = async () => {
-      if (searchTerm.trim() === "") {
-        setSuggestions([]);
-        return;
-      }
       try {
         const response = await fetch(`/api/adminprofile/seller`);
         const data = await response.json();
@@ -73,13 +86,11 @@ export default function Header() {
         console.error("Error fetching products:", error);
       }
     };
-
-    const delayDebounceFn = setTimeout(() => {
-      fetchSuggestions();
-    }, 300); 
-
+  
+    const delayDebounceFn = setTimeout(fetchSuggestions, 300);
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm]);
+  
 
   const handleSearchSelect = (product) => {
     const formatUrl = (name) =>
@@ -96,7 +107,7 @@ export default function Header() {
 
 
   const cities = [
-    "All Cities", "Delhi", "Gurugram", "Noida", "Bengaluru", "Chennai",
+    "All City", "Delhi", "Gurugram", "Noida", "Bengaluru", "Chennai",
     "Mumbai", "Ahmedabad", "Kolkata", "Pune", "Surat", "Hyderabad"
   ];
   
