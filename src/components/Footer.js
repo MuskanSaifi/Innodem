@@ -132,9 +132,12 @@ const Footer = () => {
           {/* Copyright & Apps */}
           <div className="flex flex-col md:flex-row items-center justify-between">
             <p className="text-sm">&copy; {new Date().getFullYear()} Dial Export Mart. All Rights Reserved.</p>
-            <div className="flex gap-4 mt-3 md:mt-0">
-              <a href="/coming-soon"><img src="/assets/play.png" alt="Google Play" className="w-32" /></a>
-              <a href="/coming-soon"><img src="/assets/appstore.png" alt="App Store" className="w-32" /></a>
+            <div className="flex gap-4 mt-3 md:mt-0 align-items-center">
+                  <Link href="https://www.google.com/partners/agency?id=7430369059" target="_blank" rel="noopener noreferrer">
+                          <img src="/assets/gp.png" alt="Google Partner Logo" className="gp-img shadow" />
+                        </Link>
+              <Link href="/coming-soon"><img src="/assets/play.png" alt="Google Play" className="w-32" /></Link>
+              <Link href="/coming-soon"><img src="/assets/appstore.png" alt="App Store" className="w-32" /></Link>
             </div>
           </div>
 

@@ -1,27 +1,31 @@
-"use client"; // ✅ Convert RootLayout into a Client Component
-
 import { Geist, Geist_Mono } from "next/font/google";
+import Providers from "./store/providers";  // ✅ Import Providers
+import LayoutWrapper from "../components/LayoutWrapper";
 import "./globals.css";
 import "../components/styles/header.css";
 import "../components/styles/footer.css";
-import "bootstrap/dist/css/bootstrap.min.css"; // ✅ Import Bootstrap
-
-import { Toaster } from "react-hot-toast";
-import { Provider } from "react-redux";
-import { store } from "./store/store";
-import LayoutWrapper from "../components/LayoutWrapper"; // ✅ Import Client Component
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+
+export const metadata = {
+  title: "Dial Export Mart - Buy & Sell Globally at Best Prices",
+  description:
+  "Dial Export Mart helps businesses connect globally. Buy & sell with trusted partners easily.",
+  icons: {
+    icon: "/favicon.ico", // ✅ Ensure it's inside the public folder
+  },
+};
+
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Provider store={store}>
-          <Toaster position="top-center" />
-          <LayoutWrapper>{children}</LayoutWrapper> {/* ✅ Use LayoutWrapper */}
-        </Provider>
+        <Providers>  {/* ✅ Wrap Redux & Toast Provider */}
+          <LayoutWrapper>{children}</LayoutWrapper>
+        </Providers>
       </body>
     </html>
   );

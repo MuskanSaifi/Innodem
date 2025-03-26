@@ -6,7 +6,7 @@ const countries = [
   { name: "USA", flag: "/countries/Af.png", link: "#" },
   { name: "UK", flag: "/countries/Au.png", link: "#" },
   { name: "UAE", flag: "/countries/Bd.png", link: "#" },
-  { name: "Australia", flag: "/countries/Pk.png", link: "#" },
+  { name: "Pakistan", flag: "/countries/Pk.png", link: "#" },
   { name: "Malaysia", flag: "/countries/Ru.png", link: "#" },
   { name: "Saudi Arabia", flag: "/countries/Us.png", link: "#" },
   { name: "More Regions", flag: "", link: "#" },

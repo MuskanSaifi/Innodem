@@ -20,19 +20,17 @@ const Bannerslider = () => {
       <div>
         <img src="/assets/bannerslider/Best Distributer1.jpg" alt="banner1" />
       </div>
-    
       <div>
         <img src="/assets/bannerslider/banner2.jpg" alt="banner 2" />
       </div>
-     
       <div>
-        <img src="/assets/bannerslider/Best Distributer2.jpg" alt="banner1" />
+        <img src="/assets/bannerslider/Best Distributer2.jpg" alt="banner2" />
       </div>
       <div>
-        <img src="/assets/bannerslider/Best Distributer3.jpg" alt="banner1" />
+        <img src="/assets/bannerslider/Best Distributer3.jpg" alt="banner3" />
       </div>
       <div>
-        <img src="/assets/bannerslider/Best Distributer4.jpg" alt="banner1" />
+        <img src="/assets/bannerslider/Best Distributer4.jpg" alt="banner4" />
       </div>
     
     </Carousel>

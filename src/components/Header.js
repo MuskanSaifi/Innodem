@@ -20,6 +20,25 @@ export default function Header() {
   const cityDropdownRef = useRef(null);
   const router = useRouter();
 
+  const [cities, setCities] = useState(["All City"]); // Store cities from API
+
+
+  useEffect(() => {
+    // Fetch all cities dynamically from the API
+    async function fetchCities() {
+      try {
+        const response = await fetch("/api/location/allheadercity");
+        const data = await response.json();
+        if (response.ok) {
+          setCities(["All City", ...data.cities]); // Include "All City" at the start
+        }
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+      }
+    }
+    fetchCities();
+  }, []);
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -33,7 +52,6 @@ export default function Header() {
   }, []);
 
   
-
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -106,10 +124,7 @@ export default function Header() {
   };
 
 
-  const cities = [
-    "All City", "Delhi", "Gurugram", "Noida", "Bengaluru", "Chennai",
-    "Mumbai", "Ahmedabad", "Kolkata", "Pune", "Surat", "Hyderabad"
-  ];
+
   
   return (
     <>
@@ -158,23 +173,20 @@ export default function Header() {
               </div>
 
               <ul className="max-h-60 overflow-y-auto">
-                {cities
-                  .filter((city) =>
-                    city.toLowerCase().includes(citySearch.toLowerCase())
-                  )
-                  .map((city, index) => (
-                    <li key={index}>
-                      <button
-                        className="w-full text-left px-4 py-2 hover:bg-gray-100"
-                        onClick={() => {
-                          setSelectedCity(city);
-                          setCityDropdownOpen(false);
-                        }}
-                      >
-                        {city}
-                      </button>
-                    </li>
-                  ))}
+              {cities
+                    .filter((city) =>
+                      city.toLowerCase().includes(citySearch.toLowerCase())
+                    )
+                    .map((city, index) => (
+                      <li key={index}>
+                        <button
+                          className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                          onClick={() => router.push(`/city/${city}`)}
+                        >
+                          {city}
+                        </button>
+                      </li>
+                    ))}
               </ul>
             </div>
           )}
@@ -228,7 +240,7 @@ export default function Header() {
         <ul className="dropdown-menu show">
         <li className="dropdown-header text-center fw-bold">👋 Welcome!</li>
         <li>
-          <Link className="dropdown-item" href="/userdashboard">
+          <Link className="dropdown-item" href="userdashboard">
             🏠 Dashboard
           </Link>
         </li>

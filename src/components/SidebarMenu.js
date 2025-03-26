@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const SidebarMenu = () => {
   const [activeCategory, setActiveCategory] = useState(null);
@@ -31,9 +32,9 @@ const SidebarMenu = () => {
   return (
     <div className="menu bg-white rounded-md w-64" ref={menuRef}>
       {/* ✅ Top Categories Section */}
-      <a href="/industry">
+      <Link href="/industry">
         <div className="category font-semibold text-lg mb-2">Top Categories</div>
-      </a>
+      </Link>
 
       {/* ✅ Category List */}
       <ul className="border border-b border-gray-300 pt-2">
@@ -46,14 +47,15 @@ const SidebarMenu = () => {
             onClick={() => router.push(`/${formatUrl(category.name)}`)}
             onMouseEnter={() => setActiveCategory(category._id)}
           >
-            <div className="d-flex">
-            <img src={category.icon} alt="Girl in a jacket" className="img-fluid"/>
-             <span className="text-sm">{category.name}</span> 
-
+            <div className="flex items-center">
+              <img src={category.icon} alt={category.name} className="w-6 h-6 mr-2" />
+              <span className="text-sm">{category.name}</span>
             </div>
-           
           </li>
         ))}
+        <div className="text-center mt-2">
+        <Link className="bg-grey-200 cursor-pointer p-2 common-shad rounded-2 bg-light text-sm" href="all-categories">View more categories...</Link>
+        </div>
       </ul>
 
       {/* ✅ Mega Menu for Active Category */}
@@ -71,9 +73,9 @@ const SidebarMenu = () => {
                         router.push(`/${formatUrl(category.name)}/${formatUrl(subcategory.name)}`)
                       }
                     >
-                      <div className="d-flex align-items-center">
-                               <div> <img src={subcategory.icon} alt={subcategory.name} height="30" width="30"/></div>
-                               <div className="px-2"> {subcategory.name}</div>
+                      <div className="flex items-center">
+                        <img src={subcategory.icon} alt={subcategory.name} className="w-6 h-6" />
+                        <span className="ml-2">{subcategory.name}</span>
                       </div>
                     </h3>
 
