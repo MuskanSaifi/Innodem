@@ -6,102 +6,79 @@ import Product from "@/models/Product";          // Import Product model
 import Category from "@/models/Category";        // Import Category model
 import User from "@/models/User"; // ✅ Ensure User model is imported
 
+import cloudinary from "@/lib/cloudinary"; // ✅ Import Cloudinary Config
 
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-
-// ✅ Initialize AWS S3 Client
-const s3 = new S3Client({
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  },
-});
-
-// ✅ Function to Upload Image to AWS S3
-const uploadToS3 = async (image) => {
+// ✅ Function to Upload Image to Cloudinary
+const uploadToCloudinary = async (image) => {
   if (typeof image !== "string") {
     throw new Error("❌ Invalid Image Format: Image must be a string (Base64 or URL)");
   }
-  if (image.startsWith("http")) return image;
-  if (!image.includes(",")) {
-    throw new Error("❌ Invalid Image Format: Expected Base64 string");
-  }
-
-  const base64Image = image.split(",")[1];
-  if (!base64Image) throw new Error("❌ Invalid Image Data");
-
-  const buffer = Buffer.from(base64Image, "base64");
-  const key = `subcategories/${Date.now()}.jpg`;
-
-  const uploadParams = {
-    Bucket: process.env.AWS_BUCKET_NAME,
-    Key: key,
-    Body: buffer,
-    ContentType: "image/jpeg",
-  };
+  if (image.startsWith("http")) return image; // ✅ Already a valid URL
 
   try {
-    await s3.send(new PutObjectCommand(uploadParams));
-    // ✅ Log the uploaded image URL
-    const uploadedUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
-    return uploadedUrl;
+    const result = await cloudinary.v2.uploader.upload(image, {
+      folder: "subcategories", // ✅ Save in "subcategories" folder
+      transformation: [{ width: 500, height: 500, crop: "limit" }], // ✅ Resize Image
+    });
+
+    return result.secure_url; // ✅ Return Cloudinary Image URL
   } catch (error) {
-    console.error("❌ S3 Upload Error:", error);
-    throw new Error("Failed to upload image to S3.");
+    console.error("❌ Cloudinary Upload Error:", error);
+    throw new Error("Failed to upload image to Cloudinary.");
   }
 };
 
-
-// PATCH method - Update a subcategory
+// ✅ PATCH method - Update a subcategory
 export async function PATCH(req) {
   try {
-    await connectDB(); // Ensure DB connection
+    await connectDB();
     const body = await req.json();
     const { id, name, category, products, icon } = body;
 
-    // Validate Subcategory ID
+    // ✅ Validate Subcategory ID
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return new Response(JSON.stringify({ error: "Invalid subcategory ID." }), { status: 400 });
     }
 
-    // Check if subcategory exists
+    // ✅ Check if subcategory exists
     const subCategory = await SubCategory.findById(id);
     if (!subCategory) {
       return new Response(JSON.stringify({ error: "Subcategory not found." }), { status: 404 });
     }
 
-    // Validate Category ID
-    if (category && !mongoose.Types.ObjectId.isValid(category)) {
-      return new Response(JSON.stringify({ error: "Invalid category ID." }), { status: 400 });
-    }
+    // ✅ Validate Category ID
     if (category) {
+      if (!mongoose.Types.ObjectId.isValid(category)) {
+        return new Response(JSON.stringify({ error: "Invalid category ID." }), { status: 400 });
+      }
       const categoryExists = await Category.findById(category);
       if (!categoryExists) {
         return new Response(JSON.stringify({ error: "Category not found." }), { status: 404 });
       }
     }
 
-    // Validate Product IDs
+    // ✅ Validate Product IDs
     if (products && products.length > 0) {
-      const invalidProducts = [];
-      for (const productId of products) {
-        if (!mongoose.Types.ObjectId.isValid(productId) || !(await Product.findById(productId))) {
-          invalidProducts.push(productId);
-        }
-      }
-      if (invalidProducts.length > 0) {
-        return new Response(JSON.stringify({ error: `Invalid product IDs: ${invalidProducts.join(", ")}` }), { status: 400 });
+      const invalidProducts = await Promise.all(
+        products.map(async (productId) =>
+          mongoose.Types.ObjectId.isValid(productId) && (await Product.findById(productId))
+            ? null
+            : productId
+        )
+      );
+      const invalidProductIds = invalidProducts.filter((id) => id !== null);
+      if (invalidProductIds.length > 0) {
+        return new Response(JSON.stringify({ error: `Invalid product IDs: ${invalidProductIds.join(", ")}` }), { status: 400 });
       }
     }
 
-    // Upload new image if provided
+    // ✅ Upload new image if provided
     let uploadedIconUrl = subCategory.icon;
     if (icon && icon !== subCategory.icon) {
-      uploadedIconUrl = await uploadToS3(icon);
+      uploadedIconUrl = await uploadToCloudinary(icon);
     }
 
-    // Update Subcategory
+    // ✅ Update Subcategory
     subCategory.name = name?.trim() || subCategory.name;
     subCategory.category = category || subCategory.category;
     subCategory.products = products || subCategory.products;
@@ -109,7 +86,7 @@ export async function PATCH(req) {
 
     const updatedSubCategory = await subCategory.save();
 
-    // Populate fields for response
+    // ✅ Populate fields for response
     const populatedSubCategory = await SubCategory.findById(updatedSubCategory._id)
       .populate("category")
       .populate("products");

@@ -4,60 +4,10 @@ import Category from "@/models/Category"; // Assuming you have the Category mode
 import SubCategory from "@/models/SubCategory";
 import Product from "@/models/Product"; // ✅ Import Product to ensure it's registered
 
+import cloudinary from "@/lib/cloudinary"; // ✅ Import Cloudinary Config
+
 import { URL } from "url";  // Import URL for parsing query
 
-
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-
-// ✅ Validate AWS Credentials Before Initialization
-if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY || !process.env.AWS_REGION || !process.env.AWS_BUCKET_NAME) {
-  throw new Error("❌ AWS Credentials Missing! Check your .env file.");
-}
-
-// ✅ Initialize AWS S3 Client
-const s3 = new S3Client({
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  },
-});
-
-// ✅ Function to Upload Image to AWS S3
-const uploadToS3 = async (image) => {
-
-  if (typeof image !== "string") {
-    throw new Error("❌ Invalid Image Format: Image must be a string (Base64 or URL)");
-  }
-
-  if (image.startsWith("http")) {
-    return image; // ✅ Already a valid URL, return as is
-  }
-
-  if (!image.includes(",")) {
-    throw new Error("❌ Invalid Image Format: Expected Base64 string");
-  }
-
-  const base64Image = image.split(",")[1]; // Extract Base64 Data
-  if (!base64Image) throw new Error("❌ Invalid Image Data");
-
-  const buffer = Buffer.from(base64Image, "base64");
-  const key = `categories/${Date.now()}.jpg`;
-
-  const uploadParams = {
-    Bucket: process.env.AWS_BUCKET_NAME,
-    Key: key,
-    Body: buffer,
-    ContentType: "image/jpeg",
-  };
-
-  // ✅ Upload to S3
-  const command = new PutObjectCommand(uploadParams);
-  await s3.send(command);
-
-  // ✅ Return the uploaded file URL
-  return `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
-};
 
 export async function PATCH(req) {
   try {
@@ -82,7 +32,16 @@ export async function PATCH(req) {
 
     // ✅ Upload new image if a new one is provided
     if (icon && icon !== existingCategory.icon) {
-      uploadedIconUrl = await uploadToS3(icon);
+      try {
+        const result = await cloudinary.v2.uploader.upload(icon, {
+          folder: "categories", // ✅ Save in 'categories' folder
+          transformation: [{ width: 500, height: 500, crop: "limit" }], // ✅ Resize image
+        });
+        uploadedIconUrl = result.secure_url; // ✅ Get Cloudinary URL
+      } catch (uploadError) {
+        console.error("❌ Cloudinary Upload Error:", uploadError);
+        return new Response(JSON.stringify({ error: "Image upload failed." }), { status: 500 });
+      }
     }
 
     // ✅ Update category with new image
@@ -105,7 +64,6 @@ export async function PATCH(req) {
     );
   }
 }
-
 
 
 // Create category

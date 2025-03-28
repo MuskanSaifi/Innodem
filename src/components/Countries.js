@@ -3,12 +3,12 @@ import Image from "next/image";
 
 const countries = [
   { name: "India", flag: "/countries/In.png", link: "/india" },
-  { name: "USA", flag: "/countries/Af.png", link: "#" },
-  { name: "UK", flag: "/countries/Au.png", link: "#" },
+  { name: "Afganistan", flag: "/countries/Af.png", link: "#" },
+  { name: "Australia", flag: "/countries/Au.png", link: "#" },
   { name: "UAE", flag: "/countries/Bd.png", link: "#" },
   { name: "Pakistan", flag: "/countries/Pk.png", link: "#" },
-  { name: "Malaysia", flag: "/countries/Ru.png", link: "#" },
-  { name: "Saudi Arabia", flag: "/countries/Us.png", link: "#" },
+  { name: "Russia", flag: "/countries/Ru.png", link: "#" },
+  { name: "USA", flag: "/countries/Us.png", link: "#" },
   { name: "More Regions", flag: "", link: "#" },
 ];
 
@@ -27,7 +27,7 @@ const Countries = () => {
           >
             {country.flag ? (
               <Image
-                src={country.flag}
+                src={country.flag || "country flag"}
                 alt={country.name}
                 width={80}
                 height={80}

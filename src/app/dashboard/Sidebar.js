@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import Image from "next/image";
+
 
 const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -35,12 +37,13 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
     <div className={`resdes-sidebar ${isSidebarOpen ? "" : "resdes-closed"}`}>
 
       <div className="d-flex justify-content-around align-items-center m-2">
-            <img
-          src="/assets/logo.png"  // ✅ Correct path
-          className="img-fluid"
-          alt="Innodem Logo"
-          style={{ height: "50px" }}
-            />     
+      <Image 
+  src="/assets/logo.png"
+  alt="Innodem Logo"
+  width={150} 
+  height={50}
+  priority
+/>
            <h1 className="fs-3">Admin 😎</h1>
       </div>
 

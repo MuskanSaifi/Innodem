@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import { Modal, Button } from "react-bootstrap"; // ✅ Import Bootstrap Modal
 import LocationSelector from "./components/LocationSelector";
+import Image from "next/image";
+
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -313,13 +315,15 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
           return (
             <div key={product._id} className="bg-light p-3 mb-3 all-pro-img">
               <div className="d-flex align-items-start">
-                <img
-                  src={productImage}
-                  alt="Product"
-                  style={{ width: "100px", height: "100px", objectFit: "cover", borderRadius: "5px" }}
-                  className="me-3 all-pro-img p-2"
-                />
-
+<Image
+  src={productImage || "/default-image.jpg"} // Use a fallback image if `productImage` is undefined
+  alt="Product"
+  width={100} // Define width and height explicitly
+  height={100}
+  className="me-3 all-pro-img p-2"
+  style={{ objectFit: "cover", borderRadius: "5px" }}
+  unoptimized // If images are from an external source without domain configuration in next.config.js
+/>
                 <div className="w-100">
                   <div className="d-flex justify-content-between align-items-center">
                     <h6 className="mb-1">{product.name}</h6>

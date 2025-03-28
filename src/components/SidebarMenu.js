@@ -3,6 +3,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+
 
 const SidebarMenu = () => {
   const [activeCategory, setActiveCategory] = useState(null);
@@ -48,8 +50,14 @@ const SidebarMenu = () => {
             onMouseEnter={() => setActiveCategory(category._id)}
           >
             <div className="flex items-center">
-              <img src={category.icon} alt={category.name} className="w-6 h-6 mr-2" />
-              <span className="text-sm">{category.name}</span>
+            <Image
+  src={category.icon || "/default-category.png"} // ✅ Add a fallback image
+  alt={category.name}
+  width={24}
+  height={24}
+  className="w-6 h-6 mr-2"
+  unoptimized // ✅ Skip Next.js optimization if Cloudinary is slow
+/>              <span className="text-sm">{category.name}</span>
             </div>
           </li>
         ))}
@@ -74,8 +82,14 @@ const SidebarMenu = () => {
                       }
                     >
                       <div className="flex items-center">
-                        <img src={subcategory.icon} alt={subcategory.name} className="w-6 h-6" />
-                        <span className="ml-2">{subcategory.name}</span>
+                      <Image
+  src={subcategory.icon || "/default-subcategory.png"} // ✅ Use a fallback image if missing
+  alt={subcategory.name}
+  width={24}
+  height={24}
+  className="w-6 h-6"
+  unoptimized // ✅ Skip Next.js optimization if Cloudinary is slow
+/>                        <span className="ml-2">{subcategory.name}</span>
                       </div>
                     </h3>
 

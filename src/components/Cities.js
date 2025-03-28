@@ -31,7 +31,7 @@ const Cities = () => {
           >
             {city.icon ? (
               <Image
-                src={city.icon}
+                src={city.icon || "city icon"}
                 alt={city.name}
                 width={100}
                 height={100}

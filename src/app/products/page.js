@@ -6,6 +6,7 @@ import CitySearchBar from "@/components/CitySearchBar";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import "./style.css";
+import Image from "next/image";
 import ProductFilter from "./Filter";
 
 const ProductList = () => {
@@ -80,11 +81,13 @@ const ProductList = () => {
                 <div className="row g-3 align-items-center">
                   {/* Product Image */}
                   <div className="col-md-3 text-center">
-                    <img
-                      src={product.images?.length > 0 ? product.images[0].url : "/placeholder.png"}
-                      alt={product.name}
-                      className="img-fluid rounded product-image"
-                    />
+                  <Image
+  src={product.images?.[0]?.url || "/placeholder.png"}
+  alt={product.name || "Product Image"}
+  width={200}
+  height={200}
+  className="img-fluid rounded product-image"
+/>
                   </div>
 
                   {/* Product Details */}

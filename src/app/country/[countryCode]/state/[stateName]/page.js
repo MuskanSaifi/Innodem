@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+
 
 export default function StatePage() {
   const { stateName } = useParams();
@@ -21,7 +23,13 @@ export default function StatePage() {
   
 {products.map((product) => (
   <div key={product._id} className="p-4 border rounded-lg text-center">
-    <img src={product.images[0]?.url} alt={product.name} className="w-24 h-24 mx-auto" />
+<Image
+  src={product?.images?.[0]?.url} 
+  alt={product?.name || "Product Image"}
+  width={96}  // Equivalent to w-24 (Tailwind)
+  height={96} // Equivalent to h-24
+  className="mx-auto object-cover"
+/>
     <p className="mt-2 font-bold">{product.name}</p>
     <p className="text-gray-500">₹{product.price}</p>
 

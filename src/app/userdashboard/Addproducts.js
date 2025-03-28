@@ -3,6 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { Tab, Nav } from "react-bootstrap";
 import { IndianLocation } from "./Indianlocation";
+import Image from "next/image";
 
 
 const AddProduct = () => {
@@ -465,8 +466,16 @@ const handleSubmit = async (e) => {
                                 {product?.images?.length > 0 && (
                                     <div className="mt-2 d-flex">
                                         {product?.images.map((img, index) => (
-                                            <img key={index} src={img} alt={`Preview ${index}`} className="me-2" style={{ width: 50, height: 50, borderRadius: 5 }} />
-                                        ))}
+                                            <Image 
+  key={index} 
+  src={img || "/placeholder.png"} 
+  alt={`Preview ${index}`} 
+  width={50} 
+  height={50} 
+  className="me-2" 
+  style={{ borderRadius: 5 }} 
+/>
+))}
                                     </div>
                                 )}
                             </div>

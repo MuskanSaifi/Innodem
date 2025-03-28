@@ -189,7 +189,6 @@ export async function POST(req) {
   }
 }
 
-
 export async function GET(req) {
   try {
     await connectdb();
@@ -205,11 +204,12 @@ export async function GET(req) {
     }
 
     const productsWithDetails = products.map((product) => {
-  // ✅ Ensure Image URL from S3 or Fallback Placeholder
-  let imageUrl = "https://upload-images-in-bucket.s3.eu-north-1.amazonaws.com/products";
-  if (product.images.length > 0 && product.images[0].url) {
-    imageUrl = product.images[0].url;
-  }
+      // ✅ Ensure Image URL from Cloudinary or Placeholder
+      let imageUrl = "https://via.placeholder.com/500"; // Default placeholder if no image exists
+      if (product.images.length > 0 && product.images[0].url) {
+        imageUrl = product.images[0].url; // Use Cloudinary URL directly
+      }
+
       // ✅ Check if product has required details
       const hasDetails =
         product.price &&

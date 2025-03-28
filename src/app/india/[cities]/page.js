@@ -1,5 +1,5 @@
 "use client";
-
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
@@ -59,11 +59,13 @@ const CityProductsPage = () => {
             <div key={product._id} className="border p-4 rounded shadow hover:shadow-lg transition">
               {/* Image Handling */}
               {product.images?.length > 0 ? (
-                <img
-                  src={product.images[0]?.url} // Fix for missing image URLs
-                  alt={product.name}
-                  className="w-full h-40 object-cover rounded"
-                />
+             <Image
+             src={product.images[0]?.url || "/fallback.jpg"}
+             alt={product.name || "Product Image"}
+             width={160} // Adjust as needed
+             height={160}
+             className="object-cover rounded"
+           />
               ) : (
                 <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500">
                   No Image

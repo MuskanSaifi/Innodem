@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Image from "next/image";
+
 
 const AllCategory = () => {
   const [categories, setCategories] = useState([]);
@@ -127,8 +129,15 @@ const AllCategory = () => {
                 {/* <td>{category._id}</td> */}
                 <td>{category.name}</td>
                 <td>
-                  {category.icon && <img src={category.icon} alt={category.name} width={50} />}
-                </td>
+                {category.icon && (
+  <Image 
+    src={category.icon} 
+    alt={category.name} 
+    width={50} 
+    height={50} 
+    className="object-cover"
+  />
+)}                </td>
                 <td>
                   {category.subcategories.length > 0 ? (
                     <ul className="list-unstyled">

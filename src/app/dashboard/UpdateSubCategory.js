@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import Image from "next/image";
+
 
 const UpdateSubCategory = () => {
   const [selectedSubCategory, setSelectedSubCategory] = useState([]);
@@ -158,9 +160,15 @@ const UpdateSubCategory = () => {
 
         {previewImage && (
           <div className="mb-3 text-center">
-            <img src={previewImage} alt="Subcategory Preview" 
-              style={{ width: "120px", height: "120px", objectFit: "cover", borderRadius: "8px" }} 
-            />
+          {previewImage && (
+  <Image 
+    src={previewImage} 
+    alt="Subcategory Preview" 
+    width={120} 
+    height={120} 
+    className="object-cover rounded-lg"
+  />
+)}
           </div>
         )}
 

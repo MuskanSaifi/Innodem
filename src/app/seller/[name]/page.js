@@ -7,6 +7,8 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import "./style.css";
 import BuySellForm from "@/components/BuySellform";
+import Image from "next/image";
+
 
 const ProductPage = () => {
   const { name } = useParams();
@@ -79,12 +81,14 @@ const ProductPage = () => {
                   <div key={product._id} className="card p-3 mb-3">
                     <div className="row g-3 align-items-center">
                       <div className="col-md-3 text-center">
-                        <img
-                          src={productImage}
-                          alt={product.name}
-                          className="img-fluid rounded product-image"
-                          style={{ width: "100px", height: "100px", objectFit: "cover", borderRadius: "5px" }}
-                        />
+                      <Image
+  src={productImage || "/placeholder.png"} // Ensure a fallback image
+  alt={product.name || "Product Image"}
+  width={100}
+  height={100}
+  className="img-fluid rounded product-image"
+  style={{ objectFit: "cover", borderRadius: "5px" }}
+/>
                       </div>
                       <div className="col-md-5">
                         <h5 className="text-primary bg-light p-1">{product.name}</h5>

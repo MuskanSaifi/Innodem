@@ -68,7 +68,7 @@ const IndustrySlider = () => {
             <div className="bg-white rounded-lg p-4 hover:shadow-lg transition w-[300px]">
               <div className="flex justify-between items-center mb-4">
               <Image 
-                      src={category.icon} 
+                      src={category.icon  || "/placeholder.png"} 
                       alt={category.name} 
                       width={30} 
                       height={30} 

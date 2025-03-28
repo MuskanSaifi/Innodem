@@ -20,7 +20,13 @@ export default function CountryList() {
     className="p-4 border rounded-lg text-center cursor-pointer hover:shadow-md"
     onClick={() => router.push(`/country/${country.replace("+", "")}`)}
     >
-    {/* <img src={`/flags/${country || "default"}.png`} alt={country} className="w-20 h-20 mx-auto" /> */}
+{/* <Image 
+  src={`/flags/${country ? country.toLowerCase() : "default"}.png`}
+  alt={country || "Default Flag"}
+  width={80} 
+  height={80} 
+  className="mx-auto"
+/> */}
     <p className="mt-2">{country}</p>
   </div>
 ))}

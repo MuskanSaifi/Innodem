@@ -5,6 +5,8 @@ import { FaTimesCircle } from "react-icons/fa";
 import { Table, Spinner, Button, Accordion, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
 import ProductTags from "./components/ProductTags";
+import Image from "next/image";
+
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -271,12 +273,16 @@ const AllUsers = () => {
                                   <div className="row mb-3 mt-3">
                                     <div className="col-md-2">
 
-                                      <img
-                                        src={product.images[0].url}
-                                        alt="Product"
-                                        style={{ width: "100px", height: "100px", objectFit: "cover", borderRadius: "5px" }}
-                                        className="me-3 all-pro-img p-2 common-shad"
-                                      />
+                                    <Image
+  src={product?.images[0]?.url || "/default-image.jpg"} // ✅ Fallback image
+  alt="Product"
+  width={100}
+  height={100}
+  className="me-3 all-pro-img p-2 common-shad"
+  style={{ objectFit: "cover", borderRadius: "5px" }}
+  unoptimized
+/>
+
                                     </div>
 
                                     <div className="col-md-2">

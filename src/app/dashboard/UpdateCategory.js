@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import Image from "next/image";
+
 
 const UpdateCategory = () => {
   const [categories, setCategories] = useState([]);
@@ -114,8 +116,16 @@ const UpdateCategory = () => {
       {/* Image Preview */}
       {previewImage && (
         <div className="mb-3">
-          <img src={previewImage} alt="Category Preview" style={{ width: "100px", height: "100px", objectFit: "cover" }} />
-        </div>
+<Image 
+  src={previewImage} 
+  alt="Category Preview" 
+  width={100} 
+  height={100} 
+  style={{ objectFit: "cover" }}
+  unoptimized // ⚡️ Use this if images are already optimized (e.g., Cloudinary)
+  priority // 🚀 Load image faster (optional)
+  onError={(e) => console.error("Image failed to load", e)}
+/>        </div>
       )}
 
       {/* Select Subcategories */}

@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
+import Image from "next/image";
 import { FaChevronDown, FaSearch, FaMapMarkerAlt } from "react-icons/fa";
 
 
@@ -139,12 +139,13 @@ export default function Header() {
         
         {/* Logo */}
         <Link href="/">
-          <img
-            src="/assets/logo.png"
-            className="img-fluid"
-            alt="Innodem Logo"
-            style={{ height: "60px" }}
-          />
+        <Image
+  src="/assets/logo.png"
+  alt="Innodem Logo"
+  width={120} // Adjust width as needed
+  height={60} // Adjust height as needed
+  className="img-fluid"
+/>
         </Link>
 
       
@@ -240,7 +241,7 @@ export default function Header() {
         <ul className="dropdown-menu show">
         <li className="dropdown-header text-center fw-bold">👋 Welcome!</li>
         <li>
-          <Link className="dropdown-item" href="userdashboard">
+          <Link className="dropdown-item" href="/userdashboard">
             🏠 Dashboard
           </Link>
         </li>
