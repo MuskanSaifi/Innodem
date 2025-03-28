@@ -1,4 +1,3 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { NextResponse } from "next/server";
 import connectdb from "@/lib/dbConnect";
 import { requireSignIn } from "@/middlewares/requireSignIn";
@@ -7,24 +6,10 @@ import Category from "@/models/Category";
 import SubCategory from "@/models/SubCategory";
 import User from "@/models/User";
 
-// ✅ Validate AWS Credentials Before Initialization
-if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY || !process.env.AWS_REGION || !process.env.AWS_BUCKET_NAME) {
-  throw new Error("❌ AWS Credentials Missing! Check your .env file.");
-}
+import cloudinary from "@/lib/cloudinary"; // Import Cloudinary config
 
-// ✅ Initialize AWS S3 Client
-const s3 = new S3Client({
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  },
-});
-
-
-// ✅ Upload Image to S3 Function
-const uploadToS3 = async (image) => {
-
+// ✅ Upload Image to Cloudinary Function
+const uploadToCloudinary = async (image) => {
   if (typeof image !== "string") {
     throw new Error("❌ Invalid Image Format: Image must be a string (Base64 or URL)");
   }
@@ -33,29 +18,17 @@ const uploadToS3 = async (image) => {
     return image; // ✅ Already a valid URL
   }
 
-  if (!image.includes(",")) {
-    throw new Error("❌ Invalid Image Format: Expected Base64 string");
+  try {
+    const result = await cloudinary.v2.uploader.upload(image, {
+      folder: "products", // Save images in a folder named "products"
+      transformation: [{ width: 500, height: 500, crop: "limit" }], // Resize image
+    });
+
+    return result.secure_url; // ✅ Return the uploaded image URL
+  } catch (error) {
+    console.error("❌ Cloudinary Upload Error:", error);
+    throw new Error("Image upload failed");
   }
-
-  const base64Image = image.split(",")[1]; // Extract Base64 Data
-  if (!base64Image) throw new Error("❌ Invalid Image Data");
-
-  const buffer = Buffer.from(base64Image, "base64");
-  const key = `products/${Date.now()}.jpg`;
-
-  const uploadParams = {
-    Bucket: process.env.AWS_BUCKET_NAME,
-    Key: key,
-    Body: buffer,
-    ContentType: "image/jpeg",
-  };
-  
-  // ✅ Correct AWS SDK v3 Upload Method
-  const command = new PutObjectCommand(uploadParams);
-  await s3.send(command);
-
-  // ✅ Return the uploaded file URL
-  return `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
 };
 
 export async function POST(req) {
@@ -77,7 +50,6 @@ export async function POST(req) {
       console.error("❌ JSON Parsing Error:", error);
       return NextResponse.json({ success: false, message: "Invalid JSON format" }, { status: 400 });
     }
-
 
     // ✅ Extracting Fields
     const {
@@ -105,9 +77,9 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: "Required fields are missing" }, { status: 400 });
     }
 
-    if (images.length > 6) {
+    if (images.length > 5) {
       console.error("❌ Too many images:", images.length);
-      return NextResponse.json({ success: false, message: "You can upload up to 6 images only" }, { status: 400 });
+      return NextResponse.json({ success: false, message: "You can upload up to 5 images only" }, { status: 400 });
     }
 
     // ✅ Process Trade Pricing (Fixed vs Slab)
@@ -166,7 +138,7 @@ export async function POST(req) {
     });
 
     
-const imageUrls = await Promise.all(validImages.map(uploadToS3));
+    const imageUrls = await Promise.all(validImages.map(uploadToCloudinary));
 
     // ✅ Create & Save Product
     const newProduct = new Product({
@@ -216,8 +188,6 @@ const imageUrls = await Promise.all(validImages.map(uploadToS3));
     return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }
 }
-
-
 
 
 export async function GET(req) {

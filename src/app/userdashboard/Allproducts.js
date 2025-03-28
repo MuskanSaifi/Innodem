@@ -23,6 +23,7 @@ const AllProducts = () => {
       stock: "",
       state: "",
       city: "",
+      images: [],
     },
     tradeIndiaShopping: "",
     description: "",
@@ -154,6 +155,8 @@ const AllProducts = () => {
         const updateData = {
           ...selectedProduct, // Preserve all existing data
           productId: selectedProduct._id, // Keep Product ID
+          images: formData.basicDetails.images, // ✅ Ensure images are sent in the request
+
         };
     
         if (selectedField === "basicDetails") {
@@ -207,6 +210,37 @@ const AllProducts = () => {
         toast.error("Failed to update product.");
       }
     };
+    
+    const handleImageUpload = async (e) => {
+      const files = Array.from(e.target.files);
+      if (files.length > 5) {
+        toast.error("You can upload up to 5 images only.");
+        return;
+      }
+    
+      const uploadedImages = await Promise.all(files.map(convertToBase64));
+    
+      setFormData((prevData) => ({
+        ...prevData,
+        basicDetails: { ...prevData.basicDetails, images: uploadedImages }, // ✅ Update images
+      }));
+    };
+    
+    
+    
+    // ✅ Convert Image File to Base64
+    const convertToBase64 = (file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          const base64String = reader.result.split(",")[1]; // Extract base64 part
+          resolve(`data:image/jpeg;base64,${base64String}`); // Ensure proper format
+        };
+        reader.onerror = (error) => reject(error);
+      });
+    };
+    
     
 
     
@@ -384,19 +418,8 @@ dialogClassName="custom-modal">
   </Modal.Header>
   <Modal.Body>
 
-{selectedField === "description" && (
-      <div className="mb-3">
-        <label className="form-label">Description</label>
-        <textarea
-          className="form-control"
-          name="description"
-          value={formData.description || ""}
-          onChange={handleChange}
-          rows="3"
-        />
-      </div>
-)}
 
+{/* Basic details */}
 {selectedField === "basicDetails" && (
   <div>
     {/* Product Name */}
@@ -415,6 +438,19 @@ dialogClassName="custom-modal">
         }
       />
     </div>
+
+    {/* Product Image  */}
+    <div className="mb-3">
+  <label className="form-label">Upload Images</label>
+  <input
+    type="file"
+    className="form-control"
+    multiple
+    accept="image/*"
+    onChange={handleImageUpload} // ✅ Add event handler
+  />
+</div>
+
 
     {/* Price */}
     <div className="mb-3">
@@ -478,6 +514,20 @@ dialogClassName="custom-modal">
 
 
   </div>
+)}
+
+{/* Description */}
+{selectedField === "description" && (
+      <div className="mb-3">
+        <label className="form-label">Description</label>
+        <textarea
+          className="form-control"
+          name="description"
+          value={formData.description || ""}
+          onChange={handleChange}
+          rows="3"
+        />
+      </div>
 )}
 
 {/* Product Specifications Section */}
@@ -926,6 +976,7 @@ dialogClassName="custom-modal">
   </>
 )}
 
+{/* Product tradeShopping Section */}
 
 {selectedField === "tradeShopping" && (
   <>
