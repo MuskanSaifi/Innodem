@@ -11,14 +11,19 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
     { icon: "👤", label: "All Buyers" },
     { icon: "👤", label: "All Users" },
     {
-      icon: "📎",
-      label: "All Category",
+      icon: "📂",
+      label: "Manage Category",
       subItems: ["All Category","Create Category", "Update Category"],
     },
     {
-      icon: "➕",
-      label: "Create Sub Category",
+      icon: "📂",
+      label: "Manage Sub Category",
       subItems: ["All Sub Category", "Create Sub Category", "Update Sub Category"],
+    },
+    {
+      icon: "📝 ",
+      label: "Manage Blogs",
+      subItems: ["All Blogs", "Create Blogs", "Update Blogs"],
     },
     // {
     //   icon: "➕",

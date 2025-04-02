@@ -13,7 +13,7 @@ export default function CountryList() {
   }, []);
 
   return (
-    <div className="grid grid-cols-4 gap-4 p-5">
+    <div className="grid grid-cols-4 gap-4 p-5 d-none">
   {countries.map((country, index) => (
   <div
     key={country ? `country-${country}` : `index-${index}`} 

@@ -3,12 +3,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Select from "react-select";
+import Image from "next/image";
+
 
 
 // Country Code List (Country Name is hidden but searchable)
 const countryCodes = [
-    { value: "+1", label: "🇺🇸 +1", name: "United States" },
     { value: "+91", label: "🇮🇳 +91", name: "India" },
+    { value: "+1", label: "🇺🇸 +1", name: "United States" },
     { value: "+44", label: "🇬🇧 +44", name: "United Kingdom" },
   ];
   
@@ -96,9 +98,19 @@ export default function Register() {
     };
 
     return (
-        <div className="flex justify-center items-center h-screen">
+        <div className="flex justify-center items-center m-5">
             <div className="bg-white p-6 rounded shadow-md w-96">
                 <h2 className="text-2xl font-bold mb-4">{signup ? "Verify OTP" : "Register"}</h2>
+
+        <Image
+                src={"/assets/2-copy-0.png"  || "/placeholder.png"}
+                alt="login user"
+                width={180}
+                height={180}
+                className="rounded img-fluid m-auto"
+                style={{ objectFit: "cover" }}
+                priority={false}
+              />
 
                 {message && <p className="text-green-600">{message}</p>}
                 {error && <p className="text-red-600">{error}</p>}
@@ -106,7 +118,7 @@ export default function Register() {
                 {signup ? (
                     // OTP Verification Form
                     <form onSubmit={handleVerifyOtp}>
-                        <div className="mb-4">
+                        <div className="mb-2">
                             <input
                                 type="text"
                                 value={otp}
@@ -127,7 +139,7 @@ export default function Register() {
                 ) : (
                     // Registration Form
                     <form onSubmit={handleSubmit}>
-                        <div className="mb-4">
+                        <div className="mb-2">
                             <input
                                 type="text"
                                 value={fullname}
@@ -138,7 +150,7 @@ export default function Register() {
                             />
                         </div>
 
-                        <div className="mb-4">
+                        <div className="mb-2">
                             <input
                                 type="email"
                                 value={email}
@@ -150,7 +162,7 @@ export default function Register() {
                         </div>
 
           {/* Mobile Number with Country Code */}
-          <div className="mb-4">
+          <div className="mb-2">
                     <label className="block font-semibold mb-1">Mobile Number:</label>
                     <div className="flex items-center">
                         <div className="w-48 h-full">
@@ -195,7 +207,7 @@ export default function Register() {
                 </div>
 
 
-                        <div className="mb-4">
+                        <div className="mb-2">
                             <input
                                 type="text"
                                 value={pincode}
@@ -206,7 +218,7 @@ export default function Register() {
                             />
                         </div>
 
-                        <div className="mb-4">
+                        <div className="mb-2">
                             <input
                                 type="text"
                                 value={companyName}
@@ -226,7 +238,7 @@ export default function Register() {
                         </button>
                     </form>
                 )}
-                <div className="mt-4">
+                <div className="mt-2">
                     <Link href="/user/login">Already have an account? Login</Link>
                 </div>
             </div>

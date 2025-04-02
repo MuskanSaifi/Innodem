@@ -102,23 +102,18 @@ const ProductDetailPage = () => {
                   const isActive =
                     formatName(sub.name) === formatName(encodedSubcategory);
                   return (
-                    <li
-                      key={sub._id}
-                      className={`list-group-item ${
-                        isActive
-                          ? "active text-white bg-primary fw-bold"
-                          : "text-dark"
-                      }`}
-                    >
-                      <Link
-                        href={`/${encodedCategory}/${encodeURIComponent(
-                          sub.name.replace(/&/g, "and").replace(/ /g, "-")
-                        )}`}
-                        className="text-decoration-none"
-                      >
-                        {sub.name}
-                      </Link>
+                    <Link
+                    key={sub._id}  // ✅ Corrected key placement
+                    href={`/${encodedCategory}/${encodeURIComponent(
+                      sub.name.replace(/&/g, "and").replace(/ /g, "-")
+                    )}`}
+                    className="text-decoration-none"
+                  >
+                    <li className="list-group-item hover:bg-gray-100">
+                      {sub.name}
                     </li>
+                  </Link>
+                  
                   );
                 })}
               </ul>
@@ -172,16 +167,18 @@ const ProductDetailPage = () => {
             ) : (
               <ul className="list-group">
                 {suggestedProducts.map((prod) => (
-                  <li key={prod._id} className="list-group-item">
-                    <Link
-                      href={`/${encodedCategory}/${encodedSubcategory}/${encodeURIComponent(
-                        prod.name.replace(/ /g, "-")
-                      )}`}
-                      className="text-web"
-                    >
-                      {prod.name}
-                    </Link>
-                  </li>
+                <Link
+                key={prod._id}  // ✅ Corrected key placement
+                href={`/${encodedCategory}/${encodedSubcategory}/${encodeURIComponent(
+                  prod.name.replace(/ /g, "-")
+                )}`}
+                className="text-web"
+              >
+                <li className="list-group-item hover:bg-gray-100">
+                  {prod.name}
+                </li>
+              </Link>
+              
                 ))}
               </ul>
             )}

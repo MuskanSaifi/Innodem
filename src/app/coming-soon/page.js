@@ -4,6 +4,7 @@ import Image from "next/image";
 
 const Page = () => {
   return (
+    <>
     <div className="flex items-center justify-center m-5 p-5 bg-gray-100">
       <div className="text-center p-5 bg-white shadow-lg rounded-2xl">
         <h1 className="text-4xl font-bold text-gray-800">Coming Soon</h1>
@@ -25,6 +26,7 @@ const Page = () => {
         <Link href="../" >Go back...</Link>
       </div>
     </div>
+    </>
   );
 };
 

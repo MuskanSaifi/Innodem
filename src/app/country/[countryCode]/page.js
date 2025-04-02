@@ -22,7 +22,7 @@ export default function CountryPage() {
           <div
             key={state}
             className="p-4 border rounded-lg text-center cursor-pointer hover:shadow-md"
-            onClick={() => router.push(`/country/${countryCode}/state/${state}`)}
+            onClick={() => router.push(`/country/${countryCode}/${state}`)}
           >
             <p>{state}</p>
           </div>

@@ -83,14 +83,16 @@ const CategoryPage = () => {
                 {categories.map((cat) => {
                   const isActive = formatCategoryName(cat.name) === formatCategoryName(encodedCategory);
                   return (
-                    <li key={cat._id} className="list-group-item border-0">
-                      <Link
-                        href={`/${encodeURIComponent(cat.name.replace(/&/g, "and").replace(/ /g, "-"))}`}
-                        className={`text-decoration-none list-group-item ${isActive ? "active text-white bg-primary fw-bold" : "text-dark"}`}
-                      >
-                        {cat.name}
-                      </Link>
+                    <Link
+                    key={cat._id} // ✅ Move key here
+                    href={`/${encodeURIComponent(cat.name.replace(/&/g, "and").replace(/ /g, "-"))}`}
+                    className="text-decoration-none"
+                  >
+                    <li className={`list-group-item hover:bg-gray-100 ${isActive ? "active text-white bg-purple fw-bold" : "text-dark"}`}>
+                      {cat.name}
                     </li>
+                  </Link>
+                  
                   );
                 })}
               </ul>
@@ -168,14 +170,16 @@ const CategoryPage = () => {
                 {subcategories.map((sub) => {
                   const isActive = sub.name.toLowerCase() === formatCategoryName(encodedCategory);
                   return (
-                    <li key={sub._id} className="list-group-item border-0">
-                      <Link
-                        href={`/${encodedCategory}/${encodeURIComponent(sub.name.replace(/&/g, "and").replace(/ /g, "-"))}`}
-                        className={`text-decoration-none list-group-item ${isActive ? "active text-white bg-primary fw-bold" : "text-dark"}`}
-                      >
-                        {sub.name}
-                      </Link>
+                    <Link
+                    key={sub._id} // ✅ Move key to Link
+                    href={`/${encodedCategory}/${encodeURIComponent(sub.name.replace(/&/g, "and").replace(/ /g, "-"))}`}
+                    className="text-decoration-none"
+                  >
+                    <li className={`list-group-item hover:bg-gray-100 ${isActive ? "active text-white bg-purple fw-bold" : "text-dark"}`}>
+                      {sub.name}
                     </li>
+                  </Link>
+                  
                   );
                 })}
               </ul>

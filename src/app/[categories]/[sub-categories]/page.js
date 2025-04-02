@@ -80,7 +80,6 @@ const SubcategoryProductPage = () => {
           {loading ? <Skeleton width={100} /> : formatName(encodedSubcategory)}
         </span>
       </nav>
-
       <div className="row mb-5">
         {/* Left Sidebar: Subcategories */}
         <aside className="col-md-3">
@@ -94,21 +93,21 @@ const SubcategoryProductPage = () => {
                   const isActive =
                     formatName(sub.name) === formatName(encodedSubcategory);
                   return (
-                    <li
-                      key={sub._id}
-                      className={`list-group-item ${
-                        isActive ? "active text-white bg-primary fw-bold" : "text-dark"
+                    <Link
+                    key={sub._id}  // ✅ Move key to Link
+                    href={`/${encodedCategory}/${encodeURIComponent(
+                      sub.name.replace(/&/g, "and").replace(/ /g, "-")
+                    )}`}
+                    className="text-decoration-none"
+                  >
+                    <li className={`list-group-item hover:bg-gray-100 ${
+                        isActive ? "active text-white bg-purple fw-bold" : "text-dark"
                       }`}
                     >
-                      <Link
-                        href={`/${encodedCategory}/${encodeURIComponent(
-                          sub.name.replace(/&/g, "and").replace(/ /g, "-")
-                        )}`}
-                        className="text-decoration-none"
-                      >
-                        {sub.name}
-                      </Link>
+                      {sub.name}
                     </li>
+                  </Link>
+                  
                   );
                 })}
               </ul>
@@ -188,12 +187,12 @@ const SubcategoryProductPage = () => {
             ) : (
               <ul className="list-group">
                 {products.map((product) => (
-                  <li key={product._id} className="list-group-item border-0">
-                    <Link
+                  <li key={product._id} className="list-group-item border-0 p-1 ">
+                  <Link
                       href={`/${encodedCategory}/${encodedSubcategory}/${encodeURIComponent(
                         product.name.replace(/\s+/g, "-").toLowerCase()
                       )}`}
-                      className="text-web text-decoration-none common-shad d-block p-2 rounded-2"
+                      className="text-web text-decoration-none common-shad d-block p-2 rounded-2 hover:bg-gray-100"
                     >
                       {product.name}
                     </Link>

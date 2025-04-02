@@ -313,7 +313,7 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
 }
 
           return (
-            <div key={product._id} className="bg-light p-3 mb-3 all-pro-img">
+            <div key={product._id} className="p-3 mb-3 bg-white all-pro-img rounded-3">
               <div className="d-flex align-items-start">
 <Image
   src={productImage || "/default-image.jpg"} // Use a fallback image if `productImage` is undefined

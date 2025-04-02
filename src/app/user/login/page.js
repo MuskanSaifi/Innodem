@@ -3,11 +3,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Select from "react-select";
+import Image from "next/image";
+
 
 // Country Code List
 const countryCodes = [
-    { value: "+1", label: "🇺🇸 +1", name: "United States" },
     { value: "+91", label: "🇮🇳 +91", name: "India" },
+    { value: "+1", label: "🇺🇸 +1", name: "United States" },
     { value: "+44", label: "🇬🇧 +44", name: "United Kingdom" },
     { value: "+33", label: "🇫🇷 +33", name: "France" },
     { value: "+49", label: "🇩🇪 +49", name: "Germany" },
@@ -129,9 +131,19 @@ export default function Login() {
     };
 
     return (
-        <div className="flex justify-center items-center h-screen">
+        <div className="flex justify-center items-center m-5">
             <div className="bg-white p-6 rounded shadow-md w-96">
-                <h2 className="text-2xl font-bold mb-4">Login with OTP</h2>
+                <h2 className="text-2xl font-bold mb-4 text-center">Login with Mobile </h2>
+
+                <Image
+                src={"/assets/2-copy-0.png"  || "/placeholder.png"}
+                alt="login user"
+                width={180}
+                height={180}
+                className="rounded img-fluid m-auto"
+                style={{ objectFit: "cover" }}
+                priority={false}
+              />
 
                 {message && <p className="text-green-600">{message}</p>}
                 {error && <p className="text-red-600">{error}</p>}

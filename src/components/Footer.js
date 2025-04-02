@@ -5,11 +5,10 @@ import Link from "next/link";
 import { FaFacebookF, FaYoutube, FaLinkedinIn, FaInstagram, FaArrowUp} from "react-icons/fa";
 import Image from "next/image";
 import Gpimage from "../../public/assets/gp.png";
-
+import GoogleTranslate from "./GoogleTranslate";
 
 const Footer = () => {
   const [isVisible, setIsVisible] = useState(false);
-
 
   // Handle Scroll-to-Top Button Visibility
   useEffect(() => {
@@ -46,7 +45,6 @@ const Footer = () => {
       <footer className="bg-gray-900 text-gray-300 py-10">
         <div className="container mx-auto px-5">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-
             {/* Contact Info */}
             <div>
               <h5 className="text-lg font-semibold text-white mb-3">Contact</h5>
@@ -76,13 +74,21 @@ const Footer = () => {
             <div>
               <h5 className="text-lg font-semibold text-white mb-3">Quick Links</h5>
               <ul className="space-y-2">
-                {["About Us", "Shipping & Delivery", "Contact Us"].map((link, index) => (
-                  <li key={index}>
-                    <Link href="#" className="hover:text-gray-400 transition">
-                      {link}
+                  <li>
+                    <Link href="about-us" className="hover:text-gray-400 transition">
+                     About Us
                     </Link>
                   </li>
-                ))}
+                  <li>
+                    <Link href="contact-us" className="hover:text-gray-400 transition">
+                     Contact Us
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="#" className="hover:text-gray-400 transition">
+                     Blogs
+                   </Link>
+                  </li>
               </ul>
             </div>
 
@@ -115,8 +121,9 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row items-center justify-between align-items-center">
             <p className="text-sm">&copy; {new Date().getFullYear()} Dial Export Mart. All Rights Reserved.</p>
             <div className="flex gap-4 mt-3 md:mt-0 align-items-center">
-              {/* ✅ Google Partner Link (Opens in New Tab) */}
 
+            <GoogleTranslate />
+              {/* ✅ Google Partner Link (Opens in New Tab) */}
               <Link
                 href="https://www.google.com/partners/agency?id=7430369059"
                 target="_blank"
@@ -125,11 +132,12 @@ const Footer = () => {
                 <Image
                   src={Gpimage}
                   alt="Google Partner Logo"
-                  width={120}
-                  height={150}
+                  width={100}
+                  height={100}
                   className="gp-img shadow"
                 />
               </Link>
+
 
               {/* ✅ Google Play Link */}
               <Link href="/coming-soon">
@@ -140,6 +148,8 @@ const Footer = () => {
               <Link href="/coming-soon">
                 <Image src="/assets/appstore.png" alt="App Store" width={128} height={40} />
               </Link>
+
+
             </div>
           </div>
 

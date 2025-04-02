@@ -3,6 +3,11 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 const ProductSections1 = ({ tag, Name }) => {
   const [products, setProducts] = useState([]);
@@ -49,30 +54,54 @@ const ProductSections1 = ({ tag, Name }) => {
         <p className="text-center text-gray-500">No products found.</p>
       )}
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+      {/* Swiper component for responsive product display */}
+      <Swiper
+        modules={[Navigation, Pagination, Autoplay]}
+        navigation
+        pagination={{ clickable: true }}
+        autoplay={{ delay: 3000 }}
+        spaceBetween={20}
+        slidesPerView={1}  // Default: 1 product per slide
+        breakpoints={{
+          640: {
+            slidesPerView: 2, // 2 products per slide for mobile
+          },
+          768: {
+            slidesPerView: 4, // 3 products per slide for tablet
+          },
+          1024: {
+            slidesPerView: 6, // 4 products per slide for larger screens
+          },
+        }}
+      >
         {products.map((product) => {
           const categoryName = product.category?.name || "unknown";
           const subCategoryName = product.subCategory?.name || "general";
           const productName = formatUrl(product.name);
 
           return (
-            <Link key={product._id} href={`/${formatUrl(categoryName)}/${formatUrl(subCategoryName)}/${productName}`} className="group">
-              <div className="relative w-28 h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 mx-auto rounded-full overflow-hidden bg-white border border-gray-200 shadow-md backdrop-blur-md transition-all duration-300 group-hover:shadow-2xl">
-                <Image
-                  src={product.images?.[0]?.url || "/placeholder.png"}
-                  alt={product.name}
-                  width={150}
-                  height={150}
-                  className="w-full h-full object-cover transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3"
-                />
-              </div>
-              <p className="mt-3 text-center text-gray-700 font-medium text-sm group-hover:text-gray-900 transition-all">
-                {product.name}
-              </p>
-            </Link>
+            <SwiperSlide key={product._id}>
+              <Link
+                href={`/${formatUrl(categoryName)}/${formatUrl(subCategoryName)}/${productName}`}
+                className="group"
+              >
+                <div className="relative w-28 h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 mx-auto rounded-full overflow-hidden bg-white border border-gray-200 shadow-md backdrop-blur-md transition-all duration-300 group-hover:shadow-2xl">
+                  <Image
+                    src={product.images?.[0]?.url || "/placeholder.png"}
+                    alt={product.name}
+                    width={150}
+                    height={150}
+                    className="w-full h-full object-cover transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3"
+                  />
+                </div>
+                <p className="mt-3 text-center text-gray-700 font-medium text-sm group-hover:text-gray-900 transition-all">
+                  {product.name}
+                </p>
+              </Link>
+            </SwiperSlide>
           );
         })}
-      </div>
+      </Swiper>
     </div>
   );
 };

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
-
 const SidebarMenu = () => {
   const [activeCategory, setActiveCategory] = useState(null);
   const menuRef = useRef(null);
@@ -61,8 +60,8 @@ const SidebarMenu = () => {
             </div>
           </li>
         ))}
-        <div className="text-center mt-2">
-        <Link className="bg-grey-200 cursor-pointer p-2 common-shad rounded-2 bg-light text-sm" href="all-categories">View more categories...</Link>
+        <div className="text-center mt-3">
+        <Link className="cursor-pointer p-2 common-shad rounded-2 gradient-btn text-sm" href="all-categories">View more categories...</Link>
         </div>
       </ul>
 
@@ -82,14 +81,15 @@ const SidebarMenu = () => {
                       }
                     >
                       <div className="flex items-center">
-                      <Image
-  src={subcategory.icon || "/default-subcategory.png"} // ✅ Use a fallback image if missing
-  alt={subcategory.name}
-  width={24}
-  height={24}
-  className="w-6 h-6"
-  unoptimized // ✅ Skip Next.js optimization if Cloudinary is slow
-/>                        <span className="ml-2">{subcategory.name}</span>
+                                              <Image
+                          src={subcategory.icon || "/default-subcategory.png"} // ✅ Use a fallback image if missing
+                          alt={subcategory.name}
+                          width={24}
+                          height={24}
+                          className="w-6 h-6"
+                          unoptimized // ✅ Skip Next.js optimization if Cloudinary is slow
+                        />                     
+                         <span className="ml-2">{subcategory.name}</span>
                       </div>
                     </h3>
 
@@ -98,7 +98,7 @@ const SidebarMenu = () => {
                       {subcategory.products.map((product) => (
                         <li key={product._id}>
                           <span
-                            className="text-sm text-blue-500 hover:underline cursor-pointer"
+                            className="text-sm text-blue-700 cursor-pointer"
                             onClick={() =>
                               router.push(
                                 `/${formatUrl(category.name)}/${formatUrl(subcategory.name)}/${formatUrl(product.name)}`

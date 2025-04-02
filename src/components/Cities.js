@@ -7,12 +7,12 @@ const cities = [
   { name: "Noida", icon: "/countries/cities/noida.png", link: "#" },
   { name: "Bengaluru", icon: "/countries/cities/bangalore.png", link: "#" },
   { name: "Chennai", icon: "/countries/cities/chennai.png", link: "#" },
-  { name: "Mumbai", icon: "/countries/cities/mumbai.png", link: "#" },
-  { name: "Ahmedabad", icon: "/countries/cities/ahmedabad.png", link: "#" },
-  { name: "Kolkata", icon: "/countries/cities/kolkata.png", link: "#" },
-  { name: "Pune", icon: "/countries/cities/pune.png", link: "#" },
-  { name: "Surat", icon: "/countries/cities/surat.png", link: "#" },
-  { name: "Hyderabad", icon: "/countries/cities/hyderabad.png", link: "#" },
+  // { name: "Mumbai", icon: "/countries/cities/mumbai.png", link: "#" },
+  // { name: "Ahmedabad", icon: "/countries/cities/ahmedabad.png", link: "#" },
+  // { name: "Kolkata", icon: "/countries/cities/kolkata.png", link: "#" },
+  // { name: "Pune", icon: "/countries/cities/pune.png", link: "#" },
+  // { name: "Surat", icon: "/countries/cities/surat.png", link: "#" },
+  // { name: "Hyderabad", icon: "/countries/cities/hyderabad.png", link: "#" },
   { name: "More Cities", icon: "", link: "#" },
 ];
 

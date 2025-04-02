@@ -122,7 +122,7 @@ const BuySellForm = ({ productname: initialProductName }) => {
   
 
   return (
-    <div className={`modal fade ${showModal ? "show d-block" : ""}`} style={{ background: "rgba(0, 0, 0, 0.5)" }}>
+    <div className={`modal fade ${showModal ? "show d-block" : ""}`} style={{ background: "rgba(0, 0, 0, 0.5)" }} >
       <div className="modal-dialog modal-dialog-centered modal-lg">
         <div className="modal-content p-4">
           <div className="modal-header">

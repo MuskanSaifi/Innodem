@@ -131,7 +131,7 @@ export default function Header() {
     <header className="bg-light shadow-sm Main-header">
       <div className="container-fluid p-2 text-center top-bar text-dark">
         <p className="mb-0">
-          Due to the COVID-19 epidemic, orders may be processed with a slight delay
+        We connect you with verified export buyers within 24 hours, guaranteeing confirmed deals.
         </p>
       </div>
 
@@ -139,14 +139,14 @@ export default function Header() {
         
         {/* Logo */}
         <Link href="/">
-        <Image
-  src="/assets/logo.png"
-  alt="Innodem Logo"
-  width={120} // Adjust width as needed
-  height={60} // Adjust height as needed
-  className="img-fluid"
-/>
-        </Link>
+          <Image
+          src="/assets/logo.png"
+          alt="Innodem Logo"
+          width={120} // Adjust width as needed
+          height={60} // Adjust height as needed
+          className="img-fluid"
+        />
+      </Link>
 
       
         {/* 🔍 City Dropdown Search */}
@@ -172,23 +172,28 @@ export default function Header() {
                   onChange={(e) => setCitySearch(e.target.value)}
                 />
               </div>
-
               <ul className="max-h-60 overflow-y-auto">
-              {cities
-                    .filter((city) =>
-                      city.toLowerCase().includes(citySearch.toLowerCase())
-                    )
-                    .map((city, index) => (
-                      <li key={index}>
-                        <button
-                          className="w-full text-left px-4 py-2 hover:bg-gray-100"
-                          onClick={() => router.push(`/city/${city}`)}
-                        >
-                          {city}
-                        </button>
-                      </li>
-                    ))}
-              </ul>
+  {cities?.length > 0 ? (
+    cities
+      .filter((city) =>
+        city.toLowerCase().includes(citySearch.toLowerCase())
+      )
+      .map((city, index) => (
+        <li key={index}>
+          <button
+            className="w-full text-left px-4 py-2 hover:bg-gray-100"
+            onClick={() => router.push(`/city/${city}`)}
+          >
+            {city}
+          </button>
+        </li>
+      ))
+  ) : (
+    <p className="text-gray-500 px-4 py-2">No cities found</p>
+  )}
+</ul>
+
+
             </div>
           )}
         </div>
@@ -202,6 +207,7 @@ export default function Header() {
             placeholder="📦 Search for products..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            
           />
           
           {suggestions.length > 0 && (
