@@ -75,20 +75,20 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className="dashboard-content mt-5">
+      <div className="dashboard-content mt-5 bg-light">
 
         <div className="container-fluid">
           <div className="row common-shad m-1">
-            <div className="col-md-6 mb-3 mt-4 ">
+            <div className="col-md-6 mt-5 mb-5">
               <div className="welcome-admin common-shad">
                 <h1 className="fs-2 admin fw-bold">{greeting}</h1>
                 <div className="row">
                   <div className="col-md-7 text-sm">
-      <h4 className="text-light text-sm mb-2">  <b>Current Time: </b> <span className="text-light">{currentTime}</span></h4>
-                  <p class="fw-bold mt-4 text-light mb-3">Welcome back, Admin! Keep leading with excellence. 🚀</p>
-                  <p class="fw-light text-light mb-2">Every click you make improves the user experience. Stay ahead! 🎯</p>
-                  {/* <p class="fw-light text-light">A well-managed system is a step toward a thriving business. Keep optimizing! 🔥</p> */}
-                  <p class="fw-light text-light">Your decisions shape the success of this platform. Keep it up! 💪</p>
+                     <h4 className="text-light text-sm mb-2">  <b>Current Time: </b> <span className="text-light">{currentTime}</span></h4>
+                  <p className="fw-bold mt-4 text-light mb-3">Welcome back, Admin! Keep leading with excellence. 🚀</p>
+                  <p className="fw-light text-light mb-2">Every click you make improves the user experience. Stay ahead! 🎯</p>
+                  {/* <p className="fw-light text-light">A well-managed system is a step toward a thriving business. Keep optimizing! 🔥</p> */}
+                  <p className="fw-light text-light">Your decisions shape the success of this platform. Keep it up! 💪</p>
 
                   </div>
                   <div className="col-md-5"></div>

@@ -224,8 +224,7 @@ export default function Header() {
             </ul>
           )}
         </div>
-
-        <div className="registered-users-box">
+  <div className="registered-users-box">
   <h3>Registered Users</h3>
   <p>1,11,48,647</p>
 </div>

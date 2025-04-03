@@ -38,11 +38,11 @@ const SidebarMenu = () => {
       </Link>
 
       {/* ✅ Category List */}
-      <ul className="border border-b border-gray-300 pt-2">
+      <ul className="border border-b border-gray-300 p-2">
         {allcategories.map((category) => (
           <li
             key={category._id}
-            className={`cursor-pointer hover:bg-gray-100 px-3 py-2 rounded-md ${
+            className={`cursor-pointer hover:bg-gray-100 py-2 rounded-md ${
               activeCategory === category._id ? "bg-gray-200" : ""
             }`}
             onClick={() => router.push(`/${formatUrl(category.name)}`)}

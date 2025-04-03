@@ -117,15 +117,15 @@ const CategoryPage = () => {
                 <div key={product._id} className="col-md-6">
                   <div className="card border-0 shadow-sm p-3 rounded-3">
                     <div className="position-relative text-center">
-                      <Image
-                        src={product.images?.[0]?.url || "placeholder.png"}
-                        alt={product.name}
-                        width={180}
-                        height={180}
-                        className="rounded img-fluid m-auto"
-                        style={{ objectFit: "cover" }}
-                        priority={false}
-                      />
+                    <Image
+  src={product.images?.[0]?.url || "/placeholder.png"} // ✅ Safe fallback
+  alt={product.name}
+  width={180}
+  height={180}
+  className="rounded img-fluid m-auto"
+  style={{ objectFit: "cover" }}
+  priority={false}
+/>
                     </div>
                     <h6 className="mt-2 text-primary text-center">{product.name}</h6>
                     <table className="table table-sm mt-2">

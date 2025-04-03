@@ -2,13 +2,72 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { FaFacebookF, FaYoutube, FaLinkedinIn, FaInstagram, FaArrowUp} from "react-icons/fa";
+import { FaFacebookF, FaYoutube, FaLinkedinIn, FaInstagram,  FaArrowUp } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
+
+
 import Image from "next/image";
 import Gpimage from "../../public/assets/gp.png";
 import GoogleTranslate from "./GoogleTranslate";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const Footer = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [subscribe, setSubscribe] = useState("")
+
+  const handlesubscribe = async (e) => {
+    e.preventDefault(); // Prevent form submission
+  
+    try {
+      if (!subscribe) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please enter your email!",
+        });
+        return;
+      }
+  
+      const response = await axios.post("/api/subscribers", { email: subscribe });
+  
+      if (response.status === 201) {
+        Swal.fire({
+          icon: "success",
+          title: "Subscribed Successfully!",
+          text: "You have been added to our mailing list.",
+        });
+        setSubscribe(""); // Clear input field
+      }
+    } catch (error) {
+      console.error("Subscription Error:", error);
+  
+      if (error.response) {
+        if (error.response.status === 409) {
+          Swal.fire({
+            icon: "info",
+            title: "Already Subscribed",
+            text: "This email is already subscribed to our mailing list.",
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Subscription Failed",
+            text: error.response.data.message || "Something went wrong. Please try again later.",
+          });
+        }
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Network Error",
+          text: "Please check your internet connection and try again.",
+        });
+      }
+    }
+  };
+  
+  
+  
 
   // Handle Scroll-to-Top Button Visibility
   useEffect(() => {
@@ -33,10 +92,11 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { icon: <FaFacebookF />, link: "#" },
-    { icon: <FaYoutube />, link: "#" },
+    { icon: <FaFacebookF />, link: "https://www.facebook.com/dialexportmart/" },
+    { icon: <FaYoutube />, link: "https://www.youtube.com/@DialExportMart" },
     { icon: <FaLinkedinIn />, link: "#" },
-    { icon: <FaInstagram />, link: "#" },
+    { icon: <FaXTwitter />, link: "https://x.com/DialExportMart" },
+    { icon: <FaInstagram />, link: "https://www.instagram.com/dialexportmart/" },
 
   ];
 
@@ -58,10 +118,10 @@ const Footer = () => {
             {/* Directory (Categories from API) */}
             <div>
               <h5 className="text-lg font-semibold text-white mb-3">Helps</h5>
-              <ul className="space-y-2">
+              <ul className="space-y-2 p-0">
                 {[ "Submit a Complaint", "Privacy Policy", "Terms of Use"].map((link, index) => (
                   <li key={index}>
-                    <Link href="#" className="hover:text-gray-400 transition">
+                    <Link href="#" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
                       {link}
                     </Link>
                   </li>
@@ -73,44 +133,63 @@ const Footer = () => {
             {/* Quick Links */}
             <div>
               <h5 className="text-lg font-semibold text-white mb-3">Quick Links</h5>
-              <ul className="space-y-2">
+              <ul className="space-y-2 p-0">
                   <li>
-                    <Link href="about-us" className="hover:text-gray-400 transition">
+                    <Link href="about-us" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
                      About Us
                     </Link>
                   </li>
                   <li>
-                    <Link href="contact-us" className="hover:text-gray-400 transition">
+                    <Link href="contact-us" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
                      Contact Us
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="hover:text-gray-400 transition">
+                    <Link href="blogs" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
                      Blogs
                    </Link>
                   </li>
               </ul>
             </div>
 
-
-
             {/* Social Media */}
-            <div className="text-center lg:text-left">
-              <h5 className="text-lg font-semibold text-white mb-3">Follow Us</h5>
-              <div className="flex flex-wrap gap-3 justify-center lg:justify-start m-auto" style={{ maxWidth: "130px" }}>
-                {socialLinks.map((social, index) => (
-                  <Link
-                    key={index}
-                    href={social.link}
-                    className="bg-gray-800 hover:bg-gray-700 p-1 rounded-full text-white text-xl flex items-center justify-center"
-                    style={{ width: "50px", height: "30px" }}
-                  >
-                    {social.icon}
-                  </Link>
-                ))}
-              </div>
+            <div className="">
+  <h5 className="text-lg font-semibold text-white mb-3">Follow Us</h5>
+  <div className="flex flex-wrap gap-2">
+    {socialLinks.map((social, index) => (
+      <Link
+        key={index}
+        href={social.link}
+        target="_blank"
+        className="bg-gray-800 hover:bg-gray-700 p-1 rounded-full text-white text-xl flex items-center justify-center"
+        style={{ width: "50px", height: "30px" }}
+      >
+        {social.icon}
+      </Link>
+    ))}
+  </div>
 
-            </div>
+  {/* Subscribe Section */}
+  <h5 className="text-lg font-semibold text-white mb-3 mt-4">Subscribe</h5>
+  <form onSubmit={handlesubscribe} className="flex items-center gap-2">
+  <input
+    type="email"
+    placeholder="Enter your email"
+    className="p-2 rounded-md w-full text-black outline-none common-shad"
+    value={subscribe}
+    onChange={(e) => setSubscribe(e.target.value)}
+  />
+  <button
+    type="submit"
+    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md common-shad"
+  >
+    Subscribe
+  </button>
+</form>
+
+
+</div>
+
 
           </div>
 

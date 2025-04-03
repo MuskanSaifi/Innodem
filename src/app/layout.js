@@ -6,6 +6,7 @@ import "../components/styles/header.css";
 import "../components/styles/footer.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 

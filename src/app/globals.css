@@ -11,8 +11,6 @@
     -webkit-box-orient: vertical;
     white-space: normal;
   }
-  @import 'bootstrap/dist/css/bootstrap.min.css';
-
 
 /* width */
 ::-webkit-scrollbar {
@@ -34,7 +32,6 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #888; 
 }
-
 
 .global-btn{
   background-color: #6d4aae;
@@ -115,4 +112,10 @@
 /* Pagination spacing */
 .swiper-pagination {
   display: none;
+}
+
+
+
+a{
+  text-decoration: none !important;
 }

@@ -164,6 +164,7 @@
 .dropdown li {
   padding: 10px;
   cursor: pointer;
+
 }
 
 .dropdown li:hover {
@@ -175,7 +176,7 @@
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: 15px;
+  padding: 10px 15px;
 }
 
 .dropdown-arrow {
@@ -219,4 +220,40 @@ height: 100% !important;
 
 .admin{
   color: #fff;
+}
+
+
+.bm-2{
+  border-bottom: 0.2px solid grey;
+}
+
+h1{
+  font-size: 20px;
+  margin: 0px;
+}
+
+
+
+/* Blog */
+.toolbar {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.toolbar button {
+  padding: 5px 10px;
+  border: none;
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.toolbar button:hover {
+  background: #0056b3;
 }

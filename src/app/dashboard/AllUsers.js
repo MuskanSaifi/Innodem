@@ -167,7 +167,8 @@ const AllUsers = () => {
 
   return (
     <div className="container mt-4">
-      <h2 className="text-center mb-4 res-color2 text-light w-50 rounded-5	m-auto  p-2 common-shad">All Users & Their Products</h2>
+      
+      <h6 className="text-center mb-4 res-color2 text-light w-50 rounded-5	m-auto  p-2 common-shad">All Users & Their Products</h6>
 
       {/* ✅ Search & Date Filter */}
       <Form className="mb-3 d-flex gap-2 res-color2 rounded-3 common-shad p-3">
@@ -325,61 +326,61 @@ const AllUsers = () => {
                                       <div className="col-md-4">
                                         <h6 className="common-shad mt-2 mb-2 rounded-2 p-2 res1-text-color res-color1">Trade Information</h6>
                                         <ul className="res-color1 p-3 rounded-3 res1-text-color common-shad">
-                                          <li className="text-sm">
+                                          <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Supply Ability:</div>
                                               <div className="col-5">{product.tradeInformation?.supplyAbility || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Delivery Time:</div>
                                               <div className="col-5">{product.tradeInformation?.deliveryTime || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">FOB Port:</div>
                                               <div className="col-5">{product.tradeInformation?.fobPort || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Sample Policy:</div>
                                               <div className="col-5">{product.tradeInformation?.samplePolicy || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Sample Available:</div>
                                               <div className="col-5">{product.tradeInformation?.sampleAvailable || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Main Export Markets:</div>
                                               <div className="col-5">{product.tradeInformation?.mainExportMarkets?.join(", ") || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Certifications:</div>
                                               <div className="col-5">{product.tradeInformation?.certifications || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Packaging Details:</div>
                                               <div className="col-5">{product.tradeInformation?.packagingDetails || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Payment Terms:</div>
                                               <div className="col-5">{product.tradeInformation?.paymentTerms || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Main Domestic Market:</div>
                                               <div className="col-5">{product.tradeInformation?.mainDomesticMarket || "N/A"}</div>
@@ -391,85 +392,85 @@ const AllUsers = () => {
                                       <div className="col-md-4">
                                         <h6 className="common-shad mt-2 mb-2 rounded-2 p-2 text-light res-color2">Specifications</h6>
                                         <ul className="res-color2 rounded-3 p-3 text-light common-shad">
-                                          <li className="text-sm">
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Product Type:</div>
                                               <div className="col-5">{product.specifications?.productType || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Material:</div>
                                               <div className="col-5">{product.specifications?.material || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Finish:</div>
                                               <div className="col-5">{product.specifications?.finish || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Thickness:</div>
                                               <div className="col-5">{product.specifications?.thickness || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Thickness Unit:</div>
                                               <div className="col-5">{product.specifications?.thicknessUnit || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Width:</div>
                                               <div className="col-5">{product.specifications?.width || "N/A"} {product.specifications?.widthUnit || ""}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Length:</div>
                                               <div className="col-5">{product.specifications?.length || "N/A"} {product.specifications?.lengthUnit || ""}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Weight:</div>
                                               <div className="col-5">{product.specifications?.weight || "N/A"} {product.specifications?.weightUnit || ""}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Shape:</div>
                                               <div className="col-5">{product.specifications?.shape || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Color:</div>
                                               <div className="col-5">{product.specifications?.color || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Coating:</div>
                                               <div className="col-5">{product.specifications?.coating || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Usage:</div>
                                               <div className="col-5">{product.specifications?.usage || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Origin:</div>
                                               <div className="col-5">{product.specifications?.origin || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Foldable:</div>
                                               <div className="col-5">{product.specifications?.foldable ? "Yes" : "No"}</div>
@@ -482,39 +483,39 @@ const AllUsers = () => {
                                       <div className="col-md-4">
                                         <h6 className="common-shad mt-2 mb-2 rounded-2 p-2 text-light res-color3">Trade Shopping</h6>
                                         <ul className="res-color3 rounded-3 p-3 text-light common-shad">
-                                          <li className="text-sm">
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Brand Name:</div>
                                               <div className="col-5">{product.tradeShopping?.brandName || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">GST:</div>
                                               <div className="col-5">{product.tradeShopping?.gst || "N/A"}%</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Selling Price Type:</div>
                                               <div className="col-5">{product.tradeShopping?.sellingPriceType || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
+                                          </li> 
 
                                           {product.tradeShopping?.sellingPriceType === "Fixed" && (
                                             <>
-                                              <li className="text-sm">
+                                               <li className="text-sm bm-2">
                                                 <div className="row">
                                                   <div className="col-7">Fixed Selling Price:</div>
                                                   <div className="col-5">₹{product.tradeShopping?.fixedSellingPrice || "N/A"}</div>
                                                 </div>
-                                              </li> <hr />
+                                              </li> 
                                             </>
                                           )}
 
                                           {product.tradeShopping?.sellingPriceType === "Slab Based" && (
                                             <>
-                                              <li className="text-sm">
+                                               <li className="text-sm bm-2">
                                                 <div className="row">
                                                   <div className="col-7">Slab Pricing:</div>
                                                   <div className="col-5"></div>
@@ -528,72 +529,72 @@ const AllUsers = () => {
                                                   </div>
                                                 </li>
                                               ))}
-                                              <hr />
+                                              
                                             </>
                                           )}
 
-                                          <li className="text-sm">
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Unit:</div>
                                               <div className="col-5">{product.tradeShopping?.unit || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Pack Size:</div>
                                               <div className="col-5">{product.tradeShopping?.packSize || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Min Ordered Packs:</div>
                                               <div className="col-5">{product.tradeShopping?.minOrderedPacks || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Is Returnable:</div>
                                               <div className="col-5">{product.tradeShopping?.isReturnable ? "Yes" : "No"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Stock Quantity:</div>
                                               <div className="col-5">{product.tradeShopping?.stockQuantity || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Weight Per Unit:</div>
                                               <div className="col-5">{product.tradeShopping?.weightPerUnit || "N/A"} {product.tradeShopping?.weightUnit || ""}</div>
                                             </div>
-                                          </li> <hr />
-                                          <li className="text-sm">
+                                          </li> 
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Shipping Type:</div>
                                               <div className="col-5">{product.tradeShopping?.shippingType || "N/A"}</div>
                                             </div>
-                                          </li> <hr />
+                                          </li> 
 
-                                          <li className="text-sm">
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Package Dimensions:</div>
                                               <div className="col-5"></div>
                                             </div>
                                           </li>
-                                          <li className="text-sm">
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Length:</div>
                                               <div className="col-5">{product.tradeShopping?.packageDimensions?.length || "N/A"} cm</div>
                                             </div>
                                           </li>
-                                          <li className="text-sm">
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Width:</div>
                                               <div className="col-5">{product.tradeShopping?.packageDimensions?.width || "N/A"} cm</div>
                                             </div>
                                           </li>
-                                          <li className="text-sm">
+                                           <li className="text-sm bm-2">
                                             <div className="row">
                                               <div className="col-7">Height:</div>
                                               <div className="col-5">{product.tradeShopping?.packageDimensions?.height || "N/A"} cm</div>

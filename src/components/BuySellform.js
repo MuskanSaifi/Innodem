@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Select from "react-select";
 import toast from "react-hot-toast";
+import Image from "next/image";
+
 
 const countryCodes = [
   { value: "+1", label: "\ud83c\uddfa\ud83c\uddf8 +1", name: "United States" },
@@ -122,6 +124,9 @@ const BuySellForm = ({ productname: initialProductName }) => {
   
 
   return (
+
+    <>
+  
     <div className={`modal fade ${showModal ? "show d-block" : ""}`} style={{ background: "rgba(0, 0, 0, 0.5)" }} >
       <div className="modal-dialog modal-dialog-centered modal-lg">
         <div className="modal-content p-4">
@@ -129,7 +134,22 @@ const BuySellForm = ({ productname: initialProductName }) => {
             <h5 className="modal-title fw-bold">Tell us what you need</h5>
             <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
           </div>
-          <div className="modal-body">
+
+
+          <div className="row">
+          <div className="col-md-6 d-flex align-items-center justify-content-center">
+  <div style={{ width: "100%", height: "100%", position: "relative" }} className="mt-3">
+    <Image 
+      src="/assets/pop1.jpeg" 
+      alt="App Store"
+      fill
+      style={{ objectFit: "contain" }} 
+    />
+  </div>
+</div>
+
+    <div className="col-md-6">
+    <div className="modal-body">
             {message && <p className="text-success">{message}</p>}
             {error && <p className="text-danger">{error}</p>}
 
@@ -149,29 +169,38 @@ const BuySellForm = ({ productname: initialProductName }) => {
                     <input type="radio" name="buy_sell" value="sell" className="form-check-input ms-3 me-2" checked={buySell === "sell"} onChange={() => setBuySell("sell")} /> Sell
                   </div>
                 </div>
-                <div className="mb-3">
+                <div className="mb-2">
                   <input type="text" value={productname} onChange={(e) => setProductname(e.target.value)} required className="form-control" placeholder="Product Name" />
                 </div>
-                <div className="mb-3">
-                  <Select options={countryCodes} value={countryCode} onChange={setCountryCode} className="mb-3" />
+                <div className="mb-2 d-flex">
+                  <Select options={countryCodes} value={countryCode} onChange={setCountryCode} className="me-2" />
                   <input type="text" value={mobileNumber} onChange={(e) => setMobileNumber(e.target.value)} required className="form-control" placeholder="Mobile Number" />
                 </div>
                
                 {buySell === "sell" && (
                   <>
-                    <input type="text" value={fullname} onChange={(e) => setFullname(e.target.value)} required className="form-control mb-3" placeholder="Full Name" />
-                    <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} required className="form-control mb-3" placeholder="Email" />
-                    <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} required className="form-control mb-3" placeholder="Company Name" />
-                    <input type="text" value={pincode} onChange={(e) => setPincode(e.target.value)} required className="form-control mb-3" placeholder="Pincode" />
+                    <input type="text" value={fullname} onChange={(e) => setFullname(e.target.value)} required className="form-control mb-2" placeholder="Full Name" />
+                    <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} required className="form-control mb-2" placeholder="Email" />
+                    <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} required className="form-control mb-2" placeholder="Company Name" />
+                    <input type="text" value={pincode} onChange={(e) => setPincode(e.target.value)} required className="form-control mb-2" placeholder="Pincode" />
                   </>
                 )}
                 <button type="submit" className="btn btn-primary w-100" disabled={loading}>{loading ? "Sending OTP..." : "Send OTP"}</button>
               </form>
             )}
           </div>
+    </div>
+    </div>
+
+      
+
+
         </div>
       </div>
     </div>
+    </>
+
+
   );
 };
 
