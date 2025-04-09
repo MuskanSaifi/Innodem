@@ -4,6 +4,9 @@ const categorySchema = new mongoose.Schema(
   {
     name: { type: String, required: true, unique: true },
     icon: { type: String },
+    metatitle: { type: String },
+    metadescription: { type: String },
+    metakeywords: { type: String },
     isTrending: { type: Boolean, default: false },
     subcategories: [{ type: mongoose.Schema.Types.ObjectId, ref: "SubCategory" }],
   },

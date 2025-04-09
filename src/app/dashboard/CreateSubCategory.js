@@ -7,6 +7,9 @@ const CreateSubCategory = () => {
   const [productData, setProductData] = useState({
     name: "",
     category: "",
+    metatitle: "",
+    metadescription: "",
+    metakeyword: ""
   });
 
   useEffect(() => {
@@ -25,15 +28,20 @@ const CreateSubCategory = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!productData.name || !productData.category) {
+    const { name, category, metatitle, metadescription, metakeyword } = productData;
+
+    if (!name || !category || !metatitle || !metadescription) {
       toast.error("Please fill in all required fields.");
       return;
     }
 
     try {
       const response = await axios.post(`/api/adminprofile/subcategory`, {
-        name: productData.name,
-        category: productData.category,
+        name,
+        category,
+        metatitle,
+        metadescription,
+        metakeyword,
       });
 
       if (response.status === 201) {
@@ -41,6 +49,9 @@ const CreateSubCategory = () => {
         setProductData({
           name: "",
           category: "",
+          metatitle: "",
+          metadescription: "",
+          metakeyword: ""
         });
       }
     } catch (error) {
@@ -56,15 +67,13 @@ const CreateSubCategory = () => {
       <input
         className="form-control mb-3"
         type="text"
-        id="subcategory-name"
-        placeholder="Enter subcategory name"
+        placeholder="Enter SubCategory Name"
         value={productData.name}
         onChange={(e) => setProductData({ ...productData, name: e.target.value })}
       />
 
       <select
         className="form-control mb-3"
-        id="subcategory-category"
         value={productData.category}
         onChange={(e) => setProductData({ ...productData, category: e.target.value })}
       >
@@ -75,6 +84,30 @@ const CreateSubCategory = () => {
           </option>
         ))}
       </select>
+
+      <input
+        className="form-control mb-3"
+        type="text"
+        placeholder="Enter Meta Title"
+        value={productData.metatitle}
+        onChange={(e) => setProductData({ ...productData, metatitle: e.target.value })}
+      />
+
+      <textarea
+        className="form-control mb-3"
+        placeholder="Enter Meta Description"
+        rows={3}
+        value={productData.metadescription}
+        onChange={(e) => setProductData({ ...productData, metadescription: e.target.value })}
+      ></textarea>
+
+      <input
+        className="form-control mb-3"
+        type="text"
+        placeholder="Enter Meta Keywords (comma-separated)"
+        value={productData.metakeyword}
+        onChange={(e) => setProductData({ ...productData, metakeyword: e.target.value })}
+      />
 
       <button className="btn btn-primary" onClick={handleSubmit}>
         Create SubCategory

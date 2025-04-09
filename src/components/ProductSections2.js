@@ -62,7 +62,7 @@ const ProductSections2 = ({ tag, Name }) => {
     <div className="container mx-auto p-6 bg-white rounded-lg">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold text-gray-800">{Name} Products</h2>
-        <Link href={`/category/${formatUrl(tag)}`} className="text-blue-500 hover:underline text-sm">
+        <Link href={`/seller/category/${formatUrl(tag)}`} className="text-blue-500 hover:underline text-sm">
           View All
         </Link>
       </div>
@@ -80,7 +80,7 @@ const ProductSections2 = ({ tag, Name }) => {
           return (
             <div key={product._id} className="p-3">
               <div className="border rounded-lg shadow-sm p-4 hover:shadow-lg transition-all bg-white">
-                <Link href={`/${formatUrl(categoryName)}/${formatUrl(subCategoryName)}/${productName}`}>
+                <Link href={`/seller/${formatUrl(categoryName)}/${formatUrl(subCategoryName)}/${productName}`}>
                   <div className="relative w-full h-40 mb-3 overflow-hidden rounded">
                     <Image
                       src={product.images?.[0]?.url || "/placeholder.png"}
@@ -94,7 +94,7 @@ const ProductSections2 = ({ tag, Name }) => {
                 <p className="text-gray-600 text-xs">{product.seller || "Unknown Seller"}</p>
                 <h3 className="text-gray-800 font-semibold text-sm truncate">{product.name}</h3>
                 <p className="text-blue-500 font-bold text-md">₹{product.price}/Pieces</p>
-                <Link href={`/${formatUrl(categoryName)}/${formatUrl(subCategoryName)}/${productName}`} className="block text-center border rounded-lg py-2 mt-3 text-blue-600 border-blue-500 hover:bg-blue-500 hover:text-white transition">
+                <Link href={`/seller/${formatUrl(categoryName)}/${formatUrl(subCategoryName)}/${productName}`} className="block text-center border rounded-lg py-2 mt-3 text-blue-600 border-blue-500 hover:bg-blue-500 hover:text-white transition">
                   Buy Now
                 </Link>
               </div>

@@ -2,55 +2,38 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Image from "next/image";
-
+import "./metamodal.css"; // External CSS for modal
 
 const AllCategory = () => {
   const [categories, setCategories] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(""); // ✅ Search state
-  const [searchDate, setSearchDate] = useState(""); // ✅ Date filter
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchDate, setSearchDate] = useState("");
+  const [showMetaModal, setShowMetaModal] = useState(false);
+  const [metaForm, setMetaForm] = useState({
+    id: "",
+    name: "",
+    metatitle: "",
+    metadescription: "",
+    metakeywords: "",
+  });
 
   useEffect(() => {
     fetchCategories();
   }, []);
 
-  // Fetch categories
   const fetchCategories = async () => {
     try {
       const result = await axios.get(`/api/adminprofile/category`);
-      if (Array.isArray(result.data)) {
-        setCategories(result.data);
-      } else {
-        console.error("API response is not an array:", result.data);
-        setCategories([]); // Set an empty array to prevent errors
-      }
+      setCategories(Array.isArray(result.data) ? result.data : []);
     } catch (error) {
-      console.error("Error fetching categories:", error);
       Swal.fire("Error", "Failed to fetch categories", "error");
     }
   };
 
-  // ✅ Handle search input change
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value.toLowerCase());
-  };
+  const handleSearch = (e) => setSearchTerm(e.target.value.toLowerCase());
 
-  // ✅ Handle date filter change
-  const handleDateChange = (e) => {
-    setSearchDate(e.target.value);
-  };
+  const handleDateChange = (e) => setSearchDate(e.target.value);
 
-  // ✅ Filter categories based on searchTerm and date
-  const filteredCategories = categories.filter((category) => {
-    const categoryDate = category.createdAt ? new Date(category.createdAt).toISOString().split("T")[0] : null;
-
-    return (
-      (category.name.toLowerCase().includes(searchTerm) || 
-        category.subcategories.some((sub) => sub.name.toLowerCase().includes(searchTerm))) &&
-      (searchDate === "" || (categoryDate && categoryDate === searchDate))
-    );
-  });
-
-  // Handle delete category
   const handleDelete = async (categoryId) => {
     const confirmDelete = await Swal.fire({
       title: "Are you sure?",
@@ -64,26 +47,58 @@ const AllCategory = () => {
 
     if (confirmDelete.isConfirmed) {
       try {
-        const response = await axios.delete(
-          `/api/adminprofile/category?id=${categoryId}`
-        );
-        
+        const response = await axios.delete(`/api/adminprofile/category?id=${categoryId}`);
         if (response.status === 200) {
-          setCategories(categories.filter((category) => category._id !== categoryId));
-          Swal.fire("Deleted!", "Category has been deleted.", "success");
-        } else {
-          Swal.fire("Error", response.data.error || "Failed to delete category", "error");
+          setCategories(categories.filter((c) => c._id !== categoryId));
+          Swal.fire("Deleted!", "Category deleted.", "success");
         }
-      } catch (error) {
-        console.error("Error deleting category:", error);
+      } catch {
         Swal.fire("Error", "Failed to delete category", "error");
       }
     }
   };
 
+  const filteredCategories = categories.filter((category) => {
+    const categoryDate = category.createdAt
+      ? new Date(category.createdAt).toISOString().split("T")[0]
+      : null;
+
+    return (
+      (category.name?.toLowerCase().includes(searchTerm) ||
+        category.subcategories?.some((sub) =>
+          sub.name.toLowerCase().includes(searchTerm)
+        )) &&
+      (searchDate === "" || (categoryDate && categoryDate === searchDate))
+    );
+  });
+
+  const openMetaModal = (category) => {
+    setMetaForm({
+      id: category._id,
+      name: category.name || "",
+      metatitle: category.metatitle || "",
+      metadescription: category.metadescription || "",
+      metakeywords: category.metakeywords || "",
+    });
+    setShowMetaModal(true);
+  };
+
+  const handleMetaUpdate = async () => {
+    try {
+      const response = await axios.patch(`/api/adminprofile/category/meta`, metaForm);
+      if (response.status === 200) {
+        Swal.fire("Success", "Category updated", "success");
+        setShowMetaModal(false);
+        fetchCategories();
+      }
+    } catch {
+      Swal.fire("Error", "Failed to update category", "error");
+    }
+  };
+
   return (
     <div className="container mt-4">
-      {/* ✅ Search Filters */}
+      {/* Search Filters */}
       <div className="row mb-3">
         <div className="col-md-6">
           <input
@@ -109,16 +124,14 @@ const AllCategory = () => {
         </div>
       </div>
 
-      {/* Table Section */}
-      <table className="table table-striped table-bordered table-responsive text-center">
+      {/* Table */}
+      <table className="table table-bordered text-center">
         <thead className="bg-dark text-white">
           <tr>
-            {/* <th>ID</th> */}
             <th>Name</th>
             <th>Icon</th>
             <th>Subcategories</th>
             <th>Created At</th>
-            {/* <th>Updated At</th> */}
             <th>Operations</th>
           </tr>
         </thead>
@@ -126,23 +139,24 @@ const AllCategory = () => {
           {filteredCategories.length > 0 ? (
             filteredCategories.map((category) => (
               <tr key={category._id}>
-                {/* <td>{category._id}</td> */}
                 <td>{category.name}</td>
                 <td>
-                {category.icon && (
-  <Image 
-    src={category.icon} 
-    alt={category.name} 
-    width={50} 
-    height={50} 
-    className="object-cover"
-  />
-)}                </td>
+                  {category.icon && (
+                    <Image
+                      src={category.icon}
+                      alt={category.name}
+                      width={50}
+                      height={50}
+                    />
+                  )}
+                </td>
                 <td>
                   {category.subcategories.length > 0 ? (
-                    <ul className="list-unstyled">
+                    <ul className="list-unstyled m-0">
                       {category.subcategories.map((sub) => (
-                        <li className="common-shad m-1 rounded-1 text-dark" key={sub._id}>{sub.name}</li>
+                        <li className="common-shad rounded-2 m-2" key={sub._id}>
+                          {sub.name}
+                        </li>
                       ))}
                     </ul>
                   ) : (
@@ -150,13 +164,15 @@ const AllCategory = () => {
                   )}
                 </td>
                 <td>{new Date(category.createdAt).toLocaleString()}</td>
-                {/* <td>{new Date(category.updatedAt).toLocaleString()}</td> */}
                 <td>
-                  <button className="btn btn-success btn-sm w-100 shadow mb-2">
+                  <button
+                    className="btn btn-success btn-sm w-100 mb-2"
+                    onClick={() => openMetaModal(category)}
+                  >
                     Update Category
                   </button>
                   <button
-                    className="btn btn-danger btn-sm w-100 shadow"
+                    className="btn btn-danger btn-sm w-100"
                     onClick={() => handleDelete(category._id)}
                   >
                     Delete Category
@@ -166,13 +182,48 @@ const AllCategory = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="7" className="text-center">
-                No matching categories found.
-              </td>
+              <td colSpan="5">No matching categories found.</td>
             </tr>
           )}
         </tbody>
       </table>
+
+      {/* Modal */}
+      {showMetaModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h4>Update Category Info</h4>
+            <input
+              type="text"
+              placeholder="Category Name"
+              value={metaForm.name}
+              onChange={(e) => setMetaForm({ ...metaForm, name: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Meta Title"
+              value={metaForm.metatitle}
+              onChange={(e) => setMetaForm({ ...metaForm, metatitle: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Meta Description"
+              value={metaForm.metadescription}
+              onChange={(e) => setMetaForm({ ...metaForm, metadescription: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Meta Keywords"
+              value={metaForm.metakeywords}
+              onChange={(e) => setMetaForm({ ...metaForm, metakeywords: e.target.value })}
+            />
+            <div className="modal-buttons">
+              <button onClick={handleMetaUpdate}>Update</button>
+              <button onClick={() => setShowMetaModal(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

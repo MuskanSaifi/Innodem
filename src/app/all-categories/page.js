@@ -61,7 +61,7 @@ export default function CategoryList() {
               {/* Clickable Category */}
               <h3
                 className="text-lg font-semibold text-blue-600 hover:underline"
-                onClick={() => router.push(`/${formatUrl(category.name)}`)}
+                onClick={() => router.push(`/seller/${formatUrl(category.name)}`)}
                 role="button"
                 tabIndex={0}
               >
@@ -79,7 +79,7 @@ export default function CategoryList() {
                         className="text-sm text-blue-500 hover:underline cursor-pointer"
                         onClick={(e) => {
                           e.stopPropagation(); // Prevent category click
-                          router.push(`/${formatUrl(category.name)}/${formatUrl(sub.name)}`);
+                          router.push(`/seller/${formatUrl(category.name)}/${formatUrl(sub.name)}`);
                         }}
                       >
                         {sub.name}

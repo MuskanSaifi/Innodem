@@ -111,7 +111,7 @@ export async function POST(req) {
     const body = await req.json();
 
     // Required fields validation
-    const requiredFields = ["name", "category"];
+    const requiredFields = ["name", "category", "metatitle", "metadescription", "metakeyword"];
     for (const field of requiredFields) {
       if (!body[field]) {
         return new Response(
@@ -163,12 +163,16 @@ export async function POST(req) {
       );
     }
 
-    // Create and save the new subcategory
-    const newSubCategory = new SubCategory({
-      name: body.name.trim(),
-      category: body.category,  // Reference to Category ID
-      products: body.products,  // Array of product IDs
-    });
+// Create and save the new subcategory
+const newSubCategory = new SubCategory({
+  name: body.name.trim(),
+  category: body.category,  // Reference to Category ID
+  products: body.products,  // Array of product IDs
+  metatitle: body.metatitle?.trim() || "",
+  metadescription: body.metadescription?.trim() || "",
+  metakeyword: body.metakeyword?.trim() || "", // 👈 Include this
+});
+
 
     const savedSubCategory = await newSubCategory.save();
 

@@ -79,7 +79,7 @@ const IndustrySlider = () => {
                 </h3>
                 {/* ✅ Use formatted URL for Category */}
             
-                <Link href={`/${formatUrl(category.name)}`} className="text-blue-600 text-sm hover:underline">
+                <Link href={`/seller/${formatUrl(category.name)}`} className="text-blue-600 text-sm hover:underline">
                   View All
                 </Link>
               </div>
@@ -90,7 +90,7 @@ const IndustrySlider = () => {
                   
                   <Link 
                     key={sub._id} 
-                    href={`/${formatUrl(category.name)}/${formatUrl(sub.name)}`} 
+                    href={`/seller/${formatUrl(category.name)}/${formatUrl(sub.name)}`} 
                     className="group block bg-gray-100 rounded-md p-2 hover:bg-gray-200 transition"
                   >
                     <Image 

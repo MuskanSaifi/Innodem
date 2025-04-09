@@ -35,14 +35,16 @@ const Buyers = () => {
 
   // ✅ Search Filter
   const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-    filterBuyers(e.target.value, searchDate);
+    const term = e.target.value;
+    setSearchTerm(term);
+    filterBuyers(term, searchDate);
   };
 
   // ✅ Date Filter
   const handleDateFilter = (e) => {
-    setSearchDate(e.target.value);
-    filterBuyers(searchTerm, e.target.value);
+    const date = e.target.value;
+    setSearchDate(date);
+    filterBuyers(searchTerm, date);
   };
 
   // ✅ Filtering Buyers List
@@ -58,9 +60,7 @@ const Buyers = () => {
       );
     }
     if (date) {
-      filtered = filtered.filter((buyer) =>
-        buyer.otpExpires ? buyer.otpExpires.startsWith(date) : false
-      );
+      filtered = filtered.filter((buyer) => buyer.otpExpires?.startsWith(date));
     }
     setFilteredBuyers(filtered);
   };
@@ -90,8 +90,9 @@ const Buyers = () => {
 
       if (data.success) {
         Swal.fire("Deleted!", "The buyer has been deleted.", "success");
-        setBuyers((prevBuyers) => prevBuyers.filter((buyer) => buyer._id !== id)); // ✅ Remove from UI
-        setFilteredBuyers((prevBuyers) => prevBuyers.filter((buyer) => buyer._id !== id)); // ✅ Update filtered list
+        const updatedBuyers = buyers.filter((buyer) => buyer._id !== id);
+        setBuyers(updatedBuyers);
+        setFilteredBuyers(updatedBuyers);
       } else {
         Swal.fire("Error", "Failed to delete buyer: " + data.message, "error");
       }
@@ -102,91 +103,84 @@ const Buyers = () => {
   };
 
   return (
-    <>
-      <div className="container mt-4">
-        <div className="card shadow p-4">
-          <h6 className="text-center mb-4 res-color2 text-light w-50 rounded-5 m-auto p-2 common-shad">
-            All Buyers
-          </h6>
+    <div className="container mt-4">
+      <div className="card shadow p-4">
+        <h6 className="text-center mb-4 res-color2 text-light w-50 rounded-5 m-auto p-2 common-shad">
+          All Buyers
+        </h6>
 
-          {/* ✅ Search & Date Filter */}
-          <Form className="mb-3 d-flex gap-2 res-color2 rounded-3 common-shad p-3">
-            <Form.Control
-              type="text"
-              placeholder="Search by name, email, or phone number"
-              value={searchTerm}
-              onChange={handleSearch}
-            />
-            <Form.Control type="date" value={searchDate} onChange={handleDateFilter} />
-            <Button
-              variant="secondary"
-              onClick={() => {
-                setSearchTerm("");
-                setSearchDate("");
-                setFilteredBuyers(buyers);
-              }}
-            >
-              Reset
-            </Button>
-          </Form>
+        {/* ✅ Search & Date Filter */}
+        <Form className="mb-3 d-flex gap-2 res-color2 rounded-3 common-shad p-3">
+          <Form.Control
+            type="text"
+            placeholder="Search by name, email, or phone number"
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+          <Form.Control type="date" value={searchDate} onChange={handleDateFilter} />
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setSearchTerm("");
+              setSearchDate("");
+              setFilteredBuyers(buyers);
+            }}
+          >
+            Reset
+          </Button>
+        </Form>
 
-          {loading && <p>Loading buyers...</p>}
-          {error && <p className="text-danger">Error: {error}</p>}
-          {!loading && !error && filteredBuyers.length === 0 && <p>No buyers found.</p>}
+        {loading && <p>Loading buyers...</p>}
+        {error && <p className="text-danger">Error: {error}</p>}
+        {!loading && !error && filteredBuyers.length === 0 && <p>No buyers found.</p>}
 
-          {!loading && !error && filteredBuyers.length > 0 && (
-            <Table
-              border="1"
-              cellPadding="10"
-              cellSpacing="0"
-              className="table-striped table-bordered table-hover table-responsive common-shad"
-            >
-              <thead className="table-dark">
-                <tr className="text-sm">
-                  <th>#</th>
-                  <th>Full Name</th>
-                  <th>Email</th>
-                  <th>Mobile Number</th>
-                  <th>Product Name</th>
-                  <th>Created At</th>
-                  <th>Action</th>
+        {!loading && !error && filteredBuyers.length > 0 && (
+          <Table className="table-striped table-bordered table-hover table-responsive common-shad">
+            <thead className="table-dark">
+              <tr>
+                <th>#</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Mobile Number</th>
+                <th>Product Name</th>
+                <th>Created At</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {filteredBuyers.map((buyer, index) => (
+                <tr key={buyer._id}>
+                  <td>{index + 1}</td>
+                  <td>{buyer.fullname || "N/A"}</td>
+                  <td>{buyer.email || "N/A"}</td>
+                  <td>{buyer.mobileNumber || "N/A"}</td>
+                  <td>{buyer.productname || "N/A"}</td>
+                  <td>
+                    {buyer.createdAt
+                      ? new Date(buyer.createdAt).toLocaleString("en-GB", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                          hour12: true,
+                        })
+                      : "N/A"}
+                  </td>
+                  <td>
+                    <Button variant="danger" size="sm" onClick={() => handleDeleteBuyer(buyer._id)}>
+                      Delete
+                    </Button>
+                  </td>
                 </tr>
-              </thead>
-
-              <tbody>
-                {filteredBuyers.map((buyer, index) => (
-                  <tr key={buyer._id}>
-                    <td>{index + 1}</td>
-                    <td>{buyer.fullname || "N/A"}</td>
-                    <td>{buyer.email || "N/A"}</td>
-                    <td>{buyer.mobileNumber || "N/A"}</td>
-                    <td>{buyer.productname || "N/A"}</td>
-                    <td>
-                      {buyer.createdAt
-                        ? new Date(buyer.createdAt).toLocaleString("en-GB", {
-                            day: "2-digit",
-                            month: "2-digit",
-                            year: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            second: "2-digit",
-                            hour12: true,
-                          })
-                        : "N/A"}
-                    </td>
-                    <td>
-                      <Button variant="danger" size="sm" onClick={() => handleDeleteBuyer(buyer._id)}>
-                        Delete
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          )}
-        </div>
+              ))}
+            </tbody>
+          </Table>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 

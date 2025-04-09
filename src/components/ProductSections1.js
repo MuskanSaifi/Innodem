@@ -82,7 +82,7 @@ const ProductSections1 = ({ tag, Name }) => {
           return (
             <SwiperSlide key={product._id}>
               <Link
-                href={`/${formatUrl(categoryName)}/${formatUrl(subCategoryName)}/${productName}`}
+                href={`/seller/${formatUrl(categoryName)}/${formatUrl(subCategoryName)}/${productName}`}
                 className="group"
               >
                 <div className="relative w-28 h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 mx-auto rounded-full overflow-hidden bg-white border border-gray-200 shadow-md backdrop-blur-md transition-all duration-300 group-hover:shadow-2xl">

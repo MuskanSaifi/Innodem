@@ -45,7 +45,7 @@ const SidebarMenu = () => {
             className={`cursor-pointer hover:bg-gray-100 py-2 rounded-md ${
               activeCategory === category._id ? "bg-gray-200" : ""
             }`}
-            onClick={() => router.push(`/${formatUrl(category.name)}`)}
+            onClick={() => router.push(`/seller/${formatUrl(category.name)}`)}
             onMouseEnter={() => setActiveCategory(category._id)}
           >
             <div className="flex items-center">
@@ -77,7 +77,7 @@ const SidebarMenu = () => {
                     <h3
                       className="font-semibold text-blue-600 hover:underline cursor-pointer"
                       onClick={() =>
-                        router.push(`/${formatUrl(category.name)}/${formatUrl(subcategory.name)}`)
+                        router.push(`/seller/${formatUrl(category.name)}/${formatUrl(subcategory.name)}`)
                       }
                     >
                       <div className="flex items-center">
@@ -97,16 +97,14 @@ const SidebarMenu = () => {
                     <ul className="text-gray-700">
                       {subcategory.products.map((product) => (
                         <li key={product._id}>
-                          <span
-                            className="text-sm text-blue-700 cursor-pointer"
-                            onClick={() =>
-                              router.push(
-                                `/${formatUrl(category.name)}/${formatUrl(subcategory.name)}/${formatUrl(product.name)}`
-                              )
-                            }
-                          >
-                            {product.name}
-                          </span>
+<Link
+  href={`/manufacturers/${formatUrl(product.name)}`}
+  className="text-sm text-blue-700 hover:underline"
+>
+  {product.name}
+</Link>
+
+
                         </li>
                       ))}
                     </ul>

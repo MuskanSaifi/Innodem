@@ -1,98 +1,142 @@
-import React, { useState } from "react";
-import axios from "axios";
-import toast from "react-hot-toast";
+import { useState } from "react";
+import { toast } from "react-hot-toast";
 
-const CreateCategory = () => {
-  const [categoryData, setCategoryData] = useState({
-    name: "",
-    icon: "",
-    isTrending: false,
-    subcategories: "", // Optional subcategory input
-  });
+export default function CreateCategoryForm() {
+  const [name, setName] = useState("");
+  const [metatitle, setMetaTitle] = useState("");
+  const [metadescription, setMetaDescription] = useState("");
+  const [isTrending, setIsTrending] = useState(false);
+  const [subcategories, setSubcategories] = useState([]);
+  const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setCategoryData({
-      ...categoryData,
-      [name]: type === "checkbox" ? checked : value,
+  // Step 1: Upload to Cloudinary
+  const uploadImageToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "unsigned_category_upload"); // Replace with your unsigned preset
+    formData.append("folder", "categories");
+  
+    const res = await fetch("https://api.cloudinary.com/v1_1/dchek3sr8/image/upload", {
+      method: "POST",
+      body: formData,
     });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!categoryData.name) {
-      toast.error("Please enter the category name.");
-      return;
+  
+    const contentType = res.headers.get("content-type");
+  
+    if (!res.ok || !contentType?.includes("application/json")) {
+      const errorText = await res.text(); // get raw HTML or error
+      console.error("💥 Cloudinary error:", errorText);
+      throw new Error("Cloudinary upload failed. Please check your upload preset and cloud name.");
     }
-
-    const formattedData = {
-      name: categoryData.name,
-      icon: categoryData.icon || null,
-      isTrending: categoryData.isTrending,
-      subcategories: categoryData.subcategories
-        ? categoryData.subcategories.split(",").map((id) => id.trim())
-        : [],
-    };
-
+  
+    const data = await res.json();
+  
+    if (!data.secure_url) {
+      throw new Error(data.error?.message || "Image upload failed.");
+    }
+  
+    return data.secure_url;
+  };
+  
+  
+  // Step 2: Handle Submit
+  const handleCreateCategory = async (e) => {
+    e.preventDefault();
     try {
-      const response = await axios.post(
-        `/api/adminprofile/category`,
-        formattedData
-      );      
+      setLoading(true);
+      let iconUrl = "";
 
-      if (response.status === 201) {
-        toast.success("Category created successfully!");
-        setCategoryData({ name: "", icon: "", isTrending: false, subcategories: "" });
+      if (file) {
+        toast.loading("Uploading image...");
+        iconUrl = await uploadImageToCloudinary(file);
+        toast.dismiss();
+        toast.success("Image uploaded!");
       }
-    } catch (error) {
-      console.error("Error creating category:", error);
-      toast.error("Failed to create category. Please try again.");
+
+      const response = await fetch("/api/adminprofile/category", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          metatitle,
+          metadescription,
+          icon: iconUrl,
+          isTrending,
+          subcategories,
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Failed to create category");
+
+      toast.success("Category created successfully!");
+      // reset form
+      setName("");
+      setMetaTitle("");
+      setMetaDescription("");
+      setIsTrending(false);
+      setFile(null);
+    } catch (err) {
+      console.error("❌ Error creating category:", err);
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div>
-      <h3>Create a New Category</h3>
+    <form onSubmit={handleCreateCategory} className="p-4 space-y-4">
       <input
-        className="form-control mb-3"
         type="text"
-        name="name"
-        placeholder="New Category Name"
-        value={categoryData.name}
-        onChange={handleChange}
+        placeholder="Category Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        required
+        className="border p-2 w-full"
       />
+
       <input
-        className="form-control mb-3"
         type="text"
-        name="icon"
-        placeholder="Icon URL (optional)"
-        value={categoryData.icon}
-        onChange={handleChange}
+        placeholder="Meta Title"
+        value={metatitle}
+        onChange={(e) => setMetaTitle(e.target.value)}
+        className="border p-2 w-full"
       />
+
+      <textarea
+        placeholder="Meta Description"
+        value={metadescription}
+        onChange={(e) => setMetaDescription(e.target.value)}
+        className="border p-2 w-full"
+      />
+
       <input
-        className="form-control mb-3"
-        type="text"
-        name="subcategories"
-        placeholder="Subcategory IDs (comma-separated, optional)"
-        value={categoryData.subcategories}
-        onChange={handleChange}
+        type="file"
+        onChange={(e) => setFile(e.target.files[0])}
+        accept="image/*"
+        className="border p-2 w-full"
       />
-      <label>
+
+      <label className="flex items-center space-x-2">
         <input
           type="checkbox"
-          name="isTrending"
-          checked={categoryData.isTrending}
-          onChange={handleChange}
+          checked={isTrending}
+          onChange={(e) => setIsTrending(e.target.checked)}
         />
-        Trending Category
+        <span>Is Trending</span>
       </label>
-      <br />
-      <button className="btn btn-primary mt-3" onClick={handleSubmit}>
-        Create Category
-      </button>
-    </div>
-  );
-};
 
-export default CreateCategory;
+      {/* Optional: Subcategories input */}
+      {/* Add your subcategory selection logic here */}
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="bg-blue-600 text-white px-4 py-2 rounded"
+      >
+        {loading ? "Creating..." : "Create Category"}
+      </button>
+    </form>
+  );
+}

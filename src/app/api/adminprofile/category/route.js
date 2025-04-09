@@ -3,11 +3,8 @@ import connectDB from "@/lib/dbConnect";
 import Category from "@/models/Category"; // Assuming you have the Category model
 import SubCategory from "@/models/SubCategory";
 import Product from "@/models/Product"; // ✅ Import Product to ensure it's registered
-
 import cloudinary from "@/lib/cloudinary"; // ✅ Import Cloudinary Config
-
 import { URL } from "url";  // Import URL for parsing query
-
 
 export async function PATCH(req) {
   try {
@@ -65,12 +62,10 @@ export async function PATCH(req) {
   }
 }
 
-
 // Create category
 export async function POST(req) {
   try {
     const body = await req.json();
-
     // Validate required fields
     if (!body.name) {
       return new Response(
@@ -96,6 +91,8 @@ export async function POST(req) {
     // Create a new category
     const newCategory = new Category({
       name: body.name,
+      metatitle: body.metatitle,
+      metadescription: body.metadescription,
       icon: body.icon || null, // Optional icon
       isTrending: body.isTrending,
       subcategories: body.subcategories || [], // Default to an empty array if not provided
@@ -116,7 +113,6 @@ export async function POST(req) {
     );
   }
 }
-
 
 // Get All Categories
 export async function GET() {
@@ -152,7 +148,6 @@ export async function GET() {
     );
   }
 }
-
 
 // Delete Category by ID
 export async function DELETE(req) {

@@ -104,7 +104,7 @@ const ProductDetailPage = () => {
                   return (
                     <Link
                     key={sub._id}  // ✅ Corrected key placement
-                    href={`/${encodedCategory}/${encodeURIComponent(
+                    href={`/seller/${encodedCategory}/${encodeURIComponent(
                       sub.name.replace(/&/g, "and").replace(/ /g, "-")
                     )}`}
                     className="text-decoration-none"
@@ -147,7 +147,7 @@ const ProductDetailPage = () => {
               <p>{product.description}</p>
               <p>
                 <Link
-                  href={`/products/${product._id}`}
+                  href={`/seller/products/${product._id}`}
                   className="btn btn-outline-primary btn-sm mt-2 w-100"
                 >
                   More details
@@ -169,7 +169,7 @@ const ProductDetailPage = () => {
                 {suggestedProducts.map((prod) => (
                 <Link
                 key={prod._id}  // ✅ Corrected key placement
-                href={`/${encodedCategory}/${encodedSubcategory}/${encodeURIComponent(
+                href={`/seller/${encodedCategory}/${encodedSubcategory}/${encodeURIComponent(
                   prod.name.replace(/ /g, "-")
                 )}`}
                 className="text-web"

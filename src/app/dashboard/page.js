@@ -1,6 +1,8 @@
-'use client';
+"use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 import "./dashboard.css";
 import Sidebar from "./Sidebar";
 import Dashboard from "./Dashboard";
@@ -19,8 +21,29 @@ import CreateBlog from "./CreateBlog";
 import AllSubscribers from "./AllSubscribers";
 
 function ResponsiveDashboard() {
+  const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeContent, setActiveContent] = useState("Dashboard");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAdminAuth = async () => {
+      try {
+        const res = await axios.get("/api/admin/check-auth");
+        if (!res.data.success) {
+          router.push("/admin-login");
+        } else {
+          setLoading(false);
+        }
+      } catch (error) {
+        router.push("/admin-login");
+      }
+    };
+
+    checkAdminAuth();
+  }, [router]);
+
+  if (loading) return <p>Loading...</p>;
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
