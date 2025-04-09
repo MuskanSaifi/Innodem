@@ -74,7 +74,7 @@ const SidebarMenu = () => {
                     <h3
                       className="font-semibold text-blue-600 hover:underline cursor-pointer"
                       onClick={() =>
-                        router.push(`/seller/${category.categoryslug}/${subcategory.slug}`)
+                        router.push(`/seller/${category.categoryslug}/${subcategory.subcategoryslug}`)
                       }
                     >
                       <div className="flex items-center">

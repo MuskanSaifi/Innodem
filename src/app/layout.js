@@ -9,14 +9,16 @@ import "bootstrap/dist/css/bootstrap.min.css";
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
-// export const metadata = {
-//   title: "Dial Export Mart - Buy & Sell Globally at Best Prices",
-//   description:
-//   "Dial Export Mart helps businesses connect globally. Buy & sell with trusted partners easily.",
-//   icons: {
-//     icon: "/favicon.ico", // ✅ Ensure it's inside the public folder
-//   },
-// };
+export const metadata = {
+  title: {
+    default: "Dial Export Mart - Buy & Sell Globally at Best Prices",
+    template: "%s | Dial Export Mart",
+  },
+  description: "Dial Export Mart helps businesses connect globally. Buy & sell with trusted partners easily.",
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
 
 export default function RootLayout({ children }) {
   return (

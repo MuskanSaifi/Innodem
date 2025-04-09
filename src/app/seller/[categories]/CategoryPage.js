@@ -8,7 +8,6 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 const CategoryPage = () => {
   const { categories: categorySlug } = useParams();
-
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [products, setProducts] = useState([]);
@@ -29,8 +28,9 @@ const CategoryPage = () => {
 
         if (!categorySlug) return;
 
-        const decodedSlug = decodeURIComponent(categorySlug);
-        const category = data.find((cat) => cat.categoryslug === decodedSlug);
+        const category = data.find(
+          (cat) => cat.categoryslug === categorySlug
+        );
 
         if (!category) throw new Error("Category not found");
 
@@ -55,14 +55,19 @@ const CategoryPage = () => {
     fetchData();
   }, [categorySlug]);
 
+  const getCategoryName = () => {
+    const matched = categories.find((cat) => cat.categoryslug === categorySlug);
+    return matched?.name || categorySlug;
+  };
+
   return (
     <div className="container mt-4 mb-5">
       <nav className="breadcrumb bg-light p-3 rounded">
-        <span className="text-secondary">Home / {decodeURIComponent(categorySlug)}</span>
+        <span className="text-secondary">Home / {getCategoryName()}</span>
       </nav>
 
       <div className="row mt-4">
-        {/* Left Sidebar */}
+        {/* Sidebar: All Categories */}
         <aside className="col-md-3">
           <div className="bg-white p-3 rounded common-shad">
             <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
@@ -77,10 +82,16 @@ const CategoryPage = () => {
                   return (
                     <Link
                       key={cat._id}
-                      href={`/seller/${encodeURIComponent(cat.categoryslug)}`}
+                      href={`/seller/${cat.categoryslug}`}
                       className="text-decoration-none"
                     >
-                      <li className={`list-group-item hover:bg-gray-100 ${isActive ? "active text-white bg-purple fw-bold" : "text-dark"}`}>
+                      <li
+                        className={`list-group-item hover:bg-gray-100 ${
+                          isActive
+                            ? "active text-white bg-purple fw-bold"
+                            : "text-dark"
+                        }`}
+                      >
                         {cat.name}
                       </li>
                     </Link>
@@ -91,10 +102,12 @@ const CategoryPage = () => {
           </div>
         </aside>
 
-        {/* Center Content */}
+        {/* Main Products */}
         <main className="col-md-6 common-shad rounded-2 p-3">
           <div className="d-flex justify-content-between align-items-center mb-3">
-            <h1 className="text-uppercase text-lg text-secondary">{decodeURIComponent(categorySlug)} Products</h1>
+            <h1 className="text-uppercase text-lg text-secondary">
+              {getCategoryName()} Products
+            </h1>
             <span className="badge bg-primary text-white fs-6">
               {loading ? <Skeleton width={30} /> : products.length}
             </span>
@@ -119,12 +132,16 @@ const CategoryPage = () => {
                         style={{ objectFit: "cover" }}
                       />
                     </div>
-                    <h6 className="mt-2 text-primary text-sm text-center">{product.name}</h6>
+                    <h6 className="mt-2 text-primary text-sm text-center">
+                      {product.name}
+                    </h6>
                     <table className="table table-sm mt-2 text-sm">
                       <tbody>
                         <tr>
                           <th>Price:</th>
-                          <td>₹{product.price} {product.currency || "INR"}</td>
+                          <td>
+                            ₹{product.price} {product.currency || "INR"}
+                          </td>
                         </tr>
                         <tr>
                           <th>MOQ:</th>
@@ -132,19 +149,24 @@ const CategoryPage = () => {
                         </tr>
                       </tbody>
                     </table>
-                    <Link href={`/products/${product._id}`} className="btn btn-outline-primary btn-sm mt-2 w-100">
+                    <Link
+                      href={`/products/${product._id}`}
+                      className="btn btn-outline-primary btn-sm mt-2 w-100"
+                    >
                       More details
                     </Link>
                   </div>
                 </div>
               ))
             ) : (
-              <p className="text-warning text-center">No products found for this category.</p>
+              <p className="text-warning text-center">
+                No products found for this category.
+              </p>
             )}
           </div>
         </main>
 
-        {/* Right Sidebar */}
+        {/* Sidebar: Subcategories */}
         <aside className="col-md-3">
           <div className="bg-white p-3 rounded common-shad">
             <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
@@ -157,7 +179,7 @@ const CategoryPage = () => {
                 {subcategories.map((sub) => (
                   <Link
                     key={sub._id}
-                    href={`/seller/${categorySlug}/${encodeURIComponent(sub.subcategoryslug)}`}
+                    href={`/seller/${categorySlug}/${sub.subcategoryslug}`}
                     className="text-decoration-none"
                   >
                     <li className="list-group-item hover:bg-gray-100 text-dark">

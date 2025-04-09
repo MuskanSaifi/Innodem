@@ -23,19 +23,6 @@ const ProductDetailClient = ({ productname }) => {
       .trim();
   }, []);
 
-
-  const createSlug = (str) => {
-    return encodeURIComponent(
-      str
-        .toLowerCase()
-        .replace(/&/g, "and")        // Replace & with and
-        .replace(/\s+/g, "-")        // Replace spaces with hyphens
-        .replace(/[^a-z0-9-]/g, "")  // Remove unwanted characters
-        .trim()
-    );
-  };
-
-  
   useEffect(() => {
     if (!encodedProductName) return;
 
@@ -85,21 +72,20 @@ const ProductDetailClient = ({ productname }) => {
               <Skeleton count={5} height={20} />
             ) : subcategories.length > 0 ? (
               <ul className="list-group">
-       {subcategories.map((sub) => {
-  const categorySlug = createSlug(sub?.category?.name || "");
-  const subcategorySlug = createSlug(sub?.name || "");
+                {subcategories.map((sub) => {
+                  const categorySlug = sub?.category?.categoryslug || "";
+                  const subcategorySlug = sub?.subcategoryslug || "";
 
-  return (
-    <Link
-      key={sub._id}
-      href={`/seller/${categorySlug}/${subcategorySlug}`}
-      className="text-decoration-none"
-    >
-      <li className="list-group-item hover:bg-gray-100">{sub.name}</li>
-    </Link>
-  );
-})}
-
+                  return (
+                    <Link
+                      key={sub._id}
+                      href={`/seller/${categorySlug}/${subcategorySlug}`}
+                      className="text-decoration-none"
+                    >
+                      <li className="list-group-item hover:bg-gray-100">{sub.name}</li>
+                    </Link>
+                  );
+                })}
               </ul>
             ) : (
               <p className="text-muted">No subcategories available.</p>

@@ -8,44 +8,42 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 const SubcategoryProductPage = () => {
-  const { categories: encodedCategory, "sub-categories": encodedSubcategory } = useParams();
+  const params = useParams();
+
+  // Since we can't directly destructure "sub-categories", do this workaround:
+  const categorySlug = params?.["categories"];
+  const subcategorySlug = params?.["subcategories"];
 
   const [products, setProducts] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const decodeSlug = (slug) => decodeURIComponent(slug).toLowerCase();
+  const decode = (str) => decodeURIComponent(str).toLowerCase();
 
   useEffect(() => {
-    if (!encodedCategory || !encodedSubcategory) return;
-
-    const fetchCategoryData = async () => {
+    const fetchData = async () => {
+      if (!categorySlug || !subcategorySlug) return;
       try {
         setLoading(true);
-        setError(null);
+        const res = await fetch("/api/adminprofile/category");
+        const data = await res.json();
 
-        const response = await fetch(`/api/adminprofile/category`);
-        if (!response.ok) throw new Error("Failed to fetch category data");
-
-        const categories = await response.json();
-        const formattedCategory = decodeSlug(encodedCategory);
-        const category = categories.find(
-          (cat) => cat.name.trim().toLowerCase() === formattedCategory
+        const category = data.find(
+          (cat) => cat.categoryslug.toLowerCase() === decode(categorySlug)
         );
 
         if (!category) throw new Error("Category not found");
 
         setSubcategories(category.subcategories || []);
 
-        const formattedSubSlug = decodeSlug(encodedSubcategory);
-        const matchedSubcategory = category.subcategories.find(
-          (sub) => sub.subcategoryslug?.trim().toLowerCase() === formattedSubSlug
+        const subcat = category.subcategories.find(
+          (sub) => sub.subcategoryslug?.toLowerCase() === decode(subcategorySlug)
         );
 
-        if (!matchedSubcategory) throw new Error("Subcategory not found");
+        if (!subcat) throw new Error("Subcategory not found");
 
-        setProducts(matchedSubcategory.products || []);
+        setProducts(subcat.products || []);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -53,31 +51,24 @@ const SubcategoryProductPage = () => {
       }
     };
 
-    fetchCategoryData();
-  }, [encodedCategory, encodedSubcategory]);
+    fetchData();
+  }, [categorySlug, subcategorySlug]);
 
   return (
     <div className="container mt-4">
       {/* Breadcrumb */}
       <nav className="breadcrumb bg-light p-3 rounded">
-        <Link href="/" className="text-decoration-none text-secondary">
-          Home
+        <Link href="/" className="text-decoration-none text-secondary">Home</Link> /{" "}
+        <Link href={`/seller/${categorySlug}`} className="text-decoration-none text-secondary">
+          {loading ? <Skeleton width={100} /> : decode(categorySlug)}
         </Link>{" "}
-        /{" "}
-        <Link
-          href={`/seller/${encodedCategory}`}
-          className="text-decoration-none text-secondary"
-        >
-          {loading ? <Skeleton width={100} /> : decodeSlug(encodedCategory)}
-        </Link>{" "}
-        /{" "}
-        <span className="text-primary">
-          {loading ? <Skeleton width={100} /> : decodeSlug(encodedSubcategory)}
+        / <span className="text-primary">
+          {loading ? <Skeleton width={100} /> : decode(subcategorySlug)}
         </span>
       </nav>
 
       <div className="row mb-5">
-        {/* Subcategory Sidebar */}
+        {/* Sidebar */}
         <aside className="col-md-3">
           <div className="bg-white p-3 rounded common-shad">
             <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
@@ -87,28 +78,23 @@ const SubcategoryProductPage = () => {
               <Skeleton count={5} height={20} />
             ) : (
               <ul className="list-group">
-                {subcategories.map((sub) => {
-                  const isActive =
-                    decodeSlug(sub.subcategoryslug) === decodeSlug(encodedSubcategory);
-
-                  return (
-                    <Link
-                      key={sub._id}
-                      href={`/seller/${encodedCategory}/${encodeURIComponent(sub.subcategoryslug)}`}
-                      className="text-decoration-none"
+                {subcategories.map((sub) => (
+                  <Link
+                    key={sub._id}
+                    href={`/seller/${categorySlug}/${encodeURIComponent(sub.subcategoryslug)}`}
+                    className="text-decoration-none"
+                  >
+                    <li
+                      className={`list-group-item hover:bg-gray-100 ${
+                        decode(sub.subcategoryslug) === decode(subcategorySlug)
+                          ? "active text-white bg-purple fw-bold"
+                          : "text-dark"
+                      }`}
                     >
-                      <li
-                        className={`list-group-item hover:bg-gray-100 ${
-                          isActive
-                            ? "active text-white bg-purple fw-bold"
-                            : "text-dark"
-                        }`}
-                      >
-                        {sub.name}
-                      </li>
-                    </Link>
-                  );
-                })}
+                      {sub.name}
+                    </li>
+                  </Link>
+                ))}
               </ul>
             )}
           </div>
@@ -118,7 +104,7 @@ const SubcategoryProductPage = () => {
         <div className="col-md-6 common-shad">
           <div className="d-flex justify-content-between align-items-center mb-3 p-2 mt-3">
             <h4 className="text-uppercase text-secondary">
-              {loading ? <Skeleton width={200} /> : decodeSlug(encodedSubcategory)}
+              {loading ? <Skeleton width={200} /> : decode(subcategorySlug)}
             </h4>
             <span className="badge bg-primary text-white fs-6">
               {loading ? <Skeleton width={30} /> : products.length}
@@ -144,16 +130,12 @@ const SubcategoryProductPage = () => {
                         style={{ objectFit: "cover" }}
                       />
                     </div>
-                    <h6 className="mt-2 text-primary text-center">
-                      {product.name}
-                    </h6>
+                    <h6 className="mt-2 text-primary text-center">{product.name}</h6>
                     <table className="table table-sm mt-2">
                       <tbody>
                         <tr>
                           <th>Price</th>
-                          <td>
-                            ₹{product.price} {product.currency || "INR"}
-                          </td>
+                          <td>₹{product.price} {product.currency || "INR"}</td>
                         </tr>
                         <tr>
                           <th>MOQ</th>
@@ -171,9 +153,7 @@ const SubcategoryProductPage = () => {
                 </div>
               ))
             ) : (
-              <p className="text-warning text-center">
-                No products found for this subcategory.
-              </p>
+              <p className="text-warning text-center">No products found for this subcategory.</p>
             )}
           </div>
         </div>
@@ -182,7 +162,7 @@ const SubcategoryProductPage = () => {
         <aside className="col-md-3">
           <div className="bg-white p-3 rounded common-shad">
             <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
-              Products in {decodeSlug(encodedSubcategory)}
+              Products in {decode(subcategorySlug)}
             </h5>
             {loading ? (
               <Skeleton count={5} height={20} />
