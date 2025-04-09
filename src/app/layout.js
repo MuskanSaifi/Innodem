@@ -12,7 +12,6 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export const metadata = {
   title: {
     default: "Dial Export Mart - Buy & Sell Globally at Best Prices",
-    template: "%s | Dial Export Mart",
   },
   description: "Dial Export Mart helps businesses connect globally. Buy & sell with trusted partners easily.",
   icons: {
