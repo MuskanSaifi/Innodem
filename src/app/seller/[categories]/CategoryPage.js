@@ -7,19 +7,14 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 const CategoryPage = () => {
-  const { categories: encodedCategory } = useParams();
+  const { categories: categorySlug } = useParams();
+
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const formatCategoryName = (name) =>
-    decodeURIComponent(name)
-      .replace(/-/g, " ")
-      .replace(/and/g, "&")
-      .trim()
-      .toLowerCase();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -32,12 +27,10 @@ const CategoryPage = () => {
         const data = await response.json();
         setCategories(data);
 
-        if (!encodedCategory) return;
+        if (!categorySlug) return;
 
-        const formattedCategory = formatCategoryName(encodedCategory);
-        const category = data.find(
-          (cat) => cat.name.trim().toLowerCase() === formattedCategory
-        );
+        const decodedSlug = decodeURIComponent(categorySlug);
+        const category = data.find((cat) => cat.categoryslug === decodedSlug);
 
         if (!category) throw new Error("Category not found");
 
@@ -60,12 +53,12 @@ const CategoryPage = () => {
     };
 
     fetchData();
-  }, [encodedCategory]);
+  }, [categorySlug]);
 
   return (
     <div className="container mt-4 mb-5">
       <nav className="breadcrumb bg-light p-3 rounded">
-        <span className="text-secondary">Home / {formatCategoryName(encodedCategory)}</span>
+        <span className="text-secondary">Home / {decodeURIComponent(categorySlug)}</span>
       </nav>
 
       <div className="row mt-4">
@@ -80,11 +73,11 @@ const CategoryPage = () => {
             ) : (
               <ul className="list-group">
                 {categories.map((cat) => {
-                  const isActive = formatCategoryName(cat.name) === formatCategoryName(encodedCategory);
+                  const isActive = cat.categoryslug === categorySlug;
                   return (
                     <Link
                       key={cat._id}
-                      href={`/seller/${encodeURIComponent(cat.name.replace(/&/g, "and").replace(/ /g, "-"))}`}
+                      href={`/seller/${encodeURIComponent(cat.categoryslug)}`}
                       className="text-decoration-none"
                     >
                       <li className={`list-group-item hover:bg-gray-100 ${isActive ? "active text-white bg-purple fw-bold" : "text-dark"}`}>
@@ -101,7 +94,7 @@ const CategoryPage = () => {
         {/* Center Content */}
         <main className="col-md-6 common-shad rounded-2 p-3">
           <div className="d-flex justify-content-between align-items-center mb-3">
-            <h1 className="text-uppercase text-lg text-secondary">{formatCategoryName(encodedCategory)} Products</h1>
+            <h1 className="text-uppercase text-lg text-secondary">{decodeURIComponent(categorySlug)} Products</h1>
             <span className="badge bg-primary text-white fs-6">
               {loading ? <Skeleton width={30} /> : products.length}
             </span>
@@ -113,8 +106,8 @@ const CategoryPage = () => {
             ) : error ? (
               <p className="text-danger">{error}</p>
             ) : products.length > 0 ? (
-              products.map((product) => (
-                <div key={product._id} className="col-md-6">
+              products.map((product, index) => (
+                <div key={`${product._id}-${index}`} className="col-md-6">
                   <div className="card border-0 shadow-sm p-3 rounded-3">
                     <div className="position-relative text-center">
                       <Image
@@ -124,7 +117,6 @@ const CategoryPage = () => {
                         height={180}
                         className="rounded img-fluid m-auto"
                         style={{ objectFit: "cover" }}
-                        priority={false}
                       />
                     </div>
                     <h6 className="mt-2 text-primary text-sm text-center">{product.name}</h6>
@@ -155,30 +147,24 @@ const CategoryPage = () => {
         {/* Right Sidebar */}
         <aside className="col-md-3">
           <div className="bg-white p-3 rounded common-shad">
-            <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">Subcategories</h5>
+            <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
+              Subcategories
+            </h5>
             {loading ? (
               <Skeleton count={5} height={20} />
             ) : (
               <ul className="list-group">
-                {subcategories.map((sub) => {
-                  const isActive = sub.name.toLowerCase() === formatCategoryName(encodedCategory);
-                  return (
-                    <Link
+                {subcategories.map((sub) => (
+                  <Link
                     key={sub._id}
-                    href={`/seller/${encodedCategory}/${encodeURIComponent(sub.subcategoryslug)}`}
+                    href={`/seller/${categorySlug}/${encodeURIComponent(sub.subcategoryslug)}`}
                     className="text-decoration-none"
                   >
-                    <li
-                      className={`list-group-item hover:bg-gray-100 ${
-                        isActive ? "active text-white bg-purple fw-bold" : "text-dark"
-                      }`}
-                    >
+                    <li className="list-group-item hover:bg-gray-100 text-dark">
                       {sub.name}
                     </li>
                   </Link>
-                  
-                  );
-                })}
+                ))}
               </ul>
             )}
           </div>

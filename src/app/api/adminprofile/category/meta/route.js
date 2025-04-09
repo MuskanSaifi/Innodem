@@ -1,14 +1,14 @@
 import connectdb from "@/lib/dbConnect";
 import Category from "@/models/Category";
 import SubCategory from "@/models/SubCategory";
-import Product from "@/models/Product"; // Ensure Product model is registered
+import Product from "@/models/Product";
 import mongoose from "mongoose";
 
 export async function PATCH(req) {
   try {
     await connectdb();
     const body = await req.json();
-    const { id, name, metatitle, metadescription, metakeywords } = body;
+    const { id, name, metatitle, metadescription, metakeywords, categoryslug } = body;
 
     // Validate ID
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
@@ -30,6 +30,7 @@ export async function PATCH(req) {
     if (metatitle) existingCategory.metatitle = metatitle;
     if (metadescription) existingCategory.metadescription = metadescription;
     if (metakeywords) existingCategory.metakeywords = metakeywords;
+    if (categoryslug) existingCategory.categoryslug = categoryslug; // ✅ Slug update
 
     const updatedCategory = await existingCategory.save();
 

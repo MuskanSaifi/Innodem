@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import Image from "next/image";
 import "./metamodal.css"; // External CSS for modal
 
+
 const AllCategory = () => {
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,7 +16,9 @@ const AllCategory = () => {
     metatitle: "",
     metadescription: "",
     metakeywords: "",
+    categoryslug: "",
   });
+
 
   useEffect(() => {
     fetchCategories();
@@ -79,7 +82,9 @@ const AllCategory = () => {
       metatitle: category.metatitle || "",
       metadescription: category.metadescription || "",
       metakeywords: category.metakeywords || "",
+      categoryslug: category.categoryslug || "",
     });
+
     setShowMetaModal(true);
   };
 
@@ -95,6 +100,15 @@ const AllCategory = () => {
       Swal.fire("Error", "Failed to update category", "error");
     }
   };
+
+  const generateSlug = (text) =>
+    text
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, "") // Remove special chars
+      .replace(/\s+/g, "-")         // Replace spaces with hyphens
+      .replace(/-+/g, "-");         // Collapse multiple hyphens
+
 
   return (
     <div className="container mt-4">
@@ -197,8 +211,23 @@ const AllCategory = () => {
               type="text"
               placeholder="Category Name"
               value={metaForm.name}
-              onChange={(e) => setMetaForm({ ...metaForm, name: e.target.value })}
+              onChange={(e) =>
+                setMetaForm({
+                  ...metaForm,
+                  name: e.target.value,
+                  categoryslug: generateSlug(e.target.value),
+                })
+              }
             />
+
+            <input
+              type="text"
+              placeholder="Category Slug"
+              value={metaForm.categoryslug}
+              disabled
+            />
+
+
             <input
               type="text"
               placeholder="Meta Title"

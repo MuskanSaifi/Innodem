@@ -1,8 +1,19 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
+// Slug generator function
+const generateSlug = (text) => {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+};
+
 export default function CreateCategoryForm() {
   const [name, setName] = useState("");
+  const [categoryslug, setCategorySlug] = useState("");
   const [metatitle, setMetaTitle] = useState("");
   const [metadescription, setMetaDescription] = useState("");
   const [isTrending, setIsTrending] = useState(false);
@@ -10,37 +21,31 @@ export default function CreateCategoryForm() {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Step 1: Upload to Cloudinary
   const uploadImageToCloudinary = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", "unsigned_category_upload"); // Replace with your unsigned preset
+    formData.append("upload_preset", "unsigned_category_upload");
     formData.append("folder", "categories");
-  
+
     const res = await fetch("https://api.cloudinary.com/v1_1/dchek3sr8/image/upload", {
       method: "POST",
       body: formData,
     });
-  
+
     const contentType = res.headers.get("content-type");
-  
     if (!res.ok || !contentType?.includes("application/json")) {
-      const errorText = await res.text(); // get raw HTML or error
-      console.error("💥 Cloudinary error:", errorText);
-      throw new Error("Cloudinary upload failed. Please check your upload preset and cloud name.");
+      const errorText = await res.text();
+      throw new Error("Cloudinary upload failed. Check your settings.");
     }
-  
+
     const data = await res.json();
-  
     if (!data.secure_url) {
       throw new Error(data.error?.message || "Image upload failed.");
     }
-  
+
     return data.secure_url;
   };
-  
-  
-  // Step 2: Handle Submit
+
   const handleCreateCategory = async (e) => {
     e.preventDefault();
     try {
@@ -59,6 +64,7 @@ export default function CreateCategoryForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
+          categoryslug,
           metatitle,
           metadescription,
           icon: iconUrl,
@@ -71,8 +77,8 @@ export default function CreateCategoryForm() {
       if (!response.ok) throw new Error(result.error || "Failed to create category");
 
       toast.success("Category created successfully!");
-      // reset form
       setName("");
+      setCategorySlug("");
       setMetaTitle("");
       setMetaDescription("");
       setIsTrending(false);
@@ -91,7 +97,20 @@ export default function CreateCategoryForm() {
         type="text"
         placeholder="Category Name"
         value={name}
-        onChange={(e) => setName(e.target.value)}
+        onChange={(e) => {
+          const value = e.target.value;
+          setName(value);
+          setCategorySlug(generateSlug(value));
+        }}
+        required
+        className="border p-2 w-full"
+      />
+
+      <input
+        type="text"
+        placeholder="Category Slug"
+        value={categoryslug}
+        onChange={(e) => setCategorySlug(generateSlug(e.target.value))}
         required
         className="border p-2 w-full"
       />
@@ -126,9 +145,6 @@ export default function CreateCategoryForm() {
         />
         <span>Is Trending</span>
       </label>
-
-      {/* Optional: Subcategories input */}
-      {/* Add your subcategory selection logic here */}
 
       <button
         type="submit"

@@ -91,11 +91,12 @@ export async function POST(req) {
     // Create a new category
     const newCategory = new Category({
       name: body.name,
+      categoryslug: body.categoryslug, // new line
       metatitle: body.metatitle,
       metadescription: body.metadescription,
-      icon: body.icon || null, // Optional icon
+      icon: body.icon || null,
       isTrending: body.isTrending,
-      subcategories: body.subcategories || [], // Default to an empty array if not provided
+      subcategories: body.subcategories || [],
     });
 
     // Save the category
