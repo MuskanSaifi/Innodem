@@ -1,13 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-const CategoryPage = () => {
-  const { categories: categorySlug } = useParams();
+const CategoryPage = ({ categorySlug }) => {
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [products, setProducts] = useState([]);
@@ -28,9 +26,7 @@ const CategoryPage = () => {
 
         if (!categorySlug) return;
 
-        const category = data.find(
-          (cat) => cat.categoryslug === categorySlug
-        );
+        const category = data.find((cat) => cat.categoryslug === categorySlug);
 
         if (!category) throw new Error("Category not found");
 

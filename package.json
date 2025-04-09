@@ -40,7 +40,6 @@
     "next": "^15.1.5",
     "next-auth": "^4.24.11",
     "next-cloudinary": "^6.16.0",
-    "next-seo": "^6.6.0",
     "rc-slider": "^11.1.8",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.9",
