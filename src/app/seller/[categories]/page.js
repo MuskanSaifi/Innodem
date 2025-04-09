@@ -3,7 +3,7 @@ import CategoryPage from "./CategoryPage";
 
 // Define fetchCategories function directly
 export async function fetchCategories() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/adminprofile/category`);
+  const response = await fetch(`https://dialexportmart.com/api/adminprofile/category`);
   if (!response.ok) {
     throw new Error("Failed to fetch categories");
   }
