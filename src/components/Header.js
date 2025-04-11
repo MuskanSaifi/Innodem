@@ -307,7 +307,7 @@ export default function Header() {
       >
         {/* Drawer Header */}
         <div className="flex items-center justify-between px-4 py-2 border-b">
-          <h3 className="text-lg font-semibold">My TradeIndia</h3>
+          <h3 className="text-lg font-semibold">Dial Export Mart</h3>
           <button className="text-gray-600" onClick={toggleDrawer}>
             ✖
           </button>
