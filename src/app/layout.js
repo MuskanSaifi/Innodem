@@ -11,7 +11,7 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 
 
 export const metadata = {
-  title: "Leading B2B Marketplace in India & Globally | Dial Export Mart",
+  title: "Leading B2B Marketplace in India | B2B Portal in India | Dial Export Mart",
   description:
     "Join Dial Export Mart, India’s premier B2B platform to connect with international buyers and suppliers. Grow your business globally, explore diverse export markets, and find genuine partners for long-term growth.",
   alternates: {

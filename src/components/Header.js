@@ -317,11 +317,37 @@ export default function Header() {
         <div className="p-4">
           <p>Welcome! Guest</p>
           <ul className="mt-4 space-y-2">
-            <li>📂 Dashboard</li>
-            <li>🧑‍💼 Profile</li>
-            <li>📩 Inquiries</li>
-            <li>🛒 Buy Leads</li>
-            <li>🎟️ My Membership</li>
+          <li className="dropdown-header text-center fw-bold">👋 Welcome!</li>
+                <li>
+                  <Link className="dropdown-item" href="/userdashboard">
+                    🏠 Dashboard
+                  </Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" href="/profile">
+                    🧑‍💼 Profile
+                  </Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" href="/inquiries">
+                    📩 Inquiries
+                  </Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" href="/buy-leads">
+                    🛒 Buy Leads
+                  </Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" href="/membership">
+                    🎟️ My Membership
+                  </Link>
+                </li>
+                <li>
+                  <button className="dropdown-item text-danger" onClick={handleLogout}>
+                    🚪 Sign Out
+                  </button>
+                </li>
           </ul>
 
           <div className="mt-6 flex justify-between">
