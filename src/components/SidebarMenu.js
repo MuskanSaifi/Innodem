@@ -26,7 +26,9 @@ const SidebarMenu = () => {
   if (error) return <p className="error-message">{error}</p>;
 
   return (
-    <div className="menu bg-white rounded-md w-64" ref={menuRef}>
+  <>
+    
+    <div className="menu bg-white rounded-md w-64 d-none-mob" ref={menuRef}>
       {/* Top Categories */}
       <Link href="/industry">
         <div className="category font-semibold text-lg mb-2">Top Categories</div>
@@ -110,6 +112,7 @@ const SidebarMenu = () => {
           )
       )}
     </div>
+    </>
   );
 };
 

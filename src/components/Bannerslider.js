@@ -9,10 +9,10 @@ const Bannerslider = () => {
     <div className="container-fluid mt-4">
 
     <div className="row">
-      <div className="col-2">
+      <div className="col-md-2">
         <SidebarMenu/>
       </div>
-      <div className="col-10">
+      <div className="col-md-10">
       <Carousel autoPlay={true} infiniteLoop={true} interval={6000}>
       <div>
         <img src="/assets/bannerslider/banner1.jpg" alt="banner1" />

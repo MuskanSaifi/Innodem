@@ -1,4 +1,3 @@
-import twilio from "twilio";
 import User from "@/models/User";
 import connectdb from "@/lib/dbConnect";
 import { generateToken } from "@/lib/jwt";
@@ -16,7 +15,7 @@ export async function POST(req) {
             });
         }
 
-        const formattedMobile = mobileNumber.startsWith("+") ? mobileNumber : `+91${mobileNumber}`;
+        const formattedMobile = mobileNumber.startsWith("+") ? mobileNumber.slice(1) : `91${mobileNumber}`;
 
         if (!otp) {
             const user = await User.findOne({ mobileNumber });
@@ -36,19 +35,30 @@ export async function POST(req) {
             await user.save();
 
             try {
-                const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-                await client.messages.create({
-                    body: `Your OTP for login is: ${generatedOtp}`,
-                    from: process.env.TWILIO_PHONE_NUMBER,
-                    to: formattedMobile,
-                });
+                // Replace placeholders with your 2Factor API details
+                const apiKey = "afd6c091-063e-11f0-8b17-0200cd936042"; // Add your API key in environment variables
+                const otpTemplateName = "OTPtemplate"; // Replace with your template name
 
-                return new Response(JSON.stringify({ message: "OTP sent successfully", mobileNumber }), {
-                    status: 200,
-                    headers: { "Content-Type": "application/json" },
-                });
-            } catch (twilioError) {
-                console.error("Twilio Error:", twilioError);
+                const response = await fetch(
+                    `https://2factor.in/API/V1/${apiKey}/SMS/${formattedMobile}/${generatedOtp}/${otpTemplateName}`,
+                    { method: "GET" }
+                );
+                const result = await response.json();
+
+                if (response.ok && result.Status === "Success") {
+                    return new Response(JSON.stringify({ message: "OTP sent successfully", mobileNumber }), {
+                        status: 200,
+                        headers: { "Content-Type": "application/json" },
+                    });
+                } else {
+                    console.error("2Factor Error:", result);
+                    return new Response(JSON.stringify({ error: "Failed to send OTP. Please try again." }), {
+                        status: 500,
+                        headers: { "Content-Type": "application/json" },
+                    });
+                }
+            } catch (apiError) {
+                console.error("2Factor API Error:", apiError);
                 return new Response(JSON.stringify({ error: "Failed to send OTP. Please try again." }), {
                     status: 500,
                     headers: { "Content-Type": "application/json" },

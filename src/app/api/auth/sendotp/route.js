@@ -1,4 +1,3 @@
-import twilio from "twilio";
 import User from "@/models/User";
 import BusinessProfile from "@/models/BusinessProfile";
 import connectdb from "@/lib/dbConnect";
@@ -7,7 +6,7 @@ import Product from "@/models/Product";
 
 export async function POST(req) {
     try {
-        await connectdb(); // Connect to the database first
+        await connectdb(); // Connect to the database
         const body = await req.json();
 
         const { productname, fullname, email, mobileNumber, pincode, companyName } = body;
@@ -15,12 +14,12 @@ export async function POST(req) {
         if (!fullname || !mobileNumber || !pincode) {
             return new Response(JSON.stringify({ error: "All fields are required" }), {
                 status: 400,
-                headers: { "Content-Type": "application/json" }
+                headers: { "Content-Type": "application/json" },
             });
         }
 
         // Ensure mobile number is in E.164 format
-        const formattedMobile = mobileNumber.startsWith("+") ? mobileNumber : `+91${mobileNumber}`;
+        const formattedMobile = mobileNumber.startsWith("+") ? mobileNumber.slice(1) : `91${mobileNumber}`;
 
         // Check if mobile number already exists
         let existingUser = await User.findOne({ mobileNumber });
@@ -28,7 +27,7 @@ export async function POST(req) {
         if (existingUser) {
             return new Response(JSON.stringify({ error: "This number already exists. Please sign in." }), {
                 status: 400,
-                headers: { "Content-Type": "application/json" }
+                headers: { "Content-Type": "application/json" },
             });
         }
 
@@ -114,33 +113,42 @@ export async function POST(req) {
             await addproduct.save();
         }
 
-
-        // Send OTP via Twilio
+        // Send OTP via 2Factor
         try {
-            const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-            await client.messages.create({
-                body: `Your OTP is: ${otp}`,
-                from: process.env.TWILIO_PHONE_NUMBER,
-                to: formattedMobile,
-            });
+            const apiKey = "afd6c091-063e-11f0-8b17-0200cd936042"; // Replace with environment variable
+            const otpTemplateName = "OTPtemplate"; // Replace with your template name
 
-            return new Response(JSON.stringify({ message: "OTP sent successfully", mobileNumber }), {
-                status: 200,
-                headers: { "Content-Type": "application/json" }
-            });
-        } catch (twilioError) {
-            console.error("Twilio Error:", twilioError);
-            return new Response(JSON.stringify({ error: "Failed to send OTP via Twilio" }), {
+            const response = await fetch(
+                `https://2factor.in/API/V1/${apiKey}/SMS/${formattedMobile}/${otp}/${otpTemplateName}`,
+                { method: "GET" }
+            );
+
+            const result = await response.json();
+
+            if (response.ok && result.Status === "Success") {
+                return new Response(JSON.stringify({ message: "OTP sent successfully", mobileNumber }), {
+                    status: 200,
+                    headers: { "Content-Type": "application/json" },
+                });
+            } else {
+                console.error("2Factor Error:", result);
+                return new Response(JSON.stringify({ error: "Failed to send OTP. Please try again." }), {
+                    status: 500,
+                    headers: { "Content-Type": "application/json" },
+                });
+            }
+        } catch (apiError) {
+            console.error("2Factor API Error:", apiError);
+            return new Response(JSON.stringify({ error: "Failed to send OTP. Please try again." }), {
                 status: 500,
-                headers: { "Content-Type": "application/json" }
+                headers: { "Content-Type": "application/json" },
             });
         }
-
     } catch (error) {
         console.error("❌ Error sending OTP:", error);
         return new Response(JSON.stringify({ error: "Internal Server Error" }), {
             status: 500,
-            headers: { "Content-Type": "application/json" }
+            headers: { "Content-Type": "application/json" },
         });
     }
 }

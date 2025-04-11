@@ -99,6 +99,26 @@
     border-radius: 50%;
 }
 
+/* d -none mobile */
+@media only screen and (max-width: 768px) {
+  .d-none-mob{
+    display: none !important;
+  }
+}
+
+/* d- none Desktop */
+@media only screen and (min-width: 768px) {
+  .d-none-web{
+    display: none !important;
+  }
+}
+
+.bottom-drawer{
+  z-index: 13;
+  opacity: 676;
+}
+
+
 /* Navbar */
 
 /* Basic menu structure */
@@ -237,7 +257,7 @@
   
   .product-search {
     font-family: inherit;
-    width: 600px;
+    width: 100%;
     box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
     padding: 8px;
     font-size: 1.025rem;
@@ -253,10 +273,9 @@
   .registered-users-box {
     display: flex;
     flex-direction: column;
-    margin-right: 30px;
     align-items: center;
     justify-content: center;
-    width: 150px; /* Adjust as needed */
+    width: 130px; /* Adjust as needed */
     border: 2px solid #cce7f0; /* Light blue border */
     border-radius: 10px;
     background-color: #e0f2f8; /* Light blue background */

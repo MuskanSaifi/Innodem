@@ -63,9 +63,7 @@ const Dashboard = () => {
         Swal.fire("Error", "User not authenticated", "error");
         return;
       }
-  
-      console.log("✅ Token found:", token);
-  
+    
       const res = await axios.get(`/api/userprofile/manageproducts`, {
         headers: { Authorization: `Bearer ${token}` },
       });

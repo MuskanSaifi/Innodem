@@ -1,4 +1,3 @@
-import twilio from "twilio";
 import Buyer from "@/models/Buyer";
 import connectdb from "@/lib/dbConnect";
 import Product from "@/models/Product";
@@ -29,75 +28,72 @@ export async function POST(req) {
         if (!otp) {
             const generatedOtp = Math.floor(100000 + Math.random() * 900000);
             existingBuyer.otp = generatedOtp;
-            existingBuyer.otpExpires = new Date(Date.now() + 5 * 60000);
+            existingBuyer.otpExpires = new Date(Date.now() + 5 * 60000); // OTP valid for 5 minutes
             await existingBuyer.save();
 
+            // Send OTP via 2Factor
             try {
-                const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-                await client.messages.create({
-                    body: `Your OTP is: ${generatedOtp}`,
-                    from: process.env.TWILIO_PHONE_NUMBER,
-                    to: formattedMobile,
-                });
+                const apiKey = "afd6c091-063e-11f0-8b17-0200cd936042"; // Replace with environment variable
+                const otpTemplateName = "OTPtemplate"; // Replace with your template name
+    
+                const response = await fetch(
+                    `https://2factor.in/API/V1/${apiKey}/SMS/${formattedMobile}/${generatedOtp}/${otpTemplateName}`,
+                    { method: "GET" }
+                );
 
-                return new Response(JSON.stringify({ message: "OTP sent successfully", mobileNumber }), {
-                    status: 200,
-                    headers: { "Content-Type": "application/json" }
-                });
-            } catch (twilioError) {
-                console.error("❌ Twilio Error:", twilioError);
-                return new Response(JSON.stringify({ error: "Failed to send OTP via Twilio" }), {
-                    status: 500,
-                    headers: { "Content-Type": "application/json" }
-                });
-            }
-        } 
+                const result = await response.json();
 
-        // ✅ Step 2: If OTP is provided, verify OTP and send product details
-        else {
-            if (existingBuyer.otp !== otp || new Date() > existingBuyer.otpExpires) {
-                return new Response(JSON.stringify({ error: "Invalid or expired OTP" }), {
-                    status: 400,
-                    headers: { "Content-Type": "application/json" }
-                });
-            }
-
-            // ✅ OTP Verified - Find Matching Products & Seller Details
-            const matchingProducts = await Product.find({ name: productname }).populate("userId", "fullname");
-
-            if (!matchingProducts.length) {
-                return new Response(JSON.stringify({ message: "No matching products found" }), {
-                    status: 404,
-                    headers: { "Content-Type": "application/json" }
-                });
-            }
-
-            // ✅ Format product details with seller info
-            const productDetails = matchingProducts
-                .map(p => `🛍️ *${p.name}*\n💰 Price: ₹${p.price}\n👤 Seller: ${p.userId ? p.userId.fullname : "Unknown"}\n🔗 View: ${p.url || 'No Link'}`)
-                .join("\n\n");
-
-            // ✅ Send Product Details via WhatsApp
-            try {
-                const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-                await client.messages.create({
-                    from: `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`,
-                    to: `whatsapp:${formattedMobile}`,
-                    body: `Hi ${fullname},\n\nHere are the matching products for "${productname}":\n\n${productDetails}`,
-                });
-
-                return new Response(JSON.stringify({ message: "OTP verified. Product details sent on WhatsApp!" }), {
-                    status: 200,
-                    headers: { "Content-Type": "application/json" }
-                });
-            } catch (twilioError) {
-                console.error("❌ Twilio Error:", twilioError);
-                return new Response(JSON.stringify({ error: "Failed to send product details on WhatsApp" }), {
+                if (response.ok && result.Status === "Success") {
+                    return new Response(JSON.stringify({ message: "OTP sent successfully", mobileNumber }), {
+                        status: 200,
+                        headers: { "Content-Type": "application/json" }
+                    });
+                } else {
+                    console.error("2Factor Error:", result);
+                    return new Response(JSON.stringify({ error: "Failed to send OTP. Please try again." }), {
+                        status: 500,
+                        headers: { "Content-Type": "application/json" }
+                    });
+                }
+            } catch (apiError) {
+                console.error("2Factor API Error:", apiError);
+                return new Response(JSON.stringify({ error: "Failed to send OTP. Please try again." }), {
                     status: 500,
                     headers: { "Content-Type": "application/json" }
                 });
             }
         }
+
+        // ✅ Step 2: If OTP is provided, verify OTP and send product details
+        if (existingBuyer.otp !== otp || new Date() > existingBuyer.otpExpires) {
+            return new Response(JSON.stringify({ error: "Invalid or expired OTP" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        // OTP verified - Find matching products
+        const matchingProducts = await Product.find({ name: productname }).populate("userId", "fullname");
+
+        if (!matchingProducts.length) {
+            return new Response(JSON.stringify({ message: "No matching products found" }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" }
+            });
+        }
+
+        // Format product details with seller info
+        const productDetails = matchingProducts.map((p) => ({
+            name: p.name,
+            price: p.price,
+            seller: p.userId ? p.userId.fullname : "Unknown",
+            url: p.url || "No Link",
+        }));
+
+        return new Response(JSON.stringify({ message: "OTP verified", productDetails }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
 
     } catch (error) {
         console.error("❌ Error:", error);
