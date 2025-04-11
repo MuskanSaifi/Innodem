@@ -5,9 +5,12 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { FaChevronDown, FaSearch, FaMapMarkerAlt } from "react-icons/fa";
 
+import { useSelector, useDispatch } from "react-redux";
+import { logout, initializeUser } from "@/app/store/userSlice";
+
 
 export default function Header() {
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -25,6 +28,9 @@ export default function Header() {
   const searchRef = useRef(null);
   const cityDropdownRef = useRef(null);
   const router = useRouter();
+
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
 
   const [cities, setCities] = useState(["All City"]); // Store cities from API
 
@@ -45,6 +51,7 @@ export default function Header() {
     fetchCities();
   }, []);
 
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -59,11 +66,9 @@ export default function Header() {
 
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+    dispatch(initializeUser()); // LocalStorage se data load karein
+  }, [dispatch]);
+
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -84,10 +89,8 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    setUser(null);
-    window.location.href = "/";
+    dispatch(logout());
+    router.push("/");
   };
 
   useEffect(() => {
@@ -238,8 +241,10 @@ export default function Header() {
         </div>
       </div>
 
-      {/* User Section */}
+      {/* User Sections */}
       <div className="col-2 d-flex justify-content-end">
+
+<div className="d-none-mob">
         {user ? (
           <div className="dropdown2" ref={dropdownRef}>
             <button
@@ -288,11 +293,24 @@ export default function Header() {
           </div>
         ) : (
           <>
+          <div className="d-none-mob">
+            <Link className="btn btn-outline-primary me-2" href="/user/login">
+              Login
+            </Link>
+            <Link className="btn btn-primary" href="/user/register">
+              Sign Up
+            </Link>
+          </div>
+          </>
+        )}
+</div>
 
+
+<div className="d-none-web">
 <div>
       {/* Button to open the drawer */}
       <button
-        className="bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg  d-none-web"
+        className="bg-grey-500 text-white px-3 py-2 rounded-5 common-shad  d-none-web"
         onClick={toggleDrawer}
       >
       🧑‍💼
@@ -315,7 +333,9 @@ export default function Header() {
 
         {/* Drawer Content */}
         <div className="p-4">
-          <p>Welcome! Guest</p>
+          {user ? ( <>
+            👤 Hi! {user.fullname || "User"}
+          
           <ul className="mt-4 space-y-2">
           <li className="dropdown-header text-center fw-bold">👋 Welcome!</li>
                 <li>
@@ -349,12 +369,16 @@ export default function Header() {
                   </button>
                 </li>
           </ul>
+          </> ) : 
 
+          <>
+            <p>Welcome! Guest</p>
           <div className="mt-6 flex justify-between">
-            <button className="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg">Login</button>
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-lg">Sign Up</button>
+            <Link className="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg" href="/user/login">Login</Link>
+            <Link className="bg-blue-500 text-white px-4 py-2 rounded-lg" href="/user/register">Sign Up</Link>
           </div>
-
+          </> 
+          }
           <p className="mt-4 text-center text-sm text-gray-500">
             Registered Users: <span className="text-green-600">1,11,64,490</span>
           </p>
@@ -362,17 +386,16 @@ export default function Header() {
       </div>
     </div>
 
-          <div className="d-none-mob">
-            <Link className="btn btn-outline-primary me-2" href="/user/login">
-              Login
-            </Link>
-            <Link className="btn btn-primary" href="/user/register">
-              Sign Up
-            </Link>
-          </div>
-          </>
-        )}
+</div>
+
+
+
+
       </div>
+
+
+
+
     </div>
   </div>
 </header>

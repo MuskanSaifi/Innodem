@@ -5,6 +5,9 @@ import { useState } from "react";
 import Select from "react-select";
 import Image from "next/image";
 
+import { useDispatch } from "react-redux";
+import { setUser } from "@/app/store/userSlice";
+
 
 
 // Country Code List (Country Name is hidden but searchable)
@@ -31,6 +34,7 @@ export default function Register() {
     const [loginnumber, setLoginnumber] = useState("");
     const [signup, setSignup] = useState(false);
 
+    const dispatch = useDispatch();
     const router = useRouter();
 
     // Handle Registration Form Submission
@@ -83,8 +87,8 @@ export default function Register() {
 
             if (res.ok) {
                 setMessage("OTP verified successfully!");
-                localStorage.setItem("token", data.token);
-                localStorage.setItem("user", JSON.stringify(data.user));
+                   // Redux store update karen
+                dispatch(setUser({ user: data.user, token: data.token }));
                 router.push('/userdashboard');
                 setSignup(false);
             } else {

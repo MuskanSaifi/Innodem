@@ -1,4 +1,5 @@
 "use client";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -6,32 +7,34 @@ const Userprofile = () => {
   const [userdetail, setUserdetail] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Access token and user from Redux store
+  const token = useSelector((state) => state.user.token);
+  const user = useSelector((state) => state.user.user);
+
   useEffect(() => {
     userdata();
-  }, []);
+  }, [token]);
 
   const userdata = async () => {
-    const token = localStorage.getItem("token");
     if (!token) {
       setLoading(false);
       return;
     }
-    
+
     try {
       const response = await axios.get(`/api/userprofile/profile/userprofile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       setUserdetail(response.data.user);
     } catch (error) {
-      console.log("Error fetching user data:", error.response?.data || error.message);
+      console.error("Error fetching user data:", error.response?.data || error.message);
     } finally {
       setLoading(false);
     }
   };
-  
 
   if (loading) {
     return (

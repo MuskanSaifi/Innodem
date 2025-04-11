@@ -5,6 +5,10 @@ import { useState } from "react";
 import Select from "react-select";
 import Image from "next/image";
 
+import { useDispatch } from "react-redux";
+import { setUser } from "@/app/store/userSlice";
+
+
 
 // Country Code List
 const countryCodes = [
@@ -65,6 +69,7 @@ export default function Login() {
     const [error, setError] = useState("");
     const [showOtpField, setShowOtpField] = useState(false);
 
+    const dispatch = useDispatch();
     const router = useRouter();
 
     // Send OTP
@@ -117,8 +122,8 @@ export default function Login() {
 
             if (res.ok) {
                 setMessage("Login successful!");
-                localStorage.setItem("token", data.token);
-                localStorage.setItem("user", JSON.stringify(data.user));
+              // Redux store update karen
+                dispatch(setUser({ user: data.user, token: data.token }));
                 router.push("/userdashboard"); 
             } else {
                 setError(data.error);

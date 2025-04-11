@@ -5,6 +5,8 @@ import Select from "react-select";
 import toast from "react-hot-toast";
 import Image from "next/image";
 
+import { useDispatch } from "react-redux";
+import { setUser } from "@/app/store/userSlice";
 
 const countryCodes = [
   { value: "+1", label: "\ud83c\uddfa\ud83c\uddf8 +1", name: "United States" },
@@ -28,6 +30,8 @@ const BuySellForm = ({ productname: initialProductName }) => {
   const [otp, setOtp] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
+  const dispatch = useDispatch();
   const router = useRouter();
 
   useEffect(() => {
@@ -104,9 +108,8 @@ const BuySellForm = ({ productname: initialProductName }) => {
         setMessage("OTP verified successfully!");
   
         if (buySell === "sell") {
-          // Store seller data in localStorage and redirect to user dashboard
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("user", JSON.stringify(data.user));
+         // Redux store update karen
+         dispatch(setUser({ user: data.user, token: data.token }));
           router.push("/userdashboard");
         } else {
           toast.success("verified")
@@ -134,7 +137,6 @@ const BuySellForm = ({ productname: initialProductName }) => {
             <h5 className="modal-title fw-bold">Tell us what you need</h5>
             <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
           </div>
-
 
           <div className="row">
           <div className="col-md-6 d-flex align-items-center justify-content-center">
@@ -191,9 +193,6 @@ const BuySellForm = ({ productname: initialProductName }) => {
           </div>
     </div>
     </div>
-
-      
-
 
         </div>
       </div>
