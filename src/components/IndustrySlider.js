@@ -43,8 +43,8 @@ const IndustrySlider = () => {
   if (error) return <p className="text-red-600 text-center">{error}</p>;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h2 className="text-2xl font-extrabold text-gray-800 text-center mb-6">
+    <div className="container mx-auto mb-5 mt-5">
+      <h2 className="text-2xl font-extrabold text-gray-800 text-center mb-2">
         Explore Industries
       </h2>
 
@@ -65,7 +65,7 @@ const IndustrySlider = () => {
       >
         {categories.map((category) => (
           <SwiperSlide key={category._id}>
-            <div className="bg-white rounded-lg p-4 hover:shadow-lg transition w-[300px]">
+            <div className="bg-white rounded-lg p-2 hover:shadow-lg transition w-[100%]">
               <div className="flex justify-between items-center mb-4">
               <Image 
                       src={category.icon  || "/placeholder.png"} 
@@ -74,7 +74,7 @@ const IndustrySlider = () => {
                       height={30} 
                       className="rounded-md" 
                     />
-                <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-1">
                   {category.name}
                 </h3>
                 {/* ✅ Use formatted URL for Category */}
@@ -91,7 +91,7 @@ const IndustrySlider = () => {
                   <Link 
                     key={sub._id} 
                     href={`/seller/${formatUrl(category.name)}/${formatUrl(sub.name)}`} 
-                    className="group block bg-gray-100 rounded-md p-2 hover:bg-gray-200 transition"
+                    className="group block bg-gray-100 rounded-md p-1 hover:bg-gray-200 transition"
                   >
                     <Image 
                       src={sub.icon || "/placeholder.png"} 

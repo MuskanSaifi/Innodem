@@ -43,8 +43,8 @@ const ProductSections1 = ({ tag, Name }) => {
   }
 
   return (
-    <div className="container mx-auto px-4" style={{ marginTop: 70, marginBottom: 70 }}>
-      <h2 className="text-2xl font-extrabold text-gray-800 text-center mb-12">
+    <div className="container mx-auto px-4" style={{ marginTop: 30, marginBottom: 30 }}>
+      <h2 className="text-2xl font-extrabold text-gray-800 text-center mb-4">
         {Name} Products
       </h2>
 
@@ -61,7 +61,7 @@ const ProductSections1 = ({ tag, Name }) => {
         pagination={{ clickable: true }}
         autoplay={{ delay: 3000 }}
         spaceBetween={20}
-        slidesPerView={1}  // Default: 1 product per slide
+        slidesPerView={2}  // Default: 1 product per slide
         breakpoints={{
           640: {
             slidesPerView: 2, // 2 products per slide for mobile

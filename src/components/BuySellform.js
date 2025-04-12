@@ -140,14 +140,17 @@ const BuySellForm = ({ productname: initialProductName }) => {
 
           <div className="row">
           <div className="col-md-6 d-flex align-items-center justify-content-center">
-  <div style={{ width: "100%", height: "100%", position: "relative" }} className="mt-3">
-    <Image 
-      src="/assets/pop1.jpeg" 
-      alt="App Store"
-      fill
-      style={{ objectFit: "contain" }} 
-    />
-  </div>
+            
+          <div className="relative w-full h-[200px] sm:h-[250px] md:h-[300px] mt-3">
+  <Image 
+    src="/assets/pop1.jpeg" 
+    alt="App Store"
+    fill
+    className="object-contain"
+  />
+</div>
+
+
 </div>
 
     <div className="col-md-6">

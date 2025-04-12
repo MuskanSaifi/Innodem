@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { FaFacebookF, FaYoutube, FaLinkedinIn, FaInstagram,  FaArrowUp } from "react-icons/fa";
+import { FaFacebookF, FaYoutube, FaLinkedinIn, FaInstagram, FaArrowUp } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
 
@@ -18,7 +18,7 @@ const Footer = () => {
 
   const handlesubscribe = async (e) => {
     e.preventDefault(); // Prevent form submission
-  
+
     try {
       if (!subscribe) {
         Swal.fire({
@@ -28,9 +28,9 @@ const Footer = () => {
         });
         return;
       }
-  
+
       const response = await axios.post("/api/subscribers", { email: subscribe });
-  
+
       if (response.status === 201) {
         Swal.fire({
           icon: "success",
@@ -41,7 +41,7 @@ const Footer = () => {
       }
     } catch (error) {
       console.error("Subscription Error:", error);
-  
+
       if (error.response) {
         if (error.response.status === 409) {
           Swal.fire({
@@ -65,9 +65,9 @@ const Footer = () => {
       }
     }
   };
-  
-  
-  
+
+
+
 
   // Handle Scroll-to-Top Button Visibility
   useEffect(() => {
@@ -92,12 +92,11 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { icon: <FaFacebookF />, link: "https://www.facebook.com/dialexportmart/" },
-    { icon: <FaYoutube />, link: "https://www.youtube.com/@DialExportMart" },
-    { icon: <FaLinkedinIn />, link: "#" },
-    { icon: <FaXTwitter />, link: "https://x.com/DialExportMart" },
-    { icon: <FaInstagram />, link: "https://www.instagram.com/dialexportmart/" },
-
+    { icon: <FaFacebookF />, link: "https://www.facebook.com/dialexportmart/", color: "#3b5998" },
+    { icon: <FaYoutube />, link: "https://www.youtube.com/@DialExportMart", color: "#ff0000" },
+    { icon: <FaLinkedinIn />, link: "#", color: "#0077b5" },
+    { icon: <FaXTwitter />, link: "https://x.com/DialExportMart", color: "#1da1f2" },
+    { icon: <FaInstagram />, link: "https://www.instagram.com/dialexportmart/", color: "#e1306c" },
   ];
 
   return (
@@ -115,82 +114,106 @@ const Footer = () => {
               <p className="text-sm my-2">🌐 www.dialexportmart.com</p>
             </div>
 
-            {/* Directory (Categories from API) */}
-            <div>
-              <h5 className="text-lg font-semibold text-white mb-3">Helps</h5>
-              <ul className="space-y-2 p-0">
-                {[ "Submit a Complaint", "Privacy Policy", "Terms of Use"].map((link, index) => (
-                  <li key={index}>
-                    <Link href="#" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
-                      {link}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
 
-            </div>
-
-            {/* Quick Links */}
+            {/* Directory Links */}
             <div>
-              <h5 className="text-lg font-semibold text-white mb-3">Quick Links</h5>
-              <ul className="space-y-2 p-0">
-                  <li>
-                    <Link href="about-us" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
-                     About Us
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="contact-us" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
-                     Contact Us
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="blogs" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
-                     Blogs
-                   </Link>
-                  </li>
+              <h5 className="text-lg font-semibold text-white mb-3">Directory</h5>
+              <ul className="space-y-2 p-0 text-sm">
+                <li>
+                  <Link href="become-a-member" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
+                    Become a Member
+                  </Link>
+                </li>
+                <li>
+                  <Link href="about-us" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link href="what-we-do" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
+                    What We Do
+                  </Link>
+                </li>
+                <li>
+                  <Link href="join-us" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
+                    Join Us
+                  </Link>
+                </li>
+                <li>
+                  <Link href="blogs" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
+                    Blogs
+                  </Link>
+                </li>
               </ul>
             </div>
+
+
+            {/* Quick Links (Categories from API) */}
+            <div>
+              <h5 className="text-lg font-semibold text-white mb-3">Help & Support</h5>
+              <ul className="space-y-2 p-0 text-sm">
+                <li>
+                  <Link href="contact-us" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
+                    Contact Us
+                  </Link>
+                </li>
+                <li>
+                  <Link href="privacy-policy" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="refund-policy" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
+                    Refund Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="terms-of-use" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
+                    Terms of Use
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+
 
             {/* Social Media */}
             <div className="">
-  <h5 className="text-lg font-semibold text-white mb-3">Follow Us</h5>
-  <div className="flex flex-wrap gap-2">
-    {socialLinks.map((social, index) => (
-      <Link
-        key={index}
-        href={social.link}
-        target="_blank"
-        className="bg-gray-800 hover:bg-gray-700 p-1 rounded-full text-white text-xl flex items-center justify-center"
-        style={{ width: "50px", height: "30px" }}
-      >
-        {social.icon}
-      </Link>
-    ))}
-  </div>
+              <h5 className="text-lg font-semibold text-white mb-2">Follow Us</h5>
+              <div className="flex flex-wrap gap-2">
+                {socialLinks.map((social, index) => (
+                  <Link
+                    key={index}
+                    href={social.link}
+                    target="_blank"
+                    className="rounded-full text-white hover:opacity-80 transition-all"
+                    style={{
+                      backgroundColor: social.color,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: "40px",
+                      height: "40px",
+                    }}
+                  >
+                    {social.icon}
+                  </Link>
+                ))}
+              </div>
 
-  {/* Subscribe Section */}
-  <h5 className="text-lg font-semibold text-white mb-3 mt-4">Subscribe</h5>
-  <form onSubmit={handlesubscribe} className="flex items-center gap-2">
-  <input
-    type="email"
-    placeholder="Enter your email"
-    className="p-2 rounded-md w-full text-black outline-none common-shad"
-    value={subscribe}
-    onChange={(e) => setSubscribe(e.target.value)}
-  />
-  <button
-    type="submit"
-    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md common-shad"
-  >
-    Subscribe
-  </button>
-</form>
-
-
-</div>
-
-
+              {/* Subscribe Section */}
+              <h5 className="text-lg font-semibold text-white mb-2 mt-4">Subscribe</h5>
+              <form onSubmit={handlesubscribe} className="flex items-center gap-2">
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="p-2 rounded-md w-full text-black outline-none common-shad"
+                  value={subscribe}
+                  onChange={(e) => setSubscribe(e.target.value)}
+                />
+                <button type="submit" className="bg-red-500 hover:bg-red-600 fs-3 text-white px-2  rounded-md common-shad">➤</button>
+              </form>
+            </div>
           </div>
 
           {/* Divider */}
@@ -198,10 +221,10 @@ const Footer = () => {
 
           {/* Copyright & Apps */}
           <div className="flex flex-col md:flex-row items-center justify-between align-items-center">
-            <p className="text-sm">&copy; {new Date().getFullYear()} Dial Export Mart. All Rights Reserved.</p>
-            <div className="flex gap-4 mt-3 md:mt-0 align-items-center">
+            <p className="text-sm mb-0 text-red-400">&copy; {new Date().getFullYear()} Dial Export Mart. All Rights Reserved.</p>
+            <div className="flex gap-4 md:mt-0 align-items-center px-5 py-1 rounded-3">
 
-            <GoogleTranslate />
+              <GoogleTranslate />
               {/* ✅ Google Partner Link (Opens in New Tab) */}
               <Link
                 href="https://www.google.com/partners/agency?id=7430369059"

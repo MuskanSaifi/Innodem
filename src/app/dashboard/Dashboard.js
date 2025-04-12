@@ -76,7 +76,6 @@ const Dashboard = () => {
   return (
     <>
       <div className="dashboard-content mt-5 bg-light">
-
         <div className="container-fluid">
           <div className="row common-shad m-1">
             <div className="col-md-6 mt-5 mb-5">
@@ -89,12 +88,9 @@ const Dashboard = () => {
                   <p className="fw-light text-light mb-2">Every click you make improves the user experience. Stay ahead! 🎯</p>
                   {/* <p className="fw-light text-light">A well-managed system is a step toward a thriving business. Keep optimizing! 🔥</p> */}
                   <p className="fw-light text-light">Your decisions shape the success of this platform. Keep it up! 💪</p>
-
                   </div>
                   <div className="col-md-5"></div>
                 </div>
-              
-
               </div>
             </div>
             <div className="col-md-6 mb-3 mt-4">
