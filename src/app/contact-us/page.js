@@ -52,7 +52,7 @@ const Page = () => {
       <section className="mt-5 mb-5">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold text-gray-800">
-            Contact<span className="text-[#6D4AAF]"> Us</span>
+            Contact<span className="text-[#6D4AAF]"> U</span>
           </h1>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-gray-50 rounded-2xl shadow-md p-10">
             {/* Left Section */}
