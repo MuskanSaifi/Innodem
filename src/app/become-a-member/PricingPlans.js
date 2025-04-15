@@ -1,112 +1,49 @@
-import React from 'react';
-import Link from 'next/link'; // Import the Link component
+"use client";
+import React, { useEffect } from 'react';
 import './PricingPlans.css';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import plans from './PlansData';
+import Image from "next/image";
 
-const plans = [
-  {
-    title: 'Welcome Package',
-    features: [
-      ['3 Buyer Connect Per Month', true],
-      ['1 Complimentary Deal Per Year', false],
-      ['1 Business Email', true],
-      ['Static Website', true],
-      ['Domain', true],
-      ['Website Maintenance For 1 year', true],
-      ['Responsive Website', true],
-      ['SEO 1 Keyword (Local Searches)', true],
-      ['Whatsapp Chat Integration', false],
-      ['SSL', true],
-      ['Favicon Icon', true],
-      ['Live Chat Integration', false],
-      ['Social Media Profile Creation & Posting', false],
-      ['Company Certificate', false],
-      ['Customer Support Person', true],
-    ],
-    price: '₹ 21,999',
-    highlighted: false,
-  },
-  {
-    title: 'Premium Package',
-    features: [
-      ['5 Buyer Connect Per Month', true],
-      ['1 Complimentary Deal Per Year', true],
-      ['2 Business Emails', true],
-      ['Static Website', true],
-      ['Domain', true],
-      ['Website Maintenance For 1 Year', true],
-      ['Responsive Website', true],
-      ['SEO 2 Keyword (Local Searches)', true],
-      ['WhatsApp Chat Integration', true],
-      ['SSL', true],
-      ['Favicon Icon', false],
-      ['Live Chat Integration', false],
-      ['Social Media Profile Creation & Posting', false],
-      ['Company Certificate', true],
-      ['Customer Support Person', true],
-    ],
-    price: '₹ 41,999',
-    highlighted: true,
-  },
-  {
-    title: 'Diamond Package',
-    features: [
-      ['7 Buyer Connect Per Month', true],
-      ['3 Complimentary Deals Per Year', true],
-      ['3 Business Emails', true],
-      ['Dynamic Website', true],
-      ['Domain', true],
-      ['Website Maintenance For 1 Year', true],
-      ['Responsive Website', true],
-      ['SEO (4 to 5 Keywords)', true],
-      ['WhatsApp Chat Integration', true],
-      ['SSL', true],
-      ['Favicon Icon', true],
-      ['Live Chat Integration', true],
-      ['Social Media Profile Creation & Posting', false],
-      ['Company Certificate', true],
-      ['Customer Support Person', true],
-    ],
-    price: '₹ 79,999',
-    highlighted: false,
-  },
-  {
-    title: 'Premium Diamond',
-    features: [
-      ['15 Buyer Connect Per Month', true],
-      ['4 Complimentary Deals Per Year', true],
-      ['4 Business Emails', true],
-      ['Dynamic Website', true],
-      ['Domain', true],
-      ['Website Maintenance For 1 Year', true],
-      ['Responsive Website', true],
-      ['SEO (6 to 8 Keywords)', true],
-      ['WhatsApp Chat Integration', true],
-      ['SSL', true],
-      ['Favicon Icon', true],
-      ['Live Chat Integration', true],
-      ['Social Media Profile Creation & Posting', true],
-      ['Company Certificate', true],
-      ['Customer Support Person', true],
-    ],
-    price: '₹ 129,999',
-    highlighted: false,
-  },
-];
 
 const PricingPlans = () => {
+  const token = useSelector((state) => state.user.token);
+  const user = useSelector((state) => state.user.user);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!token) return;
+    userdata();
+  }, [token]);
+
+  const userdata = async () => {
+    // Your async logic here
+  };
+
   return (
+    <>
+      <div className="text-center">
+        <Image
+          src={"/assets/pagesbanner/B2B (12).png" || "/placeholder.png"}
+          alt="Blog Banner"
+          layout="responsive" // Makes the image 100% width
+          width={1000} // Base width (ignored in responsive mode)
+          height={450} // Aspect ratio is maintained
+          className="rounded img-fluid"
+          style={{ objectFit: "cover", width: "100%" }} // Ensures it stretches to full width
+          priority
+        />
+      </div>
+
     <section className="pricing-section rounded-4">
       <h1 className="title">Pricing and <span>Plan</span></h1>
       <div className="pricing-cards">
         {plans.map((plan, index) => (
           <div key={index} className={`card ${plan.highlighted ? 'highlight' : ''}`}>
             {plan.highlighted && <div className="ribbon shadow"><span className='d-block'>Popular</span> Choice</div>}
-            <h2
-              className={`py-2 shadow rounded-2 ${
-                plan.highlighted ? 'title-highlight' : 'title-normal'
-              }`}
-            >
+            <h2 className={`py-2 shadow rounded-2 ${plan.highlighted ? 'title-highlight' : 'title-normal'}`}>
               {plan.title}
             </h2>
             <ul>
@@ -123,13 +60,31 @@ const PricingPlans = () => {
             </ul>
             <h3>{plan.price}</h3>
             <p className="gst">+ 18% GST Per Year</p>
-            <Link href="https://pmny.in/mISYyKZbaDRw" target="_blank" rel="noopener noreferrer">
-              <button className="shadow">Pay Now</button>
-            </Link>
+
+            <button
+              className="shadow"
+              onClick={() => {
+                if (user) {
+                  const numericAmount = plan.price.replace(/[^\d]/g, ""); // Clean the amount (remove ₹, commas, etc.)
+
+                  // Prepare query parameters with dynamic amount and package name
+                  const queryParams = new URLSearchParams({
+                    amount: numericAmount, // Amount based on selected plan
+                    packageName: plan.title,
+                  }).toString();
+                  router.push(`/payment/initiate?${queryParams}`);
+                } else {
+                  router.push("/user/login");
+                }
+              }}
+            >
+              {user ? 'Pay Now' : 'Pay Now'}
+            </button>
           </div>
         ))}
       </div>
     </section>
+    </>
   );
 };
 

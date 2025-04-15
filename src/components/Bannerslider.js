@@ -32,10 +32,10 @@ const Bannerslider = () => {
       <div>
         <img src="/assets/bannerslider/Best Distributer4.jpg" alt="banner4" />
       </div>
-    
     </Carousel>
       </div>
     </div>
+    
     </div>
 
     </>

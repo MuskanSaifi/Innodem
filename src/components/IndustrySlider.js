@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import {Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -49,7 +49,7 @@ const IndustrySlider = () => {
       </h2>
 
       <Swiper
-        modules={[Navigation, Pagination, Autoplay]}
+        modules={[ Pagination, Autoplay]}
         spaceBetween={20}
         slidesPerView={1}
         breakpoints={{
@@ -59,7 +59,7 @@ const IndustrySlider = () => {
         }}
         loop={true}
         autoplay={{ delay: 3000 }}
-        navigation
+        // navigation
         pagination={{ clickable: true }}
         className="w-full"
       >

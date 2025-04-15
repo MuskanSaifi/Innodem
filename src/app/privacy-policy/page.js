@@ -1,14 +1,24 @@
 import React from 'react';
-import './PrivacyPolicy.css';
+import Image from 'next/image';
 
 const page = () => {
   return (
     <>
+          <div>
+              <Image
+                src={"/assets/pagesbanner/B2B (18).png" || "/placeholder.png"}
+                alt="Blog Banner"
+                layout="responsive" // Makes the image 100% width
+                width={1000} // Base width (ignored in responsive mode)
+                height={450} // Aspect ratio is maintained
+                className="rounded img-fluid common-shad"
+                style={{ objectFit: "cover", width: "100%" }} // Ensures it stretches to full width
+                priority
+              />
+            </div>
     <section>
-        <div className='container'>
-        <div className="privacy-policy-container">
-      <h1>Privacy Policy</h1>
-      
+        <div className='container mx-auto p-6'>
+      <h1 className="title">Privacy <span>Policy</span></h1>
       <p>
         At <strong>Dial Export Mart</strong>, we are committed to safeguarding your privacy. This privacy policy outlines how we collect, use, share, and store your personal data.
       </p>
@@ -63,7 +73,6 @@ const page = () => {
         We are not liable for payments made to individual or unauthorized accounts.
       </p>
     </div>
-        </div>
     </section>
     </>
   );

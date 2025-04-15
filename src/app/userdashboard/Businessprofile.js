@@ -2,16 +2,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import {
+  FiChevronDown,
+  FiChevronUp,
+  FiBriefcase,
+  FiMapPin,
+  FiFileText,
+} from "react-icons/fi";
 
 const BusinessProfile = () => {
   const [formData, setFormData] = useState({
     companyName: "",
     officeContact: "",
     faxNumber: "",
-    ownershipType: "",
-    annualTurnover: "",
-    yearOfEstablishment: "",
-    numberOfEmployees: "",
     address: "",
     pincode: "",
     city: "",
@@ -22,30 +25,23 @@ const BusinessProfile = () => {
   });
 
   const [loading, setLoading] = useState(true);
-  const [openSection, setOpenSection] = useState("companyDetails"); // Default Open Tab
+  const [openSection, setOpenSection] = useState("companyDetails");
 
-  // Fetch Business Profile
   useEffect(() => {
     const fetchBusinessProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) {
-          console.error("No token found, user not authenticated");
-          return;
-        }
+        if (!token) return;
 
-        const response = await axios.get(
-          `/api/userprofile/profile/businessprofile`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const res = await axios.get("/api/userprofile/profile/businessprofile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-        if (response.data.success && response.data.data) {
-          setFormData(response.data.data);
-        } else {
-          console.error("Error fetching business profile:", response.data.message);
+        if (res.data.success && res.data.data) {
+          setFormData(res.data.data);
         }
       } catch (error) {
-        console.error("Error fetching profile:", error.response?.data?.message || error.message);
+        console.error("Error:", error);
       } finally {
         setLoading(false);
       }
@@ -54,129 +50,123 @@ const BusinessProfile = () => {
     fetchBusinessProfile();
   }, []);
 
-  // Handle Input Changes
   const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value || "",
-    }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle Section Toggle
   const toggleSection = (section) => {
     setOpenSection(openSection === section ? null : section);
   };
 
-  // Handle Save (Prevent Page Reload & Save Data)
   const handleSave = async (e) => {
-    e.preventDefault(); // Prevent page refresh
-
+    e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      if (!token) {
-        toast.error("Authentication failed. Please log in again.");
-        return;
-      }
+      if (!token) return toast.error("Please login again");
 
-      const response = await axios.patch(
-        `/api/userprofile/profile/businessprofile`,
+      const res = await axios.patch(
+        "/api/userprofile/profile/businessprofile",
         formData,
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
 
-      if (response.data.success) {
-        toast.success("Business Profile Updated Successfully!");
+      if (res.data.success) {
+        toast.success("Business profile updated!");
       } else {
-        toast.error("Failed to update profile. Try again.");
+        toast.error("Update failed!");
       }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "An error occurred.");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Something went wrong!");
     }
   };
+  const renderSection = (key, label, Icon, content) => (
+    <div className="mb-3">
+      <button
+        type="button"
+        className={`btn w-100 common-das-test text-start d-flex justify-content-between align-items-center fw-semibold fs-5 border ${
+          openSection === key ? "common-das-background text-white" : "btn-outline-primary"
+        }`}
+        onClick={() => toggleSection(key)}
+      >
+        <span className="d-flex align-items-center">
+          <Icon className="me-2" size={20} />
+          {label}
+        </span>
+        {openSection === key ? <FiChevronUp size={20} /> : <FiChevronDown size={20} />}
+      </button>
+      {openSection === key && (
+        <div className="bg-light border border-primary-subtle rounded p-4 mt-2 shadow-sm">
+          {content}
+        </div>
+      )}
+    </div>
+  );
+  
 
   return (
-    <div className="container mt-4">
-      <div className="card shadow-lg p-4">
-        <h2 className="text-center mb-4">Business Profile</h2>
+    <div className="container mt-5 mb-5">
+      <div className="card shadow-lg p-4 rounded-4 border-0">
+        <h2 className="title">Business <span>Profile</span></h2>
+
         {loading ? (
-          <p>Loading...</p>
+          <div className="text-center">
+            <div className="spinner-border text-primary" role="status" />
+            <p className="mt-3">Loading profile...</p>
+          </div>
         ) : (
           <form onSubmit={handleSave}>
-            {/* Company Details Section (Default Open) */}
-            <div className="mb-3">
-              <button
-                type="button"
-                className={`btn w-100 text-start ${openSection === "companyDetails" ? "btn-success" : "res-coloruser text-light"}`}
-                onClick={() => toggleSection("companyDetails")}
-              >
-                          <div className="d-flex justify-content-between">
-                             <strong>Company Details</strong> <span>{openSection === "companyDetails" ? "▲" : "▼"}</span>
-                        </div>
-              </button>
-              {openSection === "companyDetails" && (
-                <div className="p-3 border rounded mt-2">
-                  <label className="form-label">Company Name</label>
-                  <input type="text" className="form-control" name="companyName" value={formData.companyName} readOnly />
+            {/* Company Details */}
+            {renderSection("companyDetails", "Company Details", FiBriefcase, (
+              <>
+                <label className="form-label">Company Name</label>
+                <input type="text" className="form-control" name="companyName" value={formData.companyName} readOnly />
 
-                  <label className="form-label mt-2">Office Contact</label>
-                  <input type="text" className="form-control" name="officeContact" value={formData.officeContact} onChange={handleChange} />
+                <label className="form-label mt-3">Office Contact</label>
+                <input type="text" className="form-control" name="officeContact" value={formData.officeContact} onChange={handleChange} />
 
-                  <label className="form-label mt-2">Fax Number</label>
-                  <input type="text" className="form-control" name="faxNumber" value={formData.faxNumber} onChange={handleChange} />
-                </div>
-              )}
-            </div>
+                <label className="form-label mt-3">Fax Number</label>
+                <input type="text" className="form-control" name="faxNumber" value={formData.faxNumber} onChange={handleChange} />
+              </>
+            ))}
 
-            {/* Address Details Section */}
-            <div className="mb-3">
-              <button
-                type="button"
-                className={`btn w-100 text-start ${openSection === "addressDetails" ? "btn-success" : "res-coloruser text-light"}`}
-                onClick={() => toggleSection("addressDetails")}
-              >
-                <div className="d-flex justify-content-between">
-                <strong>Address Details</strong> <span>  {openSection === "addressDetails" ? "▲" : "▼"}</span>
-              </div>
-              </button>
-              {openSection === "addressDetails" && (
-                <div className="p-3 border rounded mt-2">
-                  <label className="form-label">Address</label>
-                  <input type="text" className="form-control" name="address" value={formData.address} onChange={handleChange} />
+            {/* Address Details */}
+            {renderSection("addressDetails", "Address Details", FiMapPin, (
+              <>
+                <label className="form-label">Address</label>
+                <input type="text" className="form-control" name="address" value={formData.address} onChange={handleChange} />
 
-                  <label className="form-label mt-2">Pincode</label>
-                  <input type="text" className="form-control" name="pincode" value={formData.pincode} onChange={handleChange} />
+                <label className="form-label mt-3">Pincode</label>
+                <input type="text" className="form-control" name="pincode" value={formData.pincode} onChange={handleChange} />
 
-                  <label className="form-label mt-2">City</label>
-                  <input type="text" className="form-control" name="city" value={formData.city} onChange={handleChange} />
-                </div>
-              )}
-            </div>
+                <label className="form-label mt-3">City</label>
+                <input type="text" className="form-control" name="city" value={formData.city} onChange={handleChange} />
 
-            {/* Taxation Details Section */}
-            <div className="mb-3">
-              <button
-                type="button"
-                className={`btn w-100 text-start ${openSection === "taxationDetails" ? "btn-success" : "res-coloruser text-light"}`}
-                onClick={() => toggleSection("taxationDetails")}
-              >
-                <div className="d-flex justify-content-between">
-                <strong>Taxation Details</strong> <span>{openSection === "taxationDetails" ? "▲" : "▼"}</span> 
-                </div>
-              </button>
-              {openSection === "taxationDetails" && (
-                <div className="p-3 border rounded mt-2">
-                  <label className="form-label">GST Number</label>
-                  <input type="text" className="form-control" name="gstNumber" value={formData.gstNumber} onChange={handleChange} />
+                <label className="form-label mt-3">State</label>
+                <input type="text" className="form-control" name="state" value={formData.state} onChange={handleChange} />
 
-                  <label className="form-label mt-2">PAN Number</label>
-                  <input type="text" className="form-control" name="panNumber" value={formData.panNumber} onChange={handleChange} />
-                </div>
-              )}
-            </div>
+                <label className="form-label mt-3">Country</label>
+                <input type="text" className="form-control" name="country" value={formData.country} readOnly />
+              </>
+            ))}
 
-            {/* Submit Button */}
+            {/* Taxation Details */}
+            {renderSection("taxationDetails", "Taxation Details", FiFileText, (
+              <>
+                <label className="form-label">GST Number</label>
+                <input type="text" className="form-control" name="gstNumber" value={formData.gstNumber} onChange={handleChange} />
+
+                <label className="form-label mt-3">PAN Number</label>
+                <input type="text" className="form-control" name="panNumber" value={formData.panNumber} onChange={handleChange} />
+              </>
+            ))}
+
             <div className="text-center mt-4">
-              <button type="submit" className="btn btn-primary px-4 w-100">Save</button>
+              <button type="submit" className=" common-das-btn w-100 py-2 fw-semibold fs-5 text-light shadow-sm">
+                Save Changes
+              </button>
             </div>
           </form>
         )}

@@ -50,56 +50,57 @@ const Userprofile = () => {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      {/* Profile Header */}
-      <div className="flex items-center space-x-4 mb-4">
-        <div className="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center text-xl font-bold">
-          {userdetail.fullname?.charAt(0).toUpperCase()}
-        </div>
-        <div>
-          <h2 className="text-xl font-semibold">{userdetail.fullname}</h2>
-          <p className="text-gray-500">{userdetail.companyName}</p>
-        </div>
+    <div className="max-w-3xl mx-auto p-4 sm:p-6 bg-white shadow-lg rounded-lg mb-5">
+    {/* Profile Header */}
+    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mb-6">
+      <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl font-bold mb-3 sm:mb-0">
+        {userdetail.fullname?.charAt(0).toUpperCase()}
       </div>
-
-      {/* Personal Details */}
-      <div className="border p-4 rounded-lg shadow-sm bg-gray-100">
-        <h3 className="text-lg font-semibold mb-2">Personal Details</h3>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-gray-600 font-medium">Email</p>
-            <p className="text-gray-900">{userdetail.email}</p>
-          </div>
-          <div>
-            <p className="text-gray-600 font-medium">Alternate Email</p>
-            <p className="text-gray-900">{userdetail.alternateEmail || "N/A"}</p>
-          </div>
-          <div>
-            <p className="text-gray-600 font-medium">Office Contact</p>
-            <p className="text-gray-900">{userdetail.mobileNumber}</p>
-          </div>
-          <div>
-            <p className="text-gray-600 font-medium">Alternate Mobile No.</p>
-            <p className="text-gray-900">{userdetail.alternateMobileNumber || "N/A"}</p>
-          </div>
-          <div>
-            <p className="text-gray-600 font-medium">WhatsApp Number</p>
-            <p className="text-gray-900">{userdetail.whatsappNumber || "N/A"}</p>
-          </div>
-          <div>
-            <p className="text-gray-600 font-medium">Designation / Job Title</p>
-            <p className="text-gray-900">{userdetail.designation || "N/A"}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Save Button */}
-      <div className="mt-4 text-right">
-        <button className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">
-          Save Details
-        </button>
+      <div className="text-center sm:text-left">
+        <h2 className="text-lg sm:text-xl font-semibold">{userdetail.fullname}</h2>
+        <p className="text-gray-500 text-sm">{userdetail.companyName}</p>
       </div>
     </div>
+  
+    {/* Personal Details */}
+    <div className="border p-4 rounded-lg shadow-sm bg-gray-50">
+      <h3 className="text-lg font-semibold mb-4 text-blue-700">Personal Details</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <p className="text-gray-500 text-sm font-medium">Email</p>
+          <p className="text-gray-900">{userdetail.email}</p>
+        </div>
+        <div>
+          <p className="text-gray-500 text-sm font-medium">Alternate Email</p>
+          <p className="text-gray-900">{userdetail.alternateEmail || "N/A"}</p>
+        </div>
+        <div>
+          <p className="text-gray-500 text-sm font-medium">Office Contact</p>
+          <p className="text-gray-900">{userdetail.mobileNumber}</p>
+        </div>
+        <div>
+          <p className="text-gray-500 text-sm font-medium">Alternate Mobile No.</p>
+          <p className="text-gray-900">{userdetail.alternateMobileNumber || "N/A"}</p>
+        </div>
+        <div>
+          <p className="text-gray-500 text-sm font-medium">WhatsApp Number</p>
+          <p className="text-gray-900">{userdetail.whatsappNumber || "N/A"}</p>
+        </div>
+        <div>
+          <p className="text-gray-500 text-sm font-medium">Designation / Job Title</p>
+          <p className="text-gray-900">{userdetail.designation || "N/A"}</p>
+        </div>
+      </div>
+    </div>
+  
+    {/* Save Button */}
+    {/* <div className="mt-6 flex justify-end">
+      <button className="px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
+        Save Details
+      </button>
+    </div> */}
+  </div>
+  
   );
 };
 

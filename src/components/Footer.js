@@ -92,11 +92,11 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { icon: <FaFacebookF />, link: "https://www.facebook.com/dialexportmart/", color: "#3b5998" },
+    { icon: <FaFacebookF />, link: "https://www.facebook.com/dialexportmart", color: "#3b5998" },
     { icon: <FaYoutube />, link: "https://www.youtube.com/@DialExportMart", color: "#ff0000" },
-    { icon: <FaLinkedinIn />, link: "#", color: "#0077b5" },
+    { icon: <FaLinkedinIn />, link: "https://www.linkedin.com/company/dialexportmart", color: "#0077b5" },
     { icon: <FaXTwitter />, link: "https://x.com/DialExportMart", color: "#1da1f2" },
-    { icon: <FaInstagram />, link: "https://www.instagram.com/dialexportmart/", color: "#e1306c" },
+    { icon: <FaInstagram />, link: "https://www.instagram.com/dialexportmart", color: "#e1306c" },
   ];
 
   return (
@@ -120,27 +120,27 @@ const Footer = () => {
               <h5 className="text-lg font-semibold text-white mb-3">Directory</h5>
               <ul className="space-y-2 p-0 text-sm">
                 <li>
-                  <Link href="become-a-member" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
+                  <Link href="/become-a-member" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
                     Become a Member
                   </Link>
                 </li>
                 <li>
-                  <Link href="about-us" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
+                  <Link href="/about-us" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
                     About Us
                   </Link>
                 </li>
                 <li>
-                  <Link href="what-we-do" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
+                  <Link href="/what-we-do" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
                     What We Do
                   </Link>
                 </li>
                 <li>
-                  <Link href="join-us" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
+                  <Link href="/user/register" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
                     Join Us
                   </Link>
                 </li>
                 <li>
-                  <Link href="blogs" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
+                  <Link href="/blogs" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
                     Blogs
                   </Link>
                 </li>
@@ -153,22 +153,22 @@ const Footer = () => {
               <h5 className="text-lg font-semibold text-white mb-3">Help & Support</h5>
               <ul className="space-y-2 p-0 text-sm">
                 <li>
-                  <Link href="contact-us" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
+                  <Link href="/contact-us" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
                     Contact Us
                   </Link>
                 </li>
                 <li>
-                  <Link href="privacy-policy" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
+                  <Link href="/privacy-policy" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="refund-policy" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
+                  <Link href="/refund-policy" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
                     Refund Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="terms-of-use" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
+                  <Link href="/terms-of-use" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
                     Terms of Use
                   </Link>
                 </li>

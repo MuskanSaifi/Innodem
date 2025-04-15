@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import {Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -56,8 +56,8 @@ const ProductSections1 = ({ tag, Name }) => {
 
       {/* Swiper component for responsive product display */}
       <Swiper
-        modules={[Navigation, Pagination, Autoplay]}
-        navigation
+        modules={[Pagination, Autoplay]}
+
         pagination={{ clickable: true }}
         autoplay={{ delay: 3000 }}
         spaceBetween={20}

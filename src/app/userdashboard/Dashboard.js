@@ -142,7 +142,7 @@ const Dashboard = () => {
             </div>
             <div className="col-md-6 mb-3 mt-4">
               <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-6 mb-4">
                   <div className="resdes-card res-color3 text-light">
                     <h6>Total Users</h6>
                     <p className="fs-1">{users}</p> {/* ✅ Static value */}

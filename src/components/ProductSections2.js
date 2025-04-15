@@ -46,11 +46,9 @@ const ProductSections2 = ({ tag, Name }) => {
     infinite: true,
     speed: 500,
     slidesToShow: 4,
-    slidesToScroll: 1,
+    slidesToScroll: 2,
     autoplay: true,
     autoplaySpeed: 2500,
-    nextArrow: <SampleNextArrow />,
-    prevArrow: <SamplePrevArrow />,
     responsive: [
       { breakpoint: 1024, settings: { slidesToShow: 3 } },
       { breakpoint: 768, settings: { slidesToShow: 2 } },
@@ -80,7 +78,6 @@ const ProductSections2 = ({ tag, Name }) => {
           return (
             <div key={product._id} className="p-1">
               <div className="border rounded-lg shadow-sm p-3 hover:shadow-lg transition-all bg-white">
-                <Link href={`/seller/${formatUrl(categoryName)}/${formatUrl(subCategoryName)}/${productName}`}>
                   <div className="relative w-full h-40 mb-3 overflow-hidden rounded">
                     <Image
                       src={product.images?.[0]?.url || "/placeholder.png"}
@@ -90,7 +87,6 @@ const ProductSections2 = ({ tag, Name }) => {
                       className="transition-transform transform hover:scale-105"
                     />
                   </div>
-                </Link>
                 <p className="text-gray-600 text-xs text-center mb-1">{product.seller || "Unknown Seller"}</p>
                 <h3 className="text-gray-800 font-semibold text-sm truncate text-center mb-1">{product.name}</h3>
                 <p className="text-blue-500 font-bold text-md text-center">₹{product.price}/Pieces</p>
@@ -105,17 +101,5 @@ const ProductSections2 = ({ tag, Name }) => {
     </div>
   );
 };
-
-const SampleNextArrow = ({ onClick }) => (
-  <div className="absolute top-1/2 -right-5 transform -translate-y-1/2 bg-white shadow-lg rounded-full p-2 cursor-pointer hover:bg-gray-200" onClick={onClick}>
-    ➜
-  </div>
-);
-
-const SamplePrevArrow = ({ onClick }) => (
-  <div className="absolute top-1/2 -left-5 transform -translate-y-1/2 bg-white shadow-lg rounded-full p-2 cursor-pointer hover:bg-gray-200" onClick={onClick}>
-    ➜
-  </div>
-);
 
 export default ProductSections2;

@@ -35,8 +35,8 @@ const SidebarMenu = () => {
       </Link>
 
       {/* Category List */}
-      <ul className="border border-b border-gray-300 p-2">
-        {allcategories.map((category) => (
+      <ul className="border top-cat-list border-b border-gray-300 p-2">
+        {allcategories.slice(0, 10).map((category) => (
           <li
             key={category._id}
             className={`cursor-pointer hover:bg-gray-100 py-2 rounded-md ${

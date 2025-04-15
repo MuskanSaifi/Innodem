@@ -139,9 +139,13 @@ export default function Header() {
     <>
   <header className="bg-light shadow-sm Main-header">
   <div className="container-fluid p-2 text-center top-bar text-dark">
-    <p className="mb-0">
-      We connect you with verified export buyers within 24 hours, guaranteeing confirmed deals.
-    </p>
+
+  <marquee behavior="scroll" direction="left" scrollamount="6">
+  <p className="mb-0 text-light text-sm">
+    We connect you with verified export buyers within 24 hours, guaranteeing confirmed deals.
+  </p>
+</marquee>
+
   </div>
 
   <div className="container-fluid py-3">
@@ -210,11 +214,11 @@ export default function Header() {
           </div>
 
           {/* Product Search */}
-          <div className="position-relative flex-grow-1 mx-3" ref={searchRef}>
+          <div className="position-relative flex-grow-1 pro-ser-div" ref={searchRef}>
             <input
               className="product-search form-control"
               type="text"
-              placeholder="📦 Search for products..."
+              placeholder="📦 Search products..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -244,7 +248,7 @@ export default function Header() {
       {/* User Sections */}
       <div className="col-2 d-flex justify-content-end">
 
-<div className="d-none-mob">
+<div className="d-none-mob mr-auto">
         {user ? (
           <div className="dropdown2" ref={dropdownRef}>
             <button
@@ -265,7 +269,7 @@ export default function Header() {
                 </li>
                 <li>
                   <Link className="dropdown-item" href="/profile">
-                    🧑‍💼 Profile
+                    🧑 Profile
                   </Link>
                 </li>
                 <li>
@@ -310,10 +314,10 @@ export default function Header() {
 <div>
       {/* Button to open the drawer */}
       <button
-        className="bg-grey-500 text-white px-3 py-2 rounded-5 common-shad  d-none-web"
+        className="bg-grey-500 text-white px-3 text-2xl py-2 rounded-2 common-shad  d-none-web"
         onClick={toggleDrawer}
       >
-      🧑‍💼
+      👨‍💼
       </button>
 
       {/* Bottom Drawer */}
@@ -325,7 +329,7 @@ export default function Header() {
       >
         {/* Drawer Header */}
         <div className="flex items-center justify-between px-4 py-2 border-b">
-          <h3 className="text-lg font-semibold">Dial Export Mart</h3>
+          <h4 className="text-lg font-semibold mb-0"> {user ? <span style={{color:"#6d4aae"}}>👤 Hi! {user.fullname || "User"}</span> : "Welcome Guest"} </h4>
           <button className="text-gray-600" onClick={toggleDrawer}>
             ✖
           </button>
@@ -334,10 +338,9 @@ export default function Header() {
         {/* Drawer Content */}
         <div className="p-4">
           {user ? ( <>
-            👤 Hi! {user.fullname || "User"}
+            👋 Welcome!
           
           <ul className="mt-4 space-y-2">
-          <li className="dropdown-header text-center fw-bold">👋 Welcome!</li>
                 <li>
                   <Link className="dropdown-item" href="/userdashboard">
                     🏠 Dashboard
@@ -345,7 +348,7 @@ export default function Header() {
                 </li>
                 <li>
                   <Link className="dropdown-item" href="/profile">
-                    🧑‍💼 Profile
+                    🧑 Profile
                   </Link>
                 </li>
                 <li>

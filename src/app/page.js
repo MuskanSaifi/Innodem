@@ -9,6 +9,7 @@ import Cities from "@/components/Cities";
 import Countries from "@/components/Countries";
 import CountryList from "@/components/CountryList";
 import Image from "next/image";
+import Link from "next/link";
 
 
 export default function Home() {
@@ -29,14 +30,16 @@ export default function Home() {
       {/* Product Sections */}
 
       <div className="banner-container">
+        <Link href="/all-categories">
         <Image
         className="m-auto"
-          src="/assets/subbanner/Banner new website dial.png" // Path relative to the 'public' folder
-          alt="Banner for website dial"
-          width={1400} // Replace with desired width
-          height={400} // Replace with desired height
-          priority // Optional: To prioritize loading this image
+        src="/assets/subbanner/All-categories-banner.png" // Path relative to the 'public' folder
+        alt="Banner for website dial"
+        width={1400} // Replace with desired width
+        height={400} // Replace with desired height
+        priority // Optional: To prioritize loading this image
         />
+        </Link>
       </div>
 
 

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { FaBuilding, FaMapMarkerAlt, FaPhone } from "react-icons/fa";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Image from 'next/image';
 
 const Page = () => {
   const [formData, setFormData] = useState({
@@ -49,12 +50,24 @@ const Page = () => {
 
   return (
     <>
+      <div>
+          <Image
+            src={"/assets/pagesbanner/B2B (16).png" || "/placeholder.png"}
+            alt="Blog Banner"
+            layout="responsive" // Makes the image 100% width
+            width={1000} // Base width (ignored in responsive mode)
+            height={450} // Aspect ratio is maintained
+            className="rounded img-fluid common-shad"
+            style={{ objectFit: "cover", width: "100%" }} // Ensures it stretches to full width
+            priority
+          />
+        </div>
       <section className="mt-5 mb-5">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold text-gray-800">
             Contact<span className="text-[#6D4AAF]"> Us</span>
           </h1>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-gray-50 rounded-2xl shadow-md p-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-gray-50 rounded-2xl shadow-md p-3">
             {/* Left Section */}
             <div className="space-y-6">
               <h2 className="text-3xl font-bold text-gray-800">

@@ -80,43 +80,88 @@ const BankDetails = () => {
   return (
     <div className="container mt-4">
       <div className="card shadow-lg p-4">
-        <h2 className="text-center mb-4">Bank Details</h2>
+        <h2 className="title">Bank <span>Details</span></h2>
+
         {loading ? (
           <p>Loading...</p>
         ) : (
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label className="form-label">Account Type</label>
-              <select className="form-control" name="accountType" value={formData.accountType} onChange={handleChange}>
-                <option value="">Select Account Type</option>
-                <option value="Saving">Saving</option>
-                <option value="Current">Current</option>
-              </select>
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Account Holder Name</label>
-              <input type="text" className="form-control" name="accountHolderName" value={formData.accountHolderName} onChange={handleChange} />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Account Number</label>
-              <input type="text" className="form-control" name="accountNumber" value={formData.accountNumber} onChange={handleChange} />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Confirm Account Number</label>
-              <input type="text" className="form-control" name="confirmAccountNumber" value={formData.confirmAccountNumber} onChange={handleChange} />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">IFSC Code</label>
-              <input type="text" className="form-control" name="ifscCode" value={formData.ifscCode} onChange={handleChange} />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Mobile Linked to Account</label>
-              <input type="text" className="form-control" name="mobileLinked" value={formData.mobileLinked} onChange={handleChange} />
-            </div>
-            <div className="text-center">
-              <button type="submit" className="btn btn-primary w-100">Save</button>
-            </div>
-          </form>
+          <form onSubmit={handleSubmit} className="p-4 shadow-lg rounded-4 border-0 bg-white">        
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Account Type</label>
+            <select className="form-select" name="accountType" value={formData.accountType} onChange={handleChange}>
+              <option value="">Select Account Type</option>
+              <option value="Saving">Saving</option>
+              <option value="Current">Current</option>
+            </select>
+          </div>
+        
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Account Holder Name</label>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Enter full name"
+              name="accountHolderName"
+              value={formData.accountHolderName}
+              onChange={handleChange}
+            />
+          </div>
+        
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Account Number</label>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Enter account number"
+              name="accountNumber"
+              value={formData.accountNumber}
+              onChange={handleChange}
+            />
+          </div>
+        
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Confirm Account Number</label>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Re-enter account number"
+              name="confirmAccountNumber"
+              value={formData.confirmAccountNumber}
+              onChange={handleChange}
+            />
+          </div>
+        
+          <div className="mb-3">
+            <label className="form-label fw-semibold">IFSC Code</label>
+            <input
+              type="text"
+              className="form-control text-uppercase"
+              placeholder="e.g. SBIN0001234"
+              name="ifscCode"
+              value={formData.ifscCode}
+              onChange={handleChange}
+            />
+          </div>
+        
+          <div className="mb-4">
+            <label className="form-label fw-semibold">Mobile Linked to Account</label>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Enter mobile number"
+              name="mobileLinked"
+              value={formData.mobileLinked}
+              onChange={handleChange}
+            />
+          </div>
+        
+          <div className="text-center">
+            <button type="submit" className="p-2 common-das-btn w-100 fw-bold fs-5 shadow-sm">
+              Save
+            </button>
+          </div>
+        </form>
+        
         )}
       </div>
     </div>

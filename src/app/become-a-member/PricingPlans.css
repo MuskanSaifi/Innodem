@@ -5,15 +5,8 @@
     text-align: center;
   }
   
-  .title {
-    font-size: 2.7rem;
-    font-weight: 700;
-    margin-bottom: 40px;
-  }
+
   
-  .title span {
-    color: #6D4AAF;
-  }
   
   .pricing-cards {
     display: flex;
@@ -22,20 +15,7 @@
     gap: 30px;
   }
   
-  .title-normal {
-    background-color: black;
-    color: white;
-    font-weight: 700;
-    font-size: 1.2rem;
-  }
-  
-  .title-highlight {
-    background-color: white;
-    color: black;
-    font-weight: 700;
-    font-size: 1.2rem;
-  }
-  
+ 
   .card {
     background: #fff;
     border-radius: 20px;

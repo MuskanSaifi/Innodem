@@ -52,7 +52,7 @@ const BlogPage = () => {
 
 
     <Container className="mt-5 mb-5">
-      <h1 className="text-center fw-bold mb-4">Blogs</h1>
+      <h1 className="title">Our <span>Blogs</span></h1>
 
       {loading && <p className="text-center">Loading blogs...</p>}
       {error && <p className="text-danger text-center">Error: {error}</p>}

@@ -140,6 +140,29 @@
     font-size: 13px;
   }
 
+  /* for business profile */
+  .common-das-btn{
+    background-color: rgb(131, 79, 182);
+color: #fff;
+box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+border-radius: 10px;
+  }
+  .common-das-btn:hover{
+  background-color: #663399;
+  }
+  .common-das-background{
+    background-color: rgb(131, 79, 182);
+  }
+  .common-das-test{
+    color: rgb(131, 79, 182);
+  }
+  .common-das-test:hover{
+    background-color: #663399;
+    color: #fff;
+  }
+
+
+
 
 
   

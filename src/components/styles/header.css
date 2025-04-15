@@ -13,8 +13,6 @@
 
 }
 
-
-
 /* Main Header */
 .mainheader{
   border-bottom: 1px solid rgba(128, 128, 128, 0.6);
@@ -104,6 +102,10 @@
   .d-none-mob{
     display: none !important;
   }
+  
+  .pro-ser-div{
+    margin: 0px 6px !important;
+  }
 }
 
 /* d- none Desktop */
@@ -111,6 +113,7 @@
   .d-none-web{
     display: none !important;
   }
+ 
 }
 
 .bottom-drawer{
@@ -228,7 +231,9 @@
   }
 
 
-
+.pro-ser-div{
+  margin: 0px 20px;
+}
 
   /* Dearch Bar */
 
@@ -312,4 +317,25 @@
 
 
 
-  
+  .thumbs{
+    margin-bottom: 0px;
+    padding-left: 0px;
+  }
+
+
+  .thumbs-wrapper{
+    margin: 10px 0px !important;
+  }
+
+  .top-cat-list{
+max-height: 484px !important;
+    overflow-y: scroll;
+  }
+
+  /* d -none mobile */
+@media only screen and (max-width: 1200px) {
+  .top-cat-list{
+    max-height: 300px !important;
+        overflow-y: scroll;
+      }
+}

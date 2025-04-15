@@ -1,13 +1,25 @@
 import React from "react";
-import Link from "next/link";
 import Image from "next/image";
 
 const Page = () => {
   return (
     <>
+    <div className="text-center">
+      <Image
+        src={"/assets/pagesbanner/B2B (13).png" || "/placeholder.png"}
+        alt="Blog Banner"
+        layout="responsive" // Makes the image 100% width
+        width={1000} // Base width (ignored in responsive mode)
+        height={450} // Aspect ratio is maintained
+        className="rounded img-fluid"
+        style={{ objectFit: "cover", width: "100%" }} // Ensures it stretches to full width
+        priority
+      />
+    </div>
+
     <div className="container mx-auto p-6">
-      <h1 className="text-4xl font-bold text-center mb-6">About Us</h1>
-      <p className="text-sm text-gray-700 mb-6">
+    <h1 className="title">About <span>Us</span></h1>
+    <p className="text-sm text-gray-700 mb-6">
         <strong>Dial Export Mart</strong> is a cutting-edge web network-centric trade platform meticulously crafted for small and medium businesses worldwide. Our platform seamlessly unites traders, wholesalers, retailers, manufacturers, and brands, providing them with a unified space to conduct business efficiently. With a commitment to exporting trade marts, we prioritize delivering exceptional services that empower businesses to scale and thrive in the global market.
       </p>
       

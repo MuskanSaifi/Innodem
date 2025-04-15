@@ -314,100 +314,84 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
 
           return (
             <div key={product._id} className="p-3 mb-3 bg-white all-pro-img rounded-3">
-              <div className="d-flex align-items-start">
-<Image
-  src={productImage || "/default-image.jpg"} // Use a fallback image if `productImage` is undefined
-  alt="Product"
-  width={100} // Define width and height explicitly
-  height={100}
-  className="me-3 all-pro-img p-2"
-  style={{ objectFit: "cover", borderRadius: "5px" }}
-  unoptimized // If images are from an external source without domain configuration in next.config.js
-/>
-                <div className="w-100">
-                  <div className="d-flex justify-content-between align-items-center">
-                    <h6 className="mb-1">{product.name}</h6>
-                    <div  className="d-flex flex-column">
+            <div className="d-flex flex-column flex-md-row align-items-start gap-3">
+              
+              <Image
+                src={productImage || "/default-image.jpg"}
+                alt="Product"
+                width={100}
+                height={100}
+                className="all-pro-img p-2"
+                style={{ objectFit: "cover", borderRadius: "5px" }}
+                unoptimized
+              />
+          
+              <div className="w-100">
+                <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
+                  <h6 className="mb-1">{product.name}</h6>
+                  <div className="d-flex flex-column text-start text-sm-end">
+                    <span className="text-grey text-sm common-shad px-3 rounded-2 mb-1">
+                      <b>Created At:</b> {product?.createdAt ? new Date(product.createdAt).toLocaleString("en-IN", {
+                        day: "2-digit", month: "2-digit", year: "numeric",
+                        hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true,
+                      }) : "null"}
+                    </span>
                     <span className="text-grey text-sm common-shad px-3 rounded-2">
-                     <b>Created At:</b>   {product?.createdAt? new Date(product.createdAt).toLocaleString("en-IN", {
-                              day: "2-digit",
-                              month: "2-digit",
-                              year: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              second: "2-digit",
-                              hour12: true,
-                            })
-                          : "null"}
+                      <b>Updated At:</b> {product?.updatedAt ? new Date(product.updatedAt).toLocaleString("en-IN", {
+                        day: "2-digit", month: "2-digit", year: "numeric",
+                        hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true,
+                      }) : "null"}
+                    </span>
+                  </div>
+                </div>
+          
+                <div className="d-flex flex-wrap gap-2 my-2">
+                  <span className="badge bg-secondary">Draft</span>
+                  <span className="badge bg-info">{product.category || "Uncategorized"}</span>
+                </div>
+          
+                <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
+                  <strong>INR {product.price ? product.price.toFixed(2) : "N/A"}</strong>
+                  <span className="text-muted text-sm">{product.minimumOrderQuantity || "N/A"} Min Order</span>
+                </div>
+          
+                <div className="progress mt-2" style={{ height: "6px" }}>
+                  <div
+                    className="progress-bar bg-success"
+                    role="progressbar"
+                    style={{ width: `${calculateProgress(product)}%` }}
+                  ></div>
+                </div>
+          
+                <div className="d-flex justify-content-between mt-2 flex-column flex-sm-row gap-2">
+                  <small className="text-muted">{Math.round(calculateProgress(product))}% Complete</small>
+                  <span className={`badge ${getBadgeClass(product.strength)}`}>
+                    {product.strength} Strength
                   </span>
-                    <span className="text-grey text-sm common-shad px-3 rounded-2">
-                     <b>Updated At:</b>   {product?.updatedAt? new Date(product.updatedAt).toLocaleString("en-IN", {
-                              day: "2-digit",
-                              month: "2-digit",
-                              year: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              second: "2-digit",
-                              hour12: true,
-                            })
-                          : "null"}
+                </div>
+          
+                <hr />
+          
+                <div className="mt-2 position-relative d-flex flex-wrap align-items-center gap-3">
+                  <span className="text-primary text-sm" role="button" onClick={() => openModal(product, "basicDetails")}>
+                    + Add Basic Details
                   </span>
-                      {/* <FaEdit className="me-3 text-primary" role="button" /> */}
-                    </div>
-                  </div>
-
-                  <div className="d-flex gap-2 mb-2">
-                    <span className="badge bg-secondary">Draft</span>
-                    <span className="badge bg-info">{product.category || "Uncategorized"}</span>
-                  </div>
-
-                  <div className="d-flex align-items-center">
-                    <strong>INR {product.price ? product.price.toFixed(2) : "N/A"}</strong>
-                    <span className="ms-2 text-muted text-sm">{product.minimumOrderQuantity || "N/A"} Min Order</span>
-                  </div>
-
-<div className="progress mt-2" style={{ height: "6px" }}>
-    <div
-      className="progress-bar bg-success"
-      role="progressbar"
-      style={{ width: `${calculateProgress(product)}%` }}
-></div>
-</div>
-
-
-<div className="d-flex justify-content-between mt-2">
-  <small className="text-muted">{Math.round(calculateProgress(product))}% Complete</small>
-                    <span className={`badge ${getBadgeClass(product.strength)}`}>
-                                {product.strength} Strength
-                            </span>
-                   </div>
-                  <hr></hr>
-
-
-<div className="mt-2 position-relative">
-  <span className="text-primary me-3 text-sm" role="button" onClick={() => openModal(product, "basicDetails")}>
-    + Add Basic Details
-  </span>
-  <span className="text-primary me-3 text-sm" role="button" onClick={() => openModal(product, "description")}>
-    + Add Description
-  </span>
-  <span className="text-primary me-3 text-sm" role="button" onClick={() => openModal(product, "specifications")}>
-    + Add Specifications
-  </span>
-  <span className="text-primary text-sm" role="button" onClick={() => openModal(product, "tradeShopping")}>
-    + Add Trade Shopping
-  </span>
-
-
-  <FaTrash className="text-danger del-pro-btn" role="button" onClick={() => handleDelete(product._id)} />
-
-</div>
-
-
-
+                  <span className="text-primary text-sm" role="button" onClick={() => openModal(product, "description")}>
+                    + Add Description
+                  </span>
+                  <span className="text-primary text-sm" role="button" onClick={() => openModal(product, "specifications")}>
+                    + Add Specifications
+                  </span>
+                  <span className="text-primary text-sm" role="button" onClick={() => openModal(product, "tradeShopping")}>
+                    + Add Trade Shopping
+                  </span>
+          
+                  <FaTrash className="text-danger del-pro-btn" role="button" onClick={() => handleDelete(product._id)} />
                 </div>
               </div>
             </div>
+          </div>
+          
           );
         })
       )}

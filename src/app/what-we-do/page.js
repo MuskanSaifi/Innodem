@@ -59,10 +59,9 @@ const page = () => {
   return (
     <section className="py-12 mt-5 mb-5 bg-gray-50">
       <div className="container mx-auto px-5">
-        <h1 className="text-3xl font-bold text-center text-gray-800">
-          How We <span className="text-[#6D4AAF]">Work</span>
-        </h1>
-        <p className="mb-5 text-sm text-center">
+        <h1 className="title">   How We <span>Work</span></h1>
+
+        <p className="mb-5 text-sm">
           At Dial Export Mart, we prioritize a thorough and personalized approach to ensure the success of your business in the market. Here's how our process works:
         </p>
 

@@ -13,8 +13,32 @@ const userSchema = new mongoose.Schema({
     otp: String,
     otpExpires: Date,
     isVerified: { type: Boolean, default: false },
+
     // ✅ Add this line to reference products
-    products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }] 
+     products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+
+    // 👇 User package info added here
+    userPackage: {
+        packageName: String,
+        totalAmount: Number,
+        paidAmount: { type: Number, default: 0 },
+        remainingAmount: Number,
+        packageStartDate: { type: Date, default: Date.now },
+        packageExpiryDate: Date,
+      },
+      userPackageHistory: [
+        {
+          packageName: String,
+          totalAmount: Number,
+          paidAmount: Number,
+          remainingAmount: Number,
+          packageStartDate: Date,
+          packageExpiryDate: Date,
+          expiredAt: { type: Date, default: Date.now }
+        }
+      ],
+      
+
 },
 { timestamps: true }
 );

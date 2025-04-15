@@ -46,7 +46,7 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
     <>
       <div className="custon-sidebar">
         <div className={`resdes-sidebar ${isSidebarOpen ? "" : "resdes-closed"}`}>
-          <h6 className="text-center mt-2">🧑‍🦱  Welcome! {userdata?.fullname || "Guest"}</h6>
+          <h6 className="text-center mt-2">🧑  Welcome! {userdata?.fullname || "Guest"}</h6>
           <ul>
             {sidebarItems.map((item, index) => (
               <li key={index} className={activeContent === item.label ? "active" : ""}>
