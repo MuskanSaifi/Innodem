@@ -18,7 +18,7 @@ const plans = [
         ['Company Certificate', false],
         ['Customer Support Person', true],
       ],
-      price: '₹ 1',
+      price: '₹ 21,999',
       highlighted: false,
     },
     {
