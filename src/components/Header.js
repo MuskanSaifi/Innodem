@@ -24,6 +24,11 @@ export default function Header() {
     setIsOpen(!isOpen);
   };
 
+  const toggleDrawer2 = (path) => {
+    setIsOpen(false); // Close drawer
+    router.push(path); // Navigate
+  };
+
   const dropdownRef = useRef(null);
   const searchRef = useRef(null);
   const cityDropdownRef = useRef(null);
@@ -376,10 +381,21 @@ export default function Header() {
 
           <>
             <p>Welcome! Guest</p>
-          <div className="mt-6 flex justify-between">
-            <Link onClick={toggleDrawer} className="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg" href="/user/login">Login</Link>
-            <Link onClick={toggleDrawer} className="bg-blue-500 text-white px-4 py-2 rounded-lg" href="/user/register">Sign Up</Link>
-          </div>
+            <div className="mt-6 flex justify-between">
+    <button
+      onClick={() => toggleDrawer2("/user/login")}
+      className="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg"
+    >
+      Login
+    </button>
+
+    <button
+      onClick={() => toggleDrawer2("/user/register")}
+      className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+    >
+      Sign Up
+    </button>
+  </div>
           </> 
           }
           <p className="mt-4 text-center text-sm text-gray-500">
