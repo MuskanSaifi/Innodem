@@ -122,7 +122,7 @@ const Dashboard = () => {
                 <h1 className="fs-2 admin fw-bold">{greeting}</h1>
                 <div className="row">
 
-                <div className="col-md-6 text-sm">
+<div className="col-md-6 text-sm">
   <h4 className="text-light text-sm mb-2">
     <b>Current Time:</b> <span className="text-light">{currentTime}</span>
   </h4>
@@ -134,7 +134,6 @@ const Dashboard = () => {
     Keep track of your progress and manage your business efficiently. 💼
   </p>
 </div>
-
 
                   <div className="col-md-6"></div>
                 </div>

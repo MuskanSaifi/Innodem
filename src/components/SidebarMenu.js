@@ -54,7 +54,8 @@ const SidebarMenu = () => {
                 className="w-6 h-6 mr-2"
                 unoptimized
               />
-              <span className="text-sm">{category.name}</span>
+              <span className="text-sm">{category.name.replace(/\b\w/g, c => c.toUpperCase())}
+              </span>
             </div>
           </li>
         ))}
@@ -88,7 +89,8 @@ const SidebarMenu = () => {
                           className="w-6 h-6"
                           unoptimized
                         />
-                        <span className="ml-2">{subcategory.name}</span>
+                        <span className="ml-2">{subcategory.name.replace(/\b\w/g, c => c.toUpperCase())}
+                        </span>
                       </div>
                     </h3>
 
@@ -100,7 +102,7 @@ const SidebarMenu = () => {
                             href={`/manufacturers/${encodeURIComponent(product.name.replace(/\s+/g, "-").toLowerCase())}`}
                             className="text-sm text-blue-700 hover:underline"
                           >
-                            {product.name}
+                            {product.name.replace(/\b\w/g, c => c.toUpperCase())}
                           </Link>
                         </li>
                       ))}
