@@ -110,7 +110,7 @@ const Footer = () => {
               <p className="text-sm my-2">📍 Rawat Plaza, Sector 7, Ramphal Chowk</p>
               <p className="text-sm my-2">📞 +91 8448668076</p>
               <p className="text-sm my-2 text-red-400 font-semibold">Mon - Fri, 9 AM - 6 PM (IST)</p>
-              <p className="text-sm my-2">📧 support@digitalexportsmarketing.com</p>
+              <p className="text-sm my-2">📧 info@dialexportmart.com</p>
               <p className="text-sm my-2">🌐 www.dialexportmart.com</p>
             </div>
 
@@ -222,7 +222,7 @@ const Footer = () => {
           {/* Copyright & Apps */}
           <div className="flex flex-col md:flex-row items-center justify-between align-items-center">
             <p className="text-sm mb-0 text-red-400">&copy; {new Date().getFullYear()} Dial Export Mart. All Rights Reserved.</p>
-            <div className="flex gap-4 md:mt-0 align-items-center px-5 py-1 rounded-3">
+            <div className="flex gap-4 md:mt-0 align-items-center  py-1 rounded-3">
 
               <GoogleTranslate />
               {/* ✅ Google Partner Link (Opens in New Tab) */}

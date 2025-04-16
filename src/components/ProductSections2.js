@@ -88,7 +88,9 @@ const ProductSections2 = ({ tag, Name }) => {
                     />
                   </div>
                 <p className="text-gray-600 text-xs text-center mb-1">{product.seller || "Unknown Seller"}</p>
-                <h3 className="text-gray-800 font-semibold text-sm truncate text-center mb-1">{product.name}</h3>
+                <h3 className="text-gray-800 font-semibold text-sm truncate text-center mb-1">  {product.name.replace(/\b\w/g, c => c.toUpperCase())}</h3>
+              
+
                 <p className="text-blue-500 font-bold text-md text-center">₹{product.price}/Pieces</p>
                 <Link href={`/seller/${formatUrl(categoryName)}/${formatUrl(subCategoryName)}/${productName}`} className="block text-center border rounded-lg py-2 mt-3 text-blue-600 border-blue-500 hover:bg-blue-500 hover:text-white transition">
                   Buy Now

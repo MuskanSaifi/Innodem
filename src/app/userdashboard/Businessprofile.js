@@ -108,7 +108,7 @@ const BusinessProfile = () => {
 
   return (
     <div className="container mt-5 mb-5">
-      <div className="card shadow-lg p-4 rounded-4 border-0">
+      <div className=" shadow-lg p-4 rounded-4 border-0">
         <h2 className="title">Business <span>Profile</span></h2>
 
         {loading ? (

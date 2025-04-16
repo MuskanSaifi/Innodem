@@ -101,7 +101,7 @@ const IndustrySlider = () => {
                       className="rounded-md object-cover w-full h-20" 
                     />
                     <p className="text-xs truncate text-gray-700 text-center mt-2 group-hover:text-gray-900" title={sub.name}>
-                      {sub.name}
+                    {sub.name.replace(/\b\w/g, c => c.toUpperCase())}
                     </p>
                   </Link>
                 ))}

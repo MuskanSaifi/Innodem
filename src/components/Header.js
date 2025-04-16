@@ -240,7 +240,7 @@ export default function Header() {
           {/* Registered Users */}
           <div className="registered-users-box text-center d-none-mob">
             <h3>Registered Users</h3>
-            <p>1,11,48,647</p>
+            <p>1,31,489</p>
           </div>
         </div>
       </div>
@@ -377,28 +377,20 @@ export default function Header() {
           <>
             <p>Welcome! Guest</p>
           <div className="mt-6 flex justify-between">
-            <Link className="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg" href="/user/login">Login</Link>
-            <Link className="bg-blue-500 text-white px-4 py-2 rounded-lg" href="/user/register">Sign Up</Link>
+            <Link onClick={toggleDrawer} className="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg" href="/user/login">Login</Link>
+            <Link onClick={toggleDrawer} className="bg-blue-500 text-white px-4 py-2 rounded-lg" href="/user/register">Sign Up</Link>
           </div>
           </> 
           }
           <p className="mt-4 text-center text-sm text-gray-500">
-            Registered Users: <span className="text-green-600">1,11,64,490</span>
+            Registered Users: <span className="text-green-600">1,31,489</span>
           </p>
         </div>
       </div>
     </div>
 
 </div>
-
-
-
-
       </div>
-
-
-
-
     </div>
   </div>
 </header>

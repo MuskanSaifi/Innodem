@@ -79,9 +79,8 @@ const BankDetails = () => {
 
   return (
     <div className="container mt-4">
-      <div className="card shadow-lg p-4">
+      <div className="shadow-lg p-4">
         <h2 className="title">Bank <span>Details</span></h2>
-
         {loading ? (
           <p>Loading...</p>
         ) : (

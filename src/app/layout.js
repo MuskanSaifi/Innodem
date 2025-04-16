@@ -11,19 +11,13 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 
 
 export const metadata = {
-  title: "Leading B2B Marketplace in India & Globally | Dial Export Mart",
+  title: "Dial Export Mart | B2B Marketplace in India | B2B Portal in India",
   description:
     "Join Dial Export Mart, India’s premier B2B platform to connect with international buyers and suppliers. Grow your business globally, explore diverse export markets, and find genuine partners for long-term growth.",
+    keywords:"B2B Marketplace in India,B2B Portal in India,B2B Platform in India,Best B2B Platform in India, Best B2B Platform in India, Export Import Marketplace in India, Online B2B Platform in India, Global Trade Portal in India, Wholesale, Buy & Sell Online, Indian B2B Platform, International B2B Marketplace, Buy & Sell Online in India, Best B2B Website in India, B2B website for small businesses, Top Export-Import Marketplace",
   alternates: {
     canonical: "https://dialexportmart.com/",
-  },
-  openGraph: {
-    title: "Leading B2B Marketplace in India | B2B Portal in India | Dial Export Mart",
-    description: "Explore Dial Export Mart, a trusted platform connecting buyers and sellers worldwide.",
-    url: "https://dialexportmart.com/",
-    type: "website",
-    images: ["/path-to-your-social-media-image.jpg"],
-  },
+  }
 };
 
 

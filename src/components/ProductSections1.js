@@ -95,7 +95,7 @@ const ProductSections1 = ({ tag, Name }) => {
                   />
                 </div>
                 <p className="mt-3 text-center text-gray-700 font-medium text-sm group-hover:text-gray-900 transition-all">
-                  {product.name}
+                {product.name.replace(/\b\w/g, c => c.toUpperCase())}
                 </p>
               </Link>
             </SwiperSlide>
