@@ -6,6 +6,9 @@ import "../components/styles/header.css";
 import "../components/styles/footer.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+import Script from "next/script"; // ✅ Import Next.js Script component
+import Head from "next/head"; // ✅ Import Head for meta tag
+
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
@@ -24,6 +27,24 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+           <Head>
+        <meta name="google-site-verification" content="R9WyXTgozYVTSKMCjWbQZkact5ZWyCqa9sMQGmKhwnY" />
+      </Head>
+
+      <Script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-RMD1BWW0YY"
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RMD1BWW0YY');
+        `}
+      </Script>
+
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers> {/* ✅ Wrap Redux & Toast Provider */}
           <LayoutWrapper>{children}</LayoutWrapper>

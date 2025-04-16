@@ -197,7 +197,7 @@ const AllProducts = () => {
     
         if (res.data.success) {
           toast.success("Product updated successfully!");
-    
+
           // ✅ Ensure the updated product is correctly reflected in the state
           setProducts((prev) =>
             prev.map((p) => (p._id === selectedProduct._id ? updateData : p))
@@ -244,8 +244,6 @@ const AllProducts = () => {
     };
     
     
-
-    
         // Function to determine badge color
       const getBadgeClass = (strength) => {
           switch (strength) {
@@ -287,10 +285,10 @@ const calculateProgress = (product) => {
     
   return (
     <div className="container mt-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      {/* <div className="d-flex justify-content-between align-items-center mb-4">
         <h5>{products.length} Products</h5>
         <button className="btn btn-primary">+ Add More Product</button>
-      </div>
+      </div> */}
 
       {loading ? (
         <p className="text-center">Loading products...</p>

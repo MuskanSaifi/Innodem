@@ -45,31 +45,50 @@ export async function PATCH(req) {
       return NextResponse.json({ success: false, message: "Product not found" }, { status: 404 });
     }
 
-    // ✅ Upload new images if they are Base64
-    let newImages = [];
-    if (images.length > 0) {
-      const uploadedImages = await Promise.all(
-        images.map(async (img) => {
-          return img.startsWith("data:image") ? await uploadToCloudinary(img) : img;
-        })
-      );
-      newImages = uploadedImages;
+    const existingImages = existingProduct.images || [];
+
+    // ✅ Check image limit
+    const totalImages = existingImages.length + images.length;
+    if (totalImages > 4) {
+      return NextResponse.json({
+        success: false,
+        message: "Image upload limit exceeded (Max 4 images allowed)",
+      }, { status: 400 });
     }
 
-    // ✅ Ensure images match schema [{ url: "image_url" }]
-    updateFields.images = newImages.map((img) => ({ url: img })); 
+    // ✅ Upload new images (if base64)
+    const uploadedImages = await Promise.all(
+      images.map(async (img) => {
+        return img.startsWith("data:image") ? await uploadToCloudinary(img) : img;
+      })
+    );
 
-    // ✅ Update Product
+    // ✅ Merge existing + new
+    const finalImages = [
+      ...existingImages.map((img) => ({ url: img.url || img })), // handle old format
+      ...uploadedImages.map((img) => ({ url: img })),
+    ];
+
+    updateFields.images = finalImages;
+
     const updatedProduct = await Product.findOneAndUpdate(
       { _id: productId, userId: user.id },
       { $set: updateFields },
       { new: true }
     );
 
-    return NextResponse.json({ success: true, message: "Product updated successfully", data: updatedProduct }, { status: 200 });
+    return NextResponse.json({
+      success: true,
+      message: "Product updated successfully",
+      data: updatedProduct
+    }, { status: 200 });
+
   } catch (error) {
     console.error("❌ Error updating product:", error);
-    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
+    return NextResponse.json({
+      success: false,
+      message: "Internal server error"
+    }, { status: 500 });
   }
 }
 
