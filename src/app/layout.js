@@ -26,6 +26,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+         {/* ✅ Google Site Verification */}
+         <meta
+          name="google-site-verification"
+          content="R9WyXTgozYVTSKMCjWbQZkact5ZWyCqa9sMQGmKhwnY"
+        />
+        
       <Script
           strategy="afterInteractive"
           src={`https://www.googletagmanager.com/gtag/js?id=G-RMD1BWW0YY`}
