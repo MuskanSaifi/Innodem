@@ -41,7 +41,7 @@ export async function GET(req) {
     }
 
     // Fetch user details from database (FIX: Use decoded.id instead of decoded.userId)
-    const user = await User.findById(decoded.id, "fullname email mobileNumber companyName");
+    const user = await User.findById(decoded.id, "fullname email mobileNumber companyName userPackage userPackageHistory isVerified");
 
     if (!user) {
       return new Response(

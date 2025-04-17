@@ -45,7 +45,6 @@ const Dashboard = () => {
       const response = await axios.get(`/api/userprofile/profile/userprofile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
       setUserdetail(response.data.user);
     } catch (error) {
       console.log("Error fetching user data:", error.response?.data || error.message);

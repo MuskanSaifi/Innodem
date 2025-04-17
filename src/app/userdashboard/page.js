@@ -28,7 +28,7 @@ function UserDashboard() {
           <button onClick={toggleSidebar} className="resdes-hamburger" aria-label="Toggle Sidebar">
             &#9776;
           </button>
-          <h1>{activeContent}</h1>
+          <h1 className="text-lg mb-0">{activeContent}</h1>
         </div>
 
         <div className="resdes-dynamic-content">
@@ -39,8 +39,7 @@ function UserDashboard() {
           {activeContent === "Bank Details" && <BankDetails />}
           {activeContent === "Add New Product" && <AddProducts />}
           {activeContent === "My Product" && <AllProducts />}
-        </div>
-        
+        </div> 
       </div>
     </div>
   );
