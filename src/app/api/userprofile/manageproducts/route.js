@@ -57,11 +57,13 @@ export async function POST(req) {
     // ✅ Extracting Fields
     const {
       name,
+      productslug,
       price,
       currency,
       minimumOrderQuantity,
       moqUnit,
       images,
+      country,
       state,
       city,
       description = "",
@@ -153,11 +155,13 @@ export async function POST(req) {
     const newProduct = new Product({
       userId: user.id,
       name,
+      productslug,
       price,
       currency,
       minimumOrderQuantity,
       moqUnit,
       images: imageUrls.map(({ url, public_id }) => ({ url, public_id })),
+      country,
       state,
       city,
       description,

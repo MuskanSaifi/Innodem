@@ -6,6 +6,7 @@ const productSchema = new mongoose.Schema(
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
     subCategory: { type: mongoose.Schema.Types.ObjectId, ref: "SubCategory" },
     name: { type: String },
+    productslug: { type: String },
     price: { type: Number },
     currency: { type: String, default: "INR" },
     minimumOrderQuantity: { type: Number },
@@ -20,10 +21,10 @@ const productSchema = new mongoose.Schema(
     youtubeUrl: { type: String },
     description: { type: String },
     stock: { type: Number, default: 0 },
+    country: {type: String},
     state: {type: String},
     city: {type: String},
     cityimage: {type: String},
-    country: {type: String},
    
     // for admin
      // ✅ Tags with default value false

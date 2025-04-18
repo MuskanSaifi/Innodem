@@ -15,23 +15,19 @@ const Bannerslider = () => {
       <div className="col-md-10">
       <Carousel autoPlay={true} infiniteLoop={true} interval={6000}>
       <div>
-        <img src="/assets/bannerslider/banner1.jpg" alt="banner1" />
+        <img src="/assets/bannerslider/Indian Spices-min.png" alt="banner4" />
       </div>
       <div>
-        <img src="/assets/bannerslider/Best Distributer1.jpg" alt="banner1" />
+        <img src="/assets/bannerslider/Indian Spices-2-1-min.png" alt="banner1" />
       </div>
       <div>
-        <img src="/assets/bannerslider/banner2.jpg" alt="banner 2" />
+        <img src="/assets/bannerslider/Indian Spices-3-min.png" alt="banner1" />
       </div>
+     
       <div>
-        <img src="/assets/bannerslider/Best Distributer2.jpg" alt="banner2" />
+        <img src="/assets\bannerslider\Indian Spices-2-min.png" alt="banner 2" />
       </div>
-      <div>
-        <img src="/assets/bannerslider/Best Distributer3.jpg" alt="banner3" />
-      </div>
-      <div>
-        <img src="/assets/bannerslider/Best Distributer4.jpg" alt="banner4" />
-      </div>
+
     </Carousel>
       </div>
     </div>

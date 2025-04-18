@@ -26,9 +26,7 @@ export default function CategoryList() {
     fetchCategories();
   }, []);
 
-  function formatUrl(name) {
-    return encodeURIComponent(name.replace(/&/g, "and").replace(/ /g, "-").toLowerCase());
-  }
+
 
   if (loading) {
     return (
@@ -61,7 +59,7 @@ export default function CategoryList() {
               {/* Clickable Category */}
               <h3
                 className="text-lg font-semibold text-blue-600 hover:underline"
-                onClick={() => router.push(`/seller/${formatUrl(category.name)}`)}
+                onClick={() => router.push(`/seller/${category.categoryslug}`)}
                 role="button"
                 tabIndex={0}
               >
@@ -79,7 +77,7 @@ export default function CategoryList() {
                         className="text-sm text-blue-500 hover:underline cursor-pointer"
                         onClick={(e) => {
                           e.stopPropagation(); // Prevent category click
-                          router.push(`/seller/${formatUrl(category.name)}/${formatUrl(sub.name)}`);
+                          router.push(`/seller/${category.categoryslug}/${sub.subcategoryslug}`);
                         }}
                       >
                         {sub.name}

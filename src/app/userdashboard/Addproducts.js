@@ -2,17 +2,35 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Tab, Nav } from "react-bootstrap";
-import { IndianLocation } from "./Indianlocation";
 import Image from "next/image";
+import { Country, State, City } from 'country-state-city';
+
+
+// Slug generator function
+const generateSlug = (text) => {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
+  };
 
 
 const AddProduct = () => {
+
+const [selectedCountry, setSelectedCountry] = useState("");
+const [availableStates, setAvailableStates] = useState([]);
+const [availableCities, setAvailableCities] = useState([]);
+
+
     // category
     const [selectedCategory, setSelectedCategory] = useState([]);
 
     //   Products
         const [product, setProduct] = useState({
             name: "",
+            productslug: "",
             category: "",
             subCategory: "",
             price: "",
@@ -20,6 +38,7 @@ const AddProduct = () => {
             minimumOrderQuantity: "",
             moqUnit: "",
             description: "",
+            country: "",
             state: "",
             city: "",
             stock: "",
@@ -105,14 +124,35 @@ const AddProduct = () => {
         },
         });
 
-          // Handle state change
+  // Handle country change
+  const handleCountryChange = (e) => {
+    const countryCode = e.target.value;
+    setSelectedCountry(countryCode);
+  
+    setProduct((prev) => ({
+      ...prev,
+      country: countryCode, // ✅ This is perfect
+      state: "",
+      city: "",
+    }));
+  
+    const states = State.getStatesOfCountry(countryCode);
+    setAvailableStates(states);
+    setAvailableCities([]);
+  };
+  
+          
+  // Handle state change
           const handleStateChange = (e) => {
-            const selectedState = e.target.value;
+            const stateCode = e.target.value;
             setProduct((prev) => ({
               ...prev,
-              state: selectedState,
-              city: "", // Reset city when state changes
+              state: stateCode,
+              city: "", // Reset city
             }));
+          
+            const cities = City.getCitiesOfState(selectedCountry, stateCode);
+            setAvailableCities(cities);
           };
           
   // Handle city change
@@ -145,8 +185,15 @@ const AddProduct = () => {
     // Handle form field changes
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setProduct((prev) => ({ ...prev, [name]: value }));
-    };
+      
+        if (name === "name") {
+          const productslug = generateSlug(value);
+          setProduct((prev) => ({ ...prev, name: value, productslug }));
+        } else {
+          setProduct((prev) => ({ ...prev, [name]: value }));
+        }
+      };
+      
     
     const handleNestedChange = (e, field, subField = null) => {
         const { name, value, type } = e.target;
@@ -348,6 +395,22 @@ const handleSubmit = async (e) => {
                             </div>
 
 
+                            <div className="mb-3">
+  <label className="text-gray-600 text-sm">Product Slug</label>
+  <div className="relative mt-2 text-gray-500">
+    <input
+      type="text"
+      className="w-full pl-3 pr-3 py-2 appearance-none bg-transparent outline-none border focus:border-slate-600 shadow-sm rounded-lg"
+      name="productslug"
+      value={product.productslug}
+      onChange={handleChange}
+      required
+      readOnly
+      disabled
+    />
+  </div>
+</div>
+
 
                             <div className="mb-3 flex gap-4">
                                 {/* Category Dropdown */}
@@ -489,42 +552,64 @@ const handleSubmit = async (e) => {
                             </div>
 
                     <div>
-      {/* State Dropdown */}
-      <div className="mb-3">
-        <label className="text-gray-600 text-sm">State</label>
-        <select
-          className="w-full pl-3 pr-3 py-2 appearance-none bg-transparent outline-none border focus:border-slate-600 shadow-sm rounded-lg"
-          name="state"
-          value={product.state}
-          onChange={handleStateChange}
-        >
-          <option value="">Select State</option>
-          {IndianLocation.map((state, index) => (
-            <option key={index} value={state.state}>
-              {state.state}
-            </option>
-          ))}
-        </select>
-      </div>
+  
 
-      {/* City Dropdown (Depends on Selected State) */}
-      <div className="mb-3">
-        <label className="text-gray-600 text-sm">City</label>
-        <select
-          className="w-full pl-3 pr-3 py-2 appearance-none bg-transparent outline-none border focus:border-slate-600 shadow-sm rounded-lg"
-          name="city"
-          value={product.city}
-          onChange={handleCityChange}
-          disabled={!product.state} // Disable if no state is selected
-        >
-          <option value="">Select City</option>
-          {IndianLocation.find((s) => s.state === product.state)?.cities.map((city, index) => (
-            <option key={index} value={city}>
-              {city}
-            </option>
-          ))}
-        </select>
-      </div>
+  {/* Country Dropdown */}
+<div className="mb-3">
+  <label className="text-gray-600 text-sm">Country</label>
+  <select
+    className="w-full pl-3 pr-3 py-2 appearance-none bg-transparent outline-none border focus:border-slate-600 shadow-sm rounded-lg"
+    value={product.country}
+    onChange={handleCountryChange}
+  >
+    <option value="">Select Country</option>
+    {Country.getAllCountries().map((country) => (
+      <option key={country.isoCode} value={country.isoCode}>
+        {country.name}
+      </option>
+    ))}
+  </select>
+</div>
+
+{/* State Dropdown */}
+<div className="mb-3">
+  <label className="text-gray-600 text-sm">State</label>
+  <select
+    className="w-full pl-3 pr-3 py-2 appearance-none bg-transparent outline-none border focus:border-slate-600 shadow-sm rounded-lg"
+    value={product.state}
+    onChange={handleStateChange}
+    disabled={!selectedCountry}
+  >
+    <option value="">Select State</option>
+    {availableStates.map((state) => (
+      <option key={state.isoCode} value={state.isoCode}>
+        {state.name}
+      </option>
+    ))}
+  </select>
+</div>
+
+{/* City Dropdown */}
+<div className="mb-3">
+  <label className="text-gray-600 text-sm">City</label>
+  <select
+    className="w-full pl-3 pr-3 py-2 appearance-none bg-transparent outline-none border focus:border-slate-600 shadow-sm rounded-lg"
+    value={product.city}
+    onChange={handleCityChange}
+    disabled={!product.state}
+  >
+    <option value="">Select City</option>
+    {availableCities.map((city, index) => (
+      <option key={index} value={city.name}>
+        {city.name}
+      </option>
+    ))}
+  </select>
+</div>
+
+
+
+
     </div>
 
                         </div>
