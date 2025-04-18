@@ -71,8 +71,8 @@ const ProductSections2 = ({ tag, Name }) => {
 
       <Slider {...settings}>
         {products.map((product) => {
-          const categoryName = product.category?.name || "unknown";
-          const subCategoryName = product.subCategory?.name || "general";
+          // const categoryName = product.category?.name || "unknown";
+          // const subCategoryName = product.subCategory?.name || "general";
           const productName = formatUrl(product.name);
 
           return (
@@ -92,7 +92,8 @@ const ProductSections2 = ({ tag, Name }) => {
               
 
                 <p className="text-blue-500 font-bold text-md text-center">₹{product.price}/Pieces</p>
-                <Link href={`/seller/${formatUrl(categoryName)}/${formatUrl(subCategoryName)}/${productName}`} className="block text-center border rounded-lg py-2 mt-3 text-blue-600 border-blue-500 hover:bg-blue-500 hover:text-white transition">
+                {/* <Link href={`/seller/${formatUrl(categoryName)}/${formatUrl(subCategoryName)}/${productName}`} className="block text-center border rounded-lg py-2 mt-3 text-blue-600 border-blue-500 hover:bg-blue-500 hover:text-white transition"> */}
+                <Link href={`/manufacturers/${productName}`} className="block text-center border rounded-lg py-2 mt-3 text-blue-600 border-blue-500 hover:bg-blue-500 hover:text-white transition">
                   Buy Now
                 </Link>
               </div>

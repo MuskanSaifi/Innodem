@@ -110,6 +110,7 @@ const IndustryPage = () => {
           <p>No industries available.</p>
         )}
       </div>
+      
     </div>
   );
 };

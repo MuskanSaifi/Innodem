@@ -128,13 +128,14 @@ export default function Header() {
     const formatUrl = (name) =>
       encodeURIComponent(name.replace(/&/g, "and").replace(/\s+/g, "-").toLowerCase());
 
-    const categoryName = product.category?.name || "unknown";
-    const subCategoryName = product.subCategory?.name || "general";
+    // const categoryName = product.category?.name || "unknown";
+    // const subCategoryName = product.subCategory?.name || "general";
     const productName = formatUrl(product.name);
 
     setSearchTerm(product.name);
     setSuggestions([]);
-    router.push(`/${formatUrl(categoryName)}/${formatUrl(subCategoryName)}/${productName}`);
+    // router.push(`/${formatUrl(categoryName)}/${formatUrl(subCategoryName)}/${productName}`);
+    router.push(`/manufacturers/${productName}`);
   };
 
 
