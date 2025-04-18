@@ -48,9 +48,9 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
         <div className="d-flex justify-content-around align-items-center m-2">
           <Link href="../">
             <Image src="/assets/logo.png" alt="Innodem Logo" width={100} height={50} priority />
-          </Link>
-          <h2 className="fs-3">Admin 😎</h2>
-        </div>
+          </Link>        </div>
+          <h6 className="text-center mt-2">🧑  Welcome! Admin</h6>
+
 
         <ul>
           {sidebarItems.map((item, index) => (

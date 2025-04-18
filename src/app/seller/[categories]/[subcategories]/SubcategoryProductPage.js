@@ -9,8 +9,6 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 const SubcategoryProductPage = () => {
   const params = useParams();
-
-  // Since we can't directly destructure "sub-categories", do this workaround:
   const categorySlug = params?.["categories"];
   const subcategorySlug = params?.["subcategories"];
 
@@ -18,6 +16,10 @@ const SubcategoryProductPage = () => {
   const [subcategories, setSubcategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Dropdown states for mobile
+  const [subcategoryDropdownOpen, setSubcategoryDropdownOpen] = useState(false);
+  const [productDropdownOpen, setProductDropdownOpen] = useState(false);
 
   const decode = (str) => decodeURIComponent(str).toLowerCase();
 
@@ -55,7 +57,7 @@ const SubcategoryProductPage = () => {
   }, [categorySlug, subcategorySlug]);
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 mb-5">
       {/* Breadcrumb */}
       <nav className="breadcrumb bg-light p-3 rounded">
         <Link href="/" className="text-decoration-none text-secondary">Home</Link> /{" "}
@@ -67,9 +69,82 @@ const SubcategoryProductPage = () => {
         </span>
       </nav>
 
-      <div className="row mb-5">
-        {/* Sidebar */}
-        <aside className="col-md-3">
+      {/* Mobile Dropdowns */}
+      <div className="d-md-none mb-3">
+        {/* Subcategory Dropdown */}
+        <div className="mb-2">
+          <button
+            className="btn btn-outline-secondary w-100"
+            type="button"
+            onClick={() => setSubcategoryDropdownOpen(!subcategoryDropdownOpen)}
+          >
+            Subcategories
+          </button>
+          {subcategoryDropdownOpen && (
+            <div className="mt-2">
+              {loading ? (
+                <Skeleton count={5} height={20} />
+              ) : (
+                <ul className="list-group">
+                  {subcategories.map((sub) => (
+                    <Link
+                      key={sub._id}
+                      href={`/seller/${categorySlug}/${encodeURIComponent(sub.subcategoryslug)}`}
+                      className="text-decoration-none"
+                    >
+                      <li
+                        className={`list-group-item ${
+                          decode(sub.subcategoryslug) === decode(subcategorySlug)
+                            ? "active text-white bg-purple fw-bold"
+                            : "text-dark"
+                        }`}
+                      >
+                        {sub.name}
+                      </li>
+                    </Link>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Product Dropdown */}
+        <div>
+          <button
+            className="btn btn-outline-primary w-100"
+            type="button"
+            onClick={() => setProductDropdownOpen(!productDropdownOpen)}
+          >
+            {productDropdownOpen ? "Hide Products" : "Show Products"}
+          </button>
+          {productDropdownOpen && (
+            <div className="mt-2">
+              {loading ? (
+                <Skeleton count={5} height={20} />
+              ) : products.length > 0 ? (
+                <ul className="list-group">
+                  {products.map((product) => (
+                    <Link
+                      key={product._id}
+                      href={`/products/${product._id}`}
+                      className="text-decoration-none"
+                    >
+                      <li className="list-group-item text-dark">{product.name}</li>
+                    </Link>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-warning text-center">No products found.</p>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="row">
+        {/* Sidebar (Desktop) */}
+        <aside className="col-md-3 d-none d-md-block">
           <div className="bg-white p-3 rounded common-shad">
             <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
               Subcategories
@@ -85,7 +160,7 @@ const SubcategoryProductPage = () => {
                     className="text-decoration-none"
                   >
                     <li
-                      className={`list-group-item hover:bg-gray-100 ${
+                      className={`list-group-item ${
                         decode(sub.subcategoryslug) === decode(subcategorySlug)
                           ? "active text-white bg-purple fw-bold"
                           : "text-dark"
@@ -100,12 +175,12 @@ const SubcategoryProductPage = () => {
           </div>
         </aside>
 
-        {/* Product List */}
-        <div className="col-md-6 common-shad">
-          <div className="d-flex justify-content-between align-items-center mb-3 p-2 mt-3">
-            <h4 className="text-uppercase text-secondary">
-              {loading ? <Skeleton width={200} /> : decode(subcategorySlug)}
-            </h4>
+        {/* Product Listing */}
+        <main className="col-md-6 common-shad rounded-2 p-3">
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h1 className="text-uppercase text-lg text-secondary">
+              {loading ? <Skeleton width={200} /> : decode(subcategorySlug)} Products
+            </h1>
             <span className="badge bg-primary text-white fs-6">
               {loading ? <Skeleton width={30} /> : products.length}
             </span>
@@ -113,12 +188,12 @@ const SubcategoryProductPage = () => {
 
           <div className="row g-4">
             {loading ? (
-              <Skeleton count={6} height={200} />
+              <Skeleton count={6} height={150} />
             ) : error ? (
               <p className="text-danger">{error}</p>
             ) : products.length > 0 ? (
-              products.map((product) => (
-                <div key={product._id} className="col-md-6">
+              products.map((product, index) => (
+                <div key={`${product._id}-${index}`} className="col-md-6">
                   <div className="card border-0 shadow-sm p-3 rounded-3">
                     <div className="position-relative text-center">
                       <Image
@@ -130,21 +205,25 @@ const SubcategoryProductPage = () => {
                         style={{ objectFit: "cover" }}
                       />
                     </div>
-                    <h6 className="mt-2 text-primary text-center">{product.name}</h6>
-                    <table className="table table-sm mt-2">
+                    <h6 className="mt-2 text-primary text-sm text-center">
+                      {product.name}
+                    </h6>
+                    <table className="table table-sm mt-2 text-sm">
                       <tbody>
                         <tr>
-                          <th>Price</th>
-                          <td>₹{product.price} {product.currency || "INR"}</td>
+                          <th>Price:</th>
+                          <td>
+                            ₹{product.price} {product.currency || "INR"}
+                          </td>
                         </tr>
                         <tr>
-                          <th>MOQ</th>
+                          <th>MOQ:</th>
                           <td>{product.minimumOrderQuantity || "N/A"}</td>
                         </tr>
                       </tbody>
                     </table>
                     <Link
-                      href={`/seller/products/${product._id}`}
+                      href={`/products/${product._id}`}
                       className="btn btn-outline-primary btn-sm mt-2 w-100"
                     >
                       More details
@@ -153,13 +232,15 @@ const SubcategoryProductPage = () => {
                 </div>
               ))
             ) : (
-              <p className="text-warning text-center">No products found for this subcategory.</p>
+              <p className="text-warning text-center">
+                No products found for this subcategory.
+              </p>
             )}
           </div>
-        </div>
+        </main>
 
-        {/* Products Sidebar */}
-        <aside className="col-md-3">
+         {/* Products Sidebar */}
+         <aside className="col-md-3 d-none d-md-block">
           <div className="bg-white p-3 rounded common-shad">
             <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
               Products in {decode(subcategorySlug)}

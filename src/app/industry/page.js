@@ -43,6 +43,7 @@ const IndustryPage = () => {
         const formattedIndustries = categories.map((category) => ({
           id: category._id,
           name: category.name,
+          slug:category.categoryslug,
           icon: category.icon || "/default-icon.png",
           subcategories: category.subcategories
             .map((subId) => subcategoryMap[subId])
@@ -97,9 +98,7 @@ const IndustryPage = () => {
                   ))}
                 </ul>
                 <Link
-                  href={`/${encodeURIComponent(
-                    industry.name.replace(/&/g, "and").replace(/\s+/g, "-").toLowerCase()
-                  )}`}
+                  href={`/seller/${encodeURIComponent(industry.slug)}`}
                   className="text-info"
                 >
                   View More

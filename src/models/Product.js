@@ -10,7 +10,12 @@ const productSchema = new mongoose.Schema(
     currency: { type: String, default: "INR" },
     minimumOrderQuantity: { type: Number },
     moqUnit: { type: String, default:"Number" },
-    images: [{ url: String }],  
+    images: [
+      {
+        url: { type: String, required: true },
+        public_id: { type: String }, // ✅ This must be present
+      },
+    ],
     video: { type: String },
     youtubeUrl: { type: String },
     description: { type: String },
@@ -87,7 +92,7 @@ const productSchema = new mongoose.Schema(
     tradeShopping: {
       brandName: { type: String },
       gst: { type: Number, enum: [0, 5, 12, 18, 28, null], default: null },
-      sellingPriceType: { type: String, enum: ["Fixed", "Slab Based", null], default: null },
+      sellingPriceType: { type: String, default: null },
       fixedSellingPrice: { type: Number }, // Only for "Fixed Selling Price"
       slabPricing: [
         {

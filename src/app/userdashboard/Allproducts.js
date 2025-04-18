@@ -311,8 +311,7 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
 }
           return (
             <div key={product._id} className="p-3 mb-3 bg-white all-pro-img rounded-3">
-            <div className="d-flex flex-column flex-md-row align-items-start gap-3">
-              
+            <div className="d-flex flex-column flex-md-row align-items-start gap-3">              
               <Image
                 src={productImage || "/default-image.jpg"}
                 alt="Product"
@@ -326,6 +325,7 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
               <div className="w-100">
                 <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
                   <h6 className="mb-1">{product.name}</h6>
+                  <h6 className="mb-1">{product.images.public_id}</h6>
                   <div className="d-flex flex-column text-start text-sm-end">
                     <span className="text-grey text-sm common-shad px-3 rounded-2 mb-1">
                       <b>Created At:</b> {product?.createdAt ? new Date(product.createdAt).toLocaleString("en-IN", {

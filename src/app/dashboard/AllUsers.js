@@ -200,7 +200,7 @@ const AllUsers = () => {
               <th>Full Name</th>
               <th>Email</th>
               <th>Mobile</th>
-              <th>Company</th>
+              <th>Company/ Total Products</th>
               <th>Registered On</th> {/* ✅ Added Date */}
               <th>Action</th>
             </tr>
@@ -214,7 +214,7 @@ const AllUsers = () => {
                     <td>{user.fullname}</td>
                     <td>{user.email}</td>
                     <td>{user.mobileNumber}</td>
-                    <td>{user.companyName}</td>
+                    <td>{user.companyName} / {user.products?.length}</td>
                     <td>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}</td>
                     <td>
                       <Button variant="danger" size="sm" onClick={() => handleDeleteUser(user._id)}>
@@ -246,12 +246,13 @@ const AllUsers = () => {
                             return (
                               <Accordion.Item key={product._id} eventKey={i.toString()} className="mb-2">
                                 <Accordion.Header>
-                                  <strong>{product.name}</strong>
+    <strong>{i + 1}. {product.name}</strong>
                                   <div className="nnn">
                                     <FaTimesCircle className="text-danger bg-light rounded-3 my-shad" role="button" onClick={() => handleDelete(product._id)} />
                                   </div>
                                 </Accordion.Header>
                                 <Accordion.Body>
+                                  <strong className="text-sm text-danger">{product._id}</strong>
 
                                   <div className="d-flex justify-content-between">
                                     <div>

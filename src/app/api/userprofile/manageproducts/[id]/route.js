@@ -2,29 +2,33 @@ import { NextResponse } from "next/server";
 import connectdb from "@/lib/dbConnect";
 import { requireSignIn } from "@/middlewares/requireSignIn";
 import Product from "@/models/Product";
-
+import User from "@/models/User";
 import cloudinary from "@/lib/cloudinary";
 
 // ✅ Upload Image to Cloudinary Function
 const uploadToCloudinary = async (image) => {
   if (!image.startsWith("data:image")) {
-    return image; // Return existing URL if it's already uploaded
+    return { url: image, public_id: null };
   }
 
   try {
     const result = await cloudinary.v2.uploader.upload(image, {
       folder: "products",
-      resource_type: "image", // Ensure it's an image upload
+      resource_type: "image",
       transformation: [{ width: 500, height: 500, crop: "limit" }],
     });
 
-    return result.secure_url; // Return Cloudinary URL
+    return {
+      url: result.secure_url,
+      public_id: result.public_id,
+    };
   } catch (error) {
     console.error("❌ Cloudinary Upload Error:", error);
     throw new Error("Image upload failed");
   }
 };
 
+// ✅ PATCH: Update Product
 export async function PATCH(req) {
   try {
     await connectdb();
@@ -47,7 +51,7 @@ export async function PATCH(req) {
 
     const existingImages = existingProduct.images || [];
 
-    // ✅ Check image limit
+    // ✅ Image Limit Check
     const totalImages = existingImages.length + images.length;
     if (totalImages > 4) {
       return NextResponse.json({
@@ -56,17 +60,16 @@ export async function PATCH(req) {
       }, { status: 400 });
     }
 
-    // ✅ Upload new images (if base64)
+    // ✅ Upload new images
     const uploadedImages = await Promise.all(
       images.map(async (img) => {
-        return img.startsWith("data:image") ? await uploadToCloudinary(img) : img;
+        return img.startsWith("data:image") ? await uploadToCloudinary(img) : { url: img, public_id: null };
       })
     );
 
-    // ✅ Merge existing + new
     const finalImages = [
-      ...existingImages.map((img) => ({ url: img.url || img })), // handle old format
-      ...uploadedImages.map((img) => ({ url: img })),
+      ...existingImages,
+      ...uploadedImages
     ];
 
     updateFields.images = finalImages;
@@ -92,39 +95,46 @@ export async function PATCH(req) {
   }
 }
 
-
-
-
+// ✅ DELETE: Delete Product and its Cloudinary images
 export async function DELETE(req, context) {
   try {
     await connectdb();
 
-    // Authenticate user
-    // const user = await requireSignIn(req);
-    // if (!user) {
-    //   return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-    // }
-
-    // ✅ Await params correctly
     const { id } = await context.params;
 
     if (!id) {
       return NextResponse.json({ success: false, message: "Product ID is required" }, { status: 400 });
     }
 
-    // Find the product by ID
     const product = await Product.findById(id);
     if (!product) {
       return NextResponse.json({ success: false, message: "Product not found" }, { status: 404 });
     }
 
-    // Ensure the user owns the product
-    // if (product.userId.toString() !== user.id) {
-    //   return NextResponse.json({ success: false, message: "Unauthorized to delete this product" }, { status: 403 });
-    // }
+    // ✅ Delete product images from Cloudinary
+    if (product.images && product.images.length > 0) {
+      for (const image of product.images) {
+        if (image.public_id) {
+          try {
+            await cloudinary.v2.uploader.destroy(image.public_id);
+          } catch (err) {
+            console.warn(`⚠️ Failed to delete Cloudinary image with public_id: ${image.public_id}`);
+          }
+        }
+      }
+    }
 
-    // Delete the product
+    const userId = product.userId;
+
+    // ✅ Delete product from DB
     await Product.findByIdAndDelete(id);
+
+    // ✅ Remove reference from user
+    if (userId) {
+      await User.findByIdAndUpdate(userId, {
+        $pull: { products: id }
+      });
+    }
 
     return NextResponse.json({ success: true, message: "Product deleted successfully" }, { status: 200 });
   } catch (error) {
@@ -132,4 +142,3 @@ export async function DELETE(req, context) {
     return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }
 }
-

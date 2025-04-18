@@ -15,7 +15,7 @@ const uploadToCloudinary = async (image) => {
   }
 
   if (image.startsWith("http")) {
-    return image; // ✅ Already a valid URL
+    return { url: image, public_id: null }; // No public_id for existing URL
   }
 
   try {
@@ -24,7 +24,10 @@ const uploadToCloudinary = async (image) => {
       transformation: [{ width: 500, height: 500, crop: "limit" }], // Resize image
     });
 
-    return result.secure_url; // ✅ Return the uploaded image URL
+ return {
+      url: result.secure_url,
+      public_id: result.public_id, // ✅ Save public_id
+    };
   } catch (error) {
     console.error("❌ Cloudinary Upload Error:", error);
     throw new Error("Image upload failed");
@@ -83,9 +86,9 @@ export async function POST(req) {
     }
 
     // ✅ Process Trade Pricing (Fixed vs Slab)
-    if (!tradeShopping.sellingPriceType) {
-      return NextResponse.json({ success: false, message: "Selling price type is required" }, { status: 400 });
-    }
+    // if (!tradeShopping.sellingPriceType) {
+    //   return NextResponse.json({ success: false, message: "Selling price type is required" }, { status: 400 });
+    // }
 
     let fixedSellingPrice = null;
     let slabPricing = [];
@@ -98,22 +101,28 @@ export async function POST(req) {
     }
     else if (tradeShopping.sellingPriceType === "Slab Based") {
       if (!Array.isArray(tradeShopping.slabPricing) || tradeShopping.slabPricing.length === 0) {
-        return NextResponse.json({ success: false, message: "Slab pricing details required" }, { status: 400 });
+        slabPricing = []; // 👈 Slab pricing optional hai, toh empty array assign karo
+      } else {
+        let validationFailed = false;
+    
+        for (let i = 0; i < tradeShopping.slabPricing.length; i++) {
+          const slab = tradeShopping.slabPricing[i];
+          if (!slab.minQuantity || !slab.maxQuantity || !slab.price) {
+            validationFailed = true;
+            return NextResponse.json({ success: false, message: `Slab ${i + 1} is missing details` }, { status: 400 });
+          }
+          if (slab.minQuantity >= slab.maxQuantity) {
+            validationFailed = true;
+            return NextResponse.json({ success: false, message: `Slab ${i + 1}: Min quantity must be less than max quantity` }, { status: 400 });
+          }
+        }
+    
+        if (!validationFailed) {
+          slabPricing = tradeShopping.slabPricing;
+        }
       }
-
-      tradeShopping.slabPricing.forEach((slab, index) => {
-        if (!slab.minQuantity || !slab.maxQuantity || !slab.price) {
-          return NextResponse.json({ success: false, message: `Slab ${index + 1} is missing details` }, { status: 400 });
-        }
-        if (slab.minQuantity >= slab.maxQuantity) {
-          return NextResponse.json({ success: false, message: `Slab ${index + 1}: Min quantity must be less than max quantity` }, { status: 400 });
-        }
-      });
-
-      slabPricing = tradeShopping.slabPricing;
-    } else {
-      return NextResponse.json({ success: false, message: "Invalid selling price type" }, { status: 400 });
     }
+    
 
 
     // ✅ Validate Category & SubCategory
@@ -148,7 +157,7 @@ export async function POST(req) {
       currency,
       minimumOrderQuantity,
       moqUnit,
-      images: imageUrls.map((url) => ({ url })),  // ✅ Convert to correct schema
+      images: imageUrls.map(({ url, public_id }) => ({ url, public_id })),
       state,
       city,
       description,
@@ -177,7 +186,7 @@ export async function POST(req) {
             
     });
 
-
+    console.log("Saving product with images:", imageUrls.map(({ url, public_id }) => ({ url, public_id })));
     await newProduct.save();
     await User.findByIdAndUpdate(user.id, { $push: { products: newProduct._id } });
 

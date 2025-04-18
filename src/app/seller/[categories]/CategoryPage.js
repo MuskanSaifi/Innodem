@@ -12,6 +12,10 @@ const CategoryPage = ({ categorySlug }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // State for mobile dropdowns
+  const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
+  const [subcategoryDropdownOpen, setSubcategoryDropdownOpen] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -27,7 +31,6 @@ const CategoryPage = ({ categorySlug }) => {
         if (!categorySlug) return;
 
         const category = data.find((cat) => cat.categoryslug === categorySlug);
-
         if (!category) throw new Error("Category not found");
 
         setSubcategories(category.subcategories || []);
@@ -58,13 +61,89 @@ const CategoryPage = ({ categorySlug }) => {
 
   return (
     <div className="container mt-4 mb-5">
+      {/* Breadcrumb */}
       <nav className="breadcrumb bg-light p-3 rounded">
         <span className="text-secondary">Home / {getCategoryName()}</span>
       </nav>
 
+      {/* Mobile Dropdowns */}
+      <div className="d-md-none mb-3">
+        {/* Category Dropdown */}
+        <div className="mb-2">
+          <button
+            className="btn btn-outline-primary w-100"
+            type="button"
+            onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)} // Toggle dropdown state
+          >
+            All Categories
+          </button>
+          {categoryDropdownOpen && (
+            <div className="mt-2">
+              {loading ? (
+                <Skeleton count={5} height={20} />
+              ) : (
+                <ul className="list-group">
+                  {categories.map((cat) => {
+                    const isActive = cat.categoryslug === categorySlug;
+                    return (
+                      <Link
+                        key={cat._id}
+                        href={`/seller/${cat.categoryslug}`}
+                        className="text-decoration-none"
+                      >
+                        <li
+                          className={`list-group-item ${
+                            isActive
+                              ? "active text-white bg-purple fw-bold"
+                              : "text-dark"
+                          }`}
+                        >
+                          {cat.name}
+                        </li>
+                      </Link>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Subcategory Dropdown */}
+        <div>
+          <button
+            className="btn btn-outline-secondary w-100"
+            type="button"
+            onClick={() => setSubcategoryDropdownOpen(!subcategoryDropdownOpen)} // Toggle dropdown state
+          >
+            Subcategories
+          </button>
+          {subcategoryDropdownOpen && (
+            <div className="mt-2">
+              {loading ? (
+                <Skeleton count={5} height={20} />
+              ) : (
+                <ul className="list-group">
+                  {subcategories.map((sub) => (
+                    <Link
+                      key={sub._id}
+                      href={`/seller/${categorySlug}/${sub.subcategoryslug}`}
+                      className="text-decoration-none"
+                    >
+                      <li className="list-group-item text-dark">{sub.name}</li>
+                    </Link>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Main Layout */}
       <div className="row mt-4">
-        {/* Sidebar: All Categories */}
-        <aside className="col-md-3">
+        {/* Sidebar */}
+        <aside className="col-md-3 d-none d-md-block">
           <div className="bg-white p-3 rounded common-shad">
             <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
               All Categories
@@ -82,7 +161,7 @@ const CategoryPage = ({ categorySlug }) => {
                       className="text-decoration-none"
                     >
                       <li
-                        className={`list-group-item hover:bg-gray-100 ${
+                        className={`list-group-item ${
                           isActive
                             ? "active text-white bg-purple fw-bold"
                             : "text-dark"
@@ -98,7 +177,7 @@ const CategoryPage = ({ categorySlug }) => {
           </div>
         </aside>
 
-        {/* Main Products */}
+        {/* Main Product Listing */}
         <main className="col-md-6 common-shad rounded-2 p-3">
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h1 className="text-uppercase text-lg text-secondary">
@@ -162,8 +241,8 @@ const CategoryPage = ({ categorySlug }) => {
           </div>
         </main>
 
-        {/* Sidebar: Subcategories */}
-        <aside className="col-md-3">
+        {/* Subcategories Sidebar */}
+        <aside className="col-md-3 d-none d-md-block">
           <div className="bg-white p-3 rounded common-shad">
             <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
               Subcategories
@@ -178,9 +257,7 @@ const CategoryPage = ({ categorySlug }) => {
                     href={`/seller/${categorySlug}/${sub.subcategoryslug}`}
                     className="text-decoration-none"
                   >
-                    <li className="list-group-item hover:bg-gray-100 text-dark">
-                      {sub.name}
-                    </li>
+                    <li className="list-group-item text-dark">{sub.name}</li>
                   </Link>
                 ))}
               </ul>

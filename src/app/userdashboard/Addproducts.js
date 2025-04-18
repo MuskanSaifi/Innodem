@@ -287,21 +287,29 @@ const handleSubmit = async (e) => {
         );
 
         if (response.data.success) {
-            toast.success("✅ Product created successfully!");
+            toast.success("Product created successfully!");
         } else {
             toast.error(`${response.data.message || "Failed to create product."}`);
         }
     } catch (error) {
         console.error("❌ Error submitting product:", error);
+
+        if (error.response) {
+          // If the server responded with an error (like missing fields)
+          toast.error(error.response.data.message || "❌ Something went wrong. Please try again later.");
+        } else if (error.request) {
+          // If no response was received from the server
+          toast.error("❌ No response from server. Please check your internet connection.");
+        } else {
+          // General error during request setup
+          toast.error("❌ Error setting up the request. Please try again.");
+        }
     } finally {
         setLoading(false);
     }
 };
 
         
-
-
-    
     return (
         <div className="container mt-4">
             <Tab.Container defaultActiveKey="basicDetails">

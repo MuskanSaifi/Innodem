@@ -16,7 +16,7 @@ const Dashboard = () => {
   const totalPayments = 0; // Set total payments as static
 
   useEffect(() => {
-    fetchProductsData();  // ✅ Fetch products from user API
+    // fetchProductsData(); 
     userdata();
   }, []);
 
@@ -46,6 +46,7 @@ const Dashboard = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUserdetail(response.data.user);
+      setProducts(response.data.productsLength)
     } catch (error) {
       console.log("Error fetching user data:", error.response?.data || error.message);
     } finally {
@@ -54,39 +55,37 @@ const Dashboard = () => {
   };
 
   // ✅ Fetch total products from user API instead of admin API
-  const fetchProductsData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("❌ No token found. User is not authenticated.");
-        Swal.fire("Error", "User not authenticated", "error");
-        return;
-      }
+  // const fetchProductsData = async () => {
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     if (!token) {
+  //       console.error("❌ No token found. User is not authenticated.");
+  //       Swal.fire("Error", "User not authenticated", "error");
+  //       return;
+  //     }
     
-      const res = await axios.get(`/api/userprofile/manageproducts`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+  //     const res = await axios.get(`/api/userprofile/manageproducts`, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
   
-      console.log("✅ API Response:", res.data);
+  //     console.log("✅ API Response:", res.data);
   
-      if (res?.data?.success && Array.isArray(res?.data?.products)) {
-        setProducts(res.data.products.length); // ✅ Store only total count
-      } else {
-        console.warn("⚠️ No products found or unexpected response.");
-        setProducts(0); // ✅ Set to 0 when no products exist
-      }
-    } catch (error) {
-      console.error("❌ Error fetching products data:", error);
-      Swal.fire("Error", "Failed to fetch products data", "error");
-      setProducts(0); // ✅ Handle errors by showing 0 products
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     if (res?.data?.success && Array.isArray(res?.data?.products)) {
+  //       setProducts(res.data.products.length); // ✅ Store only total count
+  //     } else {
+  //       console.warn("⚠️ No products found or unexpected response.");
+  //       setProducts(0); // ✅ Set to 0 when no products exist
+  //     }
+  //   } catch (error) {
+  //     console.error("❌ Error fetching products data:", error);
+  //     Swal.fire("Error", "Failed to fetch products data", "error");
+  //     setProducts(0); // ✅ Handle errors by showing 0 products
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   
   
-  
-
   const setGreetingMessage = () => {
     const currentHour = new Date().getHours();
     const name = userdetail?.fullname || "User";
@@ -120,7 +119,6 @@ const Dashboard = () => {
               <div className="welcome-admin common-shad">
                 <h1 className="fs-2 admin fw-bold">{greeting}</h1>
                 <div className="row">
-
 <div className="col-md-6 text-sm">
   <h4 className="text-light text-sm mb-2">
     <b>Current Time:</b> <span className="text-light">{currentTime}</span>
@@ -133,7 +131,6 @@ const Dashboard = () => {
     Keep track of your progress and manage your business efficiently. 💼
   </p>
 </div>
-
                   <div className="col-md-6"></div>
                 </div>
               </div>
