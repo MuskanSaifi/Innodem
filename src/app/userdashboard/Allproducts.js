@@ -18,6 +18,7 @@ const AllProducts = () => {
   const [formData, setFormData] = useState({
     basicDetails: {
       name: "",
+      productslug:"",
       price: "",
       currency: "INR",
       minimumOrderQuantity: "",
@@ -104,6 +105,7 @@ const AllProducts = () => {
     setFormData({
       basicDetails: {
         name: product.name || "",
+        productslug: product.productslug || "",
         price: product.price || "",
         currency: product.currency || "INR",
         minimumOrderQuantity: product.minimumOrderQuantity || "",
@@ -163,6 +165,7 @@ const AllProducts = () => {
     
         if (selectedField === "basicDetails") {
           updateData.name = formData.basicDetails.name;
+          updateData.productslug = formData.basicDetails.productslug;
           updateData.price = formData.basicDetails.price;
           updateData.currency = formData.basicDetails.currency;
           updateData.minimumOrderQuantity = formData.basicDetails.minimumOrderQuantity;
@@ -325,7 +328,6 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
               <div className="w-100">
                 <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
                   <h6 className="mb-1">{product.name}</h6>
-                  <h6 className="mb-1">{product.images.public_id}</h6>
                   <div className="d-flex flex-column text-start text-sm-end">
                     <span className="text-grey text-sm common-shad px-3 rounded-2 mb-1">
                       <b>Created At:</b> {product?.createdAt ? new Date(product.createdAt).toLocaleString("en-IN", {
@@ -342,10 +344,6 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
                   </div>
                 </div>
           
-                <div className="d-flex flex-wrap gap-2 my-2">
-                  <span className="badge bg-secondary">Draft</span>
-                  <span className="badge bg-info">{product.category || "Uncategorized"}</span>
-                </div>
           
                 <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
                   <strong>INR {product.price ? product.price.toFixed(2) : "N/A"}</strong>
@@ -408,21 +406,47 @@ dialogClassName="custom-modal">
 {selectedField === "basicDetails" && (
   <div>
     {/* Product Name */}
-    <div className="mb-3">
-      <label className="form-label">Product Name</label>
-      <input
-        type="text"
-        className="form-control"
-        name="name"
-        value={formData.basicDetails.name}
-        onChange={(e) =>
-          setFormData({
-            ...formData,
-            basicDetails: { ...formData.basicDetails, name: e.target.value },
-          })
-        }
-      />
-    </div>
+{/* Product Name */}
+<div className="mb-3">
+  <label className="form-label">Product Name</label>
+  <input
+    type="text"
+    className="form-control"
+    name="name"
+    value={formData.basicDetails.name}
+    onChange={(e) => {
+      const name = e.target.value;
+      const slug = name
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, "")      // remove invalid chars
+        .trim()
+        .replace(/\s+/g, "-");             // replace spaces with dashes
+
+      setFormData({
+        ...formData,
+        basicDetails: {
+          ...formData.basicDetails,
+          name,
+          productslug: slug,
+        },
+      });
+    }}
+  />
+</div>
+
+{/* Product Slug (Read-only or editable, your choice) */}
+<div className="mb-3">
+  <label className="form-label">Product Slug</label>
+  <input
+    type="text"
+    className="form-control"
+    name="productSlug"
+    value={formData.basicDetails.productslug}
+    readOnly 
+    disabled
+  />
+</div>
+
 
     {/* Product Image  */}
     <div className="mb-3">

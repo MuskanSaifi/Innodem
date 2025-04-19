@@ -33,7 +33,7 @@ export default function Home() {
         <Link href="/all-categories">
         <Image
         className="m-auto"
-        src="/assets/subbanner/All-categories-banner.png" // Path relative to the 'public' folder
+        src="/assets/subbanner/banner-min.png" // Path relative to the 'public' folder
         alt="Banner for website dial"
         width={1400} // Replace with desired width
         height={400} // Replace with desired height

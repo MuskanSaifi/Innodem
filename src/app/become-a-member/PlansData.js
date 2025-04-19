@@ -12,7 +12,7 @@ const plans = [
         ['SEO 1 Keyword (Local Searches)', true],
         ['Whatsapp Chat Integration', false],
         ['SSL', true],
-        ['Favicon Icon', true],
+        ['Favicon Icon', false],
         ['Live Chat Integration', false],
         ['Social Media Profile Creation & Posting', false],
         ['Company Certificate', false],

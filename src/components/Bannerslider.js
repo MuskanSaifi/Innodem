@@ -6,8 +6,8 @@ import SidebarMenu from './SidebarMenu';
 const Bannerslider = () => {
   return (
     <>
-    <div className="container-fluid mt-4">
-
+  <section>
+  <div className="container-fluid mt-4">
     <div className="row">
       <div className="col-md-2">
         <SidebarMenu/>
@@ -33,7 +33,13 @@ const Bannerslider = () => {
     </div>
     
     </div>
-
+  </section>
+    {/* Scoped internal CSS */}
+    <style jsx global>{`
+        .carousel .slide {
+          max-height: 650px;
+        }
+      `}</style>
     </>
   );
 };

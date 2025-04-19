@@ -31,12 +31,12 @@ const SidebarMenu = () => {
     <div className="menu bg-white rounded-md w-64 d-none-mob" ref={menuRef}>
       {/* Top Categories */}
       <Link href="/industry">
-        <div className="category font-semibold text-lg mb-2">Top Categories</div>
+        <div className="category font-semibold text-lg text-web  mb-2">Top Categories</div>
       </Link>
 
       {/* Category List */}
       <ul className="border top-cat-list border-b border-gray-300 p-2">
-        {allcategories.slice(0, 10).map((category) => (
+        {allcategories.slice(0, 11).map((category) => (
           <li
             key={category._id}
             className={`cursor-pointer hover:bg-gray-100 py-2 rounded-md ${

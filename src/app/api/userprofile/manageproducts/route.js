@@ -202,6 +202,8 @@ export async function POST(req) {
   }
 }
 
+
+
 export async function GET(req) {
   try {
     await connectdb();
@@ -213,9 +215,9 @@ export async function GET(req) {
     const products = await Product.find({ userId: user.id });
 
     if (!products.length) {
-      return NextResponse.json({ success: false, message: "No products found" }, { status: 404 });
+      return NextResponse.json({ success: true, products: [] }, { status: 200 });
     }
-
+    
     const productsWithDetails = products.map((product) => {
       // ✅ Ensure Image URL from Cloudinary or Placeholder
       let imageUrl = "https://via.placeholder.com/500"; // Default placeholder if no image exists

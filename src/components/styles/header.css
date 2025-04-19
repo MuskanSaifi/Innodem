@@ -328,7 +328,7 @@
   }
 
   .top-cat-list{
-max-height: 484px !important;
+max-height: 100%;
     overflow-y: scroll;
   }
 

@@ -7,6 +7,7 @@ import { FaChevronDown, FaSearch, FaMapMarkerAlt } from "react-icons/fa";
 
 import { useSelector, useDispatch } from "react-redux";
 import { logout, initializeUser } from "@/app/store/userSlice";
+import SmoothCounter from "./Counter";
 
 
 export default function Header() {
@@ -17,7 +18,7 @@ export default function Header() {
   const [selectedCity, setSelectedCity] = useState("All City");
   const [cityDropdownOpen, setCityDropdownOpen] = useState(false);
   const [citySearch, setCitySearch] = useState("");
-
+  const [totalUsers, setTotalUsers] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDrawer = () => {
@@ -38,6 +39,21 @@ export default function Header() {
   const user = useSelector((state) => state.user.user);
 
   const [cities, setCities] = useState(["All City"]); // Store cities from API
+  useEffect(() => {
+    const fetchTotalUsers = async () => {
+      try {
+        const res = await fetch("/api/registeredusers"); // replace with your actual API route
+        const data = await res.json();
+        if (data.success) {
+          setTotalUsers(data.totalUsers);
+        }
+      } catch (err) {
+        console.error("Failed to fetch total users:", err);
+      }
+    };
+
+    fetchTotalUsers();
+  }, []);
 
 
   useEffect(() => {
@@ -246,8 +262,8 @@ export default function Header() {
           {/* Registered Users */}
           <div className="registered-users-box text-center d-none-mob">
             <h3>Registered Users</h3>
-            <p>1,31,489</p>
-          </div>
+            <SmoothCounter end={totalUsers+350000} duration={2} />
+            </div>
         </div>
       </div>
 
