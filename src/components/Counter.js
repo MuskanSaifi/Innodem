@@ -23,7 +23,7 @@ const SmoothCounter = ({ end, duration }) => {
     window.requestAnimationFrame(step);
   }, [end, duration]);
 
-  return <p>{count.toLocaleString('en-IN')}</p>;
+  return <span>{count.toLocaleString('en-IN')}</span>;
 };
 
 export default SmoothCounter;

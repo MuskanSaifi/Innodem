@@ -22,7 +22,6 @@ function UserDashboard() {
   return (
     <div className="resdes-dashboard">
       <Sidebar isSidebarOpen={isSidebarOpen} setActiveContent={setActiveContent} activeContent={activeContent} />
-
       <div className={`resdes-content ${isSidebarOpen ? "resdes-shrink" : "resdes-expand"}`}>
         <div className="resdes-header">
           <button onClick={toggleSidebar} className="resdes-hamburger" aria-label="Toggle Sidebar">
@@ -30,7 +29,6 @@ function UserDashboard() {
           </button>
           <h1 className="text-lg mb-0">{activeContent}</h1>
         </div>
-
         <div className="resdes-dynamic-content">
           {activeContent === "Dashboard" && <Dashboard/>}
           {activeContent === "Payments" && <Payments/>}

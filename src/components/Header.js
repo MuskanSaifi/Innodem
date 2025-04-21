@@ -262,7 +262,7 @@ export default function Header() {
           {/* Registered Users */}
           <div className="registered-users-box text-center d-none-mob">
             <h3>Registered Users</h3>
-            <SmoothCounter end={totalUsers+350000} duration={2} />
+          <p>  <SmoothCounter end={totalUsers+350000} duration={2} /></p> 
             </div>
         </div>
       </div>
@@ -416,7 +416,7 @@ export default function Header() {
           </> 
           }
           <p className="mt-4 text-center text-sm text-gray-500">
-            Registered Users: <span className="text-green-600">1,31,489</span>
+            Registered Users: <span className="text-green-600">    <SmoothCounter end={totalUsers+350000} duration={2} /></span>
           </p>
         </div>
       </div>

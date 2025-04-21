@@ -3,7 +3,7 @@ import crypto from "crypto";
 
 export async function POST(req) {
   const body = await req.json();
-  const { amount, email, name, userId, packageName, productInfo } = body; // Destructure productInfo
+  const { amount, email, phone, name, userId, packageName, productInfo } = body; // Destructure productInfo
 
   // Check if we're using test mode or live mode
   const payuMode = process.env.PAYU_MODE; // "test" or "live"
@@ -21,7 +21,7 @@ export async function POST(req) {
 
   // Default udf fields as empty strings if not provided
   const udf1 = userId || "";
-  const udf2 = "";
+  const udf2 = body.totalAmount || ""; // 👈 Store totalAmount here
   const udf3 = "";
   const udf4 = "";
   const udf5 = "";
@@ -34,8 +34,8 @@ export async function POST(req) {
   // Ensure 'amount' is a string, as PayU expects a string value
   const amountStr = String(amount);
 
-  // Ensure that all parameters are properly concatenated with "|"
-  const hashString = `${key}|${txnid}|${amountStr}|${productInfo}|${name}|${email}|${udf1}|${udf2}|${udf3}|${udf4}|${udf5}|${udf6}|${udf7}|${udf8}|${udf9}|${udf10}|${salt}`;
+  // Correct the hash string as per PayU's specified format
+  const hashString = `${key}|${txnid}|${amountStr}|${productInfo}|${name}|${email}|${udf1}|${udf2}|${udf3}|${udf4}|${udf5}||||||${salt}`;
 
   // Debug logs for hash string
   console.log("Hash String:", hashString);
@@ -51,7 +51,7 @@ export async function POST(req) {
     ? "https://test.payu.in/_payment" // Test (sandbox) URL
     : "https://secure.payu.in/_payment"; // Live (production) URL
 
-  // Log the full payment request to verify
+  // Construct the response to send to PayU
   const response = {
     action: payuActionUrl, // Use the appropriate URL
     params: {
@@ -60,7 +60,7 @@ export async function POST(req) {
       amount: amountStr,
       firstname: name,
       email,
-      phone: "9999999999",  // Example phone number, replace with actual user phone if available
+      phone,  // Keep phone here for the request, though it's not part of the hash string
       surl: `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/success`,
       furl: `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/failure`,
       hash,

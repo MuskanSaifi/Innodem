@@ -12,21 +12,23 @@ const InitiatePayment = () => {
     const initiatePayment = async () => {
       const amount = searchParams.get("amount");
       const packageName = searchParams.get("packageName");
-
-      console.log("User Data:", user);
+      const totalAmount = searchParams.get("totalAmount");
 
       const response = await fetch("/api/payment/initiate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount,
+          totalAmount,
           email: user.email,
+          phone: user.mobileNumber,
           name: user.fullname,
           userId: user._id,
           packageName,
-          productInfo: `${packageName} for year 2025`,
+          productInfo: `${packageName}`,
         }),
       });
+      
 
       const data = await response.json();
       console.log("Payment Initiate Response:", data);

@@ -221,10 +221,7 @@ const AllUsers = () => {
                         Delete User
                       </Button>
                     </td>
-                  </tr>
-
-                  {/* ✅ New row for product details with accordion */}
-                  <tr>
+                  </tr><tr>
                     <td colSpan="7" className="td-bg">
                       {user.products?.length > 0 ? (
                         <Accordion>

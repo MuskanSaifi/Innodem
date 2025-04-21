@@ -1,41 +1,74 @@
-import { NextResponse } from "next/server";
 import User from "@/models/User";
 import connectdb from "@/lib/dbConnect";
+import { NextResponse } from "next/server";
+import plans from "@/app/become-a-member/PlansData";
+
 
 export async function POST(req) {
-  const body = await req.formData(); // PayU sends form-urlencoded
-  const userId = body.get("udf1");
-  const status = body.get("status"); // Check if the payment was successful
-  const amount = parseFloat(body.get("amount"));
-  const txnid = body.get("txnid");
-
-  // Check if the payment was successful
-  if (status !== "success") {
-    return NextResponse.json({ success: false, message: "Payment failed" });
-  }
-
   try {
+    const bodyText = await req.text();
+    const params = new URLSearchParams(bodyText);
+
+    const userId = params.get("udf1");
+    const status = params.get("status");
+    const amountStr = params.get("amount");
+    const txnid = params.get("txnid");
+    const productInfo = params.get("productinfo");
+
+    if (!userId || !status || !amountStr || !txnid || !productInfo) {
+      return NextResponse.json({ success: false, message: "Missing required fields" });
+    }
+
+    const paidAmount = parseFloat(amountStr);
+    if (isNaN(paidAmount)) {
+      return NextResponse.json({ success: false, message: "Invalid amount format" });
+    }
+
+    if (status !== "success") {
+      return NextResponse.json({ success: false, message: "Payment failed" });
+    }
+
+    // Match productInfo with plans to get base price
+    const matchedPlan = plans.find(plan => plan.title === productInfo);
+    if (!matchedPlan) {
+      return NextResponse.json({ success: false, message: "Invalid package selected" });
+    }
+
+    const baseAmount = parseFloat(matchedPlan.price);
+    const gstAmount = baseAmount * 0.18;
+    const totalAmountWithGST = baseAmount + gstAmount;
+
+    const remainingAmount = totalAmountWithGST - paidAmount;
+
     await connectdb();
-    // Find the user in the database
+
     const user = await User.findById(userId);
     if (!user) {
       return NextResponse.json({ success: false, message: "User not found" });
     }
 
-    // Update user's package information after payment success
+    const packageStartDate = new Date();
+    const packageExpiryDate = new Date(packageStartDate);
+    packageExpiryDate.setFullYear(packageStartDate.getFullYear() + 1);
+
     await User.findByIdAndUpdate(userId, {
-      userPackage: {
-        packageName: body.get("productinfo"),
-        totalAmount: amount,
-        paidAmount: amount,
-        remainingAmount: 0,
-        packageStartDate: new Date(),
-        packageExpiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year
-      }
+      $push: {
+        userPackage: {
+          packageName: productInfo,
+          totalAmount: totalAmountWithGST,
+          paidAmount,
+          remainingAmount,
+          packageStartDate,
+          packageExpiryDate,
+          txnid,
+        },
+      },
     });
+
     return NextResponse.json({ success: true, message: "Payment processed successfully" });
-  } catch (error) {
-    console.error("Error processing payment:", error);
-    return NextResponse.json({ success: false, message: "Error processing payment" });
+
+  } catch (err) {
+    console.error("Error processing payment:", err);
+    return NextResponse.json({ success: false, message: "Server error" });
   }
 }

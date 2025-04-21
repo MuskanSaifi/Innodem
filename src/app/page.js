@@ -54,14 +54,17 @@ export default function Home() {
       </div> */}
 
 <div className="banner-container">
+<Link href="/user/register">
         <Image
         className="m-auto"
-          src="/assets/subbanner/Banner new website innodem .png" // Path relative to the 'public' folder
+          src="/assets/subbanner/banner-min-2.png" // Path relative to the 'public' folder
           alt="Banner for website dial"
           width={1400} // Replace with desired width
           height={400} // Replace with desired height
           priority // Optional: To prioritize loading this image
         />
+                </Link>
+
       </div>
 
       <IndustrySlider />

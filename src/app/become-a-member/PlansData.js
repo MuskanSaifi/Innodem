@@ -18,7 +18,7 @@ const plans = [
         ['Company Certificate', false],
         ['Customer Support Person', true],
       ],
-      price: '₹ 21,999',
+      price: '21999',
       highlighted: false,
     },
     {
@@ -40,7 +40,7 @@ const plans = [
         ['Company Certificate', true],
         ['Customer Support Person', true],
       ],
-      price: '₹ 41,999',
+      price: '41999',
       highlighted: true,
     },
     {
@@ -62,7 +62,7 @@ const plans = [
         ['Company Certificate', true],
         ['Customer Support Person', true],
       ],
-      price: '₹ 79,999',
+      price: '79999',
       highlighted: false,
     },
     {
@@ -84,7 +84,7 @@ const plans = [
         ['Company Certificate', true],
         ['Customer Support Person', true],
       ],
-      price: '₹ 129,999',
+      price: '129999',
       highlighted: false,
     },
   ];

@@ -18,14 +18,17 @@ const userSchema = new mongoose.Schema({
      products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
 
     // 👇 User package info added here
-    userPackage: {
+    userPackage: [
+      {
         packageName: String,
-        totalAmount: Number,
+        totalAmount: { type: Number, required: true }, // make sure this exists
         paidAmount: { type: Number, default: 0 },
         remainingAmount: Number,
         packageStartDate: { type: Date, default: Date.now },
         packageExpiryDate: Date,
-      },
+      }
+    ],
+    
       userPackageHistory: [
         {
           packageName: String,
