@@ -77,7 +77,9 @@ const ProductDetailPage = () => {
   }, [encodedCategory, encodedSubcategory, encodedProductName]);
 
   return (
-    <div className="container mt-4 mb-5">
+  <>
+  <section>
+  <div className="container mt-5 mb-5">
       <nav className="breadcrumb bg-light p-3 rounded text-sm">
         <Link href="/">Home</Link> /
         <Link href={`/${encodedCategory}`}>
@@ -186,6 +188,8 @@ const ProductDetailPage = () => {
         </aside>
       </div>
     </div>
+  </section>
+  </>
   );
 };
 

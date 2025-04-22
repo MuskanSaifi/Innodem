@@ -33,17 +33,14 @@ const IndustrySlider = () => {
     fetchCategories();
   }, []);
 
-  // ✅ Format URL function (same as SidebarMenu)
-  function formatUrl(name) {
-    return encodeURIComponent(name.replace(/&/g, "and").replace(/\s+/g, "-").toLowerCase());
-  }
 
   if (!isClient) return null;
   if (loading) return <p className="text-center">Loading...</p>;
   if (error) return <p className="text-red-600 text-center">{error}</p>;
 
   return (
-    <div className="container mx-auto mb-5 mt-5">
+<section className="mb-5 mt-5">
+<div className="container-fluid">
       <h2 className="text-2xl font-extrabold text-gray-800 text-center mb-2">
         Explore Industries
       </h2>
@@ -56,6 +53,7 @@ const IndustrySlider = () => {
           640: { slidesPerView: 2 },
           768: { slidesPerView: 3 },
           1024: { slidesPerView: 4 },
+          2000: { slidesPerView: 5 },
         }}
         loop={true}
         autoplay={{ delay: 3000 }}
@@ -79,7 +77,7 @@ const IndustrySlider = () => {
                 </h3>
                 {/* ✅ Use formatted URL for Category */}
             
-                <Link href={`/seller/${formatUrl(category.name)}`} className="text-blue-600 text-sm hover:underline">
+                <Link href={`/seller/${category.categoryslug}`} className="text-blue-600 text-sm hover:underline">
                   View All
                 </Link>
               </div>
@@ -90,7 +88,7 @@ const IndustrySlider = () => {
                   
                   <Link 
                     key={sub._id} 
-                    href={`/seller/${formatUrl(category.name)}/${formatUrl(sub.name)}`} 
+                    href={`/seller/${(category.categoryslug)}/${sub.subcategoryslug}`} 
                     className="group block bg-gray-100 rounded-md p-1 hover:bg-gray-200 transition"
                   >
                     <Image 
@@ -111,6 +109,7 @@ const IndustrySlider = () => {
         ))}
       </Swiper>
     </div>
+</section>
   );
 };
 

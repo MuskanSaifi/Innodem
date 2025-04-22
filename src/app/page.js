@@ -35,7 +35,7 @@ export default function Home() {
         className="m-auto"
         src="/assets/subbanner/banner-min.png" // Path relative to the 'public' folder
         alt="Banner for website dial"
-        width={1400} // Replace with desired width
+        width={2000} // Replace with desired width
         height={400} // Replace with desired height
         priority // Optional: To prioritize loading this image
         />
@@ -59,7 +59,7 @@ export default function Home() {
         className="m-auto"
           src="/assets/subbanner/banner-min-2.png" // Path relative to the 'public' folder
           alt="Banner for website dial"
-          width={1400} // Replace with desired width
+          width={2000} // Replace with desired width
           height={400} // Replace with desired height
           priority // Optional: To prioritize loading this image
         />

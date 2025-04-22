@@ -21,6 +21,7 @@ const LayoutWrapper = ({ children }) => {
       {/* ✅ Show Header except on certain pages */}
       {pathname !== "/about" &&
       pathname !== "/dashboard" &&
+      pathname !== "/support-dashboard" &&
       pathname !== "/about/aboutstudent" &&
       pathname !== "/about/aboutcollege" ? (
         <Header />

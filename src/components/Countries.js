@@ -14,7 +14,7 @@ const countries = [
 
 const Countries = () => {
   return (
-    <div className="bg-gray-100 p-6 rounded-lg">
+    <div className="bg-gray-100 p-6 rounded-lg mt-5">
       <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
         Find Suppliers by Country or Region
       </h2>

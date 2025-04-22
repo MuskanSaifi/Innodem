@@ -99,7 +99,7 @@ const SidebarMenu = () => {
                       {subcategory.products.map((product) => (
                         <li key={product._id}>
                           <Link
-                            href={`/manufacturers/${encodeURIComponent(product.name.replace(/\s+/g, "-").toLowerCase())}`}
+                            href={`/manufacturers/${product.productslug}`}
                             className="text-sm text-blue-700 hover:underline"
                           >
                             {product.name.replace(/\b\w/g, c => c.toUpperCase())}

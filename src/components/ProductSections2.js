@@ -19,7 +19,6 @@ const ProductSections2 = ({ tag, Name }) => {
       try {
         setLoading(true);
         setError(null);
-
         const response = await fetch("/api/adminprofile/seller");
         const data = await response.json();
         if (!response.ok) throw new Error("Failed to fetch products");
@@ -32,76 +31,76 @@ const ProductSections2 = ({ tag, Name }) => {
         setLoading(false);
       }
     };
-
     fetchProducts();
   }, [tag]);
 
-  // ✅ Format URL function
-  function formatUrl(name) {
-    return encodeURIComponent(name.replace(/&/g, "and").replace(/\s+/g, "-").toLowerCase());
-  }
+
 
   const settings = {
     dots: false,
     infinite: true,
-    speed: 500,
-    slidesToShow: 4,
+    speed: 600,
+    slidesToShow: 5,
     slidesToScroll: 2,
     autoplay: true,
-    autoplaySpeed: 2500,
+    autoplaySpeed: 3000,
     responsive: [
       { breakpoint: 1024, settings: { slidesToShow: 3 } },
       { breakpoint: 768, settings: { slidesToShow: 2 } },
-      { breakpoint: 480, settings: { slidesToShow: 2 } },
+      { breakpoint: 480, settings: { slidesToShow: 1 } },
     ],
   };
 
   return (
-    <div className="container mx-auto  bg-white rounded-lg mb-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold text-gray-800">{Name} Products</h2>
-        <Link href={`/seller/category/${formatUrl(tag)}`} className="text-blue-500 hover:underline text-sm">
-          View All
-        </Link>
-      </div>
+    <section className="mt-5 px-4">
+      <div className="container-fluid bg-white p-4 rounded-xl shadow-lg">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold text-gray-800">{Name} Products</h2>
+        </div>
 
-      {loading && <Skeleton count={5} height={150} />}
-      {error && <p className="text-red-600 text-center">{error}</p>}
-      {!loading && !error && products.length === 0 && <p className="text-center text-gray-500">No products found.</p>}
+        {loading && <Skeleton count={5} height={180} />}
+        {error && <p className="text-red-600 text-center">{error}</p>}
+        {!loading && !error && products.length === 0 && (
+          <p className="text-center text-gray-500">No products found.</p>
+        )}
 
-      <Slider {...settings}>
-        {products.map((product) => {
-          // const categoryName = product.category?.name || "unknown";
-          // const subCategoryName = product.subCategory?.name || "general";
-          const productName = formatUrl(product.name);
+        {!loading && !error && (
+          <Slider {...settings}>
+            {products.map((product) => {
 
-          return (
-            <div key={product._id} className="p-1">
-              <div className="border rounded-lg shadow-sm p-3 hover:shadow-lg transition-all bg-white">
-                  <div className="relative w-full h-40 mb-3 overflow-hidden rounded">
-                    <Image
-                      src={product.images?.[0]?.url || "/placeholder.png"}
-                      alt={product.name}
-                      layout="fill"
-                      objectFit="cover"
-                      className="transition-transform transform hover:scale-105"
-                    />
+              return (
+                <div key={product._id} className="p-2">
+                  <div className="bg-white border rounded-xl shadow-md hover:shadow-xl transition p-4 h-full flex flex-col justify-between">
+                    <div className="relative w-full h-40 mb-3 rounded overflow-hidden">
+                      <Image
+                        src={product.images?.[0]?.url || "/placeholder.png"}
+                        alt={product.name}
+                        layout="fill"
+                        objectFit="cover"
+                        className="transition-transform duration-300 transform hover:scale-105"
+                      />
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs text-gray-500 mb-1">{product.seller || "Unknown Seller"}</p>
+                      <h3 className="text-base font-semibold text-gray-800 mb-1 truncate">
+                        {product.name.replace(/\b\w/g, (c) => c.toUpperCase())}
+                      </h3>
+                      <p className="text-blue-600 font-bold text-md mb-2">₹{product.price}/Pieces</p>
+                      <Link
+                        href={`/manufacturers/${product.productslug}`}
+                        className="inline-block w-full py-2 text-sm font-medium border border-blue-600 text-blue-600 rounded hover:bg-blue-600 hover:text-white transition"
+                      >
+                        Buy Now
+                      </Link>
+                    </div>
                   </div>
-                <p className="text-gray-600 text-xs text-center mb-1">{product.seller || "Unknown Seller"}</p>
-                <h3 className="text-gray-800 font-semibold text-sm truncate text-center mb-1">  {product.name.replace(/\b\w/g, c => c.toUpperCase())}</h3>
-              
-
-                <p className="text-blue-500 font-bold text-md text-center">₹{product.price}/Pieces</p>
-                {/* <Link href={`/seller/${formatUrl(categoryName)}/${formatUrl(subCategoryName)}/${productName}`} className="block text-center border rounded-lg py-2 mt-3 text-blue-600 border-blue-500 hover:bg-blue-500 hover:text-white transition"> */}
-                <Link href={`/manufacturers/${productName}`} className="block text-center border rounded-lg py-2 mt-3 text-blue-600 border-blue-500 hover:bg-blue-500 hover:text-white transition">
-                  Buy Now
-                </Link>
-              </div>
-            </div>
-          );
-        })}
-      </Slider>
-    </div>
+                </div>
+              );
+            })}
+          </Slider>
+        )}
+      </div>
+    </section>
   );
 };
 

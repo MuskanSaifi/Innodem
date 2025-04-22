@@ -38,7 +38,9 @@ const ProductList = () => {
   }, [searchParams]);
 
   return (
-    <div className="container mt-2">
+ <>
+ <section>
+ <div className="container mt-2">
       {/* Breadcrumbs */}
       <p className="m-0 fs-esm">
         Innodem /
@@ -133,6 +135,8 @@ const ProductList = () => {
         </div>
       </div>
     </div>
+ </section>
+ </>
   );
 };
 

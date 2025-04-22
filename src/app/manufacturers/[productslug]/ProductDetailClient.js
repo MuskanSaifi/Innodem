@@ -1,43 +1,35 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { useParams } from "next/navigation";
 
-const ProductDetailClient = ({ productname }) => {
-  const encodedProductName = productname;
-
+const ProductDetailClient = ({ productslug: propProductSlug }) => {
+  const params = useParams();
+  const slugFromURL = params?.productslug || propProductSlug;
   const [product, setProduct] = useState(null);
   const [subcategories, setSubcategories] = useState([]);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const formatName = useCallback((name) => {
-    if (!name) return "";
-    return decodeURIComponent(name)
-      .replace(/-+$/, "")
-      .replace(/-+/g, " ")
-      .trim();
-  }, []);
+  const [showRelatedDropdown, setShowRelatedDropdown] = useState(false);
+  const [showSubcategoryDropdown, setShowSubcategoryDropdown] = useState(false);
 
   useEffect(() => {
-    if (!encodedProductName) return;
+    if (!slugFromURL) return;
 
     const fetchProductData = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        const formattedProductName = formatName(encodedProductName);
-        const apiName = encodeURIComponent(formattedProductName.toLowerCase());
-
-        const response = await fetch(`/api/manufacturers/${apiName}`);
-
+        const encodedSlug = encodeURIComponent(slugFromURL);
+        const response = await fetch(`/api/manufacturers/${encodedSlug}`);
         if (!response.ok) throw new Error(`Failed to fetch product data: ${response.status}`);
-
         const data = await response.json();
 
         setProduct(data.product || null);
@@ -52,18 +44,75 @@ const ProductDetailClient = ({ productname }) => {
     };
 
     fetchProductData();
-  }, [encodedProductName, formatName]);
+  }, [slugFromURL]);
 
   return (
     <div className="container mt-4 mb-5">
       <nav className="breadcrumb bg-light p-3 rounded text-sm">
         <Link href="/">Home</Link> / <Link href="/products">Products</Link> /{" "}
-        {loading ? <Skeleton width={100} /> : formatName(encodedProductName)}
+        {loading ? <Skeleton width={100} /> : slugFromURL}
       </nav>
 
+      {/* Mobile Dropdowns */}
+      <div className="d-md-none mb-4">
+        {/* Subcategories Dropdown */}
+        <div className="mb-3">
+          <button
+            className="btn btn-sm btn-primary w-100 text-start"
+            onClick={() => setShowSubcategoryDropdown(!showSubcategoryDropdown)}
+          >
+            Subcategories
+          </button>
+          {showSubcategoryDropdown && (
+            <ul className="list-group mt-1">
+              {subcategories.length > 0 ? (
+                subcategories.map((sub) => (
+                  <Link
+                    key={sub._id}
+                    href={`/seller/${sub?.category?.categoryslug}/${sub?.subcategoryslug}`}
+                    className="text-decoration-none"
+                  >
+                    <li className="list-group-item">{sub.name}</li>
+                  </Link>
+                ))
+              ) : (
+                <li className="list-group-item text-muted">No subcategories.</li>
+              )}
+            </ul>
+          )}
+        </div>
+
+        {/* Related Products Dropdown */}
+        <div>
+          <button
+            className="btn btn-sm btn-success w-100 text-start"
+            onClick={() => setShowRelatedDropdown(!showRelatedDropdown)}
+          >
+            Related Products
+          </button>
+          {showRelatedDropdown && (
+            <ul className="list-group mt-1">
+              {relatedProducts.length > 0 ? (
+                relatedProducts.map((prod) => (
+                  <Link
+                    key={prod._id}
+                    href={`/manufacturers/${prod.productslug}`}
+                    className="text-decoration-none"
+                  >
+                    <li className="list-group-item">{prod.name}</li>
+                  </Link>
+                ))
+              ) : (
+                <li className="list-group-item text-muted">No related products.</li>
+              )}
+            </ul>
+          )}
+        </div>
+      </div>
+
       <div className="row">
-        {/* Subcategories */}
-        <aside className="col-md-3 mb-4">
+        {/* Subcategories (Desktop Only) */}
+        <aside className="col-md-3 mb-4 d-none d-md-block">
           <div className="bg-white p-3 rounded common-shad">
             <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
               Subcategories
@@ -72,20 +121,15 @@ const ProductDetailClient = ({ productname }) => {
               <Skeleton count={5} height={20} />
             ) : subcategories.length > 0 ? (
               <ul className="list-group">
-                {subcategories.map((sub) => {
-                  const categorySlug = sub?.category?.categoryslug || "";
-                  const subcategorySlug = sub?.subcategoryslug || "";
-
-                  return (
-                    <Link
-                      key={sub._id}
-                      href={`/seller/${categorySlug}/${subcategorySlug}`}
-                      className="text-decoration-none"
-                    >
-                      <li className="list-group-item hover:bg-gray-100">{sub.name}</li>
-                    </Link>
-                  );
-                })}
+                {subcategories.map((sub) => (
+                  <Link
+                    key={sub._id}
+                    href={`/seller/${sub?.category?.categoryslug}/${sub?.subcategoryslug}`}
+                    className="text-decoration-none"
+                  >
+                    <li className="list-group-item hover:bg-gray-100">{sub.name}</li>
+                  </Link>
+                ))}
               </ul>
             ) : (
               <p className="text-muted">No subcategories available.</p>
@@ -131,8 +175,8 @@ const ProductDetailClient = ({ productname }) => {
           )}
         </div>
 
-        {/* Related Products */}
-        <aside className="col-md-3 mb-4">
+        {/* Related Products (Desktop Only) */}
+        <aside className="col-md-3 mb-4 d-none d-md-block">
           <div className="bg-white p-3 rounded common-shad">
             <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
               Related Products
@@ -141,21 +185,15 @@ const ProductDetailClient = ({ productname }) => {
               <Skeleton count={5} height={20} />
             ) : relatedProducts.length > 0 ? (
               <ul className="list-group">
-                {relatedProducts.map((prod) => {
-                  const productSlug = encodeURIComponent(
-                    prod.name.replace(/\s+/g, "-").toLowerCase()
-                  );
-
-                  return (
-                    <Link
-                      key={prod._id}
-                      href={`/manufacturers/${productSlug}`}
-                      className="text-web text-decoration-none"
-                    >
-                      <li className="list-group-item hover:bg-gray-100">{prod.name}</li>
-                    </Link>
-                  );
-                })}
+                {relatedProducts.map((prod) => (
+                  <Link
+                    key={prod._id}
+                    href={`/manufacturers/${prod.productslug}`}
+                    className="text-web text-decoration-none"
+                  >
+                    <li className="list-group-item hover:bg-gray-100">{prod.name}</li>
+                  </Link>
+                ))}
               </ul>
             ) : (
               <p className="text-muted">No related products available.</p>

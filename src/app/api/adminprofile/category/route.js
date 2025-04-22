@@ -125,7 +125,7 @@ export async function GET() {
         path: "subcategories",
         populate: {
           path: "products",
-          select: "name price images",
+          select: "name price images productslug",
         },
       })
       .exec();

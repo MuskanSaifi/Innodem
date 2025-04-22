@@ -11,22 +11,7 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
     { icon: "👤", label: "All Buyers" },
     { icon: "👤", label: "All Seller" },
     { icon: "📞", label: "All Contacts" },
-    { icon: "📩", label: "All Subscribers" },
-    {
-      icon: "📂",
-      label: "Manage Category",
-      subItems: ["All Category", "Create Category", "Update Category"],
-    },
-    {
-      icon: "📂",
-      label: "Manage Sub Category",
-      subItems: ["All Sub Category", "Create Sub Category", "Update Sub Category"],
-    },
-    {
-      icon: "📝",
-      label: "Manage Blogs",
-      subItems: ["All Blogs", "Create Blogs"],
-    },
+    { icon: "📩", label: "All Subscribers" }
   ];
 
   const toggleDropdown = (index) => {
@@ -49,9 +34,7 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
           <Link href="../">
             <Image src="/assets/logo.png" alt="Innodem Logo" width={100} height={50} priority />
           </Link>        </div>
-          <h6 className="text-center mt-2">🧑  Welcome! Admin</h6>
-
-
+          <h6 className="text-center mt-2">🧑  Welcome! Support Team</h6>
         <ul>
           {sidebarItems.map((item, index) => (
             <li key={index} className={activeContent === item.label || openDropdown === index ? "active" : ""}>

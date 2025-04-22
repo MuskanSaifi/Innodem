@@ -89,7 +89,7 @@ const SubcategoryProductPage = () => {
                   {subcategories.map((sub) => (
                     <Link
                       key={sub._id}
-                      href={`/seller/${categorySlug}/${encodeURIComponent(sub.subcategoryslug)}`}
+                      href={`/seller/${categorySlug}/${sub.subcategoryslug}`}
                       className="text-decoration-none"
                     >
                       <li
@@ -156,7 +156,7 @@ const SubcategoryProductPage = () => {
                 {subcategories.map((sub) => (
                   <Link
                     key={sub._id}
-                    href={`/seller/${categorySlug}/${encodeURIComponent(sub.subcategoryslug)}`}
+                    href={`/seller/${categorySlug}/${sub.subcategoryslug}`}
                     className="text-decoration-none"
                   >
                     <li
@@ -252,9 +252,7 @@ const SubcategoryProductPage = () => {
                 {products.map((product) => (
                   <li key={product._id} className="list-group-item border-0 p-1">
                     <Link
-                      href={`/manufacturers/${encodeURIComponent(
-                        product.name.replace(/\s+/g, "-").toLowerCase()
-                      )}`}
+                      href={`/manufacturers/${product.productslug}`}
                       className="text-web text-decoration-none common-shad d-block p-2 rounded-2 hover:bg-gray-100"
                     >
                       {product.name}

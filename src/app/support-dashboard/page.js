@@ -6,20 +6,13 @@ import axios from "axios";
 import "./dashboard.css";
 import Sidebar from "./Sidebar";
 import Dashboard from "./Dashboard";
-import CreateSubCategory from "./CreateSubCategory";
-import UpdateSubCategory from "./UpdateSubCategory";
-import UpdateCategory from "./UpdateCategory";
-import CreateCategory from "./CreateCategory";
-import AllCategory from "./AllCategory";
 import AllUsers from "./AllUsers";
-import AllSubcategory from "./AllSubcategory";
 import AllProducts from "./AllProducts";
 import Buyers from "./Buyers";
 import Payments from "./Payments";
-import AllBlogs from "./AllBlogs";
-import CreateBlog from "./CreateBlog";
-import AllSubscribers from "./AllSubscribers";
+
 import AllContacts from "./AllContacts";
+import AllSubscribers from "./AllSubscribers";
 
 function ResponsiveDashboard() {
   const router = useRouter();
@@ -27,19 +20,21 @@ function ResponsiveDashboard() {
   const [activeContent, setActiveContent] = useState("Dashboard");
   const [loading, setLoading] = useState(true);
 
+
   useEffect(() => {
     const checkAdminAuth = async () => {
       try {
-        const res = await axios.get("/api/admin/check-auth");
+        const res = await axios.get("/api/support-admins/check-auth");
         if (!res.data.success) {
-          router.push("/admin-login");
+          router.push("/support-login");
         } else {
           setLoading(false);
         }
       } catch (error) {
-        router.push("/admin-login");
+        router.push("/support-login");
       }
     };
+
 
     checkAdminAuth();
   }, [router]);
@@ -66,16 +61,8 @@ function ResponsiveDashboard() {
           {activeContent === "Dashboard" && <Dashboard />}
           {activeContent === "Payments" && <Payments />}
           {activeContent === "All Products" && <AllProducts />}
-          {activeContent === "Create Sub Category" && <CreateSubCategory />}
-          {activeContent === "Update Sub Category" && <UpdateSubCategory />}
-          {activeContent === "Create Category" && <CreateCategory />}
-          {activeContent === "Update Category" && <UpdateCategory />}
-          {activeContent === "All Category" && <AllCategory />}
-          {activeContent === "All Sub Category" && <AllSubcategory />}
           {activeContent === "All Seller" && <AllUsers />}
           {activeContent === "All Buyers" && <Buyers />}
-          {activeContent === "All Blogs" && <AllBlogs />}
-          {activeContent === "Create Blogs" && <CreateBlog />}
           {activeContent === "All Subscribers" && <AllSubscribers />}
           {activeContent === "All Contacts" && <AllContacts />}
         </div>

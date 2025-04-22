@@ -43,7 +43,8 @@ const ProductSections1 = ({ tag, Name }) => {
   }
 
   return (
-    <div className="container mx-auto px-4" style={{ marginTop: 30, marginBottom: 30 }}>
+  <section className="mt-5">
+      <div className="container-fluid" style={{ marginTop: 30, marginBottom: 30 }}>
       <h2 className="text-2xl font-extrabold text-gray-800 text-center mb-4">
         {Name} Products
       </h2>
@@ -72,18 +73,21 @@ const ProductSections1 = ({ tag, Name }) => {
           1024: {
             slidesPerView: 6, // 4 products per slide for larger screens
           },
+          2000: {
+            slidesPerView: 8, // 4 products per slide for larger screens
+          },
         }}
       >
         {products.map((product) => {
           // const categoryName = product.category?.name || "unknown";
           // const subCategoryName = product.subCategory?.name || "general";
-          const productName = formatUrl(product.name);
+          // const productName = formatUrl(product.name);
 
           return (
             <SwiperSlide key={product._id}>
               <Link
                 // href={`/seller/${formatUrl(categoryName)}/${formatUrl(subCategoryName)}/${productName}`}
-                href={`/manufacturers/${productName}`}
+                href={`/manufacturers/${product.productslug}`}
                 className="group"
               >
                 <div className="relative w-28 h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 mx-auto rounded-full overflow-hidden bg-white border border-gray-200 shadow-md backdrop-blur-md transition-all duration-300 group-hover:shadow-2xl">
@@ -104,6 +108,7 @@ const ProductSections1 = ({ tag, Name }) => {
         })}
       </Swiper>
     </div>
+  </section>
   );
 };
 

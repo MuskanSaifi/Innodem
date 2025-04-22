@@ -18,7 +18,7 @@ const cities = [
 
 const Cities = () => {
   return (
-    <div className="bg-gray-100 p-6 rounded-lg">
+    <div className="bg-gray-100 p-6 rounded-lg mt-5">
       <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
         Find Suppliers from Top Cities
       </h2>
