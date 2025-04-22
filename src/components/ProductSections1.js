@@ -46,7 +46,7 @@ const ProductSections1 = ({ tag, Name }) => {
   <section className="mt-5">
       <div className="container-fluid" style={{ marginTop: 30, marginBottom: 30 }}>
       <h2 className="text-2xl font-extrabold text-gray-800 text-center mb-4">
-        {Name} Products
+        {Name} 
       </h2>
 
       {loading && <Skeleton count={5} height={150} />}

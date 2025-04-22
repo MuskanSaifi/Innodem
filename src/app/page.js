@@ -75,9 +75,9 @@ export default function Home() {
 
       <Countries />
 
-      <ProductSections1 tag="diwaliOffer" Name="Diwali Offer" />
+      <ProductSections1 tag="diwaliOffer" Name="Featured Products" />
 
-      <ProductSections1 tag="holiOffer" Name="Holi Offer" />
+      <ProductSections1 tag="holiOffer" Name="Products You May Like" />
 
       <CountryList />
     </>
