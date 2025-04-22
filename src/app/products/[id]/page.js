@@ -18,12 +18,9 @@ const ProductDetailPage = () => {
       try {
         setLoading(true);
         setError(null);
-
         const response = await fetch(`/api/products/${id}`);
         const data = await response.json();
-
         if (!response.ok) throw new Error(data.error || "Failed to fetch product.");
-
         setProduct(data);
       } catch (err) {
         setError(err.message);
@@ -36,135 +33,133 @@ const ProductDetailPage = () => {
   }, [id]);
 
   return (
-    <div className="container mx-auto p-6 bg-white shadow-lg rounded-lg">
-      {/* Back Button */}
-      <button
-        onClick={() => router.back()}
-        className="mb-4 px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition"
-      >
-        ← Back
-      </button>
+    <section className="min-h-screen bg-gray-50 py-8">
+      <div className="container mx-auto px-6">
+        <button
+          onClick={() => router.back()}
+          className="mb-6 text-sm font-medium text-blue-600 hover:underline"
+        >
+          ← Back to Products
+        </button>
 
-      {loading ? (
-        <Skeleton count={5} height={30} />
-      ) : error ? (
-        <p className="text-red-500">{error}</p>
-      ) : product ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Left Section - Product Image */}
-          <div>
-            {product.images?.length > 0 ? (
-              <Image
-                src={product.images[0]}
-                alt={product.name}
-                width={500}
-                height={500}
-                className="w-full h-auto object-cover rounded-lg"
-                unoptimized
-              />
-            ) : (
-              <Image
-                src="/placeholder.png"
-                alt="Placeholder"
-                width={500}
-                height={500}
-                className="w-full h-auto object-cover rounded-lg"
-                unoptimized
-              />
-            )}
+        <div className="bg-white rounded-xl shadow-xl p-8">
+          {loading ? (
+            <Skeleton count={10} height={20} />
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : product ? (
+            <div className="grid md:grid-cols-2 gap-10">
+              {/* Product Image Section */}
+              <div>
+                <Image
+                  src={product.images?.[0] || "/placeholder.png"}
+                  alt={product.name}
+                  width={600}
+                  height={600}
+                  className="rounded-lg object-cover w-full"
+                  unoptimized
+                />
 
-            {/* Thumbnails */}
-            {product.images?.length > 1 && (
-              <div className="mt-4 flex gap-2">
-                {product.images.slice(1).map((img, index) => (
-                  <Image
-                    key={index}
-                    src={img}
-                    alt={`Thumbnail ${index}`}
-                    width={80}
-                    height={80}
-                    className="w-20 h-20 object-cover rounded-md border"
-                    unoptimized
-                  />
-                ))}
+                {/* Thumbnails */}
+                {product.images?.length > 1 && (
+                  <div className="mt-4 flex gap-3">
+                    {product.images.slice(1).map((img, index) => (
+                      <Image
+                        key={index}
+                        src={img}
+                        alt={`Thumbnail ${index}`}
+                        width={80}
+                        height={80}
+                        className="rounded-md border object-cover"
+                        unoptimized
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
 
-          {/* Right Section - Product Details */}
-          <div>
-            <h2 className="text-3xl font-bold text-gray-800">{product.name}</h2>
-            <p className="text-gray-600 text-lg mt-2">
-              <strong>Supplier:</strong> {product.userId?.fullname || "Unknown"} | <strong>Company:</strong>{" "}
-              {product.userId?.companyName || "Unknown"}
-            </p>
+              {/* Product Info Section */}
+              <div>
+                <h1 className="text-3xl font-bold text-gray-800 mb-2">{product.name}</h1>
 
-            {/* Pricing Section */}
-            <div className="mt-4">
-              <h3 className="text-xl font-semibold">Pricing</h3>
-              <p className="text-2xl font-bold text-green-600">
-                ₹{product.tradeShopping?.slabPricing?.[0]?.price || "N/A"}
-              </p>
-              <p className="text-gray-700">MOQ: {product.minimumOrderQuantity || "N/A"}</p>
+                <div className="text-sm text-gray-500 mb-4">
+  {product.userId?.fullname && (
+    <span className="mr-2">👤 {product.userId.fullname || "Unknown"}</span>
+  )}
+  {product.userId?.companyName && (
+    <span>🏢 {product.userId.companyName || "Unknown"}</span>
+  )}
+</div>
+
+
+                <p className="text-4xl font-extrabold text-green-600 mb-2">
+                  ₹{product.tradeShopping?.slabPricing?.[0]?.price || "N/A"}
+                </p>
+                <p className="text-gray-700 mb-6 text-sm">
+                  MOQ: <strong>{product.minimumOrderQuantity || "N/A"}</strong>
+                </p>
+
+                <hr className="my-6" />
+
+                {/* Description */}
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold mb-2">Product Description</h2>
+                  <p className="text-gray-700 leading-relaxed">{product.description || "No description available."}</p>
+                </div>
+
+                {/* Specifications */}
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold mb-2">Specifications</h2>
+                  <ul className="text-gray-600 space-y-1">
+                    <li>🟠 Color: {product.specifications?.color || "N/A"}</li>
+                    <li>🔧 Material: {product.specifications?.material || "N/A"}</li>
+                    <li>⚖️ Weight: {product.specifications?.weight || "N/A"} kg</li>
+                    <li>📦 Stock: {product.stock ?? "Not Available"}</li>
+                  </ul>
+                </div>
+
+                {/* Trade Information */}
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold mb-2">Trade Information</h2>
+                  <ul className="text-gray-600 space-y-1">
+                    <li>🚛 Supply Ability: {product.tradeInformation?.supplyAbility || "N/A"}</li>
+                    <li>⏱ Delivery Time: {product.tradeInformation?.deliveryTime || "N/A"}</li>
+                    <li>🚢 FOB Port: {product.tradeInformation?.fobPort || "N/A"}</li>
+                    <li>📄 Sample Policy: {product.tradeInformation?.samplePolicy || "N/A"}</li>
+                  </ul>
+                </div>
+
+                {/* Seller Details */}
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold mb-2">Seller Details</h2>
+                  <p className="text-gray-600">
+                    <strong>Company:</strong> {product.userId?.companyName || "Unknown"}
+                  </p>
+                  <p className="text-gray-600">
+                    <strong>Location:</strong> {product.city || "Unknown"}
+                  </p>
+                  <p className="text-yellow-500">
+                    <strong>Rating:</strong> ⭐⭐⭐⭐
+                  </p>
+                </div>
+
+                {/* Buttons */}
+                <div className="flex gap-4">
+                  <button className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold shadow-md hover:bg-blue-700 transition-all">
+                    Buy Now
+                  </button>
+                  <button className="px-6 py-3 bg-gray-800 text-white rounded-lg font-semibold shadow-md hover:bg-gray-900 transition-all">
+                    Send Inquiry
+                  </button>
+                </div>
+              </div>
             </div>
-
-            {/* Product Details */}
-            <div className="mt-6">
-              <h3 className="text-lg font-semibold">Product Details</h3>
-              <p className="text-gray-600">{product.description || "No description available."}</p>
-            </div>
-
-            {/* Specifications */}
-            <div className="mt-4">
-              <h3 className="text-lg font-semibold">Specifications</h3>
-              <ul className="text-gray-700 space-y-1">
-                <li>Color: {product.specifications?.color || "N/A"}</li>
-                <li>Material: {product.specifications?.material || "N/A"}</li>
-                <li>Weight: {product.specifications?.weight || "N/A"} kg</li>
-                <li>Stock: {product.stock !== null ? product.stock : "Not Available"}</li>
-              </ul>
-            </div>
-
-            {/* Trade Information */}
-            <div className="mt-4">
-              <h3 className="text-lg font-semibold">Trade Information</h3>
-              <ul className="text-gray-700 space-y-1">
-                <li>Supply Ability: {product.tradeInformation?.supplyAbility || "N/A"}</li>
-                <li>Delivery Time: {product.tradeInformation?.deliveryTime || "N/A"}</li>
-                <li>FOB Port: {product.tradeInformation?.fobPort || "N/A"}</li>
-                <li>Sample Policy: {product.tradeInformation?.samplePolicy || "N/A"}</li>
-              </ul>
-            </div>
-
-            {/* Seller Details */}
-            <div className="mt-4 border-t pt-4">
-              <h3 className="text-lg font-semibold">Seller Details</h3>
-              <p className="text-gray-700">
-                <strong>Company:</strong> {product.userId?.companyName || "Unknown"}
-              </p>
-              <p className="text-gray-700">
-                <strong>Location:</strong> {product.userId?.location || "Unknown"}
-              </p>
-              <p className="text-gray-700">
-                <strong>Rating:</strong> ⭐⭐⭐⭐
-              </p>
-            </div>
-
-            {/* Buttons */}
-            <div className="mt-6 flex gap-4">
-              <button className="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition">
-                Buy Now
-              </button>
-              <button className="px-6 py-3 bg-gray-600 text-white font-bold rounded-lg hover:bg-gray-700 transition">
-                Send Inquiry
-              </button>
-            </div>
-          </div>
+          ) : (
+            <p>No product details found.</p>
+          )}
         </div>
-      ) : (
-        <p>No product details found.</p>
-      )}
-    </div>
+      </div>
+    </section>
   );
 };
 

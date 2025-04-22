@@ -39,8 +39,8 @@ const ProductList = () => {
 
   return (
  <>
- <section>
- <div className="container mt-2">
+ <section className="mt-5 mb-5">
+ <div className="container">
       {/* Breadcrumbs */}
       <p className="m-0 fs-esm">
         Innodem /
