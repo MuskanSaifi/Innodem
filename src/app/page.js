@@ -10,6 +10,10 @@ import Countries from "@/components/Countries";
 import CountryList from "@/components/CountryList";
 import Image from "next/image";
 import Link from "next/link";
+import Testimonials from "@/components/Testimonials";
+import WhatWeOffer from "@/components/Whatweoffer";
+import StatsWithImage from "@/components/Stats";
+import ContactRating from "@/components/ContactRating";
 
 
 export default function Home() {
@@ -80,6 +84,17 @@ export default function Home() {
       <ProductSections1 tag="holiOffer" Name="Products You May Like" />
 
       <CountryList />
+
+      <StatsWithImage/>
+
+      <WhatWeOffer/>
+
+      <Testimonials/>
+
+      <ContactRating/>
+
+
+
     </>
   );
 }

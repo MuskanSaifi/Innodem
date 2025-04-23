@@ -39,77 +39,79 @@ const IndustrySlider = () => {
   if (error) return <p className="text-red-600 text-center">{error}</p>;
 
   return (
-<section className="mb-5 mt-5">
-<div className="container-fluid">
-      <h2 className="text-2xl font-extrabold text-gray-800 text-center mb-2">
-        Explore Industries
-      </h2>
+<section className="py-10 bg-gray-50">
+  <div className="container mx-auto px-4">
+    <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
+      Explore Industries
+    </h2>
 
-      <Swiper
-        modules={[ Pagination, Autoplay]}
-        spaceBetween={20}
-        slidesPerView={1}
-        breakpoints={{
-          640: { slidesPerView: 2 },
-          768: { slidesPerView: 3 },
-          1024: { slidesPerView: 4 },
-          2000: { slidesPerView: 5 },
-        }}
-        loop={true}
-        autoplay={{ delay: 3000 }}
-        // navigation
-        pagination={{ clickable: true }}
-        className="w-full"
-      >
-        {categories.map((category) => (
-          <SwiperSlide key={category._id}>
-            <div className="bg-white rounded-lg p-2 hover:shadow-lg transition w-[100%]">
-              <div className="flex justify-between items-center mb-4">
-              <Image 
-                      src={category.icon  || "/placeholder.png"} 
-                      alt={category.name} 
-                      width={30} 
-                      height={30} 
-                      className="rounded-md" 
-                    />
-                <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-1">
-                  {category.name}
-                </h3>
-                {/* ✅ Use formatted URL for Category */}
-            
-                <Link href={`/seller/${category.categoryslug}`} className="text-blue-600 text-sm hover:underline">
-                  View All
-                </Link>
+    <Swiper
+      modules={[Pagination, Autoplay]}
+      spaceBetween={24}
+      slidesPerView={1}
+      loop={true}
+      autoplay={{ delay: 3000 }}
+      pagination={{ clickable: true }}
+      breakpoints={{
+        640: { slidesPerView: 2 },
+        768: { slidesPerView: 3 },
+        1024: { slidesPerView: 4 },
+        1440: { slidesPerView: 5 },
+      }}
+      className="w-full"
+    >
+      {categories.map((category) => (
+        <SwiperSlide key={category._id}>
+          <div className="bg-white rounded-2xl p-4 shadow-md hover:shadow-xl transition-all">
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center gap-2">
+                <Image
+                  src={category.icon || "/placeholder.png"}
+                  alt={category.name}
+                  width={40}
+                  height={40}
+                  className="rounded-lg object-cover"
+                />
+                <h3 className="text-lg font-semibold text-gray-800">{category.name}</h3>
               </div>
-
-              {/* ✅ Subcategory Grid with Correct URLs */}
-              <div className="grid grid-cols-3 gap-2">
-                {category.subcategories.slice(0, 6).map((sub) => (
-                  
-                  <Link 
-                    key={sub._id} 
-                    href={`/seller/${(category.categoryslug)}/${sub.subcategoryslug}`} 
-                    className="group block bg-gray-100 rounded-md p-1 hover:bg-gray-200 transition"
-                  >
-                    <Image 
-                      src={sub.icon || "/placeholder.png"} 
-                      alt={sub.name} 
-                      width={80} 
-                      height={80} 
-                      className="rounded-md object-cover w-full h-20" 
-                    />
-                    <p className="text-xs truncate text-gray-700 text-center mt-2 group-hover:text-gray-900" title={sub.name}>
-                    {sub.name.replace(/\b\w/g, c => c.toUpperCase())}
-                    </p>
-                  </Link>
-                ))}
-              </div>
+              <Link
+                href={`/seller/${category.categoryslug}`}
+                className="text-sm text-blue-600 hover:underline"
+              >
+                View All
+              </Link>
             </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    </div>
+
+            <div className="grid grid-cols-3 gap-3">
+              {category.subcategories.slice(0, 6).map((sub) => (
+                <Link
+                  key={sub._id}
+                  href={`/seller/${category.categoryslug}/${sub.subcategoryslug}`}
+                  className="group block bg-gray-100 rounded-xl p-2 hover:bg-gray-200 transition text-center"
+                >
+                  <Image
+                    src={sub.icon || "/placeholder.png"}
+                    alt={sub.name}
+                    width={60}
+                    height={60}
+                    className="rounded-md object-cover mx-auto h-14"
+                  />
+                  <p
+                    className="text-xs font-medium text-gray-700 mt-2 truncate group-hover:text-gray-900"
+                    title={sub.name}
+                  >
+                    {sub.name.replace(/\b\w/g, (c) => c.toUpperCase())}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  </div>
 </section>
+
   );
 };
 
