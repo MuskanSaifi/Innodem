@@ -18,7 +18,7 @@ export default function CountryList() {
   <div
     key={country ? `country-${country}` : `index-${index}`} 
     className="p-4 border rounded-lg text-center cursor-pointer hover:shadow-md"
-    onClick={() => router.push(`/country/${country.replace("+", "")}`)}
+    onClick={() => router.push(`/country/${country}`)}
     >
 {/* <Image 
   src={`/flags/${country ? country.toLowerCase() : "default"}.png`}

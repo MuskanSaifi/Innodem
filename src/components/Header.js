@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { FaChevronDown, FaSearch, FaMapMarkerAlt } from "react-icons/fa";
+import { FaChevronDown, FaSearch, FaMapMarkerAlt, FaTh  } from "react-icons/fa";
 
 import { useSelector, useDispatch } from "react-redux";
 import { logout, initializeUser } from "@/app/store/userSlice";
@@ -20,6 +20,11 @@ export default function Header() {
   const [citySearch, setCitySearch] = useState("");
   const [totalUsers, setTotalUsers] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenpopup, setIsOpenpopup] = useState(false);
+
+  const togglepopup = () => {
+    setIsOpenpopup(!isOpenpopup);
+  };
 
   const toggleDrawer = () => {
     setIsOpen(!isOpen);
@@ -155,20 +160,111 @@ export default function Header() {
   };
 
 
-
+  const directoryLinks = [
+    { label: "Become a Member", href: "/become-a-member" },
+    { label: "About Us", href: "/about-us" },
+    { label: "What We Do", href: "/what-we-do" },
+    { label: "Join Us", href: "/user/register" },
+    { label: "Blogs", href: "/blogs" },
+  ];
+  
+  const helpLinks = [
+    { label: "Contact Us", href: "/contact-us" },
+    { label: "Privacy Policy", href: "/privacy-policy" },
+    { label: "Refund Policy", href: "/refund-policy" },
+    { label: "Terms of Use", href: "/terms-of-use" },
+  ];
 
   return (
     <>
   <header className="bg-light shadow-sm Main-header">
   <div className="container-fluid p-2 text-center top-bar text-dark">
-
   <marquee behavior="scroll" direction="left" scrollamount="6">
   <p className="mb-0 text-light text-sm">
     We connect you with verified export buyers within 24 hours, guaranteeing confirmed deals.
   </p>
 </marquee>
-
   </div>
+
+
+  {isOpenpopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] max-w-6xl  relative">
+
+          <div className="container-fluid">
+      {/* Main Branding */}
+      <div className="bg-gradient-to-r from-purple-100 to-purple-200 rounded-xl shadow-lg p-6 flex flex-col justify-center items-center text-center">
+        <h2 className="text-2xl font-bold text-purple-700">Dial Export Mart</h2>
+        <p className="mt-2 text-sm text-gray-600">Your trusted B2B marketplace partner</p>
+      </div>
+
+      <div className="flex flex-col md:flex-row gap-6 mt-10">
+        {/* Branding (Again?) */}
+<div className="bg-purple-100 rounded-xl shadow-lg p-1 w-full md:w-1/3 text-center">
+  <Image
+    src="/assets/banner-menu-pop.png" // Replace with your image path (can be from /public)
+    alt="Dial Export Mart"
+    width={465}
+    height={310}
+    className="mx-auto rounded-lg" // Optional: styling like centering and rounded corners
+  />
+</div>
+
+        {/* Directory */}
+        <div className="bg-white rounded-xl shadow-lg p-6 w-full md:w-1/3">
+          <h3 className="text-xl font-semibold mb-4 border-b pb-2 flex items-center gap-2">📚 Directory</h3>
+          <ul className="space-y-3 text-sm text-gray-700">
+  {directoryLinks.map((item) => (
+    <li key={item.href}>
+      <button
+        onClick={() => {
+          setIsOpenpopup(false);
+          router.push(item.href);
+        }}
+        className="hover:text-purple-600 flex items-center gap-2 w-full text-left"
+      >
+        🔹 {item.label}
+      </button>
+    </li>
+  ))}
+</ul>
+
+        </div>
+
+        {/* Help & Support */}
+        <div className="bg-white rounded-xl shadow-lg p-6 w-full md:w-1/3">
+          <h3 className="text-xl font-semibold mb-4 border-b pb-2 flex items-center gap-2">🛠️ Help & Support</h3>
+          <ul className="space-y-3 text-sm text-gray-700">
+  {helpLinks.map((item) => (
+    <li key={item.href}>
+      <button
+        onClick={() => {
+          setIsOpenpopup(false);
+          router.push(item.href);
+        }}
+        className="hover:text-purple-600 flex items-center gap-2 w-full text-left"
+      >
+        🔹 {item.label}
+      </button>
+    </li>
+  ))}
+</ul>
+
+        </div>
+      </div>
+    </div>
+
+            <button
+              className="absolute top-2 right-2 text-xl font-bold text-gray-500 hover:text-gray-800"
+              onClick={togglepopup}
+            >
+              &times;
+            </button>
+          </div>
+        </div>
+      )}
+
+
 
   <div className="container-fluid py-3">
     <div className="row align-items-center">
@@ -184,10 +280,15 @@ export default function Header() {
           />
         </Link>
       </div>
-
+   
       {/* Search Bar Section */}
       <div className="col-7 col-md-8">
         <div className="d-flex align-items-center justify-content-between">
+        <button className="text-4xl p-2 rounded me-3 d-none-mob"
+        onClick={togglepopup}>
+        <FaTh />
+      </button>
+  
           {/* City Dropdown Search */}
           <div className="relative d-none-mob" ref={cityDropdownRef}>
             <button

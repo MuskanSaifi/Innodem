@@ -10,11 +10,10 @@ import Countries from "@/components/Countries";
 import CountryList from "@/components/CountryList";
 import Image from "next/image";
 import Link from "next/link";
-import Testimonials from "@/components/Testimonials";
-import WhatWeOffer from "@/components/Whatweoffer";
-import StatsWithImage from "@/components/Stats";
-import ContactRating from "@/components/ContactRating";
-
+import Testimonials from "@/components/home/Testimonials";
+import WhatWeOffer from "@/components/home/Whatweoffer";
+import StatsWithImage from "@/components/home/Stats";
+import ContactRating from "@/components/home/ContactRating";
 
 export default function Home() {
   return (

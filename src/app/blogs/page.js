@@ -65,14 +65,16 @@ const BlogPage = () => {
           <Col md={3} sm={6} xs={12} key={blog._id} className="mb-4">
             <Card className="h-100 common-shad border-0 rounded-3 overflow-hidden">
             <div style={{ height: "180px", overflow: "hidden" }}>
-  <Card.Img
-    variant="top"
-    src={blog.image || "/placeholder.png"}
-    alt={blog.title}
-    className="img-fluid"
-    style={{ width: "100%", height: "100%"}}
-  />
+  <div className="relative w-full h-full">
+    <Image
+      src={blog.image || "/placeholder.png"}
+      alt={blog.title}
+      layout="fill"
+      className="object-contain"
+    />
+  </div>
 </div>
+
 
               <Card.Body className="text-center">
                 <Card.Title className="fw-bold">{blog.title}</Card.Title>

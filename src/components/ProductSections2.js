@@ -55,7 +55,8 @@ const ProductSections2 = ({ tag, Name }) => {
     <section className="mt-5 px-4">
       <div className="container-fluid bg-white p-4 rounded-xl shadow-lg">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-800">{Name} Products</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 tracking-tight">
+        {Name} Products</h2>
         </div>
 
         {loading && <Skeleton count={5} height={180} />}

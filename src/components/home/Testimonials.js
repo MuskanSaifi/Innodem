@@ -24,6 +24,12 @@ const testimonials = [
     content: "Fantastic support and communication. Highly recommend them for any web-related projects!",
     image: "https://randomuser.me/api/portraits/men/85.jpg",
   },
+  {
+    name: "Ali Khan",
+    title: "CTO, DevSolutions",
+    content: "Fantastic support and communication. Highly recommend them for any web-related projects!",
+    image: "https://randomuser.me/api/portraits/men/85.jpg",
+  },
 ]
 
 const Testimonials = () => {
@@ -41,22 +47,32 @@ const Testimonials = () => {
           clickable: true,
         }}
         breakpoints={{
-          0: {
-            slidesPerView: 1,
-          },
-          768: {
-            slidesPerView: 2,
-          },
-          1500: {
-            slidesPerView: 3,
-          },
-        }}
+            320: {
+              slidesPerView: 1, // Mobile Portrait
+            },
+            576: {
+              slidesPerView: 1.5, // Small Phones landscape or slightly wider screens
+            },
+            768: {
+              slidesPerView: 2, // Tablets
+            },
+            992: {
+              slidesPerView: 3, // Small desktops
+            },
+            1200: {
+              slidesPerView: 4, // Medium desktops
+            },
+            1600: {
+              slidesPerView: 5, // Large screens
+            },
+          }}
+          
         modules={[Autoplay, Pagination]}
-        className="max-w-6xl mx-auto"
+        className="max-w-8xl mx-auto"
       >
         {testimonials.map((testimonial, index) => (
           <SwiperSlide key={index}>
-            <div className="bg-white shadow-2xl rounded-3xl p-8 sm:p-10 text-center transition-all duration-500 hover:shadow-purple-400 mb-5 mx-4">
+            <div className="bg-white shadow-2xl rounded-3xl p-8 sm:p-10 text-center transition-all duration-500 hover:shadow-purple-400 mb-5 ">
               <div className="flex flex-col items-center justify-center">
                 <img
                   src={testimonial.image}

@@ -41,12 +41,10 @@ const BlogDetail = () => {
      <Image
      src={blog.image || "/placeholder.png"}
      alt={blog.title}
-     layout="responsive" // Makes the image 100% width
-     width={1000} // Base width (ignored in responsive mode)
-     height={450} // Aspect ratio is maintained
-     className="rounded img-fluid"
-     style={{ objectFit: "cover", width: "100%" }} // Ensures it stretches to full width
+     width={840} // Base width (ignored in responsive mode)
+     height={420} // Aspect ratio is maintained
      priority
+     className="m-auto"
    />
       )}
    </div>

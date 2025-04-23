@@ -4,7 +4,7 @@ import Image from 'next/image';
 const ContactRating = () => {
   return (
     <section className="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 py-10 px-4">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10 bg-white rounded-3xl shadow-2xl overflow-hidden p-8 md:p-12">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10 bg-white rounded-3xl shadow-2xl overflow-hidden p-8 md:p-12">
         
         {/* Left Image Side */}
         <div className="relative w-full md:w-1/2 h-[400px] md:h-[500px]">
@@ -29,7 +29,7 @@ const ContactRating = () => {
           <div className="flex items-center gap-4 p-4 rounded-xl bg-gray-100 hover:bg-gray-200 transition-all duration-300">
             <span className="text-red-500 text-3xl">📞</span>
             <div className="text-start">
-              <p className="text-sm font-semibold uppercase text-gray-600">Call for advice now!</p>
+              <p className="text-sm font-semibold uppercase mb-0 text-gray-600">Call for advice now!</p>
               <a
                 href="tel:+918448668076"
                 className="text-blue-600 text-lg font-bold hover:underline"
@@ -43,7 +43,7 @@ const ContactRating = () => {
           <div className="flex items-center gap-4 p-4 rounded-xl bg-gray-100 hover:bg-gray-200 transition-all duration-300">
             <span className="text-green-500 text-3xl">✉️</span>
             <div className="text-start">
-              <p className="text-sm font-semibold uppercase text-gray-600">Say hello</p>
+              <p className="text-sm font-semibold uppercase mb-0 text-gray-600">Say hello</p>
               <a
                 href="mailto:info@dialexportmart.com"
                 className="text-blue-600 text-lg font-bold hover:underline break-all"
