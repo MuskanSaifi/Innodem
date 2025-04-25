@@ -32,6 +32,10 @@ const businessProfileSchema = new mongoose.Schema({
     companyDescription: String,
 
     // Business Preferences
+    businessType: {
+        type: [String], // 👈 Make sure this is an array of strings
+        default: [],
+      },
     workingDays: { type: [String] }, // Example: ["Monday", "Tuesday"]
     workingTime: {
         from: String, // Example: "09:00 AM"
