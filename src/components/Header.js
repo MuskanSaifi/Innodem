@@ -273,7 +273,7 @@ export default function Header() {
           <Image
             src="/assets/logo.png"
             alt="Innodem Logo"
-            width={120}
+            width={160}
             height={60}
             className="img-fluid"
           />
