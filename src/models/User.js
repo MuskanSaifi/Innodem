@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     userPackage: [
       {
         packageName: String,
-        totalAmount: { type: Number, required: true }, // make sure this exists
+        totalAmount: { type: Number}, // make sure this exists
         paidAmount: { type: Number, default: 0 },
         remainingAmount: Number,
         packageStartDate: { type: Date, default: Date.now },
