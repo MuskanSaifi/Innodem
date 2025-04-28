@@ -232,20 +232,19 @@ const countryCodes = [
   { value: "+263", label: "🇿🇼 +263", name: "Zimbabwe" }
 ];
 
-
 const BuySellForm = ({ productname: initialProductName }) => {
   const [productname, setProductname] = useState(initialProductName || "");
   const [showModal, setShowModal] = useState(false);
   const [buySell, setBuySell] = useState("buy");
   const [fullname, setFullname] = useState("");
-  const [countryCode, setCountryCode] = useState(countryCodes[1]);
+  const [countryCode, setCountryCode] = useState(countryCodes[0]);
   const [mobileNumber, setMobileNumber] = useState("");
   const [email, setEmail] = useState("");
   const [pincode, setPincode] = useState("");
   const [companyName, setCompanyName] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -345,9 +344,7 @@ const BuySellForm = ({ productname: initialProductName }) => {
   
 
   return (
-
     <>
-  
     <div className={`modal fade ${showModal ? "show d-block" : ""}`} style={{ background: "rgba(0, 0, 0, 0.5)" }} >
       <div className="modal-dialog modal-dialog-centered modal-lg">
         <div className="modal-content p-4">
@@ -367,8 +364,6 @@ const BuySellForm = ({ productname: initialProductName }) => {
     className="object-contain"
   />
 </div>
-
-
 </div>
 
     <div className="col-md-6">
@@ -414,7 +409,6 @@ const BuySellForm = ({ productname: initialProductName }) => {
           </div>
     </div>
     </div>
-
         </div>
       </div>
     </div>

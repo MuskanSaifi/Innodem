@@ -6,6 +6,7 @@ import Image from "next/image";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useParams } from "next/navigation";
+import BuySellForm from "./BuySellform";
 
 const ProductDetailClient = ({ productslug: propProductSlug }) => {
   const params = useParams();
@@ -45,6 +46,7 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
 
     fetchProductData();
   }, [slugFromURL]);
+
 
   return (
     <div className="container mt-4 mb-5">
@@ -169,6 +171,8 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
               >
                 More details
               </Link>
+              <BuySellForm product={product} />
+
             </div>
           ) : (
             <p className="text-warning">Product details not available.</p>
