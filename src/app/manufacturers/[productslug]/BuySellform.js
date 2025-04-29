@@ -9,6 +9,9 @@ export default function BuySellForm({ product }) {
   const [buySell, setBuySell] = useState("buy");
   const [productname, setProductname] = useState(product.name || "");
 
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setShowForm(false); // Hide form and show product details when closing
@@ -29,6 +32,91 @@ export default function BuySellForm({ product }) {
   };
 
   if (!product) return null; // No product, don't render anything
+
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      setLoading(true);
+      setMessage("");
+      setError("");
+  
+      try {
+        const fullMobileNumber = `${countryCode.value}${mobileNumber.replace(/\s/g, "")}`;
+        const apiUrl = buySell === "buy" ? "/api/auth/sendotpbuyer" : "/api/auth/sendotp";
+        const requestBody = {
+          fullname,
+        email,
+        mobileNumber: fullMobileNumber,
+        countryCode: countryCode.value,
+        productname, // Added product name
+        };
+        
+        if (buySell === "sell") {
+          requestBody.companyName = companyName;
+          requestBody.pincode = pincode;
+          requestBody.productname = productname;
+          requestBody.fullname = fullname;
+          requestBody.email = email;
+          requestBody.mobileNumber = fullMobileNumber;
+        }
+  
+        const res = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(requestBody),
+        });
+  
+        const data = await res.json();
+        if (res.ok) {
+          setMessage(data.message);
+          setOtpSent(true);
+        } else {
+          setError(data.error || "Unexpected error occurred.");
+        }
+      } catch (err) {
+        setError("Something went wrong!");
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    const handleOtpVerify = async (e) => {
+      e.preventDefault();
+      setLoading(true);
+      setMessage("");
+      setError("");
+    
+      try {
+        const fullMobileNumber = `${countryCode.value}${mobileNumber.replace(/\s/g, "")}`;
+        const apiUrl = buySell === "buy" 
+          ? "/api/auth/verifyotpbuyer" 
+          : `/api/auth/verifyotp`; // Seller API
+    
+        const res = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ mobileNumber: fullMobileNumber, otp }),
+        });
+    
+        const data = await res.json();
+        if (res.ok) {
+          setMessage("OTP verified successfully!");
+          if (buySell === "sell") {
+           // Redux store update karen
+           dispatch(setUser({ user: data.user, token: data.token }));
+            router.push("/userdashboard");
+          } else {
+            toast.success("verified")
+          }
+          setShowModal(false);
+        } else {
+          setError(data.error || "Invalid OTP. Please try again.");
+        }
+      } catch (err) {
+        setError("Invalid OTP or something went wrong!");
+      } finally {
+        setLoading(false);
+      }
+    };
 
   return (
     <div>
