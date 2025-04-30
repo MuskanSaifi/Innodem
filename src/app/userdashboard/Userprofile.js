@@ -92,11 +92,11 @@ const Userprofile = () => {
   <div className="m-auto">
     <Link
       href={userdetail.userProfileSlug ? `/company/${userdetail.userProfileSlug}` : "#"}
-      className="inline-block text-sm sm:text-base bg-blue-100 text-blue-700 font-medium px-4 py-2 rounded-full shadow-sm hover:bg-blue-200 transition"
+      className="inline-block text-sm text-center sm:text-base bg-blue-100 text-blue-700 font-medium px-4 py-2 rounded-full shadow-sm hover:bg-blue-200 transition"
     >
       {userdetail.userProfileSlug
         ? `dialexportmart.com/company/${userdetail.userProfileSlug}`
-        : "N/A"}
+        : "complete Pofile to generate your personalized website."}
     </Link>
   </div>
 </div>

@@ -3,6 +3,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from 'react-responsive-carousel';
 import SidebarMenu from './SidebarMenu';
 
+
 const Bannerslider = () => {
   return (
     <>
@@ -14,20 +15,20 @@ const Bannerslider = () => {
       </div>
       <div className="col-md-10">
       <Carousel autoPlay={true} infiniteLoop={true} interval={6000}>
+        
       <div>
-        <img src="/assets/bannerslider/Indian Spices-min.png" alt="banner4" />
+        <img src="/assets\bannerslider\banner-4.png" alt="banner 4" />
       </div>
       <div>
-        <img src="/assets/bannerslider/Indian Spices-2-1-min.png" alt="banner1" />
+      <img src="/assets/bannerslider/banner-1.png" alt="banner 1" />
       </div>
       <div>
-        <img src="/assets/bannerslider/Indian Spices-3-min.png" alt="banner1" />
+        <img src="/assets/bannerslider/banner-2.png" alt="banner 2" />
+      </div>
+      <div> 
+        <img src="/assets/bannerslider/banner-3.png" alt="banner 3" />
       </div>
      
-      <div>
-        <img src="/assets\bannerslider\Indian Spices-2-min.png" alt="banner 2" />
-      </div>
-
     </Carousel>
       </div>
     </div>

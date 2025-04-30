@@ -16,6 +16,9 @@ import Link from "@tiptap/extension-link";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";  // ✅ Import SweetAlert2
+import Image from "next/image";
+
+
 
 // ✅ Initial State for Form Data
 const initialState = {
@@ -225,7 +228,17 @@ const CreateBlog = () => {
           </div>
 
           <input type="file" accept="image/*" onChange={handleImageUpload} className="form-control mb-2" />
-          {preview && <img src={preview} alt="Preview" className="img-fluid rounded mb-2" style={{ maxWidth: "300px" }} />}
+          {preview && (
+  <Image
+    src={preview}
+    alt="Preview"
+    width={300}
+    height={200}
+    className="img-fluid rounded mb-2"
+    unoptimized
+    loader={() => preview} // Important for local object URLs
+  />
+)}
 
      
           <button type="submit" className="btn btn-primary w-100" disabled={loading}>
