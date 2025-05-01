@@ -220,40 +220,66 @@ const Footer = () => {
           <hr className="border-gray-700 my-6" />
 
           {/* Copyright & Apps */}
-          <div className="flex flex-col md:flex-row items-center justify-between align-items-center">
-            <p className="text-sm mb-0 text-red-400">&copy; {new Date().getFullYear()} Dial Export Mart. All Rights Reserved.</p>
-            <div className="flex gap-4 md:mt-0 align-items-center  py-1 rounded-3">
+          <div className="flex flex-col md:flex-row items-center justify-between py-4 gap-4">
+  {/* Text Section */}
+  <p className="text-sm text-red-400 text-center md:text-left">
+    &copy; {new Date().getFullYear()} Dial Export Mart. All Rights Reserved.
+  </p>
 
-              <GoogleTranslate />
-              {/* ✅ Google Partner Link (Opens in New Tab) */}
-              <Link
-                href="https://www.google.com/partners/agency?id=7430369059"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Image
-                  src={Gpimage}
-                  alt="Google Partner Logo"
-                  width={100}
-                  height={100}
-                  className="gp-img shadow"
-                />
-              </Link>
+  {/* Logo + Translate Section */}
+  <div className="flex flex-col md:flex-row items-center gap-4">
+    <GoogleTranslate />
+
+    {/* Google Partner Logo */}
+<Link
+  href="https://www.google.com/partners/agency?id=7430369059"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="w-[70%] md:w-auto"
+>
+<div className="w-full md:w-[100px]">
+<Image
+      src={Gpimage}
+      alt="Google Partner Logo"
+      layout="responsive"
+      width={100}
+      height={100}
+      className="gp-img shadow" 
+    />
+  </div>
+</Link>
+
+{/* Google Play Logo */}
+<Link href="/coming-soon" className="w-[70%] md:w-auto">
+  <div className="w-full md:w-[128px]">
+    <Image
+      src="/assets/play.png"
+      alt="Google Play"
+      layout="responsive"
+      width={128}
+      height={40}
+    />
+  </div>
+</Link>
+
+{/* App Store Logo */}
+<Link href="/coming-soon" className="w-[70%] md:w-auto">
+  <div className="w-full md:w-[128px]">
+    <Image
+      src="/assets/appstore.png"
+      alt="App Store"
+      layout="responsive"
+      width={128}
+      height={40}
+    />
+  </div>
+</Link>
 
 
-              {/* ✅ Google Play Link */}
-              <Link href="/coming-soon">
-                <Image src="/assets/play.png" alt="Google Play" width={128} height={40} />
-              </Link>
 
-              {/* ✅ App Store Link */}
-              <Link href="/coming-soon">
-                <Image src="/assets/appstore.png" alt="App Store" width={128} height={40} />
-              </Link>
+  </div>
+</div>
 
-
-            </div>
-          </div>
 
         </div>
       </footer>

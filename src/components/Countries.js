@@ -3,7 +3,7 @@ import Image from "next/image";
 
 const countries = [
   { name: "India", flag: "/countries/In.png", link: "/india" },
-  { name: "Afganistan", flag: "/countries/Af.png", link: "#" },
+  { name: "Afghanistan", flag: "/countries/Af.png", link: "#" },
   { name: "Australia", flag: "/countries/Au.png", link: "#" },
   { name: "UAE", flag: "/countries/Bd.png", link: "#" },
   { name: "Pakistan", flag: "/countries/Pk.png", link: "#" },
@@ -18,12 +18,13 @@ const Countries = () => {
       <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
         Find Suppliers by Country or Region
       </h2>
-      <div className="flex md:grid md:grid-cols-4 lg:grid-cols-8 gap-6 overflow-x-auto md:overflow-hidden justify-center">
+
+      <div className="country-scroll flex md:grid md:grid-cols-4 lg:grid-cols-8 gap-6 overflow-x-auto md:overflow-hidden justify-center">
         {countries.map((country, index) => (
           <a
             key={index}
             href={country.link}
-            className="flex flex-col items-center space-y-3 bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition duration-200 min-w-[100px]"
+            className="flex flex-col items-center space-y-3 bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition duration-200 min-w-[100px] flex-shrink-0"
           >
             {country.flag ? (
               <Image
@@ -40,6 +41,17 @@ const Countries = () => {
           </a>
         ))}
       </div>
+
+      {/* ✅ Internal CSS to hide scrollbars */}
+      <style jsx>{`
+        .country-scroll {
+          scrollbar-width: none; /* Firefox */
+          -ms-overflow-style: none; /* IE and Edge */
+        }
+        .country-scroll::-webkit-scrollbar {
+          display: none; /* Chrome, Safari, Opera */
+        }
+      `}</style>
     </div>
   );
 };
