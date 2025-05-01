@@ -375,7 +375,7 @@ const Page = () => {
     <div className="w-full md:w-1/2 p-6">
       <h2 className="text-3xl font-bold mb-4">Join us today 👋</h2>
       <p className="text-sm text-gray-300 mb-6">
-      Buy or sell with ease — join our platform and grow your business smarter and faster. Register now!
+      Buy or sell with ease — join our platform and grow your business smarter and faster. Register No0w!
       </p>
 
       {message && <p className="text-green-500">{message}</p>}
