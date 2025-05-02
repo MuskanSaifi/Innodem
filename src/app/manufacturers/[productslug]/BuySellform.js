@@ -155,10 +155,13 @@ const [currency, setCurrency] = useState("INR");
           unit,
           orderValue,
           currency,
-          buyer: buyer, // phone number from localStorage
+          buyer: buyer, // phone from localStorage
+          requirementFrequency: "one-time", // or "recurring"
+          sellerId: product?.userId, // ✅ dynamically passed seller Id
+          productId: product?._id,     // ✅ dynamically passed
         };
     
-        const res = await fetch("/api/buyerform", {
+        const res = await fetch("/api/purchaserequest", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(buyerData),
@@ -167,7 +170,7 @@ const [currency, setCurrency] = useState("INR");
         const data = await res.json();
         if (res.ok) {
           toast.success("Request submitted successfully!");
-          setOpen(false); // close modal
+          setOpen(false);
         } else {
           toast.error(data.error || "Submission failed.");
         }
@@ -176,6 +179,7 @@ const [currency, setCurrency] = useState("INR");
         console.error(error);
       }
     };
+    
 
     
   return (
@@ -326,119 +330,101 @@ const [currency, setCurrency] = useState("INR");
             </div>
           )}
 
-          {/* Product Details for logged-in users or verified buyers */}
-          {(user || buyer) && !showForm && (
-            <>
-              <div className="flex items-center gap-4 bg-gray-100 p-4 rounded mb-4">
-                <img
-                  src={product?.images?.[0]?.url || "/placeholder.png"}
-                  alt={product.name}
-                  className="w-16 h-16 object-cover rounded"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "/placeholder.png";
-                  }}
-                />
-                <div>
-                  <h3 className="text-lg font-semibold">{product.name}</h3>
-                  <p className="text-sm text-gray-600">{product.companyName || "Company"}</p>
-                  <p className="text-sm text-gray-600">{product.location || "Location"}</p>
-                </div>
-              </div>
+   {/* Product Details for logged-in users or verified buyers */}
+{(user || buyer) && !showForm && (
+  <>
+    <div className="flex items-center gap-4 bg-gray-100 p-4 rounded mb-4">
+      {/* Example product image and info */}
+      <Image
+         src={product?.images?.[0]?.url || "/placeholder.png"}
+         alt={product.name}
+        width={80}
+        height={80}
+        className="rounded"
+      />
+      <div>
+        <h3 className="font-semibold text-lg">{product.name}</h3>
+        <p className="text-gray-700">{product.description}</p>
+      </div>
+    </div>
 
-              <div className="bg-yellow-100 p-4 rounded mb-4 text-sm">
-                Hi, I am interested in <strong>{product.name}</strong>{" "}
-                {product.capacity ? `Capacity: ${product.capacity}` : ""}.
-              </div>
+    <button
+      onClick={handleContinue}
+      className="btn btn-primary w-full"
+    >
+      Continue
+    </button>
+  </>
+)}
 
-              <div className="mb-6">
-                <label className="block text-gray-700 font-medium mb-1">
-                  Requirement Frequency*
-                </label>
-                <div className="flex items-center gap-6">
-                  <label className="flex items-center">
-                    <input type="radio" name="requirementFrequency" value="one-time" className="form-radio" />
-                    <span className="ml-2">One-Time</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input type="radio" name="requirementFrequency" value="recurring" className="form-radio" />
-                    <span className="ml-2">Recurring</span>
-                  </label>
-                </div>
-              </div>
+{/* Buyer form after clicking "Continue" */}
+{(user || buyer) && showForm && (
+  <form onSubmit={handlebuyerform}>
+    <input
+      type="text"
+      value={productname}
+      onChange={(e) => setProductname(e.target.value)}
+      className="form-control mb-2"
+      placeholder="Product Name"
+      required
+    />
 
-              <button
-                onClick={handleContinue}
-                className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition w-full"
-              >
-                Continue
-              </button>
-            </>
-          )}
+    <div className="mb-2 flex gap-2">
+      <input
+        type="text"
+        value={quantity}
+        onChange={(e) => setQuantity(e.target.value)}
+        className="form-control"
+        placeholder="Quantity"
+        required
+      />
+      <input
+        type="text"
+        value={unit}
+        onChange={(e) => setUnit(e.target.value)}
+        className="form-control"
+        placeholder="Unit (e.g., kg, tons)"
+        required
+      />
+    </div>
 
-          {showForm && (
-            <>
-                            <form onSubmit={handlebuyerform}>
-              <div className="mb-4">
-                <label className="block text-gray-700 font-medium mb-1">Quantity*</label>
-                <input
-  type="number"
-  placeholder="1"
-  className="w-full border rounded px-4 py-2"
-  value={quantity}
-  onChange={(e) => setQuantity(e.target.value)}
-/>              </div>
+    <input
+      type="text"
+      value={orderValue}
+      onChange={(e) => setOrderValue(e.target.value)}
+      className="form-control mb-2"
+      placeholder="Order Value"
+      required
+    />
 
-              <div className="mb-4">
-                <label className="block text-gray-700 font-medium mb-1">Unit*</label>
-                <input
-  type="text"
-  placeholder="Unit/Units"
-  className="w-full border rounded px-4 py-2"
-  value={unit}
-  onChange={(e) => setUnit(e.target.value)}
-/>
-              </div>
+    <select
+      value={currency}
+      onChange={(e) => setCurrency(e.target.value)}
+      className="form-control mb-2"
+    >
+      <option value="INR">INR</option>
+      <option value="USD">USD</option>
+      <option value="EUR">EUR</option>
+    </select>
 
-              <div className="mb-6">
-                <label className="block text-gray-700 font-medium mb-1">Approx Order Value*</label>
-                <div className="flex gap-2">
-                <input
-  type="text"
-  placeholder="Amount"
-  className="flex-1 border rounded px-4 py-2"
-  value={orderValue}
-  onChange={(e) => setOrderValue(e.target.value)}
-/>
-<select
-  className="border rounded px-4 py-2"
-  value={currency}
-  onChange={(e) => setCurrency(e.target.value)}
->
-  <option value="INR">INR</option>
-  <option value="USD">USD</option>
-  <option value="AED">AED</option>
-</select>
-                </div>
-              </div>
+    <div className="flex justify-between gap-2">
+      <button
+        type="button"
+        onClick={handlePrevious}
+        className="btn btn-secondary w-full"
+      >
+        Previous
+      </button>
+      <button
+        type="submit"
+        className="btn btn-success w-full"
+      >
+        Submit Request
+      </button>
+    </div>
+  </form>
+)}
 
-              <div className="flex justify-between">
-                <button
-                  onClick={handlePrevious}
-                  className="bg-gray-300 text-gray-800 px-6 py-2 rounded hover:bg-gray-400 transition"
-                >
-                  Previous
-                </button>
-                <button
-                  type="submit"
-                  className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
-                >
-                  Submit
-                </button>
-              </div>
-              </form>
-            </>
-          )}
         </div>
       </div>
     )}

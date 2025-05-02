@@ -326,7 +326,9 @@ const Page = () => {
            dispatch(setUser({ user: data.user, token: data.token }));
             router.push("/userdashboard");
           } else {
-            toast.success("verified")
+            toast.success("You are verified!")
+            router.push("/");
+
           }
         } else {
           setError(data.error || "Invalid OTP. Please try again.");

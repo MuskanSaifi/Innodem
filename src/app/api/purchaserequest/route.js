@@ -1,56 +1,51 @@
-// pages/api/buyerform.js
-
+import { NextResponse } from "next/server";
 import connectdb from "@/lib/dbConnect";
 import Buyer from "@/models/Buyer";
 import purchaseRequestSchema from "@/models/purchaseRequestSchema";
 
-
-export default async function handler(req, res) {
+export async function POST(request) {
   await connectdb();
 
-  if (req.method === "POST") {
-    try {
-      const {
-        productname,
-        quantity,
-        unit,
-        orderValue,
-        currency,
-        buyer: buyerMobileNumber,
-        requirementFrequency,
-        sellerId,
-        productId
-      } = req.body;
+  try {
+    const body = await request.json();
 
-      // 1. Find the buyer using mobile number
-      const buyer = await Buyer.findOne({ mobileNumber: buyerMobileNumber });
+    const {
+      productname,
+      quantity,
+      unit,
+      orderValue,
+      currency,
+      buyer: buyerMobileNumber,
+      requirementFrequency,
+      sellerId,
+      productId,
+    } = body;
 
-      if (!buyer) {
-        return res.status(404).json({ error: "Buyer not found" });
-      }
+    // 1. Find the buyer using mobile number
+    const buyer = await Buyer.findOne({ mobileNumber: buyerMobileNumber });
 
-      // 2. Create PurchaseRequest
-      const purchaseRequest = await purchaseRequestSchema.create({
-        buyer: buyer._id,
-        seller: sellerId,         // pass from frontend
-        product: productId,       // pass from frontend
-        quantity,
-        unit,
-        approxOrderValue: {
-          amount: orderValue,
-          currency,
-        },
-        requirementFrequency,     // 'one-time' or 'recurring'
-      });
-
-      return res.status(200).json({ success: true, purchaseRequest });
-
-    } catch (error) {
-      console.error("Error creating purchase request:", error);
-      return res.status(500).json({ error: "Server error" });
+    if (!buyer) {
+      return NextResponse.json({ error: "Buyer not found" }, { status: 404 });
     }
-  } else {
-    res.setHeader("Allow", ["POST"]);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+
+    // 2. Create PurchaseRequest
+    const purchaseRequest = await purchaseRequestSchema.create({
+      buyer: buyer._id,
+      seller: sellerId,
+      product: productId,
+      quantity,
+      unit,
+      approxOrderValue: {
+        amount: orderValue,
+        currency,
+      },
+      requirementFrequency,
+    });
+
+    return NextResponse.json({ success: true, purchaseRequest }, { status: 200 });
+
+  } catch (error) {
+    console.error("Error creating purchase request:", error);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
