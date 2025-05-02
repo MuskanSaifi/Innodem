@@ -3,17 +3,17 @@ import mongoose from "mongoose";
 const purchaseRequestSchema = new mongoose.Schema({
   buyer: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Buyer', // Buyer model ka reference
+    ref: 'Buyer',
     required: true,
   },
   seller: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // Seller model ka reference
+    ref: 'User',
     required: true,
   },
   product: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Product', 
+    ref: 'Product',
   },
   quantity: {
     type: Number,
@@ -29,12 +29,15 @@ const purchaseRequestSchema = new mongoose.Schema({
   },
   requirementFrequency: {
     type: String,
-    enum: ['one-time', 'recurring'], // Either 'one-time' or 'recurring'
+    enum: ['one-time', 'recurring'],
     required: true,
   },
-
-},  { timestamps: true }
-);
+  status: {
+    type: String,
+    enum: ['pending', 'accepted', 'rejected'],
+    default: 'pending',
+  },
+}, { timestamps: true });
 
 export default mongoose.models.PurchaseRequest || mongoose.model("PurchaseRequest", purchaseRequestSchema);
 

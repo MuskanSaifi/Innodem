@@ -19,10 +19,9 @@ export async function GET(request, { params }) {
 
   try {
     const decodedProductSlug = decodeURIComponent(productslug);
-
     // Find the product by its slug
     const product = await Product.findOne({ productslug: decodedProductSlug })
-      .populate("subCategory category");
+      .populate("subCategory category userId");
 
     if (!product) {
       return NextResponse.json(
