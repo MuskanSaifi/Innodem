@@ -4,8 +4,8 @@ const purchaseRequestSchema = new mongoose.Schema({
   buyer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Buyer',
-    required: true,
-  },
+    required: true
+  },  
   seller: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

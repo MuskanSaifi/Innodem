@@ -6,8 +6,23 @@ import { useRouter } from "next/navigation";
 import Select from "react-select";
 import toast from "react-hot-toast";
 
+
+
+
 import { useDispatch } from "react-redux";
 import { setUser } from "@/app/store/userSlice";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+
+const images = [
+  "/assets/Frame-4.png",
+  "/assets/Frame-5.png",
+  "/assets/join-us.png",
+];
+
 
 
 const countryCodes = [
@@ -453,23 +468,50 @@ const Page = () => {
     </div>
 
     {/* Right Side - Image */}
-    <div className="w-full md:w-1/2 flex justify-center items-center p-4">
-  <Image 
-    src="/assets/join-us.png"
-    alt="Join our marketplace banner"
-    width={500}  // Adjust as needed
-    height={500}
-    className="rounded-md"
-  /> 
+    <div className="w-full md:w-1/2 flex justify-center items-center  overflow-hidden p-4">
+  <div className="w-full">
+    <Swiper
+      modules={[Pagination, Autoplay]}
+      slidesPerView={1}
+      spaceBetween={20}
+      pagination={{ clickable: true }}
+      autoplay={{ delay: 3000, disableOnInteraction: false }}
+      loop={true}
+      breakpoints={{
+        640: {
+          slidesPerView: 1,
+        },
+        768: {
+          slidesPerView: 1,
+        },
+        1024: {
+          slidesPerView: 1,
+        },
+      }}
+    >
+      {images.map((src, index) => (
+        <SwiperSlide key={index}>
+          <div className="flex justify-center items-center">
+            <Image
+              src={src}
+              alt={`Slide ${index}`}
+              width={500}
+              height={500}
+              className="rounded-md"
+            />
+          </div>
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  </div>
 </div>
+
 
 
   </div>
 </div>
 
 <hr className="m-0"/>
-
-
     </>
   );
 };

@@ -32,7 +32,7 @@ const LayoutWrapper = ({ children }) => {
       {children} {/* ✅ Render children inside layout */}
 
       {/* ✅ Hide Footer only on /userdashboard */}
-      {pathname !== "/userdashboard" && pathname !== "/join-us" && <Footer />}
+      {pathname !== "/userdashboard" && <Footer />}
 
     </>
   );

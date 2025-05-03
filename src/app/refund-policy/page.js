@@ -26,11 +26,12 @@ const page = () => {
 
       <h2 className="font-semibold text-lg mt-4">Payment and Refund Policy:</h2>
       <ul className="list-disc pl-6 space-y-2">
-        <li>All payments will be accepted through the standard modes set by Dial Export Mart.</li>
-        <li>Due to the interactive nature of our services and the client's involvement in the process, there is no provision for any full or partial refunds. The paid amount will not be refunded under any circumstances.</li>
-        <li>Once an order is placed, it cannot be canceled, as it is sent for processing immediately. Personal preferences changing over time are not valid reasons for a refund or chargeback.</li>
-        <li>We keep records of each payment and activated service. All services and payment records are forwarded to clients on their letterhead, which must be signed by the user or customer with their company stamp or attached PAN card. Dial Export Mart will not be responsible for any refund unless major concerns are raised with complete proof.</li>
-      </ul>
+      <li>All payments will be accepted through the standard modes set by Dial Export Mart.</li>
+      <li>If the company provides you with SEO services for your website along with the website development, we will deduct the cost of the respective services from the total package amount.</li>
+      <li>Due to the interactive nature of our services and the client's involvement in the process, there is no provision for any full or partial refunds. The paid amount will not be refunded under any circumstances.</li>
+      <li>Once an order is placed, it cannot be canceled, as it is sent for processing immediately. Personal preferences changing over time are not valid reasons for a refund or chargeback.</li>
+      <li>We keep records of each payment and activated service. All services and payment records are forwarded to clients on their letterhead, which must be signed by the user or customer with their company stamp or attached PAN card. Dial Export Mart will not be responsible for any refund unless major concerns are raised with complete proof.</li>
+    </ul>
 
       <h2 className="font-semibold text-lg mt-4">Liability and Refund Assurance:</h2>
       <p>Dial Export Mart holds the liability that, even if a customer declares non-receipt of services, no refund will be processed unless the client provides proof of not receiving services despite regular communication and emails from our team.</p>
