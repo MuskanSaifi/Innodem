@@ -462,7 +462,7 @@ const Page = () => {
           )}
 
           <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 p-3 rounded font-medium" disabled={loading}>
-            {loading ? "Sending OTP..." : "Send OTP"}
+            {loading ? "Sending OTP..." : "Submit"}
           </button>
         </form>
       )}

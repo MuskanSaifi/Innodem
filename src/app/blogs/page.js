@@ -39,11 +39,11 @@ const BlogPage = () => {
 
 <div className="text-center">
   <Image
-    src={"/assets/pagesbanner/blogs.png" || "/placeholder.png"}
+    src={"/assets/pagesbanner/Blog.png" || "/placeholder.png"}
     alt="Blog Banner"
     layout="responsive" // Makes the image 100% width
-    width={1000} // Base width (ignored in responsive mode)
-    height={400} // Aspect ratio is maintained
+    width={1425} // Base width (ignored in responsive mode)
+    height={486} // Aspect ratio is maintained
     className="rounded img-fluid"
     style={{ objectFit: "cover", width: "100%" }} // Ensures it stretches to full width
     priority

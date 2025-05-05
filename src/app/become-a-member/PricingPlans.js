@@ -67,11 +67,11 @@ const PricingPlans = () => {
     <>
       <div className="text-center">
         <Image
-          src={"/assets/pagesbanner/Become a Member.png" || "/placeholder.png"}
+          src={"/assets/pagesbanner/Become-a-Member.png" || "/placeholder.png"}
           alt="Blog Banner"
           layout="responsive"
-          width={1000}
-          height={450}
+          width={1425}
+          height={486}
           className="rounded img-fluid"
           style={{ objectFit: "cover", width: "100%" }}
           priority

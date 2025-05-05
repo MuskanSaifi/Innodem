@@ -6,7 +6,7 @@ const Page = () => {
     <>
     <div className="text-center">
       <Image
-        src={"/assets/pagesbanner/About Us.png" || "/placeholder.png"}
+        src={"/assets/pagesbanner/About-Us.png" || "/placeholder.png"}
         alt="Blog Banner"
         layout="responsive" // Makes the image 100% width
         width={1000} // Base width (ignored in responsive mode)
