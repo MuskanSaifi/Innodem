@@ -67,7 +67,7 @@ const PricingPlans = () => {
     <>
       <div className="text-center">
         <Image
-          src={"/assets/pagesbanner/B2B (12).png" || "/placeholder.png"}
+          src={"/assets/pagesbanner/Become a Member.png" || "/placeholder.png"}
           alt="Blog Banner"
           layout="responsive"
           width={1000}
@@ -78,7 +78,7 @@ const PricingPlans = () => {
         />
       </div>
 
-      <section className="pricing-section rounded-4">
+      <section className="pricing-section rounded-4 mt-5 ">
         <h1 className="title">Pricing and <span>Plan</span></h1>
         <div className="pricing-cards">
           {plans.map((plan, index) => (

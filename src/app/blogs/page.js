@@ -10,7 +10,7 @@ const BlogPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const blogsPerPage = 4; // Adjusted to fit the design properly
+  const blogsPerPage = 8; // Adjusted to fit the design properly
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -39,7 +39,7 @@ const BlogPage = () => {
 
 <div className="text-center">
   <Image
-    src={"/assets/OUR BLOGS.jpg" || "/placeholder.png"}
+    src={"/assets/pagesbanner/blogs.png" || "/placeholder.png"}
     alt="Blog Banner"
     layout="responsive" // Makes the image 100% width
     width={1000} // Base width (ignored in responsive mode)

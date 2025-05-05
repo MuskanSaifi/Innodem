@@ -57,7 +57,6 @@ function ResponsiveDashboard() {
           </button>
           <h1>{activeContent}</h1>
         </div>
-
         <div className="resdes-dynamic-content">
           {activeContent === "Dashboard" && <Dashboard />}
           {activeContent === "Payments" && <Payments />}
