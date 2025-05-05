@@ -20,7 +20,7 @@ const AllSubscribers = () => {
     try {
       const response = await axios.get("/api/subscribers");
       if (response.data.success) {
-        setSubscribers(response.data.subscribers);
+        setSubscribers(response.data.subscribers.reverse());
         setFilteredSubscribers(response.data.subscribers);
       } else {
         setError("Failed to fetch subscribers.");

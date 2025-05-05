@@ -26,7 +26,7 @@ const AllUsers = () => {
         `/api/adminprofile/users`
       );
       if (response.data.success) {
-        setUsers(response.data.users);
+        setUsers(response.data.users.reverse());
       }
     } catch (error) {
       console.error("Error fetching users:", error);

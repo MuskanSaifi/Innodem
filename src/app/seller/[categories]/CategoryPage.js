@@ -144,7 +144,7 @@ const CategoryPage = ({ categorySlug }) => {
       <div className="row mt-4">
         {/* Sidebar */}
         <aside className="col-md-3 d-none d-md-block">
-          <div className="bg-white p-3 rounded common-shad">
+          <div className="bg-white p-3 rounded common-shad  sticky top-5">
             <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
               All Categories
             </h5>
@@ -243,7 +243,7 @@ const CategoryPage = ({ categorySlug }) => {
 
         {/* Subcategories Sidebar */}
         <aside className="col-md-3 d-none d-md-block">
-          <div className="bg-white p-3 rounded common-shad">
+          <div className="bg-white p-3 rounded common-shad sticky top-5">
             <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
               Subcategories
             </h5>

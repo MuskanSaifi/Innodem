@@ -20,6 +20,7 @@ import AllBlogs from "./AllBlogs";
 import CreateBlog from "./CreateBlog";
 import AllSubscribers from "./AllSubscribers";
 import AllContacts from "./AllContacts";
+import LeadsEnquiry from "./LeadsEnquiry";
 
 function ResponsiveDashboard() {
   const router = useRouter();
@@ -78,6 +79,7 @@ function ResponsiveDashboard() {
           {activeContent === "Create Blogs" && <CreateBlog />}
           {activeContent === "All Subscribers" && <AllSubscribers />}
           {activeContent === "All Contacts" && <AllContacts />}
+          {activeContent === "Leads & Enquiry" && <LeadsEnquiry />}
         </div>
       </div>
     </div>

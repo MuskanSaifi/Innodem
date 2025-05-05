@@ -145,7 +145,7 @@ const SubcategoryProductPage = () => {
       <div className="row">
         {/* Sidebar (Desktop) */}
         <aside className="col-md-3 d-none d-md-block">
-          <div className="bg-white p-3 rounded common-shad">
+          <div className="bg-white p-3 rounded common-shad  sticky top-5">
             <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
               Subcategories
             </h5>
@@ -241,7 +241,7 @@ const SubcategoryProductPage = () => {
 
          {/* Products Sidebar */}
          <aside className="col-md-3 d-none d-md-block">
-          <div className="bg-white p-3 rounded common-shad">
+          <div className="bg-white p-3 rounded common-shad  sticky top-5">
             <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
               Products in {decode(subcategorySlug)}
             </h5>

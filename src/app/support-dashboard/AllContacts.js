@@ -17,7 +17,7 @@ const AllContacts = () => {
   const fetchContacts = async () => {
     try {
       const response = await axios.get('/api/contact');
-      setContacts(response.data.contacts);
+      setContacts(response.data.contacts.reverse());
       setFilteredContacts(response.data.contacts);
     } catch (err) {
       console.error('Error fetching contacts:', err);

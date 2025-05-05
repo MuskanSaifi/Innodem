@@ -19,7 +19,7 @@ const AllContacts = () => {
       try {
         const response = await axios.get('/api/contact');
         console.log('Contacts fetched:', response.data);
-        setContacts(response.data.contacts); // Assuming contacts are inside 'contacts' field
+        setContacts(response.data.contacts.reverse()); // Assuming contacts are inside 'contacts' field
         setFilteredContacts(response.data.contacts); // Initialize filtered contacts
       } catch (err) {
         console.error('Error fetching contacts:', err);

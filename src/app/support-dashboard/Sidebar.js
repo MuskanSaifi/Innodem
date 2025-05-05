@@ -10,6 +10,7 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
     { icon: "💰", label: "Payments" },
     { icon: "👤", label: "All Buyers" },
     { icon: "👤", label: "All Seller" },
+    { icon: "➕", label: "Leads & Enquiry" },
     { icon: "📞", label: "All Contacts" },
     { icon: "📩", label: "All Subscribers" }
   ];

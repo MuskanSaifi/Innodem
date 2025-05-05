@@ -13,6 +13,7 @@ import Payments from "./Payments";
 
 import AllContacts from "./AllContacts";
 import AllSubscribers from "./AllSubscribers";
+import LeadsEnquiry from "./LeadsEnquiry";
 
 function ResponsiveDashboard() {
   const router = useRouter();
@@ -65,6 +66,7 @@ function ResponsiveDashboard() {
           {activeContent === "All Buyers" && <Buyers />}
           {activeContent === "All Subscribers" && <AllSubscribers />}
           {activeContent === "All Contacts" && <AllContacts />}
+          {activeContent === "Leads & Enquiry" && <LeadsEnquiry />}
         </div>
       </div>
     </div>

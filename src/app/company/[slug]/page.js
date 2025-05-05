@@ -198,7 +198,7 @@ export default async function CompanyProfile({ params }) {
   {/* Right Side - Fixed Seller Details */}
 {/* Right Side - Fixed Seller Details */}
 <div className="w-full lg:w-1/4 mt-10 lg:mt-0">
-  <div className="lg:sticky lg:top-24">
+  <div className="lg:sticky lg:top-6">
     <div className="bg-white rounded-lg shadow-md border p-6">
       <h3 className="text-xl font-bold text-gray-800 mb-4">Seller Details</h3>
 
