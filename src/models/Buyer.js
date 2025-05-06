@@ -6,6 +6,7 @@ const BuyerSchema = new mongoose.Schema({
   mobileNumber: { type: String, required: true, unique: true },
   countryCode: { type: String, required: true },
   productname: { type: String, required: true },
+  
   quantity: { type: Number},
   unit: { type: String},
   orderValue: { type: Number },

@@ -16,8 +16,6 @@ const page = () => {
             priority
           />
         </div>
-
-
         <section>
   <div className="container mx-auto p-6">
     <h1 className="title">Terms <span>Of Use</span></h1>
