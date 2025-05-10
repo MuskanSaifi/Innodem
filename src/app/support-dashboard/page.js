@@ -15,6 +15,7 @@ import AllContacts from "./AllContacts";
 import AllSubscribers from "./AllSubscribers";
 import LeadsEnquiry from "./LeadsEnquiry";
 import toast from "react-hot-toast";
+import AddClientPayment from "./AddClientPayment";
 
 function ResponsiveDashboard() {
   const router = useRouter();
@@ -103,6 +104,7 @@ function ResponsiveDashboard() {
           {activeContent === "All Subscribers" && <AllSubscribers />}
           {activeContent === "All Contacts" && <AllContacts />}
           {activeContent === "Leads & Enquiry" && <LeadsEnquiry />}
+          {activeContent === "Add Client Payment" && <AddClientPayment />}
         </div>
       </div>
     </div>

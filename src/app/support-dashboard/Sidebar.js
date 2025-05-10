@@ -13,6 +13,7 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
     { icon: "/assets/dashboardicons/Leads & Enquiry.png", label: "Leads & Enquiry" },
     { icon: "/assets/dashboardicons/All Contacts.png", label: "All Contacts" },
     { icon: "/assets/dashboardicons/All Subscribers.png", label: "All Subscribers" },
+    { icon: "/assets/dashboardicons/All Subscribers.png", label: "Add Client Payment" },
   ];
 
   const toggleDropdown = (index) => {
