@@ -17,7 +17,7 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: "Support already exists" }, { status: 400 });
     }
 
-    const support = await Support.create({ email, password });
+    const support = await SupportPerson.create({ email, password });
 
     const token = generateToken(support._id);
     const response = NextResponse.json({ success: true, support }, { status: 201 });
