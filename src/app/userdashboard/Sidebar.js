@@ -21,7 +21,7 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
       subItems: ["Add New Product", "My Product", "My Catalog"],
     },
     {
-      icon: "/assets/dashboardicons/Leads & Enquiry.png",
+      icon: "/assets/dashboardicons/Leads-Enquiry.png",
       label: "Leads & Enquiry",
       subItems: ["Recieved Enquiry", "Buy Leads", "My Business Requirement", "Contact Book", "Call Alerts"],
     },

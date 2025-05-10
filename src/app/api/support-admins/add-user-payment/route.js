@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import connectdb from "@/lib/dbConnect";
 import User from "@/models/User";
 import UserPayment from "@/models/UserPayment";
+import SupportPerson from "@/models/SupportPerson";
 
 export async function POST(req) {
   try {
@@ -42,7 +43,7 @@ export async function POST(req) {
         mobileNumber,
         companyName,
         supportPerson,
-        userPackage: [], // initialize
+        userPackage: [],
         userPackageHistory: [],
       });
     }
@@ -59,6 +60,14 @@ export async function POST(req) {
     user.userPackage.push(newPackage);
     await user.save();
 
+    // 3.b. Add this user to the support person's clients list
+    if (supportPerson) {
+      await SupportPerson.findByIdAndUpdate(
+        supportPerson,
+        { $addToSet: { clients: user._id } } // prevent duplicates
+      );
+    }
+
     // 4. Save payment info in UserPayment collection
     const newPayment = new UserPayment({
       userId: user._id,
@@ -66,7 +75,7 @@ export async function POST(req) {
       transactionId,
       amount: paidAmount,
       paymentMethod,
-      paymentStatus: "Success", // You can make this dynamic if needed
+      paymentStatus: "Success",
       payerEmail,
       payerMobile,
       paymentResponse,
@@ -78,6 +87,21 @@ export async function POST(req) {
 
   } catch (error) {
     console.error("Error in add-user-payment:", error);
+    return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
+  }
+}
+
+
+
+export async function GET() {
+  try {
+    await connectdb();
+
+    const supportPersons = await SupportPerson.find().select("-password"); // exclude passwords
+
+    return NextResponse.json({ success: true, data: supportPersons }, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching support persons:", error);
     return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
   }
 }

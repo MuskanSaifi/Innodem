@@ -10,7 +10,7 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
     { icon: "/assets/dashboardicons/Payments.png", label: "Payments" },
     { icon: "/assets/dashboardicons/All Buyers.png", label: "All Buyers" },
     { icon: "/assets/dashboardicons/All sellers.png", label: "All Seller" },
-    { icon: "/assets/dashboardicons/Leads & Enquiry.png", label: "Leads & Enquiry" },
+    { icon: "/assets/dashboardicons/Leads-Enquiry.png", label: "Leads & Enquiry" },
     { icon: "/assets/dashboardicons/All Contacts.png", label: "All Contacts" },
     { icon: "/assets/dashboardicons/All Subscribers.png", label: "All Subscribers" },
     { icon: "/assets/dashboardicons/Manage Support Members.png", label: "Manage Support Members" },
