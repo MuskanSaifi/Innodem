@@ -1,7 +1,7 @@
 import { generateToken } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import connectdb from "@/lib/dbConnect";
-import Support from "@/models/Support";
+import SupportPerson from "@/models/SupportPerson";
 
 export async function POST(req) {
   try {
@@ -12,7 +12,7 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: "Email and password are required" }, { status: 400 });
     }
 
-    const supportExists = await Support.findOne({ email });
+    const supportExists = await SupportPerson.findOne({ email });
     if (supportExists) {
       return NextResponse.json({ success: false, message: "Support already exists" }, { status: 400 });
     }
