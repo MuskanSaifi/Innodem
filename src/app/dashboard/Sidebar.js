@@ -6,28 +6,30 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
   const [openDropdown, setOpenDropdown] = useState(null);
 
   const sidebarItems = [
-    { icon: "💼", label: "Dashboard" },
-    { icon: "💰", label: "Payments" },
-    { icon: "👤", label: "All Buyers" },
-    { icon: "👤", label: "All Seller" },
-    { icon: "➕", label: "Leads & Enquiry" },
-    { icon: "📞", label: "All Contacts" },
-    { icon: "📩", label: "All Subscribers" },
+    { icon: "/assets/dashboardicons/Dashboard.png", label: "Dashboard" },
+    { icon: "/assets/dashboardicons/Payments.png", label: "Payments" },
+    { icon: "/assets/dashboardicons/All Buyers.png", label: "All Buyers" },
+    { icon: "/assets/dashboardicons/All sellers.png", label: "All Seller" },
+    { icon: "/assets/dashboardicons/Leads & Enquiry.png", label: "Leads & Enquiry" },
+    { icon: "/assets/dashboardicons/All Contacts.png", label: "All Contacts" },
+    { icon: "/assets/dashboardicons/All Subscribers.png", label: "All Subscribers" },
+    { icon: "/assets/dashboardicons/Manage Support Members.png", label: "Manage Support Members" },
     {
-      icon: "📂",
+      icon: "/assets/dashboardicons/manage Category.png",
       label: "Manage Category",
       subItems: ["All Category", "Create Category", "Update Category"],
     },
     {
-      icon: "📂",
+      icon: "/assets/dashboardicons/Manage Sub Category.png",
       label: "Manage Sub Category",
       subItems: ["All Sub Category", "Create Sub Category", "Update Sub Category"],
     },
     {
-      icon: "📝",
+      icon: "/assets/dashboardicons/Manage Blogs.png",
       label: "Manage Blogs",
       subItems: ["All Blogs", "Create Blogs"],
     },
+
   ];
 
   const toggleDropdown = (index) => {
@@ -46,11 +48,12 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
   return (
     <div className="custon-sidebar">
       <div className={`resdes-sidebar ${isSidebarOpen ? "" : "resdes-closed"}`}>
-        <div className="d-flex justify-content-around align-items-center m-2">
-          <Link href="../">
-            <Image src="/assets/logo123.png" alt="Innodem Logo" width={100} height={50} priority />
-          </Link>        </div>
-          <h6 className="text-center mt-2">🧑  Welcome! Admin</h6>
+      <div className="d-flex justify-content-around flex-column align-items-center p-2  sticky top-0 bg-white">
+    <Link href="../">
+      <Image src="/assets/logo123.png" alt="Innodem Logo" width={100} height={50} priority />
+    </Link>
+    <h6 className="text-center mt-2">🧑 Welcome! Admin</h6>
+  </div>
 
 
         <ul>
@@ -60,7 +63,14 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
                 className={`sidebar-item ${openDropdown === index ? "active" : ""}`}
                 onClick={() => handleItemClick(item.label, index, !!item.subItems)}
               >
-                {item.icon && <span className="sidebar-icon">{item.icon}</span>}
+<span className="sidebar-icon">
+  {item.icon.startsWith("/") ? (
+    <Image src={item.icon} alt={item.label} width={40} height={40} />
+  ) : (
+    item.icon
+  )}
+</span>
+
                 {item.label}
                 {item.subItems && <span className="dropdown-arrow">{openDropdown === index ? "▲" : "▼"}</span>}
               </div>

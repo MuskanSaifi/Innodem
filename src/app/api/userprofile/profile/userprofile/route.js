@@ -44,7 +44,7 @@ export async function GET(req) {
     }
 
 // Fetch user details from database (FIX: Use decoded.id instead of decoded.userId)
-    const user = await User.findById(decoded.id, "userProfileSlug fullname email mobileNumber alternateMobileNumber alternateEmail whatsappNumber designation  companyName  userPackage userPackageHistory isVerified");
+    const user = await User.findById(decoded.id, "userProfileSlug fullname email mobileNumber alternateMobileNumber alternateEmail whatsappNumber designation  companyName  userPackage userPackageHistory isVerified supportPerson");
 // Count products created by the user
 const productsLength = await Product.countDocuments({ userId: decoded.id });
     if (!user) {

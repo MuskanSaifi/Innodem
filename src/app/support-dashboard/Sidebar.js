@@ -6,13 +6,13 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
   const [openDropdown, setOpenDropdown] = useState(null);
 
   const sidebarItems = [
-    { icon: "💼", label: "Dashboard" },
-    { icon: "💰", label: "Payments" },
-    { icon: "👤", label: "All Buyers" },
-    { icon: "👤", label: "All Seller" },
-    { icon: "➕", label: "Leads & Enquiry" },
-    { icon: "📞", label: "All Contacts" },
-    { icon: "📩", label: "All Subscribers" }
+    { icon: "/assets/dashboardicons/Dashboard.png", label: "Dashboard" },
+    { icon: "/assets/dashboardicons/Payments.png", label: "Payments" },
+    { icon: "/assets/dashboardicons/All Buyers.png", label: "All Buyers" },
+    { icon: "/assets/dashboardicons/All sellers.png", label: "All Seller" },
+    { icon: "/assets/dashboardicons/Leads & Enquiry.png", label: "Leads & Enquiry" },
+    { icon: "/assets/dashboardicons/All Contacts.png", label: "All Contacts" },
+    { icon: "/assets/dashboardicons/All Subscribers.png", label: "All Subscribers" },
   ];
 
   const toggleDropdown = (index) => {
@@ -43,7 +43,13 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
                 className={`sidebar-item ${openDropdown === index ? "active" : ""}`}
                 onClick={() => handleItemClick(item.label, index, !!item.subItems)}
               >
-                {item.icon && <span className="sidebar-icon">{item.icon}</span>}
+                {item.icon && <span className="sidebar-icon">
+                    {item.icon.startsWith("/") ? (
+                      <Image src={item.icon} alt={item.label} width={40} height={40} />
+                    ) : (
+                      item.icon
+                    )}
+                    </span>}
                 {item.label}
                 {item.subItems && <span className="dropdown-arrow">{openDropdown === index ? "▲" : "▼"}</span>}
               </div>

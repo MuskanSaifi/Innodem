@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 
 const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -7,23 +8,25 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
 
 
   const sidebarItems = [
-    { icon: "💼", label: "Dashboard" },
-    { icon: "💰", label: "Payments" },
+    { icon: "/assets/dashboardicons/Dashboard.png", label: "Dashboard" },
+    { icon: "/assets/dashboardicons/Payments.png", label: "Payments" },
     {
-      icon: "👤",
+      icon: "/assets/dashboardicons/profile1.png",
       label: "Profile",
       subItems: ["User Profile", "Business Profile", "Bank Details", "Manage Users"],
     },
     {
-      icon: "📦",
+      icon: "/assets/dashboardicons/products.png",
       label: "Manage Products",
       subItems: ["Add New Product", "My Product", "My Catalog"],
     },
     {
-      icon: "➕",
+      icon: "/assets/dashboardicons/Leads & Enquiry.png",
       label: "Leads & Enquiry",
       subItems: ["Recieved Enquiry", "Buy Leads", "My Business Requirement", "Contact Book", "Call Alerts"],
     },
+    { icon: "/assets/dashboardicons/support-person.png", label: "Support Person" },
+
   ];
 
   const toggleDropdown = (index) => {
@@ -60,7 +63,13 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
                     }
                   }}
                 >
-                  {item.icon && <span className="sidebar-icon">{item.icon}</span>}
+                  {item.icon && <span className="sidebar-icon">
+                      {item.icon.startsWith("/") ? (
+                        <Image src={item.icon} alt={item.label} width={44} height={44} />
+                      ) : (
+                        item.icon
+                      )}
+                  </span>}
                   {item.label}
                   {item.subItems && <span className="dropdown-arrow">▼</span>}
                 </div>

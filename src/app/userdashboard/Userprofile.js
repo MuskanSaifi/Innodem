@@ -113,7 +113,7 @@ const Userprofile = () => {
               { label: "Office Contact", name: "mobileNumber" },
               { label: "Alternate Mobile No.", name: "alternateMobileNumber" },
               { label: "WhatsApp Number", name: "whatsappNumber" },
-              { label: "Designation / Job Title", name: "designation" },
+              // { label: "Designation / Job Title", name: "designation" },
               { label: "Company Name", name: "companyName" },
             ].map(({ label, name }) => (
               <div key={name}>

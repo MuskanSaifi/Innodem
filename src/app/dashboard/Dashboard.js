@@ -11,19 +11,15 @@ const Dashboard = () => {
   const [greeting, setGreeting] = useState("");
   const [currentTime, setCurrentTime] = useState("");
 
-
   useEffect(() => {
     fetchDashboardData();
     setGreetingMessage();
-
     // ✅ Update time every second
     const interval = setInterval(() => {
       updateCurrentTime();
     }, 1000);
-
     return () => clearInterval(interval); // Cleanup interval on unmount
   }, []);
-
 
   const fetchDashboardData = async () => {
     try {

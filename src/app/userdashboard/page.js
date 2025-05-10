@@ -11,6 +11,7 @@ import AddProducts from "./Addproducts";
 import AllProducts from "./Allproducts";
 import Payments from "./Payments";
 import Enquiry from "./Enquiry";
+import Supportperson from "./Supportperson";
 
 function UserDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -39,6 +40,7 @@ function UserDashboard() {
           {activeContent === "Add New Product" && <AddProducts />}
           {activeContent === "My Product" && <AllProducts />}
           {activeContent === "Recieved Enquiry" && <Enquiry />}
+          {activeContent === "Support Person" && <Supportperson />}
         </div> 
       </div>
     </div>

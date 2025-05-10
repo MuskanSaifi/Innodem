@@ -4,17 +4,12 @@ import User from "@/models/User";
 import Product from "@/models/Product";
 import purchaseRequestSchema from "@/models/purchaseRequestSchema";
 
-export async function GET(request, context) {
+export async function GET(request, { params }) {
   try {
     await connectdb();
 
-    // 1. Await context params
-    const { params } = context;  // Safely access params
+    const { userId } = await params;
 
-    // 2. Get userId from params
-    const userId = params?.userId; // Access userId
-
-    // 3. Check if userId is available
     if (!userId) {
       return Response.json(
         { success: false, message: "User ID is required" },
@@ -22,7 +17,6 @@ export async function GET(request, context) {
       );
     }
 
-    // Fetch purchase requests from the database
     const requests = await purchaseRequestSchema
       .find({ seller: userId })
       .populate("buyer")

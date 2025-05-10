@@ -1,60 +1,76 @@
 "use client";
 import { useState } from "react";
-import axios from "axios";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation"; // Import useRouter
 
-const SupportLoginModal = () => {
-  const [credentials, setCredentials] = useState({ email: "", password: "" });
-  const router = useRouter(); // Router for navigation
+export default function SupportPersonLogin() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
 
-  const handleChange = (e) => {
-    setCredentials({ ...credentials, [e.target.name]: e.target.value });
-  };
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-  const handleLogin = async () => {
+    const loadingToast = toast.loading("Logging in...");
+
     try {
-      const res = await axios.post("/api/support-admins/login", credentials);
-      if (res.data.success) {
-        toast.success("Login Successful!");
-        router.push("/support-dashboard"); // Navigate instead of reloading
+      const res = await fetch("/api/adminprofile/supportmembers/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.dismiss(loadingToast);
+        toast.error(data.error || "Login failed");
+        return;
       }
-    } catch (error) {
-      toast.error(error.response?.data?.error || "Login Failed");
+
+      toast.success("Login successful!");
+      toast.dismiss(loadingToast);
+      setTimeout(() => {
+        router.push("/support-dashboard");
+      }, 1000);
+    } catch (err) {
+      console.error("Login error:", err);
+      toast.dismiss(loadingToast);
+      toast.error("Something went wrong");
     }
   };
 
+  
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100">
-      <div className="card p-4 shadow-lg" style={{ width: "350px" }}>
-        <h3 className="text-center mb-3">Support Login</h3>
-
+    <div className="container mt-5" style={{ maxWidth: "400px" }}>
+      <h2 className="mb-3 text-center">Support Person Login</h2>
+      <form onSubmit={handleLogin}>
         <div className="mb-3">
+          <label>Email:</label>
           <input
             type="email"
-            name="email"
             className="form-control"
-            placeholder="Email"
-            onChange={handleChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
           />
         </div>
 
         <div className="mb-3">
+          <label>Password:</label>
           <input
             type="password"
-            name="password"
             className="form-control"
-            placeholder="Password"
-            onChange={handleChange}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
         </div>
 
-        <button className="btn btn-primary w-100" onClick={handleLogin}>
+        <button type="submit" className="btn btn-primary w-100">
           Login
         </button>
-      </div>
+      </form>
     </div>
   );
-};
-
-export default SupportLoginModal;
+}

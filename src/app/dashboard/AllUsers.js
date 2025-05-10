@@ -202,6 +202,7 @@ const AllUsers = () => {
               <th>Mobile</th>
               <th>Company/ Total Products</th>
               <th>Registered On</th> {/* ✅ Added Date */}
+              {/* <th>Support Person</th> */}
               <th>Action</th>
             </tr>
           </thead>
@@ -216,6 +217,7 @@ const AllUsers = () => {
                     <td>{user.mobileNumber}</td>
                     <td>{user.companyName} / {user.products?.length}</td>
                     <td>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}</td>
+                    {/* <td>{user.supportPerson}</td> */}
                     <td>
                       <Button variant="danger" size="sm" onClick={() => handleDeleteUser(user._id)}>
                         Delete User

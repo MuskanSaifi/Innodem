@@ -8,7 +8,7 @@ import ProductTags from "./components/ProductTags";
 import Image from "next/image";
 
 
-const AllUsers = () => {
+const AllUsers = ({ supportPersonId }) => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // ✅ Search state for name, email, company, mobile
   const [searchDate, setSearchDate] = useState(""); // ✅ Search state for registration date
@@ -16,15 +16,30 @@ const AllUsers = () => {
 
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    if (supportPersonId) {
+      fetchUsers(); // fetch only when supportPersonId exists
+    }
+  }, [supportPersonId]);
+  
 
-
+  useEffect(() => {
+    if (supportPersonId) {
+      console.log("Support Person ID from prop:", supportPersonId);
+      fetchUsers();
+    }
+  }, [supportPersonId]);
+  
+  
+  
   const fetchUsers = async () => {
     try {
+      if (!supportPersonId) return; // Don't fetch if not available
+  
       const response = await axios.get(
-        `/api/adminprofile/users`
+        `/api/adminprofile/support-users?supportPersonId=${supportPersonId}`
       );
+      console.log("API Response:", response.data);
+  
       if (response.data.success) {
         setUsers(response.data.users.reverse());
       }
@@ -35,8 +50,7 @@ const AllUsers = () => {
       setLoading(false);
     }
   };
-
-
+  
 
   // ✅ Handle Delete Function
   const handleDeleteUser = () => {
@@ -225,7 +239,7 @@ const AllUsers = () => {
                                   <div className="row mb-3 mt-3">
                                     <div className="col-md-2">
 
-                                    <Image
+<Image
   src={product?.images[0]?.url || "/default-image.jpg"} // ✅ Fallback image
   alt="Product"
   width={100}
@@ -234,7 +248,6 @@ const AllUsers = () => {
   style={{ objectFit: "cover", borderRadius: "5px" }}
   unoptimized
 />
-
                                     </div>
 
                                     <div className="col-md-2">

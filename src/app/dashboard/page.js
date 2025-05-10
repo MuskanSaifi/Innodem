@@ -21,6 +21,7 @@ import CreateBlog from "./CreateBlog";
 import AllSubscribers from "./AllSubscribers";
 import AllContacts from "./AllContacts";
 import LeadsEnquiry from "./LeadsEnquiry";
+import CreateSupportPerson from "./CreateSupportPerson";
 
 function ResponsiveDashboard() {
   const router = useRouter();
@@ -51,16 +52,41 @@ function ResponsiveDashboard() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+
+  
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("/api/admin/logout", { method: "POST" });
+
+      if (res.ok) {
+        // ✅ Redirect to login page after logout
+        router.push("/admin-login");
+      } else {
+        console.error("Logout failed");
+      }
+    } catch (error) {
+      console.error("Error logging out", error);
+    }
+  };
+
   return (
     <div className="resdes-dashboard">
       <Sidebar isSidebarOpen={isSidebarOpen} setActiveContent={setActiveContent} activeContent={activeContent} />
 
-      <div className={`resdes-content ${isSidebarOpen ? "resdes-shrink" : "resdes-expand"}`}>
-        <div className="resdes-header">
-          <button onClick={toggleSidebar} className="resdes-hamburger" aria-label="Toggle Sidebar">
-            &#9776;
-          </button>
-          <h1>{activeContent}</h1>
+<div className={`resdes-content ${isSidebarOpen ? "resdes-shrink" : "resdes-expand"}`}>
+ <div className="resdes-header">
+
+<button onClick={toggleSidebar} className="resdes-hamburger" aria-label="Toggle Sidebar">&#9776; </button>
+
+<h1>{activeContent}</h1>
+
+<button onClick={handleLogout} className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-full shadow-md transition duration-300 ease-in-out">
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1m0-10V5"/>
+  </svg>  Logout
+</button>
+
+
         </div>
 
         <div className="resdes-dynamic-content">
@@ -80,6 +106,7 @@ function ResponsiveDashboard() {
           {activeContent === "All Subscribers" && <AllSubscribers />}
           {activeContent === "All Contacts" && <AllContacts />}
           {activeContent === "Leads & Enquiry" && <LeadsEnquiry />}
+          {activeContent === "Manage Support Members" && <CreateSupportPerson />}
         </div>
       </div>
     </div>

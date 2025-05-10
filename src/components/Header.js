@@ -429,7 +429,7 @@ export default function Header() {
             <input
               className="product-search form-control"
               type="text"
-              placeholder="📦 Search products..."
+              placeholder="🔍 Search products..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -468,7 +468,14 @@ export default function Header() {
               onClick={toggleDropdown}
               aria-expanded={dropdownOpen}
             >
-              👤 Hi! {user.fullname || "User"}
+<Image 
+  src="/assets/dashboardicons/profile1.png"  // or external URL if allowed
+  alt="Description of image"
+  className="d-inline"
+  width={40}
+  height={40}
+/>
+Hi! {user.fullname || "User"}
             </button>
             {dropdownOpen && (
               <ul className="dropdown-menu show">
