@@ -14,6 +14,7 @@ import Testimonials from "@/components/home/Testimonials";
 import WhatWeOffer from "@/components/home/Whatweoffer";
 import StatsWithImage from "@/components/home/Stats";
 import ContactRating from "@/components/home/ContactRating";
+import CustomChatBot from "../components/home/CustomChatBot";
 
 export default function Home() {
   return (
@@ -92,6 +93,10 @@ export default function Home() {
 
       <ContactRating/>
 
+   {/* Your page content */}
+      <div style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 999 }}>
+        <CustomChatBot />
+      </div>
 
 
     </>
