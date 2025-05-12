@@ -56,6 +56,7 @@ const AddClientPayment = () => {
       setFormData({
         fullname: '',
         email: '',
+          countryCode: '+91', // ← missing in your reset
         mobileNumber: '',
         companyName: '',
         packageName: '',
@@ -135,7 +136,8 @@ const AddClientPayment = () => {
 
       {/* === Package Info Section === */}
       <section className="border border-gray-200 rounded-xl p-6">
-        <h3 className="text-xl font-semibold text-gray-800 mb-4">Package Details</h3>
+        <h3 className="text-xl font-semibold text-gray-800 mb-4">Package Details</h3> 
+         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label htmlFor="packageName" className="block text-gray-700 font-medium mb-1">Package Name *</label>
@@ -166,8 +168,10 @@ const AddClientPayment = () => {
             <label htmlFor="packageExpiryDate" className="block text-gray-700 font-medium mb-1">Expiry Date</label>
             <input type="date" id="packageExpiryDate" name="packageExpiryDate" className="input-style" value={formData.packageExpiryDate} onChange={handleChange} />
           </div>
+
         </div>
       </section>
+
 
       {/* === Payment Info Section === */}
       <section className="border border-gray-200 rounded-xl p-6">

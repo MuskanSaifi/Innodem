@@ -3,6 +3,10 @@ import User from "@/models/User";
 import Product from "@/models/Product";
 import connectdb from "@/lib/dbConnect";
 import { NextResponse } from "next/server";
+import SupportPerson from "@/models/SupportPerson"; // ✅ Make sure this line is present
+import Category from "@/models/Category"; // ✅ REQUIRED for .populate("category") to work
+import SubCategory from "@/models/SubCategory";
+
 
 export async function DELETE(req) {
   try {
@@ -39,22 +43,26 @@ export async function DELETE(req) {
 
 export async function GET() {
   try {
-    await connectdb(); // ✅ Ensure DB connection
-
-    // ✅ Fetch all users with their associated products
+    await connectdb();
     const users = await User.find()
-      .populate({
-        path: "products",
-        populate: [
-          { path: "category", select: "name" },
-          { path: "subCategory", select: "name" }
-        ],
-      })
+      .populate([
+        {
+          path: "products",
+          populate: [
+            { path: "category", select: "name" },
+            { path: "subCategory", select: "name" },
+          ],
+        },
+        {
+          path: "supportPerson", // ✅ This adds support person info
+          select: "name email number", // ✅ Only include needed fields
+        }
+      ])
       .lean();
 
-    // ✅ Fetch additional product details separately
+    // Optional: further enrich product fields
     for (const user of users) {
-      for (const product of user.products) {
+      for (const product of user.products || []) {
         const fullProduct = await Product.findById(product._id)
           .select("name price currency tradeInformation specifications tradeShopping")
           .lean();
@@ -66,17 +74,16 @@ export async function GET() {
       success: true,
       message: "Users retrieved successfully",
       users,
-      totalUsers: users.length, // ✅ Add total users count
+      totalUsers: users.length,
     }, { status: 200 });
-
 
   } catch (error) {
     console.error("❌ Error fetching users:", error);
     return NextResponse.json({
-       success: false, 
-       totalUsers: 0,
-       message: `Internal Server Error: ${error.message}` },
-       { status: 500 });
+      success: false,
+      totalUsers: 0,
+      message: `Internal Server Error: ${error.message}`,
+    }, { status: 500 });
   }
 }
 

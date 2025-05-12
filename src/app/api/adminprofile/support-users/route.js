@@ -19,6 +19,10 @@ export async function GET(req) {
 
     const users = await User.find(query)
       .populate({
+        path: "supportPerson",
+        select: "name email number", // Include only the necessary fields
+      })
+      .populate({
         path: "products",
         populate: [
           { path: "category", select: "name" },

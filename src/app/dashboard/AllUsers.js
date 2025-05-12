@@ -200,9 +200,8 @@ const AllUsers = () => {
               <th>Full Name</th>
               <th>Email</th>
               <th>Mobile</th>
-              <th>Company/ Total Products</th>
+              <th>Company | TP | SP</th>
               <th>Registered On</th> {/* ✅ Added Date */}
-              {/* <th>Support Person</th> */}
               <th>Action</th>
             </tr>
           </thead>
@@ -210,21 +209,18 @@ const AllUsers = () => {
             {filteredUsers.length > 0 ? (
               filteredUsers.map((user, index) => (
                 <React.Fragment key={user._id}>
-                  <tr>
-                    <td>{index + 1}</td>
+                  <tr className="text-sm"><td>{index + 1}</td>
                     <td>{user.fullname}</td>
                     <td>{user.email}</td>
                     <td>{user.mobileNumber}</td>
-                    <td>{user.companyName} / {user.products?.length}</td>
+                    <td>{user.companyName} | {user.products?.length} | {user.supportPerson?.name}</td>
                     <td>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}</td>
-                    {/* <td>{user.supportPerson}</td> */}
                     <td>
                       <Button variant="danger" size="sm" onClick={() => handleDeleteUser(user._id)}>
-                        Delete User
+                        🗑️
                       </Button>
                     </td>
-                  </tr><tr>
-                    <td colSpan="7" className="td-bg">
+                  </tr><tr><td colSpan="7" className="td-bg">
                       {user.products?.length > 0 ? (
                         <Accordion>
                           {user.products.map((product, i) => {
@@ -245,7 +241,7 @@ const AllUsers = () => {
                             return (
                               <Accordion.Item key={product._id} eventKey={i.toString()} className="mb-2">
                                 <Accordion.Header>
-    <strong>{i + 1}. {product.name}</strong>
+    <strong className="text-sm">{i + 1}. {product.name}</strong>
                                   <div className="nnn">
                                     <FaTimesCircle className="text-danger bg-light rounded-3 my-shad" role="button" onClick={() => handleDelete(product._id)} />
                                   </div>

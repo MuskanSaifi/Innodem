@@ -55,14 +55,13 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
     <h6 className="text-center mt-2">🧑 Welcome! Admin</h6>
   </div>
 
-
-        <ul>
-          {sidebarItems.map((item, index) => (
-            <li key={index} className={activeContent === item.label || openDropdown === index ? "active" : ""}>
-              <div
-                className={`sidebar-item ${openDropdown === index ? "active" : ""}`}
-                onClick={() => handleItemClick(item.label, index, !!item.subItems)}
-              >
+<ul>
+{sidebarItems.map((item, index) => (
+<li key={index} className={activeContent === item.label || openDropdown === index ? "active" : ""}>
+<div
+className={`sidebar-item ${openDropdown === index ? "active" : ""}`}
+onClick={() => handleItemClick(item.label, index, !!item.subItems)}
+>
 <span className="sidebar-icon">
   {item.icon.startsWith("/") ? (
     <Image src={item.icon} alt={item.label} width={40} height={40} />

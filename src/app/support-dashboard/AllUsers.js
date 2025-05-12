@@ -166,8 +166,8 @@ const AllUsers = ({ supportPersonId }) => {
               <th>#</th>
               <th>Full Name</th>
               <th>Email</th>
-              <th>Mobile</th>
-              <th>Company/ Total Products</th>
+              <th>Mobile</th>       
+              <th>Company | TP | SP </th>
               <th>Registered On</th> {/* ✅ Added Date */}
               <th>Action</th>
             </tr>
@@ -176,20 +176,19 @@ const AllUsers = ({ supportPersonId }) => {
             {filteredUsers.length > 0 ? (
               filteredUsers.map((user, index) => (
                 <React.Fragment key={user._id}>
-                  <tr>
+                  <tr className="text-sm">
                     <td>{index + 1}</td>
                     <td>{user.fullname}</td>
                     <td>{user.email}</td>
                     <td>{user.mobileNumber}</td>
-                    <td>{user.companyName} / {user.products?.length}</td>
+                 <td>{user.companyName} | {user.products?.length} | {user.supportPerson?.name}</td>
                     <td>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}</td>
                     <td>
                       <Button variant="danger" size="sm" onClick={() => handleDeleteUser()}>
-                        Delete User
-                      </Button>
+                       🗑️
+                      </Button> 
                     </td>
-                  </tr><tr>
-                    <td colSpan="7" className="td-bg">
+                  </tr><tr><td colSpan="7" className="td-bg">
                       {user.products?.length > 0 ? (
                         <Accordion>
                           {user.products.map((product, i) => {

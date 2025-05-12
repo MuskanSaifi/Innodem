@@ -62,10 +62,10 @@ export async function POST(req) {
 
     // 3.b. Add this user to the support person's clients list
     if (supportPerson) {
-      await SupportPerson.findByIdAndUpdate(
-        supportPerson,
-        { $addToSet: { clients: user._id } } // prevent duplicates
-      );
+     await SupportPerson.findByIdAndUpdate(
+  supportPerson,
+  { $addToSet: { clients: user._id } }
+);
     }
 
     // 4. Save payment info in UserPayment collection

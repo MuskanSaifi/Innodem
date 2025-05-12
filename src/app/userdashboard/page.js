@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./dashboard.css";
+import { useRouter } from 'next/navigation'; // ✅ Next.js 13+ ke liye
 import Sidebar from "./Sidebar";
 import Dashboard from "./Dashboard";
 import Userprofile from "./Userprofile";
@@ -12,14 +13,29 @@ import AllProducts from "./Allproducts";
 import Payments from "./Payments";
 import Enquiry from "./Enquiry";
 import Supportperson from "./Supportperson";
+import { useSelector } from 'react-redux';
+
 
 function UserDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeContent, setActiveContent] = useState("Dashboard");
 
+ const router = useRouter();
+  const { user, token } = useSelector((state) => state.user || {}); // ✅ Use 'user' not 'auth'
+
+
+  useEffect(() => {
+    if (!token || !user) {
+      router.push('/user/login'); // 🔐 redirect if not logged in
+    }
+  }, [token, user, router]);
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+
+
 
   return (
     <div className="resdes-dashboard">

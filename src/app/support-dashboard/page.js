@@ -10,7 +10,6 @@ import AllUsers from "./AllUsers";
 import AllProducts from "./AllProducts";
 import Buyers from "./Buyers";
 import Payments from "./Payments";
-
 import AllContacts from "./AllContacts";
 import AllSubscribers from "./AllSubscribers";
 import LeadsEnquiry from "./LeadsEnquiry";
@@ -24,8 +23,6 @@ function ResponsiveDashboard() {
   const [loading, setLoading] = useState(true);
 
   const [supportPersonId, setSupportPersonId] = useState(null);
-
-
 
   useEffect(() => {
     const checkAdminAuth = async () => {
@@ -42,7 +39,6 @@ function ResponsiveDashboard() {
       }
     };
 
-
     checkAdminAuth();
   }, [router]);
 
@@ -51,7 +47,6 @@ function ResponsiveDashboard() {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-
 
   const handleLogout = async () => {
     const toastId = toast.loading("Logging out...");
@@ -77,7 +72,6 @@ function ResponsiveDashboard() {
       toast.error("Something went wrong");
     }
   };
-
 
   return (
     <div className="resdes-dashboard">

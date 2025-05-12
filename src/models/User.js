@@ -2,8 +2,13 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
     userProfileSlug: String,
-    supportPerson: String,
-    fullname: String,
+
+    supportPerson: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "SupportPerson",
+  },
+  
+      fullname: String,
     email: { type: String, unique: true },
     mobileNumber: { type: String, unique: true }, 
     alternateMobileNumber: String, 
@@ -17,7 +22,7 @@ const userSchema = new mongoose.Schema({
     isVerified: { type: Boolean, default: false },
 
     // ✅ Add this line to reference products
-     products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+    products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
 
     // 👇 User package info added here
     userPackage: [
