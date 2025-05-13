@@ -19,5 +19,5 @@ const BuyerSchema = new mongoose.Schema({
 );
 
 const Buyer = mongoose.models.Buyer || mongoose.model("Buyer", BuyerSchema);
-
+  
 export default Buyer;

@@ -1,13 +1,12 @@
 import connectdb from "@/lib/dbConnect";
 import Blog from "@/models/Blogs";
 
-export async function GET(request, contextPromise) {
-  const context = await contextPromise; // ✅ await the second param
-
+// DO NOT AWAIT the second argument. Destructure directly.
+export async function GET(req, { params }) {
   try {
     await connectdb();
 
-    const slug = context.params.slug; // now safely accessible
+    const slug = params.slug;
 
     if (!slug) {
       return new Response(JSON.stringify({ message: "Slug is required" }), {
@@ -28,7 +27,7 @@ export async function GET(request, contextPromise) {
     });
   } catch (error) {
     return new Response(
-      JSON.stringify({ message: "Failed to fetch blog", error: error.message }),
+      JSON.stringify({ message: "Internal server error", error: error.message }),
       { status: 500 }
     );
   }

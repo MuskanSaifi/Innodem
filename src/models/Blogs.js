@@ -7,6 +7,7 @@ const blogSchema = new mongoose.Schema({
   content: String,
   metaTitle: String,
   metaDescription: String,
+  metaKeywords: String,
   image: String,
   imagePublicId: String, // Store Cloudinary public_id
 }, { timestamps: true });

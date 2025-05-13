@@ -28,6 +28,7 @@ const initialState = {
   content: "",
   metaTitle: "",
   metaDescription: "",
+  metaKeywords: "",
 };
 
 const CreateBlog = () => {
@@ -117,6 +118,7 @@ const CreateBlog = () => {
       formDataObj.append("content", formData.content);
       formDataObj.append("metaTitle", formData.metaTitle);
       formDataObj.append("metaDescription", formData.metaDescription);
+      formDataObj.append("metaKeywords", formData.metaKeywords);
       
       if (file) {
         formDataObj.append("image", file);
@@ -176,6 +178,15 @@ const CreateBlog = () => {
             className="form-control mb-2"
           />
 
+        <input
+            type="text"
+            name="metaKeywords"
+            value={formData.metaKeywords}
+            onChange={handleChange}
+            placeholder="Meta Keywords"
+            className="form-control mb-2"
+          />
+          
           <input
             type="text"
             name="title"

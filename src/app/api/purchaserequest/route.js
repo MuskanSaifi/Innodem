@@ -1,51 +1,77 @@
-import { NextResponse } from "next/server";
-import connectdb from "@/lib/dbConnect";
-import Buyer from "@/models/Buyer";
-import purchaseRequestSchema from "@/models/purchaseRequestSchema";
+import Buyer from '@/models/Buyer';
+import connectdb from '@/lib/dbConnect';
+import User from '@/models/User';
+import purchaseRequestSchema from '@/models/purchaseRequestSchema';
 
-export async function POST(request) {
+export async function POST(req) {
   await connectdb();
 
   try {
-    const body = await request.json();
-
     const {
       productname,
       quantity,
       unit,
       orderValue,
       currency,
-      buyer: buyerMobileNumber,
+      buyer, // now this is ObjectId
       requirementFrequency,
       sellerId,
-      productId,
-    } = body;
+      productId
+    } = await req.json(); // Use .json() to parse the request body
 
-    // 1. Find the buyer using mobile number
-    const buyer = await Buyer.findOne({ mobileNumber: buyerMobileNumber });
+// Validate if required fields are present individually
+if (!buyer) {
+  return new Response(
+    JSON.stringify({ error: 'Buyer is required' }),
+    { status: 400 }
+  );
+}
 
-    if (!buyer) {
-      return NextResponse.json({ error: "Buyer not found" }, { status: 404 });
-    }
+if (!sellerId) {
+  return new Response(
+    JSON.stringify({ error: 'Seller ID is required' }),
+    { status: 400 }
+  );
+}
 
-    // 2. Create PurchaseRequest
-    const purchaseRequest = await purchaseRequestSchema.create({
-      buyer: buyer._id,
+if (!productId) {
+  return new Response(
+    JSON.stringify({ error: 'Product ID is required' }),
+    { status: 400 }
+  );
+}
+
+
+    const newRequest = new purchaseRequestSchema({
+      buyer, 
       seller: sellerId,
       product: productId,
       quantity,
       unit,
       approxOrderValue: {
         amount: orderValue,
-        currency,
+        currency: currency || 'INR',
       },
-      requirementFrequency,
+      requirementFrequency: requirementFrequency.toLowerCase(),
     });
 
-    return NextResponse.json({ success: true, purchaseRequest }, { status: 200 });
-
+    await newRequest.save();
+    return new Response(
+      JSON.stringify({ message: 'Purchase request submitted successfully' }),
+      { status: 201 }
+    );
   } catch (error) {
-    console.error("Error creating purchase request:", error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    console.error('Error creating purchase request:', error);
+    return new Response(
+      JSON.stringify({ error: 'Something went wrong while submitting purchase request' }),
+      { status: 500 }
+    );
   }
+}
+
+export async function GET(req) {
+  return new Response(
+    JSON.stringify({ error: 'Method Not Allowed' }),
+    { status: 405 }
+  );
 }

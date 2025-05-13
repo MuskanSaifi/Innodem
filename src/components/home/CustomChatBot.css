@@ -66,15 +66,29 @@
 }
 
 .support-btn {
-  padding: 12px 16px;
-  border-radius: 30px;
-  background-color: #0f62fe;
+  position: fixed;
+  bottom: 20px;
+  right: 90px;
+  z-index: 1001;
+  padding: 12px 20px;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #007BFF, #0056b3);
   color: white;
   border: none;
   cursor: pointer;
-  font-weight: bold;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  font-size: 14px;
+  font-weight: 600;
+  font-size: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.support-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #0056b3, #003f7f); /* Darker on hover */
 }
 
 .close-btn {

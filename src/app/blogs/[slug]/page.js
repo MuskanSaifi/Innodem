@@ -1,61 +1,44 @@
-"use client";
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { Container, Spinner } from "react-bootstrap";
-import Image from "next/image"; // Import Next.js Image
+import { notFound } from "next/navigation";
+import BlogDetail from "./BlogDetail";
+import connectdb from "@/lib/dbConnect";
+import Blog from "@/models/Blogs";
 
-const BlogDetail = () => {
-  const params = useParams();
-  const slug = params?.slug; // Ensure slug is properly extracted
+export async function generateMetadata({ params }) {
+  await connectdb();
+  const blog = await Blog.findOne({ slug: params.slug }).lean();
 
-  const [blog, setBlog] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchBlog = async () => {
-      try {
-        const response = await fetch(`/api/blogs/${slug}`);
-        if (!response.ok) throw new Error("Blog not found");
-        const data = await response.json();
-        setBlog(data);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
+  if (!blog) {
+    return {
+      title: "Blog Not Found",
+      description: "The requested blog was not found.",
     };
+  }
 
-    if (slug) fetchBlog(); // Fetch only if slug exists
-  }, [slug]);
 
-  if (loading) return <Spinner animation="border" className="d-block mx-auto mt-5" />;
-  if (error) return <p className="text-center text-danger">{error}</p>;
+  return {
+    title: `${blog.metaTitle || "Blog Title"}`,
+    description: blog.metaDescription || "Blog Description",
+    keywords: `${blog.metaKeywords || "Blog Keywords"}`,
+    openGraph: {
+      title: blog.metaTitle || blog.title,
+      description: blog.metaDescription || "Default blog description",
+      keywords: blog.metaKeywords || "Default blog Keywords",
+      images: blog.image ? [`https://yourdomain.com${blog.image}`] : [],
+    },
+  };
+}
 
-  return (
- <>
-    <Container className="mt-5 mb-5">
-      {/* <h1 className="text-center fw-bold">{blog?.title}</h1> */}
-   <div>
-   {blog?.image && (
-     <Image
-     src={blog.image || "/placeholder.png"}
-     alt={blog.title}
-     width={840} // Base width (ignored in responsive mode)
-     height={420} // Aspect ratio is maintained
-     priority
-     className="m-auto"
-   />
-      )}
-   </div>
+export default async function BlogDetailPage({ params }) {
+  await connectdb();
+const blog = await Blog.findOne({ slug: params.slug }).lean();
+if (!blog) return notFound();
 
-      <p className="text-muted text-center mt-3">
-        Published on {new Date(blog.createdAt).toLocaleDateString()}
-      </p>
-      <div dangerouslySetInnerHTML={{ __html: blog.content }} />
-    </Container>
-    </>
-  );
-};
+// Convert to plain object
+const blogData = JSON.parse(JSON.stringify(blog));
 
-export default BlogDetail;
+// Add a formatted date string (ISO-safe)
+blogData.formattedDate = new Date(blog.createdAt).toISOString().split("T")[0]; // e.g., "2025-04-30"
+
+return <BlogDetail blog={blogData} />;
+
+}

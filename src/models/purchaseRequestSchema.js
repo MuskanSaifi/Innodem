@@ -21,16 +21,14 @@ const purchaseRequestSchema = new mongoose.Schema({
   },
   unit: {
     type: String,
-    required: true,
   },
   approxOrderValue: {
-    amount: { type: Number, required: true },
+    amount: { type: Number },
     currency: { type: String, enum: ['INR', 'USD', 'AED'], default: 'INR' },
   },
   requirementFrequency: {
     type: String,
     enum: ['one-time', 'recurring'],
-    required: true,
   },
   status: {
     type: String,

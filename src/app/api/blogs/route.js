@@ -41,8 +41,9 @@ export async function POST(req) {
     const content = formData.get("content")?.trim();
     const metaTitle = formData.get("metaTitle")?.trim();
     const metaDescription = formData.get("metaDescription")?.trim();
+    const metaKeywords = formData.get("metaKeywords")?.trim();
 
-    if (!title || !slug || !author || !content) {
+    if (!title || !metaKeywords || !slug || !author || !content) {
       console.log("❌ Missing required fields!");
       return NextResponse.json({ error: "Required fields missing!" }, { status: 400 });
     }
@@ -72,6 +73,7 @@ export async function POST(req) {
       content,
       metaTitle,
       metaDescription,
+      metaKeywords,
       image: imageUrl,  
     });
 
@@ -82,6 +84,7 @@ export async function POST(req) {
       content,
       metaTitle,
       metaDescription,
+      metaKeywords,
       image: imageUrl,
       imagePublicId: imagePublicId,
     });
