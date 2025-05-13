@@ -1,6 +1,8 @@
+"use client";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Image from "next/image";
+import Link from "next/link";
 
 const AllBlogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -9,7 +11,10 @@ const AllBlogs = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchDate, setSearchDate] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [selectedBlog, setSelectedBlog] = useState(null);
 
+  // Fetch blogs
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
@@ -27,6 +32,7 @@ const AllBlogs = () => {
     fetchBlogs();
   }, []);
 
+  // Filter function
   const filterBlogs = (term, date) => {
     let filtered = blogs;
     if (term) {
@@ -42,6 +48,7 @@ const AllBlogs = () => {
     setFilteredBlogs(filtered);
   };
 
+  // Handlers
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
     filterBlogs(e.target.value, searchDate);
@@ -50,6 +57,12 @@ const AllBlogs = () => {
   const handleDateFilter = (e) => {
     setSearchDate(e.target.value);
     filterBlogs(searchTerm, e.target.value);
+  };
+
+  const resetFilters = () => {
+    setSearchTerm("");
+    setSearchDate("");
+    setFilteredBlogs(blogs);
   };
 
   const deleteBlog = async (id) => {
@@ -71,8 +84,9 @@ const AllBlogs = () => {
             const errorData = await response.json();
             setError(errorData.error);
           } else {
-            setBlogs(blogs.filter((blog) => blog._id !== id));
-            setFilteredBlogs(filteredBlogs.filter((blog) => blog._id !== id));
+            const updated = blogs.filter((blog) => blog._id !== id);
+            setBlogs(updated);
+            setFilteredBlogs(updated);
             Swal.fire("Deleted!", "Your blog has been deleted.", "success");
           }
         } catch (error) {
@@ -83,36 +97,81 @@ const AllBlogs = () => {
     });
   };
 
+  const editBlog = (id) => {
+    const blogToEdit = blogs.find((blog) => blog._id === id);
+    setSelectedBlog(blogToEdit);
+    setShowModal(true);
+  };
+
+const handleSave = async () => {
+  try {
+    const formData = new FormData();
+    formData.append("id", selectedBlog._id);
+    formData.append("title", selectedBlog.title);
+    formData.append("author", selectedBlog.author);
+    formData.append("content", selectedBlog.content);
+    formData.append("metaTitle", selectedBlog.metaTitle || "");
+    formData.append("metaDescription", selectedBlog.metaDescription || "");
+    formData.append("metaKeywords", selectedBlog.metaKeywords || "");
+    
+    // image file (only if user selected new one)
+    if (selectedBlog.newImage) {
+      formData.append("image", selectedBlog.newImage);
+    }
+
+    const res = await fetch("/api/blogs", {
+      method: "PATCH",
+      body: formData,
+    });
+
+    if (!res.ok) throw new Error("Failed to update blog");
+
+    const updated = await res.json();
+
+    const updatedBlogs = blogs.map((b) =>
+      b._id === selectedBlog._id ? updated.blog : b
+    );
+
+    setBlogs(updatedBlogs);
+    setFilteredBlogs(updatedBlogs);
+    setShowModal(false);
+
+    Swal.fire("✅ Updated!", "Blog updated successfully", "success");
+  } catch (error) {
+    console.error("Update Error:", error);
+    Swal.fire("❌ Error", "Could not update the blog", "error");
+  }
+};
+
+
   return (
     <div className="container mt-4">
       <div className="card shadow p-4">
         <h1 className="fs-2">📝 All Blogs</h1>
 
-        <div className="mb-3 d-flex gap-3 mt-4">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search by title or author"
-            value={searchTerm}
-            onChange={handleSearch}
-          />
-          <input
-            type="date"
-            className="form-control"
-            value={searchDate}
-            onChange={handleDateFilter}
-          />
-          <button
-            className="btn btn-secondary"
-            onClick={() => {
-              setSearchTerm("");
-              setSearchDate("");
-              setFilteredBlogs(blogs);
-            }}
-          >
-            Reset
-          </button>
-        </div>
+<div className="mb-3 mt-4">
+  <div className="d-flex flex-wrap gap-3">
+    <input
+      type="text"
+      className="form-control"
+      placeholder="Search by title or author"
+      value={searchTerm}
+      onChange={handleSearch}
+      style={{ maxWidth: "250px" }}
+    />
+    <input
+      type="date"
+      className="form-control"
+      value={searchDate}
+      onChange={handleDateFilter}
+      style={{ maxWidth: "200px" }}
+    />
+    <button className="btn btn-secondary">
+      Reset
+    </button>
+  </div>
+</div>
+
 
         {loading && <p>Loading blogs...</p>}
         {error && <p className="text-danger">Error: {error}</p>}
@@ -121,12 +180,11 @@ const AllBlogs = () => {
         {!loading && filteredBlogs.length > 0 && (
           <table className="table table-bordered table-hover mt-2">
             <thead className="table-dark">
-              <tr className="bg-dark text-light">
+              <tr>
                 <th>#</th>
                 <th>Image</th>
                 <th>Title</th>
                 <th>Author</th>
-                <th>Category</th>
                 <th>Created At</th>
                 <th>Action</th>
               </tr>
@@ -143,22 +201,114 @@ const AllBlogs = () => {
                       height={80}
                       className="rounded img-fluid"
                       style={{ objectFit: "cover" }}
-                      priority={false}
                     />
                   </td>
-                  <td>{blog.title}</td>
+<td>
+<Link href={`/blogs/${blog.slug}`} target="_blank">
+  {blog.title}
+</Link>
+</td>
                   <td>{blog.author}</td>
-                  <td>{blog.category}</td>
                   <td>{new Date(blog.createdAt).toLocaleDateString()}</td>
-                  <td>
-                    <button onClick={() => deleteBlog(blog._id)} className="btn btn-danger">
+                  <td className="d-flex gap-2">
+                    <button onClick={() => deleteBlog(blog._id)} className="btn btn-danger btn-sm">
                       🗑️ Delete
+                    </button>
+                    <button onClick={() => editBlog(blog._id)} className="btn btn-success btn-sm">
+                      ✏️ Edit
                     </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        )}
+
+        {/* Edit Modal */}
+        {showModal && selectedBlog && (
+          <div className="modal fade show d-block" tabIndex="-1" role="dialog" style={{ background: "rgba(0,0,0,0.5)" }}>
+            <div className="modal-dialog modal-lg" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">✏️ Edit Blog</h5>
+                  <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+                </div>
+   <div className="modal-body">
+  <div className="mb-3">
+    <label className="form-label">Title</label>
+    <input
+      type="text"
+      className="form-control"
+      value={selectedBlog.title}
+      onChange={(e) => setSelectedBlog({ ...selectedBlog, title: e.target.value })}
+    />
+  </div>
+  <div className="mb-3">
+    <label className="form-label">Author</label>
+    <input
+      type="text"
+      className="form-control"
+      value={selectedBlog.author}
+      onChange={(e) => setSelectedBlog({ ...selectedBlog, author: e.target.value })}
+    />
+  </div>
+  <div className="mb-3">
+    <label className="form-label">Content</label>
+    <textarea
+      rows="5"
+      className="form-control"
+      value={selectedBlog.content}
+      onChange={(e) => setSelectedBlog({ ...selectedBlog, content: e.target.value })}
+    ></textarea>
+  </div>
+  <div className="mb-3">
+    <label className="form-label">Meta Title</label>
+    <input
+      type="text"
+      className="form-control"
+      value={selectedBlog.metaTitle || ""}
+      onChange={(e) => setSelectedBlog({ ...selectedBlog, metaTitle: e.target.value })}
+    />
+  </div>
+  <div className="mb-3">
+    <label className="form-label">Meta Description</label>
+    <textarea
+      className="form-control"
+      rows="3"
+      value={selectedBlog.metaDescription || ""}
+      onChange={(e) => setSelectedBlog({ ...selectedBlog, metaDescription: e.target.value })}
+    ></textarea>
+  </div>
+  <div className="mb-3">
+    <label className="form-label">Meta Keywords</label>
+    <input
+      type="text"
+      className="form-control"
+      value={selectedBlog.metaKeywords || ""}
+      onChange={(e) => setSelectedBlog({ ...selectedBlog, metaKeywords: e.target.value })}
+    />
+  </div>
+  <div className="mb-3">
+    <label className="form-label">Image</label>
+    <input
+      type="file"
+      className="form-control"
+      onChange={(e) => setSelectedBlog({ ...selectedBlog, newImage: e.target.files[0] })}
+    />
+  </div>
+</div>
+
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
+                    Close
+                  </button>
+                  <button type="button" className="btn btn-primary" onClick={handleSave}>
+                    Save changes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>

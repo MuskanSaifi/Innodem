@@ -14,7 +14,6 @@ export async function generateMetadata({ params }) {
     };
   }
 
-
   return {
     title: `${blog.metaTitle || "Blog Title"}`,
     description: blog.metaDescription || "Blog Description",

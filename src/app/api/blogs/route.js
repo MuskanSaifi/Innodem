@@ -98,6 +98,65 @@ export async function POST(req) {
   }
 }
 
+export async function PATCH(req) {
+  try {
+    await connectdb();
+    const formData = await req.formData();
+    const blogId = formData.get("id");
+
+    if (!blogId) {
+      return NextResponse.json({ error: "Blog ID is required for update" }, { status: 400 });
+    }
+
+    const blog = await Blog.findById(blogId);
+    if (!blog) {
+      return NextResponse.json({ error: "Blog not found" }, { status: 404 });
+    }
+
+    const title = formData.get("title")?.trim();
+    const slug = formData.get("slug")?.trim();
+    const author = formData.get("author")?.trim();
+    const content = formData.get("content")?.trim();
+    const metaTitle = formData.get("metaTitle")?.trim();
+    const metaDescription = formData.get("metaDescription")?.trim();
+    const metaKeywords = formData.get("metaKeywords")?.trim();
+    const image = formData.get("image");
+
+    blog.title = title || blog.title;
+    blog.slug = slug || blog.slug;
+    blog.author = author || blog.author;
+    blog.content = content || blog.content;
+    blog.metaTitle = metaTitle || blog.metaTitle;
+    blog.metaDescription = metaDescription || blog.metaDescription;
+    blog.metaKeywords = metaKeywords || blog.metaKeywords;
+
+    if (image && image.size > 0) {
+      // 🗑️ Delete old image from Cloudinary
+      if (blog.imagePublicId) {
+        try {
+          await cloudinary.uploader.destroy(blog.imagePublicId);
+          console.log("✅ Old image deleted");
+        } catch (err) {
+          console.error("❌ Error deleting old image from Cloudinary:", err);
+        }
+      }
+
+      // 📤 Upload new image
+      const uploadResult = await uploadToCloudinary(image);
+      blog.image = uploadResult.imageUrl;
+      blog.imagePublicId = uploadResult.imagePublicId;
+    }
+
+    await blog.save();
+
+    return NextResponse.json({ success: true, message: "Blog updated successfully", blog }, { status: 200 });
+  } catch (error) {
+    console.error("❌ Server Error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+
 // ✅ Get all blogs
 export async function GET() {
   try {
