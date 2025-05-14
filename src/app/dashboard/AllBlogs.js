@@ -238,8 +238,15 @@ const handleSave = async () => {
       zIndex: 1050
     }}
   >
-    <div className="modal-dialog w-100" role="document">
-      <div className="modal-content p-3" style={{ maxWidth: "100%", borderRadius: "12px", boxShadow: "0 0 20px rgba(0,0,0,0.2)" }}>
+<div className="modal-dialog m-5" role="document" style={{ maxWidth: "100%" }}>
+  <div
+    className="modal-content p-3"
+    style={{
+      width: "100%",
+      borderRadius: "12px",
+      boxShadow: "0 0 20px rgba(0,0,0,0.2)",
+    }}
+  >
         <div className="modal-header border-bottom-0">
           <h5 className="modal-title">✏️ Edit Blog</h5>
           <button
