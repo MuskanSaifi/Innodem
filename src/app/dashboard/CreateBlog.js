@@ -43,7 +43,7 @@ const CreateBlog = () => {
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Heading.configure({ levels: [1, 2, 3] }),
+Heading.configure({ levels: [1, 2, 3, 4, 5] }),
       Bold,
       Italic,
       Underline,
@@ -216,25 +216,29 @@ const CreateBlog = () => {
 
           {/* ✅ TipTap Toolbar */}
           {editor && (
-            <div className="toolbar">
-        <button type="button" onClick={() => editor.chain().focus().toggleBold().run()}>Bold</button>
-<button type="button" onClick={() => editor.chain().focus().toggleItalic().run()}>Italic</button>
-<button type="button" onClick={() => editor.chain().focus().toggleUnderline().run()}>Underline</button>
-<button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>H1</button>
-<button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>H2</button>
-<button type="button" onClick={() => editor.chain().focus().toggleBulletList().run()}>Bullet List</button>
-<button type="button" onClick={() => editor.chain().focus().toggleOrderedList().run()}>Ordered List</button>
-<button type="button" onClick={() => editor.chain().focus().toggleBlockquote().run()}>Blockquote</button>
-<button type="button" onClick={() => editor.chain().focus().toggleCodeBlock().run()}>Code</button>
-<button type="button" onClick={() => editor.chain().focus().setLink({ href: prompt("Enter link URL") }).run()}>
-  Link
-</button>
+        <div className="toolbar mb-2">
+  <button type="button" onClick={() => editor.chain().focus().toggleBold().run()}>Bold</button>
+  <button type="button" onClick={() => editor.chain().focus().toggleItalic().run()}>Italic</button>
+  <button type="button" onClick={() => editor.chain().focus().toggleUnderline().run()}>Underline</button>
+  <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>H1</button>
+  <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>H2</button>
+  <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}>H3</button>
+  <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}>H4</button>
+  <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}>H5</button>
+  <button type="button" onClick={() => editor.chain().focus().toggleBulletList().run()}>Bullet List</button>
+  <button type="button" onClick={() => editor.chain().focus().toggleOrderedList().run()}>Ordered List</button>
+  <button type="button" onClick={() => editor.chain().focus().toggleBlockquote().run()}>Blockquote</button>
+  <button type="button" onClick={() => editor.chain().focus().toggleCodeBlock().run()}>Code</button>
+  <button type="button" onClick={() => {
+    const url = prompt("Enter link URL");
+    if (url) editor.chain().focus().setLink({ href: url }).run();
+  }}>Link</button>
+</div>
 
-            </div>
           )}
 
           {/* ✅ TipTap Editor */}
-          <div className="border p-1 mb-2 rounded bg-white">
+          <div className=" editor-wrapper border p-1 mb-2 rounded bg-white">
             {editor ? <EditorContent editor={editor} /> : <p>Loading Editor...</p>}
           </div>
 

@@ -14,15 +14,21 @@ export async function generateMetadata({ params }) {
     };
   }
 
+    const canonicalUrl = `https://dialexportmart.com/blogs/${params.slug}`;
+
+
   return {
     title: `${blog.metaTitle || "Blog Title"}`,
     description: blog.metaDescription || "Blog Description",
     keywords: `${blog.metaKeywords || "Blog Keywords"}`,
+     alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title: blog.metaTitle || blog.title,
       description: blog.metaDescription || "Default blog description",
       keywords: blog.metaKeywords || "Default blog Keywords",
-      images: blog.image ? [`https://yourdomain.com${blog.image}`] : [],
+      images: blog.image ? [`https://dialexportmart.com/${blog.image}`] : [],
     },
   };
 }

@@ -257,3 +257,9 @@ h1{
 .toolbar button:hover {
   background: #0056b3;
 }
+
+
+.editor-wrapper .ProseMirror {
+  padding: 1rem;
+  min-height: 200px;
+}

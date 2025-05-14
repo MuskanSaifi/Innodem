@@ -224,92 +224,125 @@ const handleSave = async () => {
           </table>
         )}
 
-        {/* Edit Modal */}
-        {showModal && selectedBlog && (
-          <div className="modal fade show d-block" tabIndex="-1" role="dialog" style={{ background: "rgba(0,0,0,0.5)" }}>
-            <div className="modal-dialog modal-lg" role="document">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">✏️ Edit Blog</h5>
-                  <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
-                </div>
-   <div className="modal-body">
-  <div className="mb-3">
-    <label className="form-label">Title</label>
-    <input
-      type="text"
-      className="form-control"
-      value={selectedBlog.title}
-      onChange={(e) => setSelectedBlog({ ...selectedBlog, title: e.target.value })}
-    />
-  </div>
-  <div className="mb-3">
-    <label className="form-label">Author</label>
-    <input
-      type="text"
-      className="form-control"
-      value={selectedBlog.author}
-      onChange={(e) => setSelectedBlog({ ...selectedBlog, author: e.target.value })}
-    />
-  </div>
-  <div className="mb-3">
-    <label className="form-label">Content</label>
-    <textarea
-      rows="5"
-      className="form-control"
-      value={selectedBlog.content}
-      onChange={(e) => setSelectedBlog({ ...selectedBlog, content: e.target.value })}
-    ></textarea>
-  </div>
-  <div className="mb-3">
-    <label className="form-label">Meta Title</label>
-    <input
-      type="text"
-      className="form-control"
-      value={selectedBlog.metaTitle || ""}
-      onChange={(e) => setSelectedBlog({ ...selectedBlog, metaTitle: e.target.value })}
-    />
-  </div>
-  <div className="mb-3">
-    <label className="form-label">Meta Description</label>
-    <textarea
-      className="form-control"
-      rows="3"
-      value={selectedBlog.metaDescription || ""}
-      onChange={(e) => setSelectedBlog({ ...selectedBlog, metaDescription: e.target.value })}
-    ></textarea>
-  </div>
-  <div className="mb-3">
-    <label className="form-label">Meta Keywords</label>
-    <input
-      type="text"
-      className="form-control"
-      value={selectedBlog.metaKeywords || ""}
-      onChange={(e) => setSelectedBlog({ ...selectedBlog, metaKeywords: e.target.value })}
-    />
-  </div>
-  <div className="mb-3">
-    <label className="form-label">Image</label>
-    <input
-      type="file"
-      className="form-control"
-      onChange={(e) => setSelectedBlog({ ...selectedBlog, newImage: e.target.files[0] })}
-    />
-  </div>
-</div>
-
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
-                    Close
-                  </button>
-                  <button type="button" className="btn btn-primary" onClick={handleSave}>
-                    Save changes
-                  </button>
-                </div>
-              </div>
-            </div>
+{/* Edit Modal */}
+{showModal && selectedBlog && (
+  <div
+    className="modal fade show d-block"
+    tabIndex="-1"
+    role="dialog"
+    style={{
+      background: "rgba(0,0,0,0.5)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 1050
+    }}
+  >
+    <div className="modal-dialog w-100" role="document">
+      <div className="modal-content p-3" style={{ maxWidth: "100%", borderRadius: "12px", boxShadow: "0 0 20px rgba(0,0,0,0.2)" }}>
+        <div className="modal-header border-bottom-0">
+          <h5 className="modal-title">✏️ Edit Blog</h5>
+          <button
+            type="button"
+            className="btn-close"
+            onClick={() => setShowModal(false)}
+          ></button>
+        </div>
+        <div className="modal-body">
+          <div className="mb-3">
+            <label className="form-label">Title</label>
+            <input
+              type="text"
+              className="form-control"
+              value={selectedBlog.title}
+              onChange={(e) =>
+                setSelectedBlog({ ...selectedBlog, title: e.target.value })
+              }
+            />
           </div>
-        )}
+          <div className="mb-3">
+            <label className="form-label">Author</label>
+            <input
+              type="text"
+              className="form-control"
+              value={selectedBlog.author}
+              onChange={(e) =>
+                setSelectedBlog({ ...selectedBlog, author: e.target.value })
+              }
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Content</label>
+            <textarea
+              rows="5"
+              className="form-control"
+              value={selectedBlog.content}
+              onChange={(e) =>
+                setSelectedBlog({ ...selectedBlog, content: e.target.value })
+              }
+            ></textarea>
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Meta Title</label>
+            <input
+              type="text"
+              className="form-control"
+              value={selectedBlog.metaTitle || ""}
+              onChange={(e) =>
+                setSelectedBlog({ ...selectedBlog, metaTitle: e.target.value })
+              }
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Meta Description</label>
+            <textarea
+              className="form-control"
+              rows="3"
+              value={selectedBlog.metaDescription || ""}
+              onChange={(e) =>
+                setSelectedBlog({ ...selectedBlog, metaDescription: e.target.value })
+              }
+            ></textarea>
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Meta Keywords</label>
+            <input
+              type="text"
+              className="form-control"
+              value={selectedBlog.metaKeywords || ""}
+              onChange={(e) =>
+                setSelectedBlog({ ...selectedBlog, metaKeywords: e.target.value })
+              }
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Image</label>
+            <input
+              type="file"
+              className="form-control"
+              onChange={(e) =>
+                setSelectedBlog({ ...selectedBlog, newImage: e.target.files[0] })
+              }
+            />
+          </div>
+        </div>
+        <div className="modal-footer border-top-0">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => setShowModal(false)}
+          >
+            Close
+          </button>
+          <button type="button" className="btn btn-primary" onClick={handleSave}>
+            Save changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
       </div>
     </div>
   );
