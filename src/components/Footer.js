@@ -251,16 +251,17 @@ const Footer = () => {
 
 {/* Google Play Logo */}
 <Link href="/coming-soon" className="w-[70%] md:w-auto">
-  <div className="w-full md:w-[128px]">
+  <div className="relative w-full md:w-[128px] h-[40px]"> {/* Set height manually */}
     <Image
       src="/assets/play.png"
       alt="Google Play"
-      layout="responsive"
-      width={128}
-      height={40}
+      fill
+      className="object-contain"
+      sizes="(max-width: 768px) 100vw, 128px"
     />
   </div>
 </Link>
+
 
 {/* App Store Logo */}
 <Link href="/coming-soon" className="w-[70%] md:w-auto">

@@ -4,8 +4,18 @@ import connectdb from "@/lib/dbConnect";
 import Blog from "@/models/Blogs";
 
 export async function generateMetadata({ params }) {
+  // Ensure params is fully resolved first
+  const { slug } = await params;  // Await params to access slug
+
+  if (!slug) {
+    return {
+      title: "Blog Not Found",
+      description: "The requested blog was not found.",
+    };
+  }
+
   await connectdb();
-  const blog = await Blog.findOne({ slug: params.slug }).lean();
+  const blog = await Blog.findOne({ slug }).lean();
 
   if (!blog) {
     return {
@@ -14,36 +24,73 @@ export async function generateMetadata({ params }) {
     };
   }
 
-    const canonicalUrl = `https://dialexportmart.com/blogs/${params.slug}`;
-
+  const canonicalUrl = `https://dialexportmart.com/blogs/${slug}`;
+  const imageUrl = blog.image ? `https://dialexportmart.com/${blog.image}` : null;
 
   return {
-    title: `${blog.metaTitle || "Blog Title"}`,
-    description: blog.metaDescription || "Blog Description",
-    keywords: `${blog.metaKeywords || "Blog Keywords"}`,
-     alternates: {
+    title: blog.metaTitle || blog.title,
+    description: blog.metaDescription || "Read detailed blog article on Dial Export Mart.",
+    keywords: blog.metaKeywords?.split(',') || ["export", "business", "blog"],
+
+    alternates: {
       canonical: canonicalUrl,
     },
+
     openGraph: {
       title: blog.metaTitle || blog.title,
-      description: blog.metaDescription || "Default blog description",
-      keywords: blog.metaKeywords || "Default blog Keywords",
-      images: blog.image ? [`https://dialexportmart.com/${blog.image}`] : [],
+      description: blog.metaDescription || "Read detailed blog article on Dial Export Mart.",
+      url: canonicalUrl,
+      siteName: "Dial Export Mart",
+      type: "article",
+      locale: "en_US",
+      images: imageUrl
+        ? [
+            {
+              url: imageUrl,
+              width: 1200,
+              height: 630,
+              alt: blog.title,
+            },
+          ]
+        : [],
     },
+
+    robots: {
+      index: true,
+      follow: true,
+    },
+
+    authors: [
+      {
+        name: "Dial Export Mart",
+        url: "https://dialexportmart.com",
+      },
+    ],
+
+    publisher: "Dial Export Mart",
+
+    metadataBase: new URL("https://dialexportmart.com"),
   };
 }
 
 export default async function BlogDetailPage({ params }) {
+  // Ensure params is fully resolved first
+  const { slug } = await params;  // Await params to access slug
+
+  if (!slug) {
+    return notFound(); // Return a 404 if slug is missing
+  }
+
   await connectdb();
-const blog = await Blog.findOne({ slug: params.slug }).lean();
-if (!blog) return notFound();
+  const blog = await Blog.findOne({ slug }).lean();
 
-// Convert to plain object
-const blogData = JSON.parse(JSON.stringify(blog));
+  if (!blog) return notFound();
 
-// Add a formatted date string (ISO-safe)
-blogData.formattedDate = new Date(blog.createdAt).toISOString().split("T")[0]; // e.g., "2025-04-30"
+  // Convert to plain object
+  const blogData = JSON.parse(JSON.stringify(blog));
 
-return <BlogDetail blog={blogData} />;
+  // Add a formatted date string (ISO-safe)
+  blogData.formattedDate = new Date(blog.createdAt).toISOString().split("T")[0]; // e.g., "2025-04-30"
 
+  return <BlogDetail blog={blogData} />;
 }

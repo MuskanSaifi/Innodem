@@ -1,5 +1,53 @@
-import React from 'react'
-import Image from "next/image";
+import React from 'react';
+import Image from 'next/image';
+
+export const metadata = {
+  title: "Refund Policy | Dial Export Mart",
+  description:
+    "Read Dial Export Mart's refund policy regarding payments, cancellations, memberships, and service liabilities. Know your rights and responsibilities before purchasing.",
+  keywords: [
+    "Refund Policy",
+    "Dial Export Mart",
+    "Membership Cancellation",
+    "Service Liability",
+    "No Refund Terms",
+    "Payment Terms"
+  ],
+  openGraph: {
+    title: "Refund Policy | Dial Export Mart",
+    description:
+      "Understand our refund and cancellation policy for memberships and services. Read before making payments.",
+    url: "https://dialexportmart.com/refund-policy", // ✅ Replace `yourdomain.com`
+    type: "website",
+    siteName: "Dial Export Mart",
+    images: [
+      {
+        url: "/assets/pagesbanner/refund-policy.png", // ✅ Avoid space in filename
+        width: 1200,
+        height: 630,
+        alt: "Refund Policy Banner"
+      }
+    ]
+  },
+  alternates: {
+    canonical: "https://dialexportmart.com/refund-policy", // ✅ Replace `yourdomain.com`
+  },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+  },
+  authors: [ // ✅ You had this outside metadata (move it inside)
+    {
+      name: 'Dial Export Mart',
+      url: 'https://dialexportmart.com',
+    },
+  ],
+  publisher: 'Dial Export Mart',
+  metadataBase: new URL('https://dialexportmart.com'),
+};
+
+
 
 const page = () => {
   return (

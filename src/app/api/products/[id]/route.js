@@ -3,12 +3,16 @@
 import { NextResponse } from "next/server";
 import Product from "@/models/Product";
 import connectdb from "@/lib/dbConnect";
+import Category from "@/models/Category";
+import SubCategory from "@/models/SubCategory";
+import User from "@/models/User";
 
-export async function GET(req, context) {
+
+export async function GET(req, { params }) {
   try {
     await connectdb();
 
-    const { id } = context.params; // ✅ This is the correct and safe way
+const { id } = await params;
 
     if (!id) {
       return NextResponse.json({ error: "Product ID is required" }, { status: 400 });

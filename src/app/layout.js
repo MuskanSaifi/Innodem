@@ -18,7 +18,20 @@ export const metadata = {
     keywords:"B2B Marketplace in India,B2B Portal in India,B2B Platform in India,Best B2B Platform in India, Best B2B Platform in India, Export Import Marketplace in India, Online B2B Platform in India, Global Trade Portal in India, Wholesale, Buy & Sell Online, Indian B2B Platform, International B2B Marketplace, Buy & Sell Online in India, Best B2B Website in India, B2B website for small businesses, Top Export-Import Marketplace",
   alternates: {
     canonical: "https://dialexportmart.com/",
-  }
+  },
+    robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+  },
+  authors: [
+    {
+      name: "Dial Export Mart",
+      url: "https://dialexportmart.com",
+    },
+  ],
+  publisher: "Dial Export Mart",
+  metadataBase: new URL("https://dialexportmart.com"),
 };
 
 

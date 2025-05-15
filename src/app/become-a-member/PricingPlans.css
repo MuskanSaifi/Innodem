@@ -12,14 +12,14 @@
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 30px;
+    gap: 10px;
   }
   
  
   .card {
     background: #fff;
     border-radius: 20px;
-    width: 290px;
+    width: 300px;
     padding: 25px 20px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     position: relative;

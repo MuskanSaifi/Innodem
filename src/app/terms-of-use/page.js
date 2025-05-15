@@ -1,5 +1,51 @@
-import React from 'react'
-import Image from "next/image";
+import React from 'react';
+import Image from 'next/image';
+
+export const metadata = {
+  title: 'Terms of Use | Dial Export Mart',
+  description:
+    'Read the terms and conditions for using Dial Export Mart services, including payment, refund, and deal policies.',
+  keywords: [
+    'Terms of Use',
+    'Dial Export Mart',
+    'Refund Policy',
+    'Deals',
+    'Export Services',
+  ],
+  openGraph: {
+    title: 'Terms of Use | Dial Export Mart',
+    description: 'Detailed Terms of Use policy for clients of Dial Export Mart.',
+    url: 'https://dialexportmart.com/terms-of-use',
+    siteName: 'Dial Export Mart',
+    images: [
+      {
+        url: 'https://dialexportmart.com/assets/pagesbanner/tou.png',
+        width: 1000,
+        height: 450,
+        alt: 'Terms of Use Banner',
+      },
+    ],
+    type: 'website',
+    locale: 'en_US',
+  },
+  alternates: {
+    canonical: 'https://dialexportmart.com/terms-of-use',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+  },
+  authors: [
+    {
+      name: 'Dial Export Mart',
+      url: 'https://dialexportmart.com',
+    },
+  ],
+  publisher: 'Dial Export Mart',
+  metadataBase: new URL('https://dialexportmart.com'),
+};
+
 
 const page = () => {
   return (

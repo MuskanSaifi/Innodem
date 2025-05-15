@@ -8,6 +8,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { useParams } from "next/navigation";
 import BuySellForm from "./BuySellform";
 import Buyfrom from "./Buyfrom";
+import BuySell from "@/components/BuySell";
 
 const ProductDetailClient = ({ productslug: propProductSlug }) => {
   const params = useParams();
@@ -111,6 +112,7 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
             </ul>
           )}
         </div>
+
       </div>
 
       <div className="row">
@@ -203,7 +205,10 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
             ) : (
               <p className="text-muted">No related products available.</p>
             )}
+{product && <BuySell initialProductName={product.name} />}
           </div>
+
+
         </aside>
       </div>
     </div>

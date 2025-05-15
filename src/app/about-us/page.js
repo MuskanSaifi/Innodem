@@ -1,6 +1,55 @@
 import React from "react";
 import Image from "next/image";
 
+export const metadata = {
+  title: "About Us - Dial Export Mart",
+  description:
+    "Learn about Dial Export Mart, a global platform connecting small and medium businesses with buyers worldwide. Discover our mission, values, and dedicated team.",
+  keywords: [
+    "about Dial Export Mart",
+    "export platform",
+    "global trade",
+    "business networking",
+    "SME support",
+    "export services",
+  ],
+  openGraph: {
+    title: "About Us - Dial Export Mart",
+    description:
+      "Learn about Dial Export Mart, a global platform connecting small and medium businesses with buyers worldwide. Discover our mission, values, and dedicated team.",
+    url: "https://dialexportmart.com/about-us",
+    siteName: "Dial Export Mart",
+    images: [
+      {
+        url: "https://dialexportmart.com/assets/pagesbanner/About-Us.png",
+        width: 1200,
+        height: 630,
+        alt: "About Us Banner",
+      },
+    ],
+    type: "website",
+    locale: "en_US",
+  },
+  alternates: {
+    canonical: "https://dialexportmart.com/about-us",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+  },
+  authors: [
+    {
+      name: "Dial Export Mart",
+      url: "https://dialexportmart.com",
+    },
+  ],
+  publisher: "Dial Export Mart",
+  metadataBase: new URL("https://dialexportmart.com"),
+};
+
+
+
 const Page = () => {
   return (
     <>

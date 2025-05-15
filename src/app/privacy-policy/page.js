@@ -1,6 +1,54 @@
 import React from 'react';
 import Image from 'next/image';
 
+export const metadata = {
+  title: "Privacy Policy - Dial Export Mart",
+  description:
+    "Read the privacy policy of Dial Export Mart to understand how we collect, use, and protect your personal information in compliance with data regulations.",
+  keywords: [
+    "privacy policy",
+    "Dial Export Mart privacy",
+    "data protection",
+    "personal information",
+    "user data",
+    "business data security"
+  ],
+  openGraph: {
+    title: "Privacy Policy - Dial Export Mart",
+    description:
+      "Read the privacy policy of Dial Export Mart to understand how we collect, use, and protect your personal information in compliance with data regulations.",
+    url: "https://dialexportmart.com/privacy-policy",
+    siteName: "Dial Export Mart",
+    images: [
+      {
+        url: "https://dialexportmart.com/assets/pagesbanner/Privacy%20Policy.png",
+        width: 1200,
+        height: 630,
+        alt: "Privacy Policy Banner",
+      },
+    ],
+    type: "website",
+    locale: "en_US",
+  },
+  alternates: {
+    canonical: "https://dialexportmart.com/privacy-policy",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+  },
+  authors: [
+    {
+      name: 'Dial Export Mart',
+      url: 'https://dialexportmart.com',
+    },
+  ],
+  publisher: 'Dial Export Mart',
+  metadataBase: new URL('https://dialexportmart.com'),
+};
+
+
 const page = () => {
   return (
     <>

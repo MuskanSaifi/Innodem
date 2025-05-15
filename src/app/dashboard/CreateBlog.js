@@ -18,8 +18,6 @@ import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";  // ✅ Import SweetAlert2
 import Image from "next/image";
 
-
-
 // ✅ Initial State for Form Data
 const initialState = {
   title: "",
@@ -254,8 +252,6 @@ Heading.configure({ levels: [1, 2, 3, 4, 5] }),
     loader={() => preview} // Important for local object URLs
   />
 )}
-
-     
           <button type="submit" className="btn btn-primary w-100" disabled={loading}>
             {loading ? "Submitting..." : "Submit"}
           </button>
