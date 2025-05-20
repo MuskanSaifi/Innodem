@@ -55,3 +55,25 @@ export async function OPTIONS() {
     headers: corsHeaders,
   });
 }
+
+
+
+
+// ✅ GET method to fetch all data
+export async function GET() {
+  try {
+    
+    await connectdb();
+    const data = await ClientWebsiteData.find(); // Fetch all data
+    return NextResponse.json(data, {
+      status: 200,
+      headers: corsHeaders,
+    });
+  } catch (error) {
+    console.error("Error fetching client data:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch data" },
+      { status: 500, headers: corsHeaders }
+    );
+  }
+}
