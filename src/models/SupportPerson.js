@@ -9,7 +9,9 @@ const supportPersonSchema = new mongoose.Schema({
 recordingurl: [
   {
     url: { type: String, unique: true },
-    uploadTime: { type: Date, default: Date.now }
+    uploadTime: { type: Date, default: Date.now },
+    tag: { type: String, enum: ['genuine', 'fake', 'other'], default: 'other' } ,
+    message:{type: String}
   }
 ],
     password: String,

@@ -15,6 +15,7 @@ export async function POST(req) {
   const formData = await req.formData();
   const file = formData.get('audio');
   const supportPersonId = formData.get('supportPersonId');
+  const message = formData.get('message'); // <-- ✅ get message
 
   if (!file || !supportPersonId) {
     return NextResponse.json({ message: 'Missing fields' }, { status: 400 });
@@ -45,6 +46,7 @@ export async function POST(req) {
     person.recordingurl.push({
       url,
       uploadTime: new Date(),
+      message: message || '', // <-- ✅ store message
     });
     await person.save();
   }

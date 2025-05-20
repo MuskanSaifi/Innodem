@@ -27,7 +27,7 @@ const [availableCities, setAvailableCities] = useState([]);
     // category
     const [selectedCategory, setSelectedCategory] = useState([]);
 
-    //   Products
+    // Products
         const [product, setProduct] = useState({
             name: "",
             productslug: "",
@@ -124,22 +124,22 @@ const [availableCities, setAvailableCities] = useState([]);
         },
         });
 
-  // Handle country change
-  const handleCountryChange = (e) => {
-    const countryCode = e.target.value;
-    setSelectedCountry(countryCode);
-  
-    setProduct((prev) => ({
-      ...prev,
-      country: countryCode, // ✅ This is perfect
-      state: "",
-      city: "",
-    }));
-  
-    const states = State.getStatesOfCountry(countryCode);
-    setAvailableStates(states);
-    setAvailableCities([]);
-  };
+   // Handle country change
+        const handleCountryChange = (e) => {
+          const countryCode = e.target.value;
+          setSelectedCountry(countryCode);
+        
+          setProduct((prev) => ({
+            ...prev,
+            country: countryCode, // ✅ This is perfect
+            state: "",
+            city: "",
+          }));
+        
+          const states = State.getStatesOfCountry(countryCode);
+          setAvailableStates(states);
+          setAvailableCities([]);
+        };
   
           
   // Handle state change
@@ -1225,6 +1225,9 @@ const handleSubmit = async (e) => {
             </button>
         </div>
     );
+
+
 };
+
 
 export default AddProduct;
