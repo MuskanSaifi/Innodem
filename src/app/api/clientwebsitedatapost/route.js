@@ -4,10 +4,11 @@ import connectdb from "@/lib/dbConnect";
 
 // CORS headers
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "https://msvijaysingh.com", // ✅ Allow only this domain
+  "Access-Control-Allow-Origin": "*", // ✅ Allow requests from any domain
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
+
 
 // POST request
 export async function POST(request) {
