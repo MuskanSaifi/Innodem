@@ -270,7 +270,7 @@ export default function Header() {
   <div className="container-fluid p-2 text-center top-bar text-dark">
   <marquee behavior="scroll" direction="left" scrollamount="6">
   <p className="mb-0 text-light text-sm">
-    .We connect you with verified export buyers within 24 hours, guaranteed genuine and confirmed conversations with buyers.
+    We connect you with verified export buyers within 24 hours, guaranteed genuine and confirmed conversations with buyers.
   </p>
 </marquee>
   </div>
