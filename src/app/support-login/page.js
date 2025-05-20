@@ -28,6 +28,14 @@ export default function SupportPersonLogin() {
         return;
       }
 
+const supportPerson = {
+  name: data.supportPerson.name,
+  email: data.supportPerson.email,
+};
+
+localStorage.setItem("support_person", JSON.stringify(supportPerson));
+
+
       toast.success("Login successful!");
       toast.dismiss(loadingToast);
       setTimeout(() => {

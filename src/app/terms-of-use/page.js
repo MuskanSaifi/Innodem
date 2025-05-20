@@ -4,7 +4,7 @@ import Image from 'next/image';
 export const metadata = {
   title: 'Terms of Use | Dial Export Mart',
   description:
-    'Read the terms and conditions for using Dial Export Mart services, including payment, refund, and deal policies.',
+    'Read Dial Export Mart Terms of Use to understand your rights and responsibilities while using our platform. We ensure transparent and trustworthy guidelines for a safe online experience.',
   keywords: [
     'Terms of Use',
     'Dial Export Mart',

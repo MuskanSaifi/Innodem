@@ -6,7 +6,13 @@ const supportPersonSchema = new mongoose.Schema({
   name: String,
   number: String,
   email: { type: String, unique: true },
-  password: String,
+recordingurl: [
+  {
+    url: { type: String, unique: true },
+    uploadTime: { type: Date, default: Date.now }
+  }
+],
+    password: String,
 }, {
   timestamps: true,
 });

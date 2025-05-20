@@ -15,6 +15,7 @@ import AllSubscribers from "./AllSubscribers";
 import LeadsEnquiry from "./LeadsEnquiry";
 import toast from "react-hot-toast";
 import AddClientPayment from "./AddClientPayment";
+import AddRecording from "./AddRecording";
 
 function ResponsiveDashboard() {
   const router = useRouter();
@@ -60,6 +61,7 @@ function ResponsiveDashboard() {
       toast.dismiss(toastId);
 
       if (data.success) {
+              localStorage.removeItem('support_person');
         toast.success("Logout successful");
         setTimeout(() => {
           router.push("/support-login");
@@ -99,6 +101,7 @@ function ResponsiveDashboard() {
           {activeContent === "All Contacts" && <AllContacts />}
           {activeContent === "Leads & Enquiry" && <LeadsEnquiry />}
           {activeContent === "Add Client Payment" && <AddClientPayment />}
+          {activeContent === "Add Recordings" && <AddRecording  supportPersonId={supportPersonId}/>}
         </div>
       </div>
     </div>

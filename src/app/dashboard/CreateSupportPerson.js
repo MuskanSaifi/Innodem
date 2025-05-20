@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useState } from "react";
 import toast from 'react-hot-toast';
 import Select from 'react-select';
+import Swal from 'sweetalert2';
 
 
 const CreateSupportPerson = () => {
@@ -101,72 +102,82 @@ const CreateSupportPerson = () => {
       }));
     };
     
-  const handleClientUpdate = async (memberId) => {
-      const selected = selectedClients[memberId] || []; 
-      try {
-        const res = await fetch(`/api/adminprofile/supportmembers`, {
-          method: 'PATCH', // or PATCH
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            supportPersonId: memberId,
-            clientIds: selected.map(opt => opt.value),
-          }),
-          
-        });
-    
-        const data = await res.json();
-        if (data.success) {
-          toast.success("Clients assigned successfully");
-          setStateupdate(prev => !prev); // re-fetch data
-        } else {
-          toast.error(data.message || "Failed to assign clients");
-        }
-      } catch (error) {
-        console.error("Update error:", error);
-        toast.error("Internal server error");
+const handleClientUpdate = async (memberId) => {
+  const result = await Swal.fire({
+    title: 'Save changes?',
+    text: "Do you want to assign the selected clients?",
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#aaa',
+    confirmButtonText: 'Yes, save it!',
+  });
+
+  if (result.isConfirmed) {
+    const selected = selectedClients[memberId] || [];
+    try {
+      const res = await fetch(`/api/adminprofile/supportmembers`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          supportPersonId: memberId,
+          clientIds: selected.map(opt => opt.value),
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        toast.success('Clients assigned successfully');
+        setStateupdate(prev => !prev);
+      } else {
+        toast.error(data.message || 'Failed to assign clients');
       }
-    };
+    } catch (error) {
+      console.error('Update error:', error);
+      toast.error('Internal server error');
+    }
+  }
+};
+
     
   
 const handleDelete = async (id) => {
-      try {
-        const res = await fetch('/api/adminprofile/supportmembers', {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ id }), // send ID in body
-        });
-    
-        const data = await res.json();
-    
-        if (data.success) {
-          setStateupdate(prev => !prev); // toggles value on each change
-          toast.success(`Successfully Deleted`)
-        } else {
-          toast.error('Delete failed:', data.message || 'Unknown error');
-        }
-      } catch (error) {
-        console.log('Error deleting:', error);
+  const result = await Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!',
+  });
+
+  if (result.isConfirmed) {
+    try {
+      const res = await fetch('/api/adminprofile/supportmembers', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setStateupdate(prev => !prev);
+        toast.success('Successfully Deleted');
+      } else {
+        toast.error('Delete failed: ' + (data.message || 'Unknown error'));
       }
-    };
+    } catch (error) {
+      console.error('Error deleting:', error);
+      toast.error('Internal server error');
+    }
+  }
+};
+
   
-
-    // const formatDateTime = (isoString) => {
-    //   const date = new Date(isoString);
-    
-    //   const day = date.getDate().toString().padStart(2, "0");
-    //   const month = date.toLocaleString("default", { month: "short" }); // e.g., "May"
-    //   const year = date.getFullYear();
-    
-    //   let hours = date.getHours();
-    //   const minutes = date.getMinutes().toString().padStart(2, "0");
-    //   const ampm = hours >= 12 ? "PM" : "AM";
-    //   hours = hours % 12 || 12;
-    
-    //   return `${day}/${month}/${year} ${hours}:${minutes} ${ampm}`;
-    // };
-
     
 return (
 <>
@@ -240,7 +251,7 @@ return (
 
   {/* Right: Table */}
   <div className="w-full lg:w-2/3">
-    <h2 className="text-2xl font-bold mb-4 text-blue-700">📋 All Support Members</h2>
+    <h2 className="text-2xl font-bold mb-4 text-blue-700">📋 Assign Clients To Support Members</h2>
 
     {loading ? (
       <p className="text-gray-500">Loading...</p>

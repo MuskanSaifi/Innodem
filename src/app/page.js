@@ -15,6 +15,7 @@ import WhatWeOffer from "@/components/home/Whatweoffer";
 import StatsWithImage from "@/components/home/Stats";
 import ContactRating from "@/components/home/ContactRating";
 import CustomChatBot from "../components/home/CustomChatBot";
+import Faq from "@/components/home/Faq";
 
 export default function Home() {
   return (
@@ -90,6 +91,8 @@ export default function Home() {
       <WhatWeOffer/>
 
       <Testimonials/>
+
+      <Faq/>
 
       <ContactRating/>
 

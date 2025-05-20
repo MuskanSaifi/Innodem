@@ -12,10 +12,8 @@ export async function GET(req) {
     const url = new URL(req.url);
     const supportPersonId = url.searchParams.get("supportPersonId");
 
-    console.log("👉 supportPersonId:", supportPersonId);
 
     const query = supportPersonId ? { supportPerson: supportPersonId } : {};
-    console.log("👉 MongoDB Query:", query);
 
     const users = await User.find(query)
       .populate({

@@ -22,6 +22,7 @@ import AllSubscribers from "./AllSubscribers";
 import AllContacts from "./AllContacts";
 import LeadsEnquiry from "./LeadsEnquiry";
 import CreateSupportPerson from "./CreateSupportPerson";
+import AllRecordings from "./AllRecordings";
 
 function ResponsiveDashboard() {
   const router = useRouter();
@@ -107,6 +108,7 @@ function ResponsiveDashboard() {
           {activeContent === "All Contacts" && <AllContacts />}
           {activeContent === "Leads & Enquiry" && <LeadsEnquiry />}
           {activeContent === "Manage Support Members" && <CreateSupportPerson />}
+          {activeContent === "All Recordings" && <AllRecordings />}
         </div>
       </div>
     </div>

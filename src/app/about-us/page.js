@@ -2,9 +2,9 @@ import React from "react";
 import Image from "next/image";
 
 export const metadata = {
-  title: "About Us - Dial Export Mart",
+  title: "About Dial Export Mart | Trusted Global Export Solutions Provider",
   description:
-    "Learn about Dial Export Mart, a global platform connecting small and medium businesses with buyers worldwide. Discover our mission, values, and dedicated team.",
+    "Dial Export Mart is a trusted platform that connects verified Indian manufacturers and exporters with buyers worldwide using smart AI technology.",
   keywords: [
     "about Dial Export Mart",
     "export platform",
@@ -14,9 +14,9 @@ export const metadata = {
     "export services",
   ],
   openGraph: {
-    title: "About Us - Dial Export Mart",
+    title: "About Dial Export Mart | Trusted Global Export Solutions Provider",
     description:
-      "Learn about Dial Export Mart, a global platform connecting small and medium businesses with buyers worldwide. Discover our mission, values, and dedicated team.",
+      "Dial Export Mart is a trusted platform that connects verified Indian manufacturers and exporters with buyers worldwide using smart AI technology.",
     url: "https://dialexportmart.com/about-us",
     siteName: "Dial Export Mart",
     images: [

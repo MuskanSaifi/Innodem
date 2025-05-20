@@ -4,7 +4,7 @@ import Image from 'next/image';
 export const metadata = {
   title: "Refund Policy | Dial Export Mart",
   description:
-    "Read Dial Export Mart's refund policy regarding payments, cancellations, memberships, and service liabilities. Know your rights and responsibilities before purchasing.",
+    "Learn about Dial Export Mart refund and return policy that puts your convenience and satisfaction first.",
   keywords: [
     "Refund Policy",
     "Dial Export Mart",
