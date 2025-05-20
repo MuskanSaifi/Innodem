@@ -1,14 +1,14 @@
-import mongoose from 'mongoose';
+  import mongoose from 'mongoose';
 
-const clientWebsiteDataSchema = new mongoose.Schema({
-  websitename: { type: String },
-  name: { type: String },
-  number: { type: String },
-  companyName: { type: String },
-  email: { type: String },
-  address: { type: String },
-  requirement: { type: String }
-});
+  const clientWebsiteDataSchema = new mongoose.Schema({
+    websitename: { type: String },
+    name: { type: String },
+    number: { type: String },
+    companyName: { type: String },
+    email: { type: String },
+    address: { type: String },
+    requirement: { type: String }
+  });
 
 
 // ✅ Ensure model is not re-registered

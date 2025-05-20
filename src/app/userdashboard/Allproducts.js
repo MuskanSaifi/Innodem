@@ -46,7 +46,7 @@ const AllProducts = () => {
         });
 
         if (res.data.success && Array.isArray(res.data.products)) {
-          setProducts(res.data.products);
+          setProducts(res.data.products.reverse());
         } else {
           toast.error(res.data.message || "No products found.");
         }
