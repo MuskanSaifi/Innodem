@@ -25,7 +25,7 @@ const countryCodes = [
 
 const JoinUs = () => {
   const [productname, setProductname] = useState("");
-  const [buySell, setBuySell] = useState("buy");
+  const [buySell, setBuySell] = useState("sell");
   const [fullname, setFullname] = useState("");
   const [countryCode, setCountryCode] = useState(countryCodes[0]);
   const [mobileNumber, setMobileNumber] = useState("");
@@ -84,7 +84,7 @@ const JoinUs = () => {
         const data = await res.json();
         if (res.ok) {
           toast.success(data.message || "Registration successful!");
-          router.push("/");
+          router.push("/thankyou");
         } else {
           setError(data.error || "Unexpected error occurred.");
         }
@@ -114,7 +114,7 @@ const JoinUs = () => {
       if (res.ok) {
         setMessage("OTP verified successfully!");
         dispatch(setUser({ user: data.user, token: data.token }));
-        router.push("/userdashboard");
+        router.push("/thankyou");
       } else {
         setError(data.error || "Invalid OTP. Please try again.");
       }
@@ -201,7 +201,7 @@ const JoinUs = () => {
                   <Select styles={customStyles} options={countryCodes} value={countryCode} onChange={setCountryCode} />
                 </div>
                 <input
-                  type="text"
+                  type="number"
                   value={mobileNumber}
                   onChange={(e) => setMobileNumber(e.target.value)}
                   required
