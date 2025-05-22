@@ -49,10 +49,8 @@ export async function DELETE(req) {
   person.recordingurl.splice(recordingIndex, 1);
   await person.save();
 
-  return NextResponse.json({ message: 'Recording deleted successfully' }, { status: 200 });
+return NextResponse.json({ success: true, message: 'Recording deleted successfully' }, { status: 200 });
 }
-
-
 
 export async function GET(req) {
   await connectdb();
@@ -72,3 +70,42 @@ export async function GET(req) {
 
   return NextResponse.json({ files: person.recordingurl });
 }
+
+export async function PATCH(req) {
+  await connectdb();
+
+  try {
+    const body = await req.json();
+    const { supportPersonId, recordingUrl, text } = body;
+
+    if (!supportPersonId || !recordingUrl || !text) {
+      return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 });
+    }
+
+    // Update the message array using MongoDB's positional operator
+    const updated = await SupportPerson.findOneAndUpdate(
+      {
+        _id: supportPersonId,
+        'recordingurl.url': recordingUrl,
+      },
+      {
+        $push: {
+          'recordingurl.$.messages': { text, sentAt: new Date() },
+        },
+      },
+      { new: true }
+    );
+
+    if (!updated) {
+      return NextResponse.json({ error: 'Support person or recording not found.' }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: 'Message added successfully', data: updated }, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+  }
+}
+
+
+

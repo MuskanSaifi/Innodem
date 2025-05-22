@@ -50,35 +50,38 @@ localStorage.setItem("support_person", JSON.stringify(supportPerson));
 
   
   return (
-    <div className="container mt-5" style={{ maxWidth: "400px" }}>
-      <h2 className="mb-3 text-center">Support Person Login</h2>
-      <form onSubmit={handleLogin}>
-        <div className="mb-3">
-          <label>Email:</label>
-          <input
-            type="email"
-            className="form-control"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
+  <div className="container d-flex justify-content-center align-items-center mt-5 mb-5" style={{ minHeight: "500px" }}>
+  <div className="card shadow p-4" style={{ width: "100%", maxWidth: "400px", borderRadius: "12px" }}>
+    <h3 className="text-center mb-4">Support Person Login</h3>
+    <form onSubmit={handleLogin}>
+      <div className="mb-3">
+        <label className="form-label">Email address</label>
+        <input
+          type="email"
+          className="form-control"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          placeholder="Enter your email"
+        />
+      </div>
+      <div className="mb-3">
+        <label className="form-label">Password</label>
+        <input
+          type="password"
+          className="form-control"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          placeholder="Enter your password"
+        />
+      </div>
+      <button type="submit" className="btn btn-primary w-100">
+        Login
+      </button>
+    </form>
+  </div>
+</div>
 
-        <div className="mb-3">
-          <label>Password:</label>
-          <input
-            type="password"
-            className="form-control"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-
-        <button type="submit" className="btn btn-primary w-100">
-          Login
-        </button>
-      </form>
-    </div>
   );
 }

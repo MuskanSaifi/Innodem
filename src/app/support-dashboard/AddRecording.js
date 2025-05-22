@@ -68,44 +68,77 @@ const AddRecording = ({ supportPersonId }) => {
     }
   };
 
-  const handleDelete = async (recordingId) => {
-    const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: 'This recording will be permanently deleted.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!',
+  // const handleDelete = async (recordingId) => {
+  //   const result = await Swal.fire({
+  //     title: 'Are you sure?',
+  //     text: 'This recording will be permanently deleted.',
+  //     icon: 'warning',
+  //     showCancelButton: true,
+  //     confirmButtonColor: '#d33',
+  //     cancelButtonColor: '#3085d6',
+  //     confirmButtonText: 'Yes, delete it!',
+  //   });
+
+  //   if (result.isConfirmed) {
+  //     try {
+  //       const res = await fetch(`/api/recordings?id=${recordingId}&supportPersonId=${supportPersonId}`, {
+  //         method: 'DELETE',
+  //       });
+  //       const response = await res.json();
+  //       if (response.success) {
+  //         toast.success(response.message || 'Recording deleted');
+  //         fetchRecordings();
+  //       } else {
+  //         toast.error(response.message || 'Failed to delete recording');
+  //       }
+  //     } catch (error) {
+  //       toast.error('Error deleting recording');
+  //     }
+  //   }
+  // };
+
+
+  const handleMessageUpdate = async (supportPersonId, recordingUrl) => {
+  const messageText = prompt("Enter message");
+  if (!messageText) return;
+
+  try {
+    const res = await fetch('/api/recordings', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        supportPersonId,
+        recordingUrl,
+        text: messageText,
+      }),
     });
 
-    if (result.isConfirmed) {
-      try {
-        const res = await fetch(`/api/recordings?id=${recordingId}&supportPersonId=${supportPersonId}`, {
-          method: 'DELETE',
-        });
-
-        const response = await res.json();
-        if (response.success) {
-          toast.success(response.message || 'Recording deleted successfully');
-          fetchRecordings();
-        } else {
-          toast.error(response.message || 'Failed to delete recording');
-        }
-      } catch (error) {
-        toast.error('Error deleting recording');
-      }
+    const data = await res.json();
+    if (res.ok) {
+      toast.success('Message added successfully!');
+            fetchRecordings(); 
+    } else {
+      toast.error(data.error || 'Something went wrong.');
     }
-  };
+  } catch (err) {
+    console.error(err);
+    alert('Error adding message');
+  }
+};
 
-  const filteredRecordings = recordings.filter((rec) => {
-    const msgMatch = rec.message?.toLowerCase().includes(searchMessage.toLowerCase());
-    const tagMatch = selectedTag ? rec.tag === selectedTag : true;
-    const dateMatch = selectedDate
-      ? new Date(rec.uploadTime).toDateString() === new Date(selectedDate).toDateString()
-      : true;
-    return msgMatch && tagMatch && dateMatch;
-  });
+const filteredRecordings = recordings.filter((rec) => {
+  const msgMatch = rec.messages?.some(msg =>
+    msg.text.toLowerCase().includes(searchMessage.toLowerCase())
+  ) ?? true;
+
+  const tagMatch = selectedTag ? rec.tag === selectedTag : true;
+  const dateMatch = selectedDate
+    ? new Date(rec.uploadTime).toDateString() === new Date(selectedDate).toDateString()
+    : true;
+
+  return msgMatch && tagMatch && dateMatch;
+});
+
 
   const getTagStyle = (tag) => {
     switch (tag) {
@@ -138,7 +171,7 @@ const AddRecording = ({ supportPersonId }) => {
         <h2 className="text-xl font-semibold text-gray-800">Upload Recording</h2>
         <input
           type="file"
-          accept=".mp3, .mpeg, .mpg, audio/*"
+          accept=".mp3, .mpeg, .mpg, .amr,  audio/*"
           onChange={handleFileChange}
           className="block w-full border border-gray-300 rounded p-2"
         />
@@ -202,14 +235,13 @@ const AddRecording = ({ supportPersonId }) => {
       </div>
     </div>
 
-    {/* RIGHT COLUMN */}
+{/* RIGHT COLUMN */}
 <div className="w-full lg:w-2/3">
   <h2 className="text-2xl font-semibold mb-4 text-gray-800">Uploaded Recordings</h2>
 
   {filteredRecordings.length === 0 ? (
     <p className="text-gray-500 italic">No recordings found.</p>
   ) : (
-    // 🔽 Scrollable container
     <div className="h-[500px] overflow-y-auto pr-2 space-y-6">
       {filteredRecordings.map((rec, i) => (
         <div
@@ -218,29 +250,86 @@ const AddRecording = ({ supportPersonId }) => {
         >
           <audio controls src={rec.url} className="w-full mb-3" />
 
-       <div className="flex flex-wrap gap-3 mb-3">
-  {/* Message Box */}
-  <div className="bg-blue-100 text-blue-800 text-xs font-medium px-3 py-2 rounded shadow-sm">
-    <strong>Message:</strong> {rec.message || 'No message'}
-  </div>
+          {/* Main Row: Messages on Left, Meta Info on Right */}
+          <div className="flex flex-col sm:flex-row sm:justify-between gap-4 mb-3">
 
-  {/* Type Box */}
-  <div className={`text-xs font-medium px-3 py-2 rounded shadow-sm ${getTagStyle(rec.tag || 'other')} bg-green-100 text-green-800`}>
-    <strong>Type:</strong> {rec.tag || 'other'}
-  </div>
 
-  {/* Date Box */}
-  <div className="bg-yellow-100 text-yellow-800 text-xs font-medium px-3 py-2 rounded shadow-sm">
-    <strong>Date:</strong> {new Date(rec.uploadTime).toLocaleDateString()}
+{/* Combined Messages Column */}
+<div className="flex-1">
+  <div className="space-y-2 max-h-[200px] overflow-y-auto pr-1">
+    {(() => {
+      // Combine and tag messages
+      const combinedMessages = [
+        ...(rec.messages || []).map(msg => ({ ...msg, type: 'user' })),
+        ...(rec.adminmessages || []).map(msg => ({ ...msg, type: 'admin' })),
+      ];
+
+      // Sort by sentAt
+      combinedMessages.sort((a, b) => new Date(a.sentAt) - new Date(b.sentAt));
+
+      return combinedMessages.length > 0 ? (
+        combinedMessages.map((msg, index) => (
+          <div
+            key={index}
+            className={`text-xs font-medium px-3 py-2 rounded shadow-sm ${
+              msg.type === 'user'
+                ? 'bg-blue-100 text-blue-800'
+                : 'bg-red-100 text-red-800'
+            }`}
+          >
+            <strong>Message {index + 1}:</strong> {msg.text}
+            <span className="text-[11px] text-gray-500 mt-1 block">
+              {msg.sentAt
+                ? new Date(msg.sentAt).toLocaleString('en-IN', {
+                    day: '2-digit',
+                    month: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true,
+                  })
+                : 'N/A'}
+            </span>
+          </div>
+        ))
+      ) : (
+        <div className="bg-blue-100 text-blue-800 text-xs font-medium px-3 py-2 rounded shadow-sm">
+          <strong>No messages</strong>
+        </div>
+      );
+    })()}
   </div>
 </div>
 
 
+
+
+            {/* Metadata Column */}
+            <div className="flex flex-col justify-start gap-2 min-w-[140px]">
+              {/* Type Box */}
+              <div
+                className={`text-xs font-medium px-3 py-2 rounded shadow-sm ${getTagStyle(
+                  rec.tag || 'other'
+                )} bg-green-100 text-green-800`}
+              >
+                <strong>Type:</strong> {rec.tag || 'other'}
+              </div>
+
+              {/* Date Box */}
+              <div className="bg-yellow-100 text-yellow-800 text-xs font-medium px-3 py-2 rounded shadow-sm">
+                <strong>Date:</strong> {new Date(rec.uploadTime).toLocaleDateString()}
+              </div>
+            </div>
+
+
+          </div>
+
+          {/* Button */}
           <button
-            onClick={() => handleDelete(rec._id)}
-            className="px-3 py-1 text-sm text-white bg-red-600 hover:bg-red-700 rounded"
+            onClick={() => handleMessageUpdate(supportPersonId, rec.url)}
+            className="px-3 py-1 text-sm w-100 text-white bg-green-600 hover:bg-green-700 rounded mx-2"
           >
-            Delete
+            Add New Message
           </button>
         </div>
       ))}

@@ -12,9 +12,9 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 const images = [
-  "/assets/join-1.png",
-  "/assets/join-2.png",
-  "/assets/join-3.png",
+  "/assets/joinus-0.jpeg",
+  // "/assets/join-2.png",
+  // "/assets/join-3.png",
   "/assets/join-us.png",
 ];
 

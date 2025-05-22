@@ -1,23 +1,42 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
-const supportPersonSchema = new mongoose.Schema({
-  clients: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  name: String,
-  number: String,
-  email: { type: String, unique: true },
-recordingurl: [
+const supportPersonSchema = new mongoose.Schema(
   {
-    url: { type: String, unique: true },
-    uploadTime: { type: Date, default: Date.now },
-    tag: { type: String, enum: ['genuine', 'fake', 'other'], default: 'other' } ,
-    message:{type: String}
+    clients: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    name: { type: String },
+    number: { type: String },
+    email: { type: String, unique: true },
+    password: { type: String },
+
+    recordingurl: [
+      {
+        url: { type: String, unique: true },
+        uploadTime: { type: Date, default: Date.now },
+        tag: {
+          type: String,
+          enum: ["genuine", "fake", "other"],
+          default: "other",
+        },
+        messages: [
+          {
+            text: { type: String },
+            sentAt: { type: Date, default: Date.now },
+          },
+        ],
+        adminmessages: [
+          {
+            text: { type: String },
+            sentAt: { type: Date, default: Date.now },
+          },
+        ],
+      },
+    ],
+  },
+  {
+    timestamps: true,
   }
-],
-    password: String,
-}, {
-  timestamps: true,
-});
+);
 
 // Hash password before saving
 supportPersonSchema.pre("save", async function (next) {
