@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Image from "next/image";
 import Link from "next/link";
+import beautify from 'js-beautify'; // Install using `npm install js-beautify`
 
 const AllBlogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -97,11 +98,15 @@ const AllBlogs = () => {
     });
   };
 
-  const editBlog = (id) => {
-    const blogToEdit = blogs.find((blog) => blog._id === id);
+const editBlog = (id) => {
+  const blogToEdit = blogs.find((blog) => blog._id === id);
+  if (blogToEdit) {
+    // Format the HTML content for better line separation
+    blogToEdit.content = beautify.html(blogToEdit.content, { indent_size: 2 });
     setSelectedBlog(blogToEdit);
     setShowModal(true);
-  };
+  }
+};
 
 const handleSave = async () => {
   try {
