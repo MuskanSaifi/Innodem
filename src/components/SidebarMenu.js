@@ -61,7 +61,7 @@ const SidebarMenu = () => {
         ))}
         <div className="text-center mt-3">
           <Link className="cursor-pointer p-2 common-shad rounded-2 gradient-btn text-sm" href="all-categories">
-            View more categories...
+            View more categories
           </Link>
         </div>
       </ul>

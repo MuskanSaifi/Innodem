@@ -119,25 +119,26 @@ const Faq = () => {
           >
             {filteredFaqs.length > 0 ? (
               filteredFaqs.map((faq, index) => (
-                <div
-                  key={index}
-                  className="bg-white border border-gray-200 rounded-xl shadow-md transition hover:shadow-lg"
-                >
-                  <button
-                    className="w-full px-5 py-4 text-left flex justify-between items-center text-gray-800 font-semibold"
-                    onClick={() => toggle(index)}
-                  >
-                    {faq.question}
-                    <span className="text-xl">
-                      {openIndex === index ? "−" : "+"}
-                    </span>
-                  </button>
-                  {openIndex === index && (
-                    <div className="px-5 pb-4 text-gray-600 text-sm">
-                      {faq.answer}
-                    </div>
-                  )}
-                </div>
+              <div
+  key={index}
+  className="bg-white border border-gray-100 rounded-xl shadow hover:shadow-lg hover:border-indigo-300 transition duration-300"
+>
+  <button
+    className="w-full px-5 py-4 text-left flex justify-between items-center text-gray-800 font-medium"
+    onClick={() => toggle(index)}
+  >
+    {faq.question}
+    <span className="text-2xl text-indigo-500">
+      {openIndex === index ? "−" : "+"}
+    </span>
+  </button>
+  {openIndex === index && (
+    <div className="px-5 pb-4 text-gray-600 text-sm leading-relaxed">
+      {faq.answer}
+    </div>
+  )}
+</div>
+
               ))
             ) : (
               <p className="text-gray-500">No matching FAQs found.</p>
@@ -146,15 +147,16 @@ const Faq = () => {
         </div>
 
         {/* Right Illustration */}
-        <div className="flex justify-center items-center">
-     <Image
-  src="/assets/faq.png"
-  alt="FAQ Illustration"
-  width={460}
-  height={551}
-  priority // Optional: loads image sooner for better UX
-/>
-        </div>
+   <div className="relative w-full h-[500px] md:h-[600px] lg:h-[700px]">
+  <Image
+    src="/assets/faq.png"
+    alt="FAQ Illustration"
+    fill
+    className="object-contain md:object-cover"
+    priority
+  />
+</div>
+
       </div>
     </div>
   );

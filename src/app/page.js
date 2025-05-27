@@ -16,6 +16,7 @@ import StatsWithImage from "@/components/home/Stats";
 import ContactRating from "@/components/home/ContactRating";
 import CustomChatBot from "../components/home/CustomChatBot";
 import Faq from "@/components/home/Faq";
+import CategoryGridPage from "@/components/home/CategoryGridPage";
 
 export default function Home() {
   return (
@@ -72,7 +73,9 @@ export default function Home() {
 
       </div>
 
+
       <IndustrySlider />
+      <CategoryGridPage/>
 
       <ProductSections2 tag="upcoming" Name="Upcoming" />
 

@@ -101,12 +101,16 @@ const AllBlogs = () => {
 const editBlog = (id) => {
   const blogToEdit = blogs.find((blog) => blog._id === id);
   if (blogToEdit) {
-    // Format the HTML content for better line separation
-    blogToEdit.content = beautify.html(blogToEdit.content, { indent_size: 2 });
-    setSelectedBlog(blogToEdit);
+    let formatted = beautify.html(blogToEdit.content, { indent_size: 2 });
+
+    // Add an extra newline between blocks
+    formatted = formatted.replace(/>\s*</g, ">\n\n<");
+
+    setSelectedBlog({ ...blogToEdit, content: formatted });
     setShowModal(true);
   }
 };
+
 
 const handleSave = async () => {
   try {
