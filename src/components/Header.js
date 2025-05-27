@@ -6,6 +6,7 @@ import Image from "next/image";
 import { FaChevronDown, FaSearch, FaMapMarkerAlt, FaTh  } from "react-icons/fa";
 
 import { useSelector, useDispatch } from "react-redux";
+
 import { logout, initializeUser } from "@/app/store/userSlice";
 import SmoothCounter from "./Counter";
 
@@ -44,6 +45,7 @@ export default function Header() {
   const user = useSelector((state) => state.user.user);
 
   const [cities, setCities] = useState(["All City"]); // Store cities from API
+  
   useEffect(() => {
     const fetchTotalUsers = async () => {
       try {
@@ -267,6 +269,7 @@ export default function Header() {
   return (
     <>
   <header className="bg-light shadow-sm Main-header">
+
   <div className="container-fluid p-2 text-center top-bar text-dark">
   <marquee behavior="scroll" direction="left" scrollamount="6">
   <p className="mb-0 text-light text-sm">

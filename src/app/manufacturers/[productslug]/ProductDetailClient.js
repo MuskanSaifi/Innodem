@@ -59,6 +59,7 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
 
       {/* Mobile Dropdowns */}
       <div className="d-md-none mb-4">
+      
         {/* Subcategories Dropdown */}
         <div className="mb-3">
           <button
@@ -207,8 +208,6 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
             )}
 {product && <BuySell initialProductName={product.name} />}
           </div>
-
-
         </aside>
       </div>
     </div>
