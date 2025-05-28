@@ -61,7 +61,7 @@ export async function POST(req) {
       firstname: name,
       email,
       phone,  // Keep phone here for the request, though it's not part of the hash string
-      surl: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/payment/success`,
+    surl: `${process.env.NEXT_PUBLIC_BASE_URL}/payment-success`,  // frontend success page
       furl: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/payment/failure`,
       hash,
       productinfo: productInfo, // Added product info
