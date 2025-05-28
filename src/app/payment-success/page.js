@@ -1,4 +1,4 @@
-// pages/payment-success.jsx
+"use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
