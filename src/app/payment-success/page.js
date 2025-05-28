@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -10,7 +12,6 @@ export default function PaymentSuccess() {
   const [message, setMessage] = useState("Processing payment...");
 
   useEffect(() => {
-    // Get query params from searchParams
     const txnid = searchParams.get("txnid");
     const status = searchParams.get("status");
     const amount = searchParams.get("amount");
