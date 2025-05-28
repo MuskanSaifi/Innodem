@@ -1,22 +1,27 @@
 "use client";
+
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function PaymentSuccess() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [message, setMessage] = useState("Processing payment...");
 
   useEffect(() => {
-    if (!router.isReady) return;
-
-    const { txnid, status, amount, udf1, productinfo } = router.query;
+    // Get query params from searchParams
+    const txnid = searchParams.get("txnid");
+    const status = searchParams.get("status");
+    const amount = searchParams.get("amount");
+    const udf1 = searchParams.get("udf1");
+    const productinfo = searchParams.get("productinfo");
 
     if (!txnid || !status) {
       setMessage("Invalid payment data");
       return;
     }
 
-    // Call backend API to update payment info
     async function updatePayment() {
       const res = await fetch("/api/payment/success", {
         method: "POST",
@@ -40,7 +45,7 @@ export default function PaymentSuccess() {
     }
 
     updatePayment();
-  }, [router.isReady, router.query]);
+  }, [searchParams]);
 
   return (
     <div>
