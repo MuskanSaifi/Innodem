@@ -386,14 +386,20 @@ const JoinUs = () => {
 
           {otpSent ? (
             <form onSubmit={handleOtpVerify}>
-              <input
-                type="text"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                required
-                className="w-full p-3 mb-4 rounded bg-gray-700 text-white"
-                placeholder="Enter OTP"
-              />
+            <input
+  type="text"
+  value={otp}
+  onChange={(e) => {
+    const value = e.target.value;
+    if (/^\d{0,6}$/.test(value)) {
+      setOtp(value);
+    }
+  }}
+  required
+  maxLength={6}
+  className="w-full p-3 mb-4 rounded bg-gray-700 text-white"
+  placeholder="Enter OTP"
+/>
               <button type="submit" className="w-full bg-green-600 hover:bg-green-700 p-3 rounded font-medium" disabled={loading}>
                 {loading ? "Verifying OTP..." : "Verify OTP"}
               </button>
@@ -414,27 +420,51 @@ const JoinUs = () => {
                 </div>
               </div>
 
-              <input type="text" value={productname} onChange={(e) => setProductname(e.target.value)} required className="w-full p-3 mb-3 rounded bg-gray-700 text-white" placeholder="Product Name" />
+              <input type="text" value={productname} onChange={(e) => setProductname(e.target.value)}    maxLength={60} required className="w-full p-3 mb-3 rounded bg-gray-700 text-white" placeholder="Product Name" />
 
               <div className="flex gap-3 mb-3">
                 <div className="w-1/3">
                   <Select styles={customStyles} options={countryCodes} value={countryCode} onChange={setCountryCode} />
                 </div>
-                <input
-                  type="number"
-                  value={mobileNumber}
-                  onChange={(e) => setMobileNumber(e.target.value)}
-                  required
-                  className="w-2/3 p-3 rounded bg-gray-700 text-white"
-                  placeholder="Mobile Number"
-                />
+              <input
+  type="text" // use text to allow maxLength
+  value={mobileNumber}
+  onChange={(e) => {
+    const value = e.target.value;
+    if (/^\d{0,10}$/.test(value)) {
+      setMobileNumber(value);
+    }
+  }}
+  required
+  maxLength={10}
+  className="w-2/3 p-3 rounded bg-gray-700 text-white"
+  placeholder="Mobile Number"
+/>
+
               </div>
 
               {buySell === "sell" && (
-                <>
-                  <input type="text" value={fullname} onChange={(e) => setFullname(e.target.value)} required className="w-full p-3 mb-3 rounded bg-gray-700 text-white" placeholder="Full Name" />
-                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full p-3 mb-3 rounded bg-gray-700 text-white" placeholder="Email" />
-                </>
+            <>
+  <input
+    type="text"
+    value={fullname}
+    onChange={(e) => setFullname(e.target.value)}
+    maxLength={30}
+    required
+    className="w-full p-3 mb-3 rounded bg-gray-700 text-white"
+    placeholder="Full Name"
+  />
+  <input
+    type="email"
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+    maxLength={40}
+    required
+    className="w-full p-3 mb-3 rounded bg-gray-700 text-white"
+    placeholder="Email"
+  />
+</>
+
               )}
 
               <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 p-3 rounded font-medium" disabled={loading}>
