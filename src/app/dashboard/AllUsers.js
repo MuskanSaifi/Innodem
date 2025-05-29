@@ -214,7 +214,19 @@ const AllUsers = () => {
                     <td>{user.email}</td>
                     <td>{user.mobileNumber}</td>
                     <td>{user.companyName} | {user.products?.length} | {user.supportPerson?.name}</td>
-                    <td>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}</td>
+<td>
+  {user.createdAt
+    ? new Date(user.createdAt).toLocaleString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+      })
+    : "N/A"}
+</td>
                     <td>
                       <Button variant="danger" size="sm" onClick={() => handleDeleteUser(user._id)}>
                         🗑️
