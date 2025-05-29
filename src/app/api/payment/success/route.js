@@ -65,7 +65,23 @@ export async function POST(req) {
       },
     });
 
-    return NextResponse.json({ success: true, message: "Payment processed successfully" });
+    // return NextResponse.json({ success: true, message: "Payment processed successfully" });
+
+return new NextResponse(`
+  <html>
+    <head>
+      <meta http-equiv="refresh" content="0; url=https://dialexportmart.com/payment-success?txnid=${txnid}&amount=${paidAmount}&package=${encodeURIComponent(productInfo)}" />
+    </head>
+    <body>
+      Redirecting to payment success page...
+    </body>
+  </html>
+`, {
+  headers: {
+    "Content-Type": "text/html"
+  }
+});
+
 
   } catch (err) {
     console.error("Error processing payment:", err);

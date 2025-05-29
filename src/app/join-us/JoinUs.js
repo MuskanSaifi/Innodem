@@ -426,23 +426,25 @@ const JoinUs = () => {
                 <div className="w-1/3">
                   <Select styles={customStyles} options={countryCodes} value={countryCode} onChange={setCountryCode} />
                 </div>
-              <input
-  type="text" // use text to allow maxLength
+<input
+  type="text" // use text to apply maxLength
   value={mobileNumber}
   onChange={(e) => {
     const value = e.target.value;
+    // Allow only up to 10 digits
     if (/^\d{0,10}$/.test(value)) {
       setMobileNumber(value);
     }
   }}
   required
-  maxLength={10}
+  maxLength={13}
+  minLength={4}
   className="w-2/3 p-3 rounded bg-gray-700 text-white"
   placeholder="Mobile Number"
 />
 
-              </div>
 
+              </div>
               {buySell === "sell" && (
             <>
   <input
