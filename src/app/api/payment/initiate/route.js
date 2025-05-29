@@ -61,8 +61,8 @@ export async function POST(req) {
       firstname: name,
       email,
       phone,  // Keep phone here for the request, though it's not part of the hash string
-      surl: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/payment/success`,
-      furl: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/payment/failure`,
+      surl: `https://dialexportmart.com/api/payment/success`,
+      furl: `https://dialexportmart.com/api/payment/failure`,
       hash,
       productinfo: productInfo, // Added product info
       udf1,
