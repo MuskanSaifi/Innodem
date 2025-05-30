@@ -372,133 +372,152 @@ const JoinUs = () => {
   };
 
   return (
-    <div className="py-5 flex items-center justify-center bg-gray-900 text-white px-1">
-      <div className="flex flex-col md:flex-row max-w-5xl w-full bg-gray-800 rounded-2xl overflow-hidden shadow-lg">
-        {/* Form Section */}
-        <div className="w-full md:w-1/2 p-6">
-          <h2 className="text-3xl font-bold mb-4">Join us today 👋</h2>
-          <p className="text-sm text-gray-300 mb-6">
-            Buy or sell with ease — join our platform and grow your business smarter and faster. Register now!
-          </p>
+  <div className="py-5 flex items-center justify-center bg-gray-900 text-white px-1">
+  <div className="flex flex-col md:flex-row max-w-5xl w-full bg-gray-800 rounded-2xl overflow-hidden shadow-lg">
+    {/* Form Section */}
+    <div className="w-full md:w-1/2 p-6">
+      <h2 className="text-3xl font-bold mb-4">Join us today 👋</h2>
+      <p className="text-sm text-gray-300 mb-6">
+        Buy or sell with ease — join our platform and grow your business smarter and faster. Register now!
+      </p>
 
-          {message && <p className="text-green-500">{message}</p>}
-          {error && <p className="text-red-500">{error}</p>}
+      {message && <p className="text-green-500">{message}</p>}
+      {error && <p className="text-red-500">{error}</p>}
 
-          {otpSent ? (
-            <form onSubmit={handleOtpVerify}>
-            <input
-  type="text"
-  value={otp}
-  onChange={(e) => {
-    const value = e.target.value;
-    if (/^\d{0,6}$/.test(value)) {
-      setOtp(value);
-    }
-  }}
-  required
-  maxLength={6}
-  className="w-full p-3 mb-4 rounded bg-gray-700 text-white"
-  placeholder="Enter OTP"
-/>
-              <button type="submit" className="w-full bg-green-600 hover:bg-green-700 p-3 rounded font-medium" disabled={loading}>
-                {loading ? "Verifying OTP..." : "Verify OTP"}
-              </button>
-            </form>
-          ) : (
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label className="block text-sm mb-1">I want to:</label>
-                <div className="flex items-center gap-4">
-                  <label>
-                    <input type="radio" name="buy_sell" value="buy" className="mr-2" checked={buySell === "buy"} onChange={() => setBuySell("buy")} />
-                    Buy
-                  </label>
-                  <label>
-                    <input type="radio" name="buy_sell" value="sell" className="mr-2" checked={buySell === "sell"} onChange={() => setBuySell("sell")} />
-                    Sell
-                  </label>
-                </div>
-              </div>
-
-              <input type="text" value={productname} onChange={(e) => setProductname(e.target.value)}    maxLength={60} required className="w-full p-3 mb-3 rounded bg-gray-700 text-white" placeholder="Product Name" />
-
-              <div className="flex gap-3 mb-3">
-                <div className="w-1/3">
-                  <Select styles={customStyles} options={countryCodes} value={countryCode} onChange={setCountryCode} />
-                </div>
-<input
-  type="text" // use text to apply maxLength
-  value={mobileNumber}
-  onChange={(e) => {
-    const value = e.target.value;
-    // Allow only up to 10 digits
-    if (/^\d{0,10}$/.test(value)) {
-      setMobileNumber(value);
-    }
-  }}
-  required
-  maxLength={13}
-  minLength={4}
-  className="w-2/3 p-3 rounded bg-gray-700 text-white"
-  placeholder="Mobile Number"
-/>
-
-
-              </div>
-              {buySell === "sell" && (
-            <>
-  <input
-    type="text"
-    value={fullname}
-    onChange={(e) => setFullname(e.target.value)}
-    maxLength={30}
-    required
-    className="w-full p-3 mb-3 rounded bg-gray-700 text-white"
-    placeholder="Full Name"
-  />
-  <input
-    type="email"
-    value={email}
-    onChange={(e) => setEmail(e.target.value)}
-    maxLength={40}
-    required
-    className="w-full p-3 mb-3 rounded bg-gray-700 text-white"
-    placeholder="Email"
-  />
-</>
-
-              )}
-
-              <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 p-3 rounded font-medium" disabled={loading}>
-                {loading ? (buySell === "sell" ? "Sending OTP..." : "Registering...") : "Submit"}
-              </button>
-            </form>
-          )}
-        </div>
-
-        {/* Image/Swiper Section */}
-        <div className="w-full md:w-1/2 flex justify-center items-center overflow-hidden p-4">
-          <div className="w-full">
-            <Swiper
-              modules={[Pagination, Autoplay]}
-              slidesPerView={1}
-              spaceBetween={20}
-              pagination={{ clickable: true }}
-              autoplay={{ delay: 3000, disableOnInteraction: false }}
-              loop={true}
-            >
-              {images.map((src, index) => (
-                <SwiperSlide key={index}>
-                  <div className="flex justify-center items-center">
-                    <Image src={src} alt={`Slide ${index}`} width={500} height={500} className="rounded-md" />
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
+      {otpSent ? (
+        <form onSubmit={handleOtpVerify}>
+          <label className="block text-sm mb-1" htmlFor="otp">OTP</label>
+          <input
+            type="text"
+            id="otp"
+            value={otp}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d{0,6}$/.test(value)) {
+                setOtp(value);
+              }
+            }}
+            required
+            maxLength={6}
+            className="w-full p-3 mb-4 rounded bg-gray-700 text-white"
+            placeholder="Enter OTP"
+          />
+          <button type="submit" className="w-full bg-green-600 hover:bg-green-700 p-3 rounded font-medium" disabled={loading}>
+            {loading ? "Verifying OTP..." : "Verify OTP"}
+          </button>
+        </form>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-sm mb-1">I want to:</label>
+            <div className="flex items-center gap-4">
+              <label>
+                <input type="radio" name="buy_sell" value="buy" className="mr-2" checked={buySell === "buy"} onChange={() => setBuySell("buy")} />
+                Buy
+              </label>
+              <label>
+                <input type="radio" name="buy_sell" value="sell" className="mr-2" checked={buySell === "sell"} onChange={() => setBuySell("sell")} />
+                Sell
+              </label>
+            </div>
           </div>
-        </div>
+
+          <label className="block text-sm mb-1" htmlFor="productname">Product Name</label>
+          <input
+            type="text"
+            id="productname"
+            value={productname}
+            onChange={(e) => setProductname(e.target.value)}
+            maxLength={60}
+            required
+            className="w-full p-3 mb-3 rounded bg-gray-700 text-white"
+            placeholder="Product Name"
+          />
+
+          <div className="flex gap-3 mb-3">
+            <div className="w-1/3">
+              <label className="block text-sm mb-1">Country Code</label>
+              <Select styles={customStyles} options={countryCodes} value={countryCode} onChange={setCountryCode} />
+            </div>
+            <div className="w-2/3">
+              <label className="block text-sm mb-1" htmlFor="mobile">Mobile Number</label>
+              <input
+                type="text"
+                id="mobile"
+                value={mobileNumber}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d{0,10}$/.test(value)) {
+                    setMobileNumber(value);
+                  }
+                }}
+                required
+                maxLength={13}
+                minLength={8}
+                className="w-full p-3 rounded bg-gray-700 text-white"
+                placeholder="Mobile Number"
+              />
+            </div>
+          </div>
+
+          {buySell === "sell" && (
+            <>
+              <label className="block text-sm mb-1" htmlFor="fullname">Full Name</label>
+              <input
+                type="text"
+                id="fullname"
+                value={fullname}
+                onChange={(e) => setFullname(e.target.value)}
+                maxLength={30}
+                required
+                className="w-full p-3 mb-3 rounded bg-gray-700 text-white"
+                placeholder="Full Name"
+              />
+              <label className="block text-sm mb-1" htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                maxLength={40}
+                required
+                className="w-full p-3 mb-3 rounded bg-gray-700 text-white"
+                placeholder="Email"
+              />
+            </>
+          )}
+
+          <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 p-3 rounded font-medium" disabled={loading}>
+            {loading ? (buySell === "sell" ? "Sending OTP..." : "Registering...") : "Submit"}
+          </button>
+        </form>
+      )}
+    </div>
+
+    {/* Image/Swiper Section */}
+    <div className="w-full md:w-1/2 flex justify-center items-center overflow-hidden p-4">
+      <div className="w-full">
+        <Swiper
+          modules={[Pagination, Autoplay]}
+          slidesPerView={1}
+          spaceBetween={20}
+          pagination={{ clickable: true }}
+          autoplay={{ delay: 3000, disableOnInteraction: false }}
+          loop={true}
+        >
+          {images.map((src, index) => (
+            <SwiperSlide key={index}>
+              <div className="flex justify-center items-center">
+                <Image src={src} alt={`Slide ${index}`} width={500} height={500} className="rounded-md" />
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
     </div>
+  </div>
+</div>
+
   );
 };
 

@@ -45,51 +45,56 @@ export default function CategoryList() {
   }
 
   return (
-    <div className="p-6 container mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Categories</h2>
-      {categories.length === 0 ? (
-        <p className="text-gray-500">No categories available.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {categories.map((category) => (
-            <div
-              key={category._id}
-              className="bg-white p-4 shadow-md rounded-xl border hover:shadow-lg transition cursor-pointer focus:ring-2 focus:ring-blue-400"
-            >
-              {/* Clickable Category */}
-              <h3
-                className="text-lg font-semibold text-blue-600 hover:underline"
-                onClick={() => router.push(`/seller/${category.categoryslug}`)}
-                role="button"
-                tabIndex={0}
-              >
-                {category.name}
-              </h3>
+<div className="py-10 px-6 bg-gradient-to-br from-blue-50 via-white to-purple-50 min-h-screen">
+  <div className="container mx-auto">
+    <h2 className="text-3xl font-bold mb-8 text-center text-purple-700 drop-shadow-sm">
+      Browse Categories
+    </h2>
 
-              {/* Subcategories */}
-              {category.subcategories && category.subcategories.length > 0 && (
-                <div className="mt-2">
-                  <h4 className="text-md font-semibold text-gray-800">Subcategories:</h4>
-                  <ul className="list-disc list-inside text-gray-700">
-                    {category.subcategories.map((sub) => (
-                      <li
-                        key={sub._id}
-                        className="text-sm text-blue-500 hover:underline cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation(); // Prevent category click
-                          router.push(`/seller/${category.categoryslug}/${sub.subcategoryslug}`);
-                        }}
-                      >
-                        {sub.name}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+    {categories.length === 0 ? (
+      <p className="text-center text-gray-500">No categories available.</p>
+    ) : (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {categories.map((category) => (
+          <div
+            key={category._id}
+            className="bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-xl transition-all duration-300 ease-in-out"
+          >
+            {/* Clickable Category Title */}
+            <h3
+              className="text-xl font-semibold text-indigo-600 hover:underline cursor-pointer mb-3"
+              onClick={() => router.push(`/seller/${category.categoryslug}`)}
+              role="button"
+              tabIndex={0}
+            >
+              {category.name}
+            </h3>
+
+            {/* Subcategories as colored tags */}
+            {category.subcategories && category.subcategories.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {category.subcategories.map((sub) => (
+                  <span
+                    key={sub._id}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent category click
+                      router.push(
+                        `/seller/${category.categoryslug}/${sub.subcategoryslug}`
+                      );
+                    }}
+                    className="inline-block bg-indigo-100 text-indigo-700 text-sm font-medium px-3 py-1 rounded-full cursor-pointer hover:bg-indigo-200 transition"
+                  >
+                    {sub.name}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</div>
+
   );
 }
