@@ -12,10 +12,11 @@ const AllUsers = () => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // ✅ Search state for name, email, company, mobile
   const [searchDate, setSearchDate] = useState(""); // ✅ Search state for registration date
-  const [loading, setLoading] = useState(true);
+ const [remarkFilter, setRemarkFilter] = useState(""); // ✅ Remark Filter
+
+ const [loading, setLoading] = useState(true);
 
 const [remarkUpdates, setRemarkUpdates] = useState({});
-const [selectedRemark, setSelectedRemark] = useState("");
 const [selectedRemarks, setSelectedRemarks] = useState({});
 const [customRemarks, setCustomRemarks] = useState({});
 
@@ -186,17 +187,28 @@ const saveRemark = async (userId) => {
   };
 
   // ✅ Filter users based on searchTerm and date
-  const filteredUsers = users.filter((user) => {
-    const userDate = user.createdAt ? new Date(user.createdAt).toISOString().split("T")[0] : null; // ✅ Prevent invalid dates
+const filteredUsers = users.filter((user) => {
+  const userDate = user.createdAt ? new Date(user.createdAt).toISOString().split("T")[0] : null;
 
-    return (
-      (user.fullname?.toLowerCase().includes(searchTerm) ||
-        user.email?.toLowerCase().includes(searchTerm) ||
-        user.companyName?.toLowerCase().includes(searchTerm) ||
-        user.mobileNumber?.includes(searchTerm)) &&
-      (searchDate === "" || (userDate && userDate === searchDate)) // ✅ Ensure date is valid before comparing
-    );
-  });
+  const matchesSearch = (
+    user.fullname?.toLowerCase().includes(searchTerm) ||
+    user.email?.toLowerCase().includes(searchTerm) ||
+    user.companyName?.toLowerCase().includes(searchTerm) ||
+    user.mobileNumber?.includes(searchTerm)
+  );
+
+  const matchesDate = (
+    searchDate === "" || (userDate && userDate === searchDate)
+  );
+
+const matchesRemark = (
+  remarkFilter === "" || user.remark === remarkFilter
+);
+
+
+  return matchesSearch && matchesDate && matchesRemark;
+});
+
 
   // calculatedprogreessbar
   const calculateProgress = (product) => {
@@ -236,22 +248,59 @@ const saveRemark = async (userId) => {
       <h6 className="text-center mb-4 res-color2 text-light w-50 rounded-5	m-auto  p-2 common-shad">All Users & Their Products</h6>
 
       {/* ✅ Search & Date Filter */}
-      <Form className="mb-3 d-flex gap-2 res-color2 rounded-3 common-shad p-3">
-        <Form.Control
-          type="text"
-          placeholder="Search by name, email, company name, or phone number"
-          value={searchTerm}
-          onChange={handleSearch}
-        />
-        <Form.Control
-          type="date"
-          value={searchDate}
-          onChange={handleDateFilter}
-        />
-        <Button variant="secondary" onClick={() => { setSearchTerm(""); setSearchDate(""); }}>
-          Reset
-        </Button>
-      </Form>
+  <Form className="mb-3 d-flex flex-row align-items-center gap-2 flex-nowrap overflow-auto res-color2 rounded-3 common-shad p-3">
+    <Form.Control
+      type="text"
+      placeholder="Search by name, email, company name, or phone number"
+      value={searchTerm}
+      onChange={handleSearch}
+      style={{ minWidth: "250px" }}
+    />
+    <Form.Control
+      type="date"
+      value={searchDate}
+      onChange={handleDateFilter}
+      style={{ minWidth: "180px" }}
+    />
+    <Form.Select
+      value={remarkFilter}
+      onChange={(e) => setRemarkFilter(e.target.value)}
+      style={{ minWidth: "200px" }}
+    >
+      <option value="">All Remarks</option>
+      <option value="Interested">Interested</option>
+      <option value="Not Interested">Not Interested</option>
+      <option value="Don't Pick Call">Don't Pick Call</option>
+      <option value="Follow Up Needed">Follow Up Needed</option>
+      <option value="Wrong Number">Wrong Number</option>
+      <option value="Converted">Converted</option>
+      <option value="Call Later">Call Later</option>
+      <option value="Number Switched Off">Number Switched Off</option>
+      <option value="Busy">Busy</option>
+      <option value="No Requirement">No Requirement</option>
+      <option value="Out of Budget">Out of Budget</option>
+      <option value="Invalid Number">Invalid Number</option>
+      <option value="Duplicate Lead">Duplicate Lead</option>
+      <option value="Language Issue">Language Issue</option>
+      <option value="Not Reachable">Not Reachable</option>
+      <option value="Whatsapp Only">Whatsapp Only</option>
+      <option value="Spam Lead">Spam Lead</option>
+      <option value="Paid Client">Paid Client</option>
+      <option value="Other">Other</option>
+    </Form.Select>
+    <Button
+      variant="secondary"
+      onClick={() => {
+        setSearchTerm("");
+        setSearchDate("");
+        setRemarkFilter("");
+      }}
+      style={{ minWidth: "100px" }}
+    >
+      Reset
+    </Button>
+  </Form>
+  
 
       {loading ? (
         <div className="text-center">
@@ -284,23 +333,10 @@ const saveRemark = async (userId) => {
             {filteredUsers.length > 0 ? (
               filteredUsers.map((user, index) => (
                 <React.Fragment key={user._id}>
-                  <tr className="text-sm"><td>{index + 1}</td>
-                    <td>{user.fullname}</td>
-                    <td>{user.email} | {user.mobileNumber}</td>
-                    {/* <td>{user.mobileNumber}</td> */}
-                    <td>{user.companyName} | {user.products?.length} | {user.supportPerson?.name}</td>
+                  <tr className="text-sm"><td>{index + 1}</td><td>{user.fullname}</td><td>{user.email} | {user.mobileNumber}</td><td>{user.companyName} | {user.products?.length} | {user.supportPerson?.name}</td>
 
 <td className="py-2">
   <div className="flex items-center gap-2">
-{selectedRemark === "Other" ? (
-  <input
-    type="text"
-    placeholder="Enter custom remark"
-    value={customRemarks}
-    onChange={(e) => handleCustomRemarkChange(user._id, e.target.value)}
-    className="border px-3 py-1 rounded text-sm bg-white shadow-sm mt-1"
-  />
-) : null}
 <div className="flex flex-col space-y-1">
   <select
     value={selectedRemarks[user._id] || user.remark || ""}
@@ -334,6 +370,7 @@ const saveRemark = async (userId) => {
 <option value="Not Reachable">Not Reachable</option>
 <option value="Whatsapp Only">Whatsapp Only</option>
 <option value="Spam Lead">Spam Lead</option>
+<option value="Paid Client">Paid Client</option>
     <option value="Other">Other</option>
   </select>
 
