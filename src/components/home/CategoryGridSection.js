@@ -13,7 +13,7 @@ const CategoryGridSection = ({ categories }) => {
   }
 
   return (
-    <div className="space-y-16  p-4  sm:p-6 lg:p-10 bg-gray-200 pt-5 pb-5">
+    <div className="space-y-16  p-4  sm:p-6 lg:p-10 bg-gray-100 pt-5 pb-5">
       {categories.map((category) => (
         <div key={category._id} className="bg-white shadow-md rounded-xl p-6">
           {/* Header */}
@@ -21,12 +21,13 @@ const CategoryGridSection = ({ categories }) => {
             <h2 className="text-2xl font-bold text-gray-800 capitalize">
               {category.name}
             </h2>
-          <Link
+  <Link
   href={`/seller/${category.categoryslug}`}
-  className="inline-block bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white font-medium px-5 py-2 rounded-full text-sm shadow-md transition-all duration-300"
+  className="text-sm text-blue-600 hover:text-blue-800 underline hover:no-underline transition duration-200"
 >
   View All
 </Link>
+
 
           </div>
 
@@ -60,10 +61,8 @@ const CategoryGridSection = ({ categories }) => {
       ))}
     </div>
   </div>
+  
 </div>
-
-
-
 
             {/* Right: Subcategories with images */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:col-span-4">
@@ -101,12 +100,9 @@ const CategoryGridSection = ({ categories }) => {
     ))}
   </ul>
 </div>
-
 </Link>
-
   ))}
 </div>
-
           </div>
         </div>
       ))}

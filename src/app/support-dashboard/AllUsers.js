@@ -14,21 +14,32 @@ const AllUsers = ({ supportPersonId }) => {
   const [searchDate, setSearchDate] = useState(""); // ✅ Search state for registration date
   const [loading, setLoading] = useState(true);
 
+const [remarkUpdates, setRemarkUpdates] = useState({});
+const [selectedRemark, setSelectedRemark] = useState("");
+const [selectedRemarks, setSelectedRemarks] = useState({});
+const [customRemarks, setCustomRemarks] = useState({});
+
+const handleCustomRemarkChange = (userId, value) => {
+  setCustomRemarks((prev) => ({
+    ...prev,
+    [userId]: value,
+  }));
+  handleRemarkChange(userId, value);
+};
+
+
+useEffect(() => {
+  const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  tooltipTriggerList.forEach((tooltipTriggerEl) => {
+    new window.bootstrap.Tooltip(tooltipTriggerEl);
+  });
+}, []);
 
   useEffect(() => {
     if (supportPersonId) {
       fetchUsers(); // fetch only when supportPersonId exists
     }
   }, [supportPersonId]);
-  
-
-  useEffect(() => {
-    if (supportPersonId) {
-      console.log("Support Person ID from prop:", supportPersonId);
-      fetchUsers();
-    }
-  }, [supportPersonId]);
-  
   
   
   const fetchUsers = async () => {
@@ -52,6 +63,53 @@ const AllUsers = ({ supportPersonId }) => {
   };
   
 
+  const handleRemarkChange = (userId, newRemark) => {
+  setRemarkUpdates((prev) => ({
+    ...prev,
+    [userId]: newRemark,
+  }));
+};
+
+const saveRemark = async (userId) => {
+  const remark = remarkUpdates[userId];
+  if (!remark) return toast.error("Please select a remark.");
+
+  try {
+    const res = await fetch(`/api/adminprofile/users?id=${userId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ remark }),
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      toast.success("Remark updated successfully");
+
+      // ✅ Update the user's remark in local users state
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user._id === userId ? { ...user, remark } : user
+        )
+      );
+
+      // ✅ Clear the temporary update value
+      setRemarkUpdates((prev) => {
+        const newUpdates = { ...prev };
+        delete newUpdates[userId];
+        return newUpdates;
+      });
+    } else {
+      toast.error("Failed to update remark: " + data.message);
+    }
+  } catch (error) {
+    console.error(error);
+    toast.error("Something went wrong");
+  }
+};
+
+
   // ✅ Handle Delete Function
   const handleDeleteUser = () => {
     Swal.fire({
@@ -62,7 +120,6 @@ const AllUsers = ({ supportPersonId }) => {
     });
   };
 
-
   // ✅ Handle Delete Function
    const handleDelete = () => {
      Swal.fire({
@@ -72,7 +129,6 @@ const AllUsers = ({ supportPersonId }) => {
        confirmButtonColor: "#3085d6",
      });
    };
-
 
   // ✅ Handle search input change
   const handleSearch = (e) => {
@@ -165,9 +221,19 @@ const AllUsers = ({ supportPersonId }) => {
             <tr>
               <th>#</th>
               <th>Full Name</th>
-              <th>Email</th>
-              <th>Mobile</th>       
-              <th>Company | TP | SP </th>
+              <th>Email | Mobile</th>
+              <th>
+  <span
+    data-bs-toggle="tooltip"
+    data-bs-placement="top"
+    title="TP = Total Products | SP = Support Person"
+    style={{ cursor: 'help', textDecoration: 'underline dotted' }}
+  >
+    Company | TP | SP
+  </span>
+</th>
+
+              <th>Remark</th>
               <th>Registered On</th> {/* ✅ Added Date */}
               <th>Action</th>
             </tr>
@@ -179,10 +245,84 @@ const AllUsers = ({ supportPersonId }) => {
                   <tr className="text-sm">
                     <td>{index + 1}</td>
                     <td>{user.fullname}</td>
-                    <td>{user.email}</td>
-                    <td>{user.mobileNumber}</td>
+                    <td>{user.email} | {user.mobileNumber}</td>
                  <td>{user.companyName} | {user.products?.length} | {user.supportPerson?.name}</td>
-                   <td>
+
+<td className="py-2">
+  <div className="flex items-center gap-2">
+{selectedRemark === "Other" ? (
+  <input
+    type="text"
+    placeholder="Enter custom remark"
+    value={customRemarks}
+    onChange={(e) => handleCustomRemarkChange(user._id, e.target.value)}
+    className="border px-3 py-1 rounded text-sm bg-white shadow-sm mt-1"
+  />
+) : null}
+<div className="flex flex-col space-y-1">
+  <select
+    value={selectedRemarks[user._id] || user.remark || ""}
+    onChange={(e) => {
+      const value = e.target.value;
+      setSelectedRemarks((prev) => ({
+        ...prev,
+        [user._id]: value,
+      }));
+      if (value !== "Other") {
+        handleRemarkChange(user._id, value);
+      }
+    }}
+    className="border px-3 py-1 rounded text-sm bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+  >
+    <option value="">-- Select / Update Remark --</option>
+<option value="Interested">Interested</option>
+<option value="Not Interested">Not Interested</option>
+<option value="Don't Pick Call">Don't Pick Call</option>
+<option value="Follow Up Needed">Follow Up Needed</option>
+<option value="Wrong Number">Wrong Number</option>
+<option value="Converted">Converted</option>
+<option value="Call Later">Call Later</option>
+<option value="Number Switched Off">Number Switched Off</option>
+<option value="Busy">Busy</option>
+<option value="No Requirement">No Requirement</option>
+<option value="Out of Budget">Out of Budget</option>
+<option value="Invalid Number">Invalid Number</option>
+<option value="Duplicate Lead">Duplicate Lead</option>
+<option value="Language Issue">Language Issue</option>
+<option value="Not Reachable">Not Reachable</option>
+<option value="Whatsapp Only">Whatsapp Only</option>
+<option value="Spam Lead">Spam Lead</option>
+    <option value="Other">Other</option>
+  </select>
+
+  {selectedRemarks[user._id] === "Other" && (
+<input
+  type="text"
+  placeholder="Enter custom remark"
+  value={customRemarks[user._id] || ""}
+  onChange={(e) => handleCustomRemarkChange(user._id, e.target.value)}
+  className="border px-3 py-1 rounded text-sm bg-white shadow-sm"
+/>
+  )}
+</div>
+
+
+
+    <button
+      onClick={() => saveRemark(user._id)}
+      className="bg-blue-600 hover:bg-blue-700 transition-all duration-150 text-white px-3 py-1 rounded text-sm shadow"
+    >
+      Save
+    </button>
+  </div>
+  {user.remark && (
+    <div className="text-xs text-gray-600 mt-1">
+      Current: <span className="font-medium text-black">{user.remark}</span>
+    </div>
+  )}
+</td>
+
+<td>
   {user.createdAt
     ? new Date(user.createdAt).toLocaleString("en-GB", {
         day: "2-digit",
@@ -200,6 +340,7 @@ const AllUsers = ({ supportPersonId }) => {
                        🗑️
                       </Button> 
                     </td>
+
                   </tr><tr><td colSpan="7" className="td-bg">
                       {user.products?.length > 0 ? (
                         <Accordion>

@@ -88,5 +88,43 @@ export async function GET() {
 }
 
 
+export async function PATCH(req) {
+  await connectdb();
+
+  const { searchParams } = new URL(req.url);
+  const userId = searchParams.get("id");
+
+  if (!userId) {
+    return NextResponse.json({ message: "User ID is required" }, { status: 400 });
+  }
+
+  const body = await req.json();
+  const { remark } = body;
+
+  if (!remark) {
+    return NextResponse.json({ message: "Remark is required" }, { status: 400 });
+  }
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { remark },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      message: "Remark updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    return NextResponse.json({ message: "Error updating remark", error }, { status: 500 });
+  }
+}
+
+
 
 

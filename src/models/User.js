@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     ref: "SupportPerson",
   },
   
-      fullname: String,
+    fullname: String,
     email: { type: String, unique: true },
     mobileNumber: { type: String, unique: true }, 
     alternateMobileNumber: String, 
@@ -20,6 +20,11 @@ const userSchema = new mongoose.Schema({
     otp: String,
     otpExpires: Date,
     isVerified: { type: Boolean, default: false },
+
+  remark: {
+    type: String,
+    default: ""
+  },
 
     // ✅ Add this line to reference products
     products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
