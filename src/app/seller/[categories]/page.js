@@ -32,6 +32,9 @@ export async function generateMetadata({ params }) {
       return {
         title: "Category Not Found",
         description: "The requested category does not exist.",
+        alternates: {
+          canonical: `https://dialexportmart.com/seller/not-found`,
+        },
       };
     }
 
@@ -39,6 +42,9 @@ export async function generateMetadata({ params }) {
       title: category.metatitle || category.name,
       description: category.metadescription || `Explore ${category.name} products.`,
       keywords: category.metakeywords || "",
+      alternates: {
+        canonical: `https://dialexportmart.com/seller/${category.categoryslug}`,
+      },
     };
   } catch (err) {
     console.error("Error fetching metadata:", err);
