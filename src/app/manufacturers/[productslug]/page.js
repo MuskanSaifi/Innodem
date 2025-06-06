@@ -67,7 +67,7 @@ export async function generateMetadata({ params }) {
       description: metaDescription || generateMetaDescription(),
       keywords: metaKeywords || name?.split(" ")?.join(", "),
        alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_API_BASE_URL}/manufacturers/${productslug}`,
+        canonical: `https://dialexportmart.com/manufacturers/${productslug}`,
       },
     };
   } catch (err) {
@@ -78,7 +78,6 @@ export async function generateMetadata({ params }) {
        alternates: {
         canonical: `${process.env.NEXT_PUBLIC_BASE_URL}/products/not-found`,
       },
-      
     };
   }
 }
