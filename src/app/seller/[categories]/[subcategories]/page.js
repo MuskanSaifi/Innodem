@@ -42,6 +42,9 @@ export async function generateMetadata({ params }) {
       return {
         title: "Subcategory Not Found",
         description: "The requested subcategory does not exist.",
+          alternates: {
+          canonical: `https://dialexportmart.com/seller/not-found`,
+        },
       };
     }
 
@@ -51,6 +54,9 @@ export async function generateMetadata({ params }) {
         subcategory.metadescription ||
         `Explore ${subcategory.name} products under ${category.name}.`,
       keywords: subcategory.metakeywords || "",
+       alternates: {
+        canonical: `https://dialexportmart.com/seller/${category.categoryslug}/${subcategory.subcategoryslug}`,
+      },
     };
   } catch (error) {
     console.error("Error generating metadata:", error);
