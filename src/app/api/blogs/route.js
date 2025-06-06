@@ -98,6 +98,11 @@ export async function POST(req) {
   }
 }
 
+
+export const config = {
+  runtime: "nodejs"  // ✅ Add this here to make formData work in production
+};
+
 export async function PATCH(req) {
   try {
     await connectdb();
