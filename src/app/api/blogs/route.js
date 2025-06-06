@@ -30,6 +30,10 @@ const uploadToCloudinary = async (image) => {
   }
 };
 
+export const config = {
+  runtime: "nodejs"
+};
+
 // ✅ Create Blog
 export async function POST(req) {
   try {
@@ -97,11 +101,6 @@ export async function POST(req) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
-
-
-export const config = {
-  runtime: "nodejs"  // ✅ Add this here to make formData work in production
-};
 
 export async function PATCH(req) {
   try {
