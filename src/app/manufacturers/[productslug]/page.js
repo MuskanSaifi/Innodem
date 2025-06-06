@@ -66,12 +66,19 @@ export async function generateMetadata({ params }) {
       title: metaTitle || getOptimizedTitle(),
       description: metaDescription || generateMetaDescription(),
       keywords: metaKeywords || name?.split(" ")?.join(", "),
+       alternates: {
+        canonical: `${process.env.NEXT_PUBLIC_API_BASE_URL}/manufacturers/${productslug}`,
+      },
     };
   } catch (err) {
     console.error("❌ Error generating metadata:", err);
     return {
       title: "Product Not Found",
       description: "The product you're looking for could not be found.",
+       alternates: {
+        canonical: `${process.env.NEXT_PUBLIC_BASE_URL}/products/not-found`,
+      },
+      
     };
   }
 }

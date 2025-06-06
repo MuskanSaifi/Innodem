@@ -30,10 +30,6 @@ const uploadToCloudinary = async (image) => {
   }
 };
 
-export const config = {
-  runtime: "nodejs"
-};
-
 // ✅ Create Blog
 export async function POST(req) {
   try {
