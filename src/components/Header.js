@@ -432,7 +432,7 @@ export default function Header() {
             <input
               className="product-search form-control"
               type="text"
-              placeholder="🔍 Search products..."
+              placeholder="🔍 Dial Export Mart | B2B Marketplace in India"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />

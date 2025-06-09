@@ -37,14 +37,16 @@ export default function Home() {
 
       <div className="banner-container">
         <Link href="/all-categories">
-        <Image
-        className="m-auto"
-        src="/assets/subbanner/banner-min.png" // Path relative to the 'public' folder
-        alt="Banner for website dial"
-        width={2000} // Replace with desired width
-        height={400} // Replace with desired height
-        priority // Optional: To prioritize loading this image
-        />
+    <Image
+  className="m-auto"
+  src="/assets/subbanner/banner-min.png"
+  alt="Banner for website dial"
+  width={2000}
+  height={400}
+  priority
+  quality={100}
+/>
+
         </Link>
       </div>
 
