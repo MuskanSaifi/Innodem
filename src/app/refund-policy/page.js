@@ -22,7 +22,7 @@ export const metadata = {
     siteName: "Dial Export Mart",
     images: [
       {
-        url: "/assets/pagesbanner/refund-policy.png", // ✅ Avoid space in filename
+        url: "/assets/pagesbanner/Refund Policy.png", // ✅ Avoid space in filename
         width: 1200,
         height: 630,
         alt: "Refund Policy Banner"

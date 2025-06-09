@@ -32,6 +32,25 @@ export const metadata = {
   ],
   publisher: "Dial Export Mart",
   metadataBase: new URL("https://dialexportmart.com"),
+    // ✅ Open Graph
+  openGraph: {
+    title: "Dial Export Mart | India’s Leading B2B Marketplace",
+    description:
+      "Find trusted exporters, suppliers, and global buyers with Dial Export Mart. India’s top B2B platform for growing your international trade.",
+    url: "https://dialexportmart.com",
+    siteName: "Dial Export Mart",
+    images: [
+      {
+        url: "/assets/bannerslider/banner-4.png", 
+        width: 1200,
+        height: 630,
+        alt: "Dial Export Mart - India’s Leading B2B Marketplace",
+      },
+    ],
+    locale: "en_IN",
+    type: "website",
+  },
+
 };
 
 

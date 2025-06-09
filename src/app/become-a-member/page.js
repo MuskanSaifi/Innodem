@@ -18,7 +18,7 @@ export const metadata = {
     siteName: "Dial Export Mart",
     images: [
       {
-        url: "https://dialexportmart.com/assets/pagesbanner/Become-a-Member.png",
+        url: "/assets/pagesbanner/Become-a-Member.png",
         width: 1200,
         height: 630,
         alt: "Become a Member Banner",
