@@ -542,15 +542,21 @@ Hi! {user.fullname || "User"}
       </button>
 
       {/* Bottom Drawer */}
-      <div
-        className={`fixed bottom-0 bottom-drawer  left-0 w-full bg-white shadow-lg transition-transform ${
-          isOpen ? "translate-y-0" : "translate-y-full"
-        }`}
-        style={{ height: "60vh" }}
-      >
+   <div
+  className={`fixed bottom-0 left-0 w-full bg-white shadow-lg transition-transform ${
+    isOpen ? "translate-y-0" : "translate-y-full"
+  } h-[60vh]`}
+>
+
         {/* Drawer Header */}
         <div className="flex items-center justify-between px-4 py-2 border-b">
-          <h4 className="text-lg font-semibold mb-0"> {user ? <span style={{color:"#6d4aae"}}>👤 Hi! {user.fullname || "User"}</span> : "Welcome Guest"} </h4>
+<h4 className="text-lg font-semibold mb-0">
+  {user ? (
+    <span className="text-purple-700">👤 Hi! {user.fullname || "User"}</span>
+  ) : (
+    "Welcome Guest"
+  )}
+</h4>
           <button className="text-gray-600" onClick={toggleDrawer}>
             ✖
           </button>

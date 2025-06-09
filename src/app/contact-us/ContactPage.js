@@ -51,16 +51,16 @@ const ContactPage = () => {
   return (
     <>
       <div>
-          <Image
-            src={"/assets/pagesbanner/Contact Us.png" || "/placeholder.png"}
-            alt="Blog Banner"
-            layout="responsive" // Makes the image 100% width
-            width={1000} // Base width (ignored in responsive mode)
-            height={450} // Aspect ratio is maintained
-            className="rounded img-fluid common-shad"
-            style={{ objectFit: "cover", width: "100%" }} // Ensures it stretches to full width
-            priority
-          />
+ <Image
+  src="/assets/pagesbanner/Contact Us.png"
+  alt="Blog Banner"
+  layout="responsive"
+  width={1000}
+  height={450}
+  className="rounded img-fluid common-shad img-cover"
+  priority
+/>
+
         </div>
       <section className="mt-5 mb-5">
         <div className="container mx-auto px-4">

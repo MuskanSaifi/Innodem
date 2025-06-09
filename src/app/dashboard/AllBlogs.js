@@ -162,18 +162,16 @@ const handleSave = async () => {
   <div className="d-flex flex-wrap gap-3">
     <input
       type="text"
-      className="form-control"
+  className="form-control max-w-[250px]"
       placeholder="Search by title or author"
       value={searchTerm}
       onChange={handleSearch}
-      style={{ maxWidth: "250px" }}
     />
     <input
       type="date"
-      className="form-control"
+  className="form-control max-w-[200px]"
       value={searchDate}
       onChange={handleDateFilter}
-      style={{ maxWidth: "200px" }}
     />
     <button className="btn btn-secondary">
       Reset
@@ -203,14 +201,13 @@ const handleSave = async () => {
                 <tr key={blog._id}>
                   <td>{index + 1}</td>
                   <td>
-                    <Image
-                      src={blog.image?.startsWith("http") ? blog.image : "/placeholder.png"}
-                      alt={blog.title}
-                      width={80}
-                      height={80}
-                      className="rounded img-fluid"
-                      style={{ objectFit: "cover" }}
-                    />
+                 <Image
+  src={blog.image?.startsWith("http") ? blog.image : "/placeholder.png"}
+  alt={blog.title}
+  width={80}
+  height={80}
+  className="rounded img-fluid object-cover"
+/>
                   </td>
 <td>
 <Link href={`/blogs/${blog.slug}`} target="_blank">
@@ -236,26 +233,15 @@ const handleSave = async () => {
 {/* Edit Modal */}
 {showModal && selectedBlog && (
   <div
-    className="modal fade show d-block"
+  className="modal fade show d-block bg-black bg-opacity-50 flex justify-center items-center z-[1050] "
     tabIndex="-1"
     role="dialog"
-    style={{
-      background: "rgba(0,0,0,0.5)",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      zIndex: 1050
-    }}
   >
-<div className="modal-dialog m-5" role="document" style={{ maxWidth: "100%" }}>
-  <div
-    className="modal-content p-3"
-    style={{
-      width: "100%",
-      borderRadius: "12px",
-      boxShadow: "0 0 20px rgba(0,0,0,0.2)",
-    }}
-  >
+<div className="modal-dialog m-5 max-w-full" role="document">
+<div
+  className="modal-content p-3 w-full rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.2)]"
+>
+
         <div className="modal-header border-bottom-0">
           <h5 className="modal-title">✏️ Edit Blog</h5>
           <button

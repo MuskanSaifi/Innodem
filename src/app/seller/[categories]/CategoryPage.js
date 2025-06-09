@@ -198,14 +198,13 @@ const CategoryPage = ({ categorySlug }) => {
                 <div key={`${product._id}-${index}`} className="col-md-6">
                   <div className="card border-0 shadow-sm p-3 rounded-3">
                     <div className="position-relative text-center">
-                      <Image
-                        src={product.images?.[0]?.url || "/placeholder.png"}
-                        alt={product.name}
-                        width={180}
-                        height={180}
-                        className="rounded img-fluid m-auto"
-                        style={{ objectFit: "cover" }}
-                      />
+                    <Image
+  src={product.images?.[0]?.url || "/placeholder.png"}
+  alt={product.name}
+  width={180}
+  height={180}
+  className="rounded-md object-cover mx-auto block"
+/>
                     </div>
                     <h6 className="mt-2 text-primary text-sm text-center">
                       {product.name}

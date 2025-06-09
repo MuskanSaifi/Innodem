@@ -151,18 +151,18 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
             <p className="text-danger">{error}</p>
           ) : product ? (
             <div className="card p-4 common-shad border-0 rounded">
-              <Image
-                src={product?.images?.[0]?.url || "/placeholder.png"}
-                alt={product?.name || "Product Image"}
-                width={400}
-                height={400}
-                className="rounded img-fluid m-auto"
-                style={{ objectFit: "cover" }}
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "/placeholder.png";
-                }}
-              />
+          <Image
+  src={product?.images?.[0]?.url || "/placeholder.png"}
+  alt={product?.name || "Product Image"}
+  width={400}
+  height={400}
+  className="rounded-md object-cover mx-auto block"
+  onError={(e) => {
+    e.currentTarget.onerror = null;
+    e.currentTarget.src = "/placeholder.png";
+  }}
+/>
+
               <h2 className="mt-3 text-primary">{product.name}</h2>
               <p className="text-secondary">
                 <strong>Price:</strong> ₹{product.price} {product.currency || "INR"}

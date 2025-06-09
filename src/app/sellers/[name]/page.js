@@ -81,14 +81,14 @@ const ProductPage = () => {
                   <div key={product._id} className="card p-3 mb-3">
                     <div className="row g-3 align-items-center">
                       <div className="col-md-3 text-center">
-                      <Image
-  src={productImage || "/placeholder.png"} // Ensure a fallback image
+<Image
+  src={productImage || "/placeholder.png"} // Fallback image
   alt={product.name || "Product Image"}
   width={100}
   height={100}
-  className="img-fluid rounded product-image"
-  style={{ objectFit: "cover", borderRadius: "5px" }}
+  className="rounded-md object-cover product-image"
 />
+
                       </div>
                       <div className="col-md-5">
                         <h5 className="text-primary bg-light p-1">{product.name}</h5>

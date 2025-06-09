@@ -254,18 +254,18 @@ const matchesRemark = (
       placeholder="Search by name, email, company name, or phone number"
       value={searchTerm}
       onChange={handleSearch}
-      style={{ minWidth: "250px" }}
+  className="min-w-[250px]"
     />
     <Form.Control
       type="date"
       value={searchDate}
       onChange={handleDateFilter}
-      style={{ minWidth: "180px" }}
+       className="min-w-[180px]"
     />
     <Form.Select
       value={remarkFilter}
       onChange={(e) => setRemarkFilter(e.target.value)}
-      style={{ minWidth: "200px" }}
+     className="min-w-[200px]"
     >
       <option value="">All Remarks</option>
       <option value="Interested">Interested</option>
@@ -295,7 +295,7 @@ const matchesRemark = (
         setSearchDate("");
         setRemarkFilter("");
       }}
-      style={{ minWidth: "100px" }}
+      className="min-w-[100px]"
     >
       Reset
     </Button>
@@ -315,14 +315,15 @@ const matchesRemark = (
               <th>Email | Mobile</th>
               {/* <th>Mobile</th> */}
               <th>
-  <span
-    data-bs-toggle="tooltip"
-    data-bs-placement="top"
-    title="TP = Total Products | SP = Support Person"
-    style={{ cursor: 'help', textDecoration: 'underline dotted' }}
-  >
-    Company | TP | SP
-  </span>
+<span
+  data-bs-toggle="tooltip"
+  data-bs-placement="top"
+  title="TP = Total Products | SP = Support Person"
+  className="cursor-help underline decoration-dotted"
+>
+  Company | TP | SP
+</span>
+
 </th>
               <th>Remark</th>
               <th>Registered On</th> {/* ✅ Added Date */}
@@ -475,8 +476,7 @@ const matchesRemark = (
   alt="Product"
   width={100}
   height={100}
-  className="me-3 all-pro-img p-2 common-shad"
-  style={{ objectFit: "cover", borderRadius: "5px" }}
+  className="me-3 p-2 rounded-[5px] object-cover common-shad"
   unoptimized
 />
 

@@ -209,18 +209,18 @@ const filteredUsers = users.filter((user) => {
     placeholder="Search by name, email, company name, or phone number"
     value={searchTerm}
     onChange={handleSearch}
-    style={{ minWidth: "250px" }}
+    className="min-w-[250px]"
   />
   <Form.Control
     type="date"
     value={searchDate}
     onChange={handleDateFilter}
-    style={{ minWidth: "180px" }}
+   className="min-w-[180px]"
   />
   <Form.Select
     value={remarkFilter}
     onChange={(e) => setRemarkFilter(e.target.value)}
-    style={{ minWidth: "200px" }}
+   className="min-w-[200px]"
   >
     <option value="">All Remarks</option>
     <option value="Interested">Interested</option>
@@ -250,7 +250,7 @@ const filteredUsers = users.filter((user) => {
       setSearchDate("");
       setRemarkFilter("");
     }}
-    style={{ minWidth: "100px" }}
+   className="min-w-[100px]"
   >
     Reset
   </Button>
@@ -270,14 +270,15 @@ const filteredUsers = users.filter((user) => {
               <th>Full Name</th>
               <th>Email | Mobile</th>
               <th>
-  <span
-    data-bs-toggle="tooltip"
-    data-bs-placement="top"
-    title="TP = Total Products | SP = Support Person"
-    style={{ cursor: 'help', textDecoration: 'underline dotted' }}
-  >
-    Company | TP | SP
-  </span>
+<span
+  data-bs-toggle="tooltip"
+  data-bs-placement="top"
+  title="TP = Total Products | SP = Support Person"
+  className="cursor-help underline decoration-dotted"
+>
+  Company | TP | SP
+</span>
+
 </th>
 
               <th>Remark</th>
@@ -428,14 +429,14 @@ const filteredUsers = users.filter((user) => {
                                     <div className="col-md-2">
 
 <Image
-  src={product?.images[0]?.url || "/default-image.jpg"} // ✅ Fallback image
+  src={product?.images[0]?.url || "/default-image.jpg"}
   alt="Product"
   width={100}
   height={100}
-  className="me-3 all-pro-img p-2 common-shad"
-  style={{ objectFit: "cover", borderRadius: "5px" }}
+  className="mr-3 p-2 rounded-md shadow-md object-cover"
   unoptimized
 />
+
                                     </div>
 
                                     <div className="col-md-2">

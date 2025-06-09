@@ -31,13 +31,10 @@ const Payments = () => {
 
   return (
     <div className="container mt-5">
-      <div className="card shadow-lg p-4 border-0 rounded-4 position-relative" style={{ overflow: 'hidden' }}>
+<div className="bg-white shadow-lg p-4 border-0 rounded-2xl relative overflow-hidden">
       <h1 className="fs-4 fw-bold mb-4">💸 All User Payments</h1>
 
-        <div
-          className="position-absolute top-16 start-0 w-100"
-          style={{ zIndex: 1050 }}
-        >
+  <div className="absolute top-16 left-0 w-full z-[1050]">
           <input
             type="text"
             className="form-control shadow-sm w-50 m-auto"
@@ -48,12 +45,12 @@ const Payments = () => {
         </div>
 
         {/* Padding to prevent input overlap */}
-        <div style={{ paddingTop: '40px' }}>
+<div className="pt-10">
         <div className="d-flex justify-content-between align-items-center mb-3">
   <h5 className="text-primary">Total Users: {filteredPayments.length}</h5>
 </div>
 
-<div className="overflow-auto" style={{ maxHeight: '500px' }}>
+<div className="overflow-auto max-h-[500px]">
   {filteredPayments.length === 0 ? (
     <p className="text-center text-muted">No matching users found.</p>
   ) : (

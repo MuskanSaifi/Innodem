@@ -113,10 +113,8 @@ const Faq = () => {
           </div>
 
           {/* FAQ List with max height */}
-          <div
-            className="space-y-4 overflow-y-auto pr-2"
-            style={{ maxHeight: "470px" }}
-          >
+       <div className="space-y-4 overflow-y-auto pr-2 max-h-[470px]">
+
             {filteredFaqs.length > 0 ? (
               filteredFaqs.map((faq, index) => (
               <div

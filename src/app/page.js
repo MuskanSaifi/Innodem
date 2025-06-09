@@ -100,7 +100,7 @@ export default function Home() {
       <ContactRating/>
 
    {/* Your page content */}
-      <div style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 999 }}>
+      <div className="fixed bottom-5 right-5 z-[999]">
         <CustomChatBot />
       </div>
 

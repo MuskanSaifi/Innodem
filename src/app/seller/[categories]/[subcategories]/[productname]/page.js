@@ -130,14 +130,14 @@ const ProductDetailPage = () => {
             <p className="text-danger">{error}</p>
           ) : product ? (
             <div className="card p-4 common-shad border-0 rounded">
-              <Image
-                src={product.images?.[0]?.url || "/placeholder.png"}
-                alt={product.name}
-                width={400}
-                height={400}
-                className="rounded img-fluid m-auto"
-                style={{ objectFit: "cover" }}
-              />
+      <Image
+  src={product.images?.[0]?.url || "/placeholder.png"}
+  alt={product.name}
+  width={400}
+  height={400}
+  className="rounded-md object-cover mx-auto block"
+/>
+
               <h2 className="mt-3 text-primary">{product.name}</h2>
               <p className="text-secondary">
                 <strong>Price:</strong> ₹{product.price}{" "}

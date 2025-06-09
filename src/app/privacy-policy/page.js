@@ -53,16 +53,16 @@ const page = () => {
   return (
     <>
           <div>
-              <Image
-                src={"/assets/pagesbanner/Privacy Policy.png" || "/placeholder.png"}
-                alt="Blog Banner"
-                layout="responsive" // Makes the image 100% width
-                width={1000} // Base width (ignored in responsive mode)
-                height={450} // Aspect ratio is maintained
-                className="rounded img-fluid common-shad"
-                style={{ objectFit: "cover", width: "100%" }} // Ensures it stretches to full width
-                priority
-              />
+           <Image
+  src={"/assets/pagesbanner/Privacy Policy.png" || "/placeholder.png"}
+  alt="Blog Banner"
+  layout="responsive"
+  width={1000}
+  height={450}
+  className="rounded-md object-cover w-full"
+  priority
+/>
+
             </div>
     <section>
         <div className='container mx-auto p-6'>

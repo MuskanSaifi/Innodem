@@ -26,7 +26,7 @@ const AdminLoginModal = () => {
 
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
-      <div className="card p-4 shadow-lg" style={{ width: "350px" }}>
+<div className="card p-4 shadow-lg w-full sm:w-[350px]">
         <h3 className="text-center mb-3">Admin Login</h3>
 
         <div className="mb-3">

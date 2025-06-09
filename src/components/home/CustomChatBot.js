@@ -46,7 +46,7 @@ export default function CustomChatBot() {
   };
 
   return (
-    <div style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 1000 }}>
+<div className="fixed bottom-5 right-5 z-[1000]">
       {isOpen && (
         <div className="chatbot-container">
           <button className="close-btn" onClick={() => setIsOpen(false)}>×</button>

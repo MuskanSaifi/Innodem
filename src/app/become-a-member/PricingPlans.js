@@ -66,16 +66,16 @@ const PricingPlans = () => {
   return (
     <>
       <div className="text-center">
-        <Image
-          src={"/assets/pagesbanner/Become-a-Member.png" || "/placeholder.png"}
-          alt="Blog Banner"
-          layout="responsive"
-          width={1425}
-          height={486}
-          className="rounded img-fluid"
-          style={{ objectFit: "cover", width: "100%" }}
-          priority
-        />
+   <Image
+  src="/assets/pagesbanner/Become-a-Member.png"
+  alt="Blog Banner"
+  layout="responsive"
+  width={1425}
+  height={486}
+  className="rounded w-full object-cover"
+  priority
+/>
+
       </div>
 
       <section className="pricing-section rounded-4 mt-5 ">

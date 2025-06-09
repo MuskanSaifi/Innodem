@@ -537,15 +537,15 @@ const handleSubmit = async (e) => {
                                 {product?.images?.length > 0 && (
                                     <div className="mt-2 d-flex">
                                         {product?.images.map((img, index) => (
-                                            <Image 
-  key={index} 
-  src={img || "/placeholder.png"} 
-  alt={`Preview ${index}`} 
-  width={50} 
-  height={50} 
-  className="me-2" 
-  style={{ borderRadius: 5 }} 
+<Image
+  key={index}
+  src={img || "/placeholder.png"}
+  alt={`Preview ${index}`}
+  width={50}
+  height={50}
+  className="mr-2 rounded"
 />
+
 ))}
                                     </div>
                                 )}

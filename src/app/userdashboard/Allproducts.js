@@ -315,15 +315,15 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
           return (
             <div key={product._id} className="p-3 mb-3 bg-white all-pro-img rounded-3">
             <div className="d-flex flex-column flex-md-row align-items-start gap-3">              
-              <Image
-                src={productImage || "/default-image.jpg"}
-                alt="Product"
-                width={100}
-                height={100}
-                className="all-pro-img p-2"
-                style={{ objectFit: "cover", borderRadius: "5px" }}
-                unoptimized
-              />
+            <Image
+  src={productImage || "/default-image.jpg"}
+  alt="Product"
+  width={100}
+  height={100}
+  className="all-pro-img p-2 object-cover rounded-[5px]"
+  unoptimized
+/>
+
           
               <div className="w-100">
                 <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
@@ -350,7 +350,7 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
                   <span className="text-muted text-sm">{product.minimumOrderQuantity || "N/A"} Min Order</span>
                 </div>
           
-                <div className="progress mt-2" style={{ height: "6px" }}>
+<div className="progress mt-2 h-1.5">
                   <div
                     className="progress-bar bg-success"
                     role="progressbar"

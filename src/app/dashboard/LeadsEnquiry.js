@@ -188,13 +188,12 @@ const LeadsEnquiry = () => {
                 <>
                   {selectedInfo?.images?.[0]?.url && (
                     <div className="mb-3 relative w-[70px] h-[70px]">
-                      <Image
-                        src={selectedInfo.images[0].url}
-                        alt={selectedInfo.name}
-                        fill
-                        style={{ objectFit: 'contain' }}
-                        className="rounded-md border"
-                      />
+                    <Image
+  src={selectedInfo.images[0].url}
+  alt={selectedInfo.name}
+  fill
+  className="rounded-md border object-contain"
+/>
                     </div>
                   )}
                   <div><strong>Name:</strong> {selectedInfo?.name || 'N/A'}</div>

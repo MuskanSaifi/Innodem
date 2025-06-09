@@ -108,21 +108,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <img
     height="1"
     width="1"
-    style={{ display: "none" }}
+    className="hidden"
     src="https://www.facebook.com/tr?id=1743615176583640&ev=PageView&noscript=1"
+    alt="Meta Pixel"
   />
 </noscript>
 
 
          {/* ✅ GTM noscript fallback */}
-         <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-PHL73GLL"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-          ></iframe>
-        </noscript>
+<noscript>
+  <iframe
+    src="https://www.googletagmanager.com/ns.html?id=GTM-PHL73GLL"
+    height="0"
+    width="0"
+    className="hidden invisible"
+    title="Google Tag Manager"
+  ></iframe>
+</noscript>
 
 
 

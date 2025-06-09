@@ -316,15 +316,15 @@ export default function Login() {
             <div className="bg-white p-6 rounded shadow-md w-96">
                 <h2 className="text-2xl font-bold mb-4 text-center">Login with Mobile </h2>
 
-                <Image
-                src={"/assets/2-copy-0.png"  || "/placeholder.png"}
-                alt="login user"
-                width={180}
-                height={180}
-                className="rounded img-fluid m-auto"
-                style={{ objectFit: "cover" }}
-                priority={false}
-              />
+           <Image
+  src={"/assets/2-copy-0.png" || "/placeholder.png"}
+  alt="login user"
+  width={180}
+  height={180}
+  className="rounded-md object-cover mx-auto block"
+  priority={false}
+/>
+
 
                 {message && <p className="text-green-600">{message}</p>}
                 {error && <p className="text-red-600">{error}</p>}

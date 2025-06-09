@@ -50,8 +50,8 @@ localStorage.setItem("support_person", JSON.stringify(supportPerson));
 
   
   return (
-  <div className="container d-flex justify-content-center align-items-center mt-5 mb-5" style={{ minHeight: "500px" }}>
-  <div className="card shadow p-4" style={{ width: "100%", maxWidth: "400px", borderRadius: "12px" }}>
+<div className="container mx-auto flex justify-center items-center mt-5 mb-5 min-h-[500px]">
+  <div className="shadow p-4 w-full max-w-md rounded-xl">
     <h3 className="text-center mb-4">Support Person Login</h3>
     <form onSubmit={handleLogin}>
       <div className="mb-3">

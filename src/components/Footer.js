@@ -91,13 +91,14 @@ const Footer = () => {
     });
   };
 
-  const socialLinks = [
-    { icon: <FaFacebookF />, link: "https://www.facebook.com/dialexportmart", color: "#3b5998" },
-    { icon: <FaYoutube />, link: "https://www.youtube.com/@DialExportMart", color: "#ff0000" },
-    { icon: <FaLinkedinIn />, link: "https://www.linkedin.com/company/dialexportmart", color: "#0077b5" },
-    { icon: <FaXTwitter />, link: "https://x.com/DialExportMart", color: "#1da1f2" },
-    { icon: <FaInstagram />, link: "https://www.instagram.com/dialexportmart", color: "#e1306c" },
-  ];
+const socialLinks = [
+  { icon: <FaFacebookF />, link: "https://www.facebook.com/dialexportmart", colorClass: "bg-[#3b5998]" },
+  { icon: <FaYoutube />, link: "https://www.youtube.com/@DialExportMart", colorClass: "bg-[#ff0000]" },
+  { icon: <FaLinkedinIn />, link: "https://www.linkedin.com/company/dialexportmart", colorClass: "bg-[#0077b5]" },
+  { icon: <FaXTwitter />, link: "https://x.com/DialExportMart", colorClass: "bg-[#1da1f2]" },
+  { icon: <FaInstagram />, link: "https://www.instagram.com/dialexportmart", colorClass: "bg-[#e1306c]" },
+];
+
 
   return (
     <>
@@ -182,22 +183,15 @@ const Footer = () => {
               <h5 className="text-lg font-semibold text-white mb-2">Follow Us</h5>
               <div className="flex flex-wrap gap-2">
                 {socialLinks.map((social, index) => (
-                  <Link
-                    key={index}
-                    href={social.link}
-                    target="_blank"
-                    className="rounded-full text-white hover:opacity-80 transition-all"
-                    style={{
-                      backgroundColor: social.color,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "40px",
-                      height: "40px",
-                    }}
-                  >
-                    {social.icon}
-                  </Link>
+<Link
+  key={index}
+  href={social.link}
+  target="_blank"
+  className={`rounded-full text-white hover:opacity-80 transition-all flex items-center justify-center w-10 h-10 ${social.colorClass}`}
+>
+  {social.icon}
+</Link>
+
                 ))}
               </div>
 
@@ -286,14 +280,14 @@ const Footer = () => {
       </footer>
 
       {/* Scroll-to-Top Button */}
-      <button
-        onClick={scrollToTop}
-        className={`fixed bottom-5 right-5 res-des3 text-white p-3  bot-to-top rounded-full shadow-lg transition-opacity ${isVisible ? "opacity-100" : "opacity-0"
-          }`}
-        style={{ width: "50px", height: "50px", zIndex: "1000" }} // Ensure it's always on top
-      >
-        <FaArrowUp size={20} />
-      </button>
+    <button
+  onClick={scrollToTop}
+  className={`fixed bottom-5 right-5 res-des3 text-white p-3 bot-to-top rounded-full shadow-lg transition-opacity
+    ${isVisible ? "opacity-100" : "opacity-0"} w-[50px] h-[50px] z-[1000]`}
+>
+  <FaArrowUp size={20} />
+</button>
+
     </>
   );
 };

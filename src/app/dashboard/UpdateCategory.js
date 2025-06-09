@@ -121,11 +121,13 @@ const UpdateCategory = () => {
   alt="Category Preview" 
   width={100} 
   height={100} 
-  style={{ objectFit: "cover" }}
+  className="object-cover"
   unoptimized // ⚡️ Use this if images are already optimized (e.g., Cloudinary)
   priority // 🚀 Load image faster (optional)
   onError={(e) => console.error("Image failed to load", e)}
-/>        </div>
+/>
+
+    </div>
       )}
 
       {/* Select Subcategories */}
