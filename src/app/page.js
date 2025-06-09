@@ -43,8 +43,9 @@ export default function Home() {
   alt="Banner for website dial"
   width={2000}
   height={400}
-  priority
-  quality={100}
+  quality={90}
+    loading="lazy"           // ✅ Add this line
+
 />
 
         </Link>
@@ -69,6 +70,8 @@ export default function Home() {
           alt="Banner for website dial"
           width={2000} // Replace with desired width
           height={400} // Replace with desired height
+          quality={90}
+  loading="lazy"           
         />
                 </Link>
 

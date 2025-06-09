@@ -29,10 +29,13 @@ const Bannerslider = () => {
                 showStatus={false}
                 renderThumbs={() =>
                   banners.map((src, index) => (
-                    <img
+                    <Image
                       key={index}
                       src={src}
                       alt={`thumb ${index + 1}`}
+                      width={150}               // 👈 Resize thumbs to small preview
+                      height={70}
+                      quality={60}              // 👈 Lower quality for thumbs
                       style={{ objectFit: 'cover' }}
                     />
                   ))
@@ -45,9 +48,9 @@ const Bannerslider = () => {
                       alt={`banner ${index + 1}`}
                       width={2000}
                       height={650}
-                      quality={100}                // ✅ Full Quality
-                      priority={index === 0}        // ✅ Preload first image
-                      placeholder="empty"           // ✅ Disable default blur
+                      quality={90}               // ✅ High quality
+                      priority={index === 0}     // ✅ Preload only first image
+                      placeholder="empty"
                       style={{ objectFit: 'cover', width: '100%', height: 'auto' }}
                     />
                   </div>

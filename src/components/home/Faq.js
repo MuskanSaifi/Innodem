@@ -151,7 +151,8 @@ const Faq = () => {
     alt="FAQ Illustration"
     fill
     className="object-contain md:object-cover"
-    priority
+      loading="lazy"        
+
   />
 </div>
 

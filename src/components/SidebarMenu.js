@@ -52,7 +52,7 @@ const SidebarMenu = () => {
                 width={24}
                 height={24}
                 className="w-6 h-6 mr-2"
-                unoptimized
+                loading="lazy"  
               />
               <span className="text-sm">{category.name.replace(/\b\w/g, c => c.toUpperCase())}
               </span>
@@ -87,7 +87,7 @@ const SidebarMenu = () => {
                           width={24}
                           height={24}
                           className="w-6 h-6"
-                          unoptimized
+                          loading="lazy"  
                         />
                         <span className="ml-2">{subcategory.name.replace(/\b\w/g, c => c.toUpperCase())}
                         </span>

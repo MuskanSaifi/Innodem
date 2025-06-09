@@ -65,7 +65,8 @@ const StatsWithImage = () => {
   width={1383} // Set your desired width
   height={922} // Set your desired height
   className="object-contain"
-  priority
+    loading="lazy"        
+
 />
 
 </div>
