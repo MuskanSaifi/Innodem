@@ -69,7 +69,6 @@ export default function Home() {
           alt="Banner for website dial"
           width={2000} // Replace with desired width
           height={400} // Replace with desired height
-          priority // Optional: To prioritize loading this image
         />
                 </Link>
 

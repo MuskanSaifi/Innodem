@@ -123,7 +123,6 @@ const UpdateCategory = () => {
   height={100} 
   className="object-cover"
   unoptimized // ⚡️ Use this if images are already optimized (e.g., Cloudinary)
-  priority // 🚀 Load image faster (optional)
   onError={(e) => console.error("Image failed to load", e)}
 />
 
