@@ -8,6 +8,12 @@ const supportPersonSchema = new mongoose.Schema(
     number: { type: String },
     email: { type: String, unique: true },
     password: { type: String },
+    allSellerAccess: { type: Boolean, default: false },
+    allBuyerAccess: { type: Boolean, default: false },
+    allContactAccess: { type: Boolean, default: false }, 
+    allSubscribersAccess: { type: Boolean, default: false }, 
+    allPaymentsAccess: { type: Boolean, default: false }, 
+
 
     recordingurl: [
       {

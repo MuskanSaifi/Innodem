@@ -324,7 +324,7 @@ export default function Register() {
     return (
         <div className="flex justify-center items-center m-5">
             <div className="bg-white p-6 rounded shadow-md w-96">
-                <h2 className="text-2xl font-bold mb-4">{signup ? "Verify OTP" : "Register"}</h2>
+                <h1 className="text-2xl font-bold mb-4">{signup ? "Verify OTP" : "Register"}</h1>
 
 <Image
   src={"/assets/2-copy-0.png" || "/placeholder.png"}

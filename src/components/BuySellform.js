@@ -349,7 +349,7 @@ const BuySellForm = ({ productname: initialProductName }) => {
       <div className="modal-dialog modal-dialog-centered modal-lg">
         <div className="modal-content p-4">
           <div className="modal-header">
-            <h5 className="modal-title fw-bold">Tell us what you need</h5>
+            <p className="modal-title fw-bold">Tell us what you need</p>
             <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
           </div>
 

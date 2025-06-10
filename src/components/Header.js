@@ -375,10 +375,10 @@ export default function Header() {
       {/* Search Bar Section */}
       <div className="col-7 col-md-8">
         <div className="d-flex align-items-center justify-content-between">
-        <button className="text-4xl p-2 rounded me-3 d-none-mob"
+        <span className="text-4xl p-2 rounded me-3 d-none-mob cursor-pointer"
         onClick={togglepopup}>
         <FaTh />
-      </button>
+      </span>
   
           {/* City Dropdown Search */}
           <div className="relative d-none-mob" ref={cityDropdownRef}>
@@ -429,13 +429,7 @@ export default function Header() {
 
           {/* Product Search */}
           <div className="position-relative flex-grow-1 pro-ser-div" ref={searchRef}>
-            <input
-              className="product-search form-control"
-              type="text"
-              placeholder="🔍 Dial Export Mart | B2B Marketplace in India"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+    <input className="product-search form-control" type="text" placeholder="🔍 Dial Export Mart | B2B Marketplace in India" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
             {suggestions.length > 0 && (
               <ul className="list-group position-absolute w-100 shadow-sm bg-white text-sm">
                 {suggestions.map((product) => (
@@ -453,8 +447,8 @@ export default function Header() {
 
           {/* Registered Users */}
           <div className="registered-users-box text-center d-none-mob">
-            <h3>Registered Users</h3>
-          <p>  <SmoothCounter end={totalUsers+118000} duration={2} /></p> 
+            <div>Registered Users</div>
+            <p>  <SmoothCounter end={totalUsers+118000} duration={2} /></p> 
             </div>
         </div>
       </div>
@@ -550,13 +544,13 @@ Hi! {user.fullname || "User"}
 
         {/* Drawer Header */}
         <div className="flex items-center justify-between px-4 py-2 border-b">
-<h4 className="text-lg font-semibold mb-0">
+<div className="text-lg font-semibold mb-0">
   {user ? (
     <span className="text-purple-700">👤 Hi! {user.fullname || "User"}</span>
   ) : (
     "Welcome Guest"
   )}
-</h4>
+</div>
           <button className="text-gray-600" onClick={toggleDrawer}>
             ✖
           </button>

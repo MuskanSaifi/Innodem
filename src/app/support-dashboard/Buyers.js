@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Button, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
 
-const Buyers = () => {
+const Buyers = ({ supportMember }) => {
   const [buyers, setBuyers] = useState([]);
   const [filteredBuyers, setFilteredBuyers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -74,6 +74,14 @@ const Buyers = () => {
       confirmButtonColor: "#3085d6",
     });
   };
+
+      if (!supportMember?.allBuyerAccess) {
+    return (
+      <div className="text-center text-danger fw-bold mt-5">
+        Admin can't give you access to this page.
+      </div>
+    );
+  }
 
   return (
     <div className="container mt-4">

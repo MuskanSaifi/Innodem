@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const Payments = () => {
+const Payments = ({ supportMember }) => {
   const [payments, setPayments] = useState([]);
   const [expandedUserId, setExpandedUserId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -28,6 +28,15 @@ const Payments = () => {
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
+
+  
+      if (!supportMember?.allPaymentsAccess) {
+    return (
+      <div className="text-center text-danger fw-bold mt-5">
+        Admin can't give you access to this page.
+      </div>
+    );
+  }
 
   return (
     <div className="container mt-5">
@@ -117,6 +126,7 @@ const Payments = () => {
       </div>
     </div>
   );
+
 };
 
 export default Payments;

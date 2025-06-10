@@ -120,9 +120,9 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
         {/* Subcategories (Desktop Only) */}
         <aside className="col-md-3 mb-4 d-none d-md-block">
   <div className="bg-white p-3 rounded common-shad sticky top-20">
-            <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
+            <div className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
               Subcategories
-            </h5>
+            </div>
             {loading ? (
               <Skeleton count={5} height={20} />
             ) : subcategories.length > 0 ? (
@@ -186,9 +186,9 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
         {/* Related Products (Desktop Only) */}
         <aside className="col-md-3 mb-4 d-none d-md-block">
   <div className="bg-white p-3 rounded common-shad sticky top-20">
-            <h5 className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
+            <div className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
               Related Products
-            </h5>
+            </div>
             {loading ? (
               <Skeleton count={5} height={20} />
             ) : relatedProducts.length > 0 ? (

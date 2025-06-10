@@ -16,6 +16,7 @@ import LeadsEnquiry from "./LeadsEnquiry";
 import toast from "react-hot-toast";
 import AddClientPayment from "./AddClientPayment";
 import AddRecording from "./AddRecording";
+import AllSellers from "./AllSellers";
 
 function ResponsiveDashboard() {
   const router = useRouter();
@@ -24,24 +25,33 @@ function ResponsiveDashboard() {
   const [loading, setLoading] = useState(true);
 
   const [supportPersonId, setSupportPersonId] = useState(null);
+const [supportPerson, setSupportPerson] = useState(null);
 
-  useEffect(() => {
-    const checkAdminAuth = async () => {
-      try {
-        const res = await axios.get("/api/support-admins/check-auth");
-        if (!res.data.success) {
-          router.push("/support-login");
-        } else {
-          setSupportPersonId(res.data.supportId);
-          setLoading(false);
-        }
-      } catch (error) {
+useEffect(() => {
+  const checkAdminAuth = async () => {
+    try {
+      const res = await axios.get("/api/support-admins/check-auth");
+      if (!res.data.success) {
         router.push("/support-login");
+      } else {
+        const supportId = res.data.supportId;
+        // Now fetch the full support member data
+        const memberRes = await axios.get(`/api/adminprofile/supportmembers/${supportId}`);
+        if (memberRes.data.success) {
+          setSupportPerson(memberRes.data.member); // full support person with access flags
+          setSupportPersonId(supportId);
+          setLoading(false);
+        } else {
+          router.push("/support-login");
+        }
       }
-    };
+    } catch (error) {
+      router.push("/support-login");
+    }
+  };
 
-    checkAdminAuth();
-  }, [router]);
+  checkAdminAuth();
+}, [router]);
 
   if (loading) return <p>Loading...</p>;
 
@@ -92,16 +102,20 @@ function ResponsiveDashboard() {
 </button>
         </div>
         <div className="resdes-dynamic-content">
-          {activeContent === "Dashboard" && <Dashboard />}
-          {activeContent === "Payments" && <Payments />}
-          {activeContent === "All Products" && <AllProducts />}
-          {activeContent === "All Seller" && <AllUsers supportPersonId={supportPersonId} />}
-          {activeContent === "All Buyers" && <Buyers />}
-          {activeContent === "All Subscribers" && <AllSubscribers />}
-          {activeContent === "All Contacts" && <AllContacts />}
-          {activeContent === "Leads & Enquiry" && <LeadsEnquiry />}
-          {activeContent === "Add Client Payment" && <AddClientPayment />}
-          {activeContent === "Add Recordings" && <AddRecording  supportPersonId={supportPersonId}/>}
+{activeContent === "Dashboard" && <Dashboard />}
+{activeContent === "Payments" &&( <Payments supportMember={supportPerson} />)}
+
+{activeContent === "All Products" && <AllProducts />}
+{activeContent === "All Your Seller" && <AllUsers supportPersonId={supportPersonId} />}
+{activeContent === "All Sellers" && <AllSellers supportPersonId={supportPersonId} supportMember={supportPerson}/>}
+
+{activeContent === "All Buyers" && (<Buyers supportMember={supportPerson} />)}
+{activeContent === "All Subscribers" && (<AllSubscribers supportMember={supportPerson} />)}
+{activeContent === "All Contacts" && (<AllContacts supportMember={supportPerson} />)}
+{activeContent === "Leads & Enquiry" && <LeadsEnquiry />}
+{activeContent === "Add Client Payment" && <AddClientPayment />}
+
+{activeContent === "Add Recordings" && <AddRecording  supportPersonId={supportPersonId}/>}
         </div>
       </div>
     </div>

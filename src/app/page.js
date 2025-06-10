@@ -21,6 +21,7 @@ import CategoryGridPage from "@/components/home/CategoryGridPage";
 export default function Home() {
   return (
     <>
+<h1 className="hidden">Dial Export Mart | B2B Marketplace in India</h1>
       <Bannerslider />
 
       <BuySellform />

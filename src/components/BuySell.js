@@ -121,7 +121,7 @@ console.log(productname, "TATT")
 
   return (
     <div className="container my-4 p-3 border rounded">
-      <h5 className="fw-bold mb-3">Tell us what you need</h5>
+      <p className="fw-bold mb-3">Tell us what you need</p>
       <div className="row">
         <div className="col-12">
           {message && <p className="text-success">{message}</p>}

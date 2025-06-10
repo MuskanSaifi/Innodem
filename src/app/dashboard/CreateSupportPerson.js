@@ -4,6 +4,10 @@ import toast from 'react-hot-toast';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
 
+import { differenceInCalendarDays } from 'date-fns';
+import SupportMemberModal from "./components/SupportMemberModal"; // adjust path
+import axios from 'axios';
+
 
 const CreateSupportPerson = () => {
   const [formData, setFormData] = useState({ name: "", email: "", password: "", number:"" });
@@ -13,6 +17,39 @@ const CreateSupportPerson = () => {
   const [allClients, setAllClients] = useState([]); // instead of undefined
   const [selectedClients, setSelectedClients] = useState({}); // key: member._id, value: [user ids]
   const [loading, setLoading] = useState(true);
+
+  const [selectedMember, setSelectedMember] = useState(null);
+const [isModalOpen, setIsModalOpen] = useState(false);
+
+const openModal = (member) => {
+  setSelectedMember(member);
+  setIsModalOpen(true);
+};
+
+const closeModal = () => {
+  setIsModalOpen(false);
+  setSelectedMember(null);
+};
+
+const handleModalSave = async (id, updatedData) => {
+  try {
+    console.log("Sending PATCH to", `/api/adminprofile/supportmembers/${id}`, updatedData);
+    const res = await axios.patch(`/api/adminprofile/supportmembers/${id}`, updatedData);
+
+    if (res.data?.success) {
+      toast.success("Support member updated!");
+      closeModal();
+      setStateupdate(prev => !prev);
+    } else {
+      console.error("API responded with error", res.data);
+      toast.error("Update failed: " + (res.data.message || "Unknown error"));
+    }
+  } catch (err) {
+    console.error("Request failed:", err.response?.data || err.message);
+    toast.error("Update failed: " + (err.response?.data?.message || err.message));
+  }
+};
+
 
   const handleChange = (e) => {
     setFormData(prev => ({
@@ -144,7 +181,7 @@ const handleClientUpdate = async (memberId) => {
 const handleDelete = async (id) => {
   const result = await Swal.fire({
     title: 'Are you sure?',
-    text: "You won't be able to revert this!",
+    text: "This action is irreversible. The support person will be permanently deleted.",
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#d33',
@@ -185,8 +222,8 @@ return (
 
   {/* Left: Form */}
   <div className="w-full lg:w-1/3">
+      <h4 className="text-2xl font-bold mb-4 text-blue-700">Create Support Person</h4>
     <form onSubmit={handleSubmit} className="p-6 bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg">
-      <h4 className="text-xl font-semibold text-blue-700 mb-4">Create Support Person</h4>
       
       <div className="mb-4">
         <label className="block mb-1 text-gray-700 font-medium">Name</label>
@@ -251,7 +288,7 @@ return (
 
   {/* Right: Table */}
   <div className="w-full lg:w-2/3">
-    <h2 className="text-2xl font-bold mb-4 text-blue-700">📋 Assign Clients To Support Members</h2>
+    <h4 className="text-2xl font-bold mb-4 text-blue-700">📋 Assign Clients To Support Members</h4>
 
     {loading ? (
       <p className="text-gray-500">Loading...</p>
@@ -274,44 +311,102 @@ return (
           {supportMembers.map((member, index) => (
   <tr key={member._id} className="hover:bg-blue-50 transition">
     <td className="px-6 py-3 border-b font-medium text-gray-700">{index + 1}</td>
-    <td className="px-6 py-3 border-b text-gray-800">{member.name}</td>
+<td className="px-6 py-3 border-b text-blue-600 cursor-pointer hover:underline" onClick={() => openModal(member)}>
+  {member.name}
+</td>
     <td className="px-6 py-3 border-b text-blue-600">{member.email}</td>
     {/* <td className="px-6 py-3 border-b text-blue-600">
   {formatDateTime(member.createdAt)}
 </td> */}
 <td className="px-6 py-3 border-b text-blue-900">
+
+  
 <Select
   isMulti
   value={selectedClients[member._id] || []}
   onChange={(selectedOptions) => handleClientChange(selectedOptions, member._id)}
   options={
-    allClients?.map(client => ({
-      value: client._id,
-      label: client.fullname,
-    })) || []
+    allClients?.map(client => {
+      const createdAt = new Date(client.createdAt);
+      const daysAgo = differenceInCalendarDays(new Date(), createdAt);
+
+      const formattedDate = createdAt.toLocaleString("en-GB", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+      });
+
+      return {
+        value: client._id,
+        label: `${client.fullname} (${client.email}) (${formattedDate})`,
+        daysAgo,
+      };
+    }) || []
   }
+styles={{
+  option: (provided, state) => {
+    const daysAgo = state.data.daysAgo;
+    let backgroundColor = 'white';
+    let hoverColor = '#f1f5f9'; // soft hover
+
+    if (daysAgo === 0) backgroundColor = '#fee2e2'; // light red for today
+    else if (daysAgo === 1) backgroundColor = '#ffedd5'; // light orange
+    else if (daysAgo === 2) backgroundColor = '#fef9c3'; // light yellow
+
+    return {
+      ...provided,
+      backgroundColor: state.isFocused ? hoverColor : backgroundColor,
+      color: '#1f2937', // dark gray text
+      fontSize: '13px',
+      padding: '10px 12px',
+      cursor: 'pointer',
+      transition: 'background-color 0.2s ease',
+    };
+  },
+ 
+}}
+
 />
+
+
 </td>
 
     <td className="px-6 py-3 border-b text-blue-600">
-    <button
-  onClick={() => handleDelete(member._id)}
-  className="bg-red-500 hover:bg-red-600 w-100 text-white font-semibold py-1.5 px-4 rounded-md shadow-sm transition duration-200"
->
-  Delete
-</button>
-<button
+<div className="flex gap-2">
+  <button
     onClick={() => handleClientUpdate(member._id)}
-    className="bg-blue-500 hover:bg-blue-600 w-100 text-white font-semibold py-1.5 px-4 rounded-md shadow-sm transition duration-200"
+    className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-1 px-3 rounded-md shadow transition-all duration-200"
   >
-    Save
+    💾 Save
   </button>
+  <button
+    onClick={() => handleDelete(member._id)}
+    className="bg-red-500 hover:bg-red-600 text-white text-sm font-medium py-1 px-3 rounded-md shadow transition-all duration-200"
+  >
+    🗑 Delete
+  </button>
+
+</div>
+
     </td>
   </tr>
 ))}
 
           </tbody>
         </table>
+
+        <SupportMemberModal
+  isOpen={isModalOpen}
+  member={selectedMember}
+  onClose={closeModal}
+  onSave={handleModalSave}
+/>
+
+
       </div>
     )}
   </div>

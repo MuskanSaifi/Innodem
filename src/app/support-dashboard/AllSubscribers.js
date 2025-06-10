@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const AllSubscribers = () => {
+const AllSubscribers = ({ supportMember }) => {
   const [subscribers, setSubscribers] = useState([]);
   const [filteredSubscribers, setFilteredSubscribers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -63,7 +63,16 @@ const AllSubscribers = () => {
     setFilteredSubscribers(filtered);
   }, [searchEmail, filterDate, subscribers]);
 
-  return (
+
+    if (!supportMember?.allSubscribersAccess) {
+    return (
+      <div className="text-center text-danger fw-bold mt-5">
+        Admin can't give you access to this page.
+      </div>
+    );
+  }
+  
+ return (
     <div className="container mt-4">
       <div className="card shadow p-4">
         <h1 className="fs-4 fw-bold mb-4">📩 All Subscribers</h1>
@@ -140,5 +149,6 @@ const AllSubscribers = () => {
     </div>
   );
 };
+ 
 
 export default AllSubscribers;

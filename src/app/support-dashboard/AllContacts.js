@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-const AllContacts = () => {
+const AllContacts = ({ supportMember }) => {
   const [contacts, setContacts] = useState([]);
   const [filteredContacts, setFilteredContacts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -86,6 +86,13 @@ const AllContacts = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
+  if (!supportMember?.allContactAccess) {
+    return (
+      <div className="text-center text-danger fw-bold mt-5">
+        Admin can't give you access to this page.
+      </div>
+    );
+  }
   return (
     <div className="container mt-4">
       <div className="card shadow p-4">
