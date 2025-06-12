@@ -166,11 +166,11 @@ const AllProducts = () => {
         if (selectedField === "basicDetails") {
           updateData.name = formData.basicDetails.name;
           updateData.productslug = formData.basicDetails.productslug;
-          updateData.price = formData.basicDetails.price;
+updateData.price = Number(formData.basicDetails.price); // ✅ Convert to number
           updateData.currency = formData.basicDetails.currency;
-          updateData.minimumOrderQuantity = formData.basicDetails.minimumOrderQuantity;
+updateData.minimumOrderQuantity = Number(formData.basicDetails.minimumOrderQuantity);
           updateData.moqUnit = formData.basicDetails.moqUnit;
-          updateData.stock = formData.basicDetails.stock;
+updateData.stock = Number(formData.basicDetails.stock);
           updateData.state = formData.basicDetails.state;
           updateData.city = formData.basicDetails.city;
         } else if (selectedField === "description") {
