@@ -63,7 +63,12 @@ export async function PATCH(req) {
     // ✅ Upload new images
     const uploadedImages = await Promise.all(
       images.map(async (img) => {
-        return img.startsWith("data:image") ? await uploadToCloudinary(img) : { url: img, public_id: null };
+try {
+    return img.startsWith("data:image") ? await uploadToCloudinary(img) : { url: img, public_id: null };
+} catch (uploadError) {
+    console.error("Cloudinary upload failed for image:", img, uploadError);
+    throw uploadError;
+}
       })
     );
 

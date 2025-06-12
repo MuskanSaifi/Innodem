@@ -16,13 +16,11 @@ const generateSlug = (text) => {
       .replace(/-+/g, "-");
   };
 
-
 const AddProduct = () => {
 
 const [selectedCountry, setSelectedCountry] = useState("");
 const [availableStates, setAvailableStates] = useState([]);
 const [availableCities, setAvailableCities] = useState([]);
-
 
     // category
     const [selectedCategory, setSelectedCategory] = useState([]);
@@ -163,8 +161,6 @@ const [availableCities, setAvailableCities] = useState([]);
     }));
   };
   
-
-
     // fetch category
     useEffect(() => {
         fetchCategories();
@@ -179,7 +175,6 @@ const [availableCities, setAvailableCities] = useState([]);
         }
     };
 
-    
     const [loading, setLoading] = useState(false);
 
     // Handle form field changes
@@ -194,7 +189,6 @@ const [availableCities, setAvailableCities] = useState([]);
         }
       };
       
-    
     const handleNestedChange = (e, field, subField = null) => {
         const { name, value, type } = e.target;
     
@@ -217,7 +211,6 @@ const [availableCities, setAvailableCities] = useState([]);
             },
         }));
     };
-    
       
       const updateSlabPricing = (index, key, value) => {
         const updatedSlabs = [...product.tradeShopping.slabPricing];
@@ -272,8 +265,6 @@ const [availableCities, setAvailableCities] = useState([]);
         }
     };
     
-    
-
 const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -320,8 +311,7 @@ const handleSubmit = async (e) => {
                 },
             },
         };
-        
-
+      
         const response = await axios.post(
             `/api/userprofile/manageproducts`,
             formattedProduct,
@@ -356,7 +346,6 @@ const handleSubmit = async (e) => {
     }
 };  
 
-        
     return (
         <div className="container mt-4">
             <Tab.Container defaultActiveKey="basicDetails">
@@ -393,8 +382,6 @@ const handleSubmit = async (e) => {
                                     />
                                 </div>
                             </div>
-
-
                             <div className="mb-3">
   <label className="text-gray-600 text-sm">Product Slug</label>
   <div className="relative mt-2 text-gray-500">
@@ -410,8 +397,6 @@ const handleSubmit = async (e) => {
     />
   </div>
 </div>
-
-
                             <div className="mb-3 flex gap-4">
                                 {/* Category Dropdown */}
                                 <div className="w-1/2">
@@ -457,8 +442,6 @@ const handleSubmit = async (e) => {
                                     </div>
                                 </div>
                             </div>
-
-
 
                             <div className="mb-3 flex gap-4">
                                 {/* Price Section */}
@@ -527,8 +510,6 @@ const handleSubmit = async (e) => {
                                     </div>
                                 </div>
                             </div>
-
-
 
                             {/* Image Upload Section */}
                             <div className="mb-3">
@@ -606,10 +587,6 @@ const handleSubmit = async (e) => {
     ))}
   </select>
 </div>
-
-
-
-
     </div>
 
                         </div>
@@ -1209,25 +1186,15 @@ const handleSubmit = async (e) => {
     </select>
   </div>
 </div>
-
-
-
     </div>
   </div>
 </Tab.Pane>
-
-
                 </Tab.Content>
             </Tab.Container>
-
             <button type="submit" className="btn btn-primary w-100 mt-3" onClick={handleSubmit} disabled={loading}>
                 {loading ? "Saving..." : "Add Product"}
             </button>
         </div>
     );
-
-
 };
-
-
 export default AddProduct;
