@@ -6,6 +6,8 @@ import Swal from "sweetalert2";
 import { Modal, Button } from "react-bootstrap"; // ✅ Import Bootstrap Modal
 import LocationSelector from "./components/LocationSelector";
 import Image from "next/image";
+
+
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -94,6 +96,8 @@ const AllProducts = () => {
       }
     });
   };
+
+
   // ✅ Open Modal Function
   const openModal = (product, field) => {
     setSelectedProduct(product);
@@ -115,7 +119,10 @@ const AllProducts = () => {
       tradeShopping: { ...product.tradeShopping },
     });
     setShowModal(true);
-  }; 
+  };
+  
+
+  
     // ✅ Handle Input Change
     const handleChange = (e) => {
       const { name, value } = e.target;
@@ -137,6 +144,7 @@ const AllProducts = () => {
       });
     };
     
+
     const handleUpdate = async () => {
       if (!selectedProduct) return;
     
@@ -222,7 +230,8 @@ const AllProducts = () => {
         basicDetails: { ...prevData.basicDetails, images: uploadedImages }, // ✅ Update images
       }));
     };
-       
+    
+    
     
     // ✅ Convert Image File to Base64
     const convertToBase64 = (file) => {
@@ -236,7 +245,8 @@ const AllProducts = () => {
         reader.onerror = (error) => reject(error);
       });
     };
-
+    
+    
         // Function to determine badge color
       const getBadgeClass = (strength) => {
           switch (strength) {
@@ -250,6 +260,7 @@ const AllProducts = () => {
                   return "bg-secondary"; // Gray
           }
       };
+
 // Function to calculate progress percentage based on filled fields
 const calculateProgress = (product) => {
   let totalFields = 0;
@@ -264,6 +275,7 @@ const calculateProgress = (product) => {
       }
     });
   };
+
   checkAndCount(product); // Main product fields
   checkAndCount(product.tradeInformation); // Trade Information
   checkAndCount(product.specifications); // Specifications
@@ -310,7 +322,9 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
   height={100}
   className="all-pro-img p-2 object-cover rounded-[5px]"
   unoptimized
-/>        
+/>
+
+          
               <div className="w-100">
                 <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
                   <h6 className="mb-1">{product.name}</h6>
@@ -349,8 +363,10 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
                   <span className={`badge ${getBadgeClass(product.strength)}`}>
                     {product.strength} Strength
                   </span>
-                </div>       
+                </div>
+          
                 <hr />
+          
                 <div className="mt-2 position-relative d-flex flex-wrap align-items-center gap-3">
                   <span className="text-primary text-sm" role="button" onClick={() => openModal(product, "basicDetails")}>
                     + Add Basic Details
@@ -374,6 +390,9 @@ if (product.images && product.images.length > 0 && product.images[0].data) {
           );
         })
       )}
+
+
+
             {/* ✅ Bootstrap Modal (Now works properly) */}
 <Modal show={showModal} onHide={() => setShowModal(false)} centered
 dialogClassName="custom-modal">
@@ -414,6 +433,7 @@ dialogClassName="custom-modal">
     }}
   />
 </div>
+
 {/* Product Slug (Read-only or editable, your choice) */}
 <div className="mb-3">
   <label className="form-label">Product Slug</label>
@@ -426,6 +446,8 @@ dialogClassName="custom-modal">
     disabled
   />
 </div>
+
+
     {/* Product Image  */}
     <div className="mb-3">
   <label className="form-label">Upload Images</label>
@@ -437,6 +459,8 @@ dialogClassName="custom-modal">
     onChange={handleImageUpload} // ✅ Add event handler
   />
 </div>
+
+
     {/* Price */}
     <div className="mb-3">
       <label className="form-label">Price</label>
@@ -474,6 +498,8 @@ dialogClassName="custom-modal">
         <option value="GBP">GBP (£)</option>
       </select>
     </div>
+
+
     {/* Stock */}
     <div className="mb-3">
       <label className="form-label">Stock</label>
@@ -490,9 +516,15 @@ dialogClassName="custom-modal">
         }
       />
     </div>
+
+
     <LocationSelector formData={formData} setFormData={setFormData} />
+
+
+
   </div>
 )}
+
 {/* Description */}
 {selectedField === "description" && (
       <div className="mb-3">
@@ -506,6 +538,7 @@ dialogClassName="custom-modal">
         />
       </div>
 )}
+
 {/* Product Specifications Section */}
 {selectedField === "specifications" && (
   <>
@@ -539,6 +572,7 @@ dialogClassName="custom-modal">
     </select>
   </div>
 </div>
+
 
   <div className="col-md-6">
     <label className="form-label">Delivery Time</label>
@@ -952,6 +986,7 @@ dialogClassName="custom-modal">
 )}
 
 {/* Product tradeShopping Section */}
+
 {selectedField === "tradeShopping" && (
   <>
     <div className="mb-3">
@@ -1164,7 +1199,6 @@ dialogClassName="custom-modal">
       </div>
     </div>
 
-
     {/* Dimension Unit */}
     <div className="mt-3">
       <label className="form-label">Dimension Unit</label>
@@ -1196,4 +1230,5 @@ dialogClassName="custom-modal">
     </div>
   );
 };
+
 export default AllProducts;
