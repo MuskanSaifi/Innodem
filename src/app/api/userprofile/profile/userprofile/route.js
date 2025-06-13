@@ -10,6 +10,11 @@ import cloudinary from "@/lib/cloudinary";
 const uploadUserImage = async (image) => {
   if (!image.startsWith("data:image")) return { url: image, public_id: null };
 
+  if (!image || typeof image !== "string" || !image.startsWith("data:image")) {
+  throw new Error("Invalid base64 image format");
+}
+
+
   try {
     const result = await cloudinary.v2.uploader.upload(image, {
       folder: "user",
@@ -51,6 +56,8 @@ export async function PATCH(req) {
 
     // ✅ Check if a new image is being uploaded
     if (body.icon?.startsWith("data:image")) {
+        console.log("Base64 image detected, uploading...");
+        console.log("Image size (base64 length):", body.icon?.length);
       // ✅ Delete the old image from Cloudinary
       if (existingUser.iconPublicId) {
         try {
@@ -64,6 +71,7 @@ export async function PATCH(req) {
       const uploaded = await uploadUserImage(body.icon);
       body.icon = uploaded.url;
       body.iconPublicId = uploaded.public_id;
+
     }
 
     // ✅ Update profile slug if companyName is updated
