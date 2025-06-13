@@ -24,9 +24,14 @@ const uploadUserImage = async (image) => {
       public_id: result.public_id,
     };
   } catch (err) {
-    console.error("Cloudinary upload failed", err);
-    throw new Error("User image upload failed");
-  }
+  console.error("❌ Cloudinary upload failed:", {
+    message: err.message,
+    name: err.name,
+    http_code: err.http_code,
+    error: err.error,
+  });
+  throw new Error("User image upload failed");
+}
 };
 
 
