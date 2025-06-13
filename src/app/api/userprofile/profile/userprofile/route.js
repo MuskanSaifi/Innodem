@@ -5,6 +5,15 @@ import jwt from "jsonwebtoken";
 import slugify from "slugify";
 import cloudinary from "@/lib/cloudinary"; // This correctly imports the v2 object aliased as cloudinary
 
+// Set the body parser size limit for this API route to handle larger image payloads
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '4mb', // Configured to accept request bodies up to 4MB
+    },
+  },
+};
+
 
 const uploadUserImage = async (image) => {
   // Added a check for empty image string or non-base64, which was missing in the previous context
@@ -71,7 +80,7 @@ export async function PATCH(req) {
       if (existingUser.iconPublicId) {
         try {
           console.log("Attempting to delete old image:", existingUser.iconPublicId);
-          // *** CRITICAL FIX: Changed cloudinary.v2.uploader.destroy to cloudinary.uploader.destroy ***
+          // Changed cloudinary.v2.uploader.destroy to cloudinary.uploader.destroy
           await cloudinary.uploader.destroy(existingUser.iconPublicId);
           console.log("Old image deleted successfully.");
         } catch (deleteError) {
@@ -89,7 +98,7 @@ export async function PATCH(req) {
       if (existingUser.iconPublicId) {
         try {
           console.log("Attempting to delete user-removed image:", existingUser.iconPublicId);
-          // *** CRITICAL FIX: Changed cloudinary.v2.uploader.destroy to cloudinary.uploader.destroy ***
+          // Changed cloudinary.v2.uploader.destroy to cloudinary.uploader.destroy
           await cloudinary.uploader.destroy(existingUser.iconPublicId);
           console.log("User-removed image deleted successfully.");
         } catch (deleteError) {
@@ -137,6 +146,7 @@ export async function PATCH(req) {
     return new Response(JSON.stringify({ success: false, message: "Error updating user profile", error: error.message }), { status: 500 });
   }
 }
+
 
 
 export async function GET(req) {
