@@ -79,7 +79,6 @@ const Userprofile = () => {
   return (
     <div className="bg-gray-100 min-h-screen py-10 px-4">
       <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-xl border border-gray-200 transition-all hover:shadow-lg">
-
         {/* Profile Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between px-4 py-4 mb-4 bg-white rounded-lg shadow-md border border-gray-200">
   {/* Profile Image and Upload */}
@@ -126,7 +125,6 @@ const Userprofile = () => {
     </Link>
   </div>
 </div>
-
 
         {/* Personal Details */}
         <div className="border p-4 rounded-lg shadow-sm bg-gray-50 mt-4">
