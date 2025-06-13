@@ -8,15 +8,12 @@ import cloudinary from "@/lib/cloudinary";
 
 
 const uploadUserImage = async (image) => {
-  if (!image.startsWith("data:image")) return { url: image, public_id: null };
-
   if (!image || typeof image !== "string" || !image.startsWith("data:image")) {
-  throw new Error("Invalid base64 image format");
-}
-
+    throw new Error("Invalid base64 image format");
+  }
 
   try {
-    const result = await cloudinary.v2.uploader.upload(image, {
+    const result = await cloudinary.uploader.upload(image, {
       folder: "user",
       resource_type: "image",
       transformation: [{ width: 300, height: 300, crop: "limit" }],
@@ -61,7 +58,7 @@ export async function PATCH(req) {
       // ✅ Delete the old image from Cloudinary
       if (existingUser.iconPublicId) {
         try {
-          await cloudinary.v2.uploader.destroy(existingUser.iconPublicId);
+await cloudinary.uploader.destroy(existingUser.iconPublicId);
         } catch (deleteError) {
           console.error("Failed to delete old image from Cloudinary", deleteError);
         }
