@@ -14,15 +14,11 @@ const Userprofile = () => {
   const token = useSelector((state) => state.user.token);
 
   useEffect(() => {
-    userdata();
+    if (token) userdata();
   }, [token]);
 
   const userdata = async () => {
-    if (!token) {
-      setLoading(false);
-      return;
-    }
-
+    setLoading(true);
     try {
       const response = await axios.get(`/api/userprofile/profile/userprofile`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -58,6 +54,15 @@ const Userprofile = () => {
     }
   };
 
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData({ ...formData, icon: reader.result }); // base64
+    };
+    if (file) reader.readAsDataURL(file);
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -72,48 +77,67 @@ const Userprofile = () => {
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen py-10 px-4 ">
+    <div className="bg-gray-100 min-h-screen py-10 px-4">
       <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-xl border border-gray-200 transition-all hover:shadow-lg">
 
         {/* Profile Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-6 px-4 py-2 mb-2 bg-white rounded-lg shadow-md border border-gray-200">
-  {/* Profile Circle */}
-  <div className="w-16 m-auto h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl font-bold shadow ring-2 ring-blue-300">
-    {userdetail.fullname?.charAt(0).toUpperCase()}
-  </div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between px-4 py-4 mb-4 bg-white rounded-lg shadow-md border border-gray-200">
+  {/* Profile Image and Upload */}
+  <div className="flex items-center space-x-4">
+    <div className="relative">
+      {formData.icon ? (
+        <img
+          src={formData.icon}
+          alt="Profile"
+          className="w-20 h-20 rounded-full object-cover ring-2 ring-blue-400 shadow"
+        />
+      ) : (
+        <div className="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl font-bold shadow ring-2 ring-blue-300">
+          {userdetail.fullname?.charAt(0).toUpperCase()}
+        </div>
+      )}
 
-  {/* Name and Company Info */}
-  <div className="flex-1 m-2 sm:mt-0 text-center sm:text-left">
-    <h2 className="text-xl sm:text-2xl font-bold text-gray-800">{userdetail.fullname}</h2>
-    <p className="text-gray-500 text-sm m-0">{userdetail.companyName}</p>
+      {editMode && (
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+          title="Upload new image"
+        />
+      )}
+    </div>
+
+    <div>
+      <h2 className="text-xl sm:text-2xl font-bold text-gray-800">{userdetail.fullname}</h2>
+      <p className="text-gray-500 text-sm">{userdetail.companyName || "Company not set"}</p>
+    </div>
   </div>
 
   {/* Profile Link */}
-  <div className="m-auto">
+  <div className="mt-4 sm:mt-0">
     <Link
       href={userdetail.userProfileSlug ? `/company/${userdetail.userProfileSlug}` : "#"}
-      className="inline-block text-sm text-center sm:text-base bg-blue-100 text-blue-700 font-medium px-4 py-2 rounded-full shadow-sm hover:bg-blue-200 transition"
+      className="text-xs sm:text-sm bg-blue-100 text-blue-700 font-medium px-4 py-2 rounded-full shadow-sm hover:bg-blue-200 transition"
     >
       {userdetail.userProfileSlug
         ? `dialexportmart.com/company/${userdetail.userProfileSlug}`
-        : "complete Pofile to generate your personalized website."}
+        : "Complete profile to generate your website"}
     </Link>
   </div>
 </div>
 
 
-
         {/* Personal Details */}
-        <div className="border p-3 rounded-lg shadow-sm bg-gray-50">
-          <h3 className="text-xl font-semibold mb-2 text-blue-700">Personal Details</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="border p-4 rounded-lg shadow-sm bg-gray-50 mt-4">
+          <h3 className="text-xl font-semibold mb-3 text-blue-700">Personal Details</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
               { label: "Email", name: "email" },
               { label: "Alternate Email", name: "alternateEmail" },
               { label: "Office Contact", name: "mobileNumber" },
               { label: "Alternate Mobile No.", name: "alternateMobileNumber" },
               { label: "WhatsApp Number", name: "whatsappNumber" },
-              // { label: "Designation / Job Title", name: "designation" },
               { label: "Company Name", name: "companyName" },
             ].map(({ label, name }) => (
               <div key={name}>
@@ -131,23 +155,22 @@ const Userprofile = () => {
                 )}
               </div>
             ))}
-
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="mt-8 flex justify-end space-x-3">
+        <div className="mt-6 flex justify-end gap-4">
           {editMode ? (
             <>
               <button
-                className="px-5 py-2 bg-gray-500 text-white rounded-lg shadow hover:bg-gray-600 transform hover:scale-105 transition-all"
+                className="px-5 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
                 onClick={() => setEditMode(false)}
                 disabled={saving}
               >
                 Cancel
               </button>
               <button
-                className="px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transform hover:scale-105 transition-all"
+                className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                 onClick={handleSave}
                 disabled={saving}
               >
@@ -156,7 +179,7 @@ const Userprofile = () => {
             </>
           ) : (
             <button
-              className="px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transform hover:scale-105 transition-all"
+              className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
               onClick={() => setEditMode(true)}
             >
               Edit Details
