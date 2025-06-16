@@ -237,7 +237,7 @@ const handleSave = async () => {
     tabIndex="-1"
     role="dialog"
   >
-<div className="modal-dialog m-5 max-w-full" role="document">
+<div className="m-5 max-w-full" role="document">
 <div
   className="modal-content p-3 w-full rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.2)]"
 >
