@@ -218,35 +218,97 @@ const BusinessProfile = () => {
             {/* Company Info */}
             {renderSection("companyDetails", "Company Details", FiBriefcase, (
               <>
-                <input type="text" className="form-control mb-3" name="companyName" value={formData.companyName} onChange={handleChange} placeholder="Company Name" />
-                <input type="text" className="form-control mb-3" name="officeContact" value={formData.officeContact} onChange={handleChange} placeholder="Office Contact" />
-                <input type="text" className="form-control mb-3" name="faxNumber" value={formData.faxNumber} onChange={handleChange} placeholder="Fax Number" />
-                <input type="text" className="form-control mb-3" name="ownershipType" value={formData.ownershipType} onChange={handleChange} placeholder="Ownership Type" />
-                <input type="text" className="form-control mb-3" name="annualTurnover" value={formData.annualTurnover} onChange={handleChange} placeholder="Annual Turnover" />
-                <input type="number" className="form-control mb-3" name="yearOfEstablishment" value={formData.yearOfEstablishment} onChange={handleChange} placeholder="Year of Establishment" />
-                <input type="number" className="form-control mb-3" name="numberOfEmployees" value={formData.numberOfEmployees} onChange={handleChange} placeholder="Number of Employees" />
+<div className="mb-3">
+  <label htmlFor="companyName" className="form-label">Company Name</label>
+  <input type="text" id="companyName" className="form-control" name="companyName" value={formData.companyName} onChange={handleChange} placeholder="Company Name" />
+</div>
+
+<div className="mb-3">
+  <label htmlFor="officeContact" className="form-label">Office Contact</label>
+  <input type="number" id="officeContact" className="form-control" name="officeContact" value={formData.officeContact} onChange={handleChange} placeholder="Office Contact" />
+</div>
+
+<div className="mb-3">
+  <label htmlFor="faxNumber" className="form-label">Fax Number</label>
+  <input type="number" id="faxNumber" className="form-control" name="faxNumber" value={formData.faxNumber} onChange={handleChange} placeholder="Fax Number" />
+</div>
+
+<div className="mb-3">
+  <label htmlFor="ownershipType" className="form-label">Ownership Type</label>
+  <input type="text" id="ownershipType" className="form-control" name="ownershipType" value={formData.ownershipType} onChange={handleChange} placeholder="Ownership Type" />
+</div>
+
+<div className="mb-3">
+  <label htmlFor="annualTurnover" className="form-label">Annual Turnover</label>
+  <input type="number" id="annualTurnover" className="form-control" name="annualTurnover" value={formData.annualTurnover} onChange={handleChange} placeholder="Annual Turnover" />
+</div>
+
+<div className="mb-3">
+  <label htmlFor="yearOfEstablishment" className="form-label">Year of Establishment</label>
+  <input type="number" id="yearOfEstablishment" className="form-control" name="yearOfEstablishment" value={formData.yearOfEstablishment} onChange={handleChange} placeholder="Year of Establishment" />
+</div>
+
+<div className="mb-3">
+  <label htmlFor="numberOfEmployees" className="form-label">Number of Employees</label>
+  <input type="number" id="numberOfEmployees" className="form-control" name="numberOfEmployees" value={formData.numberOfEmployees} onChange={handleChange} placeholder="Number of Employees" />
+</div>
+
               </>
             ))}
 
             {/* Address Info */}
             {renderSection("addressDetails", "Address Details", FiMapPin, (
-              <>
-                <input type="text" className="form-control mb-3" name="address" value={formData.address} onChange={handleChange} placeholder="Address" />
-                <input type="text" className="form-control mb-3" name="pincode" value={formData.pincode} onChange={handleChange} placeholder="Pincode" />
-                <input type="text" className="form-control mb-3" name="city" value={formData.city} onChange={handleChange} placeholder="City" />
-                <input type="text" className="form-control mb-3" name="state" value={formData.state} onChange={handleChange} placeholder="State" />
-                <input type="text" className="form-control mb-3" name="country" value={formData.country} readOnly />
-              </>
+           <>
+  <div className="mb-3">
+    <label htmlFor="address" className="form-label">Address</label>
+    <input type="text" id="address" className="form-control" name="address" value={formData.address} onChange={handleChange} placeholder="Address" />
+  </div>
+
+  <div className="mb-3">
+    <label htmlFor="pincode" className="form-label">Pincode</label>
+    <input type="number" id="pincode" className="form-control" name="pincode" value={formData.pincode} onChange={handleChange} placeholder="Pincode" />
+  </div>
+
+  <div className="mb-3">
+    <label htmlFor="city" className="form-label">City</label>
+    <input type="text" id="city" className="form-control" name="city" value={formData.city} onChange={handleChange} placeholder="City" />
+  </div>
+
+  <div className="mb-3">
+    <label htmlFor="state" className="form-label">State</label>
+    <input type="text" id="state" className="form-control" name="state" value={formData.state} onChange={handleChange} placeholder="State" />
+  </div>
+
+  <div className="mb-3">
+    <label htmlFor="country" className="form-label">Country</label>
+    <input type="text" id="country" className="form-control" name="country" value={formData.country} readOnly />
+  </div>
+</>
+
             ))}
 
             {/* Tax Details */}
-            {renderSection("taxationDetails", "Taxation Details", FiFileText, (
-              <>
-                {["gstNumber", "panNumber", "aadharNumber", "iecNumber", "tanNumber", "vatNumber"].map((field) => (
-                  <input key={field} type="text" className="form-control mb-3" name={field} value={formData[field]} onChange={handleChange} placeholder={field.replace(/([A-Z])/g, ' $1')} />
-                ))}
-              </>
-            ))}
+       {renderSection("taxationDetails", "Taxation Details", FiFileText, (
+  <>
+    {["gstNumber", "panNumber", "aadharNumber", "iecNumber", "tanNumber", "vatNumber"].map((field) => (
+      <div className="mb-3" key={field}>
+        <label htmlFor={field} className="form-label">
+          {field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+        </label>
+        <input
+          type="text"
+          id={field}
+          className="form-control"
+          name={field}
+          value={formData[field]}
+          onChange={handleChange}
+          placeholder={field.replace(/([A-Z])/g, ' $1')}
+        />
+      </div>
+    ))}
+  </>
+))}
+
 
  {/* Timing & Visuals */}
 {renderSection("extraDetails", "Additional Details", FiClock, (
