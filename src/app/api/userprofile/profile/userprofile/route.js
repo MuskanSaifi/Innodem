@@ -14,7 +14,6 @@ export const config = {
   },
 };
 
-
 const uploadUserImage = async (image) => {
   // Added a check for empty image string or non-base64, which was missing in the previous context
   // If the image isn't a base64 string, assume it's an existing URL (or empty) and return it.
@@ -49,7 +48,6 @@ const uploadUserImage = async (image) => {
     throw new Error(`User image upload failed: ${err.message || 'Unknown Cloudinary error'}`);
   }
 };
-
 
 export async function PATCH(req) {
   try {
@@ -145,9 +143,7 @@ export async function PATCH(req) {
     // Return a generic error message to the client, but log the specific error on the server
     return new Response(JSON.stringify({ success: false, message: "Error updating user profile", error: error.message }), { status: 500 });
   }
-}
-
-
+};
 
 export async function GET(req) {
   try {
