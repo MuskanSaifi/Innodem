@@ -249,7 +249,7 @@ const BusinessProfile = () => {
             ))}
 
  {/* Timing & Visuals */}
-{renderSection("extraDetails", "Extra Details", FiClock, (
+{renderSection("extraDetails", "Additional Details", FiClock, (
   <>
   <div className="mb-3">
   <label className="form-label">Business Type</label>
@@ -289,10 +289,31 @@ const BusinessProfile = () => {
         ))}
       </div>
     </div>
+{/* Working Time */}
+<div className="mb-3">
+  <label htmlFor="workingFrom" className="form-label">Working From</label>
+  <input
+    type="time"
+    id="workingFrom"
+    name="from"
+    className="form-control"
+    value={formData.workingTime.from}
+    onChange={(e) => handleNestedChange(e, "workingTime")}
+  />
+</div>
 
-    {/* Working Time */}
-    <input type="time" className="form-control mb-3" name="from" value={formData.workingTime.from} onChange={(e) => handleNestedChange(e, "workingTime")} placeholder="Working From"/>
-    <input type="time" className="form-control mb-3" name="to" value={formData.workingTime.to} onChange={(e) => handleNestedChange(e, "workingTime")} placeholder="Working To"/>
+<div className="mb-3">
+  <label htmlFor="workingTo" className="form-label">Working To</label>
+  <input
+    type="time"
+    id="workingTo"
+    name="to"
+    className="form-control"
+    value={formData.workingTime.to}
+    onChange={(e) => handleNestedChange(e, "workingTime")}
+  />
+</div>
+
     {/* Logo, Video, Description */}
     <input type="text" className="form-control mb-3" name="companyLogo" value={formData.companyLogo} onChange={handleChange} placeholder="Company Logo URL" />
     <input type="text" className="form-control mb-3" name="companyVideo" value={formData.companyVideo} onChange={handleChange} placeholder="Company Video URL" />

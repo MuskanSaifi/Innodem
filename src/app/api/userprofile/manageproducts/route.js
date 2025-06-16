@@ -19,12 +19,12 @@ const uploadToCloudinary = async (image) => {
   }
 
   try {
-    const result = await cloudinary.v2.uploader.upload(image, {
+    const result = await cloudinary.uploader.upload(image, {
       folder: "products", // Save images in a folder named "products"
       transformation: [{ width: 500, height: 500, crop: "limit" }], // Resize image
     });
 
- return {
+    return {
       url: result.secure_url,
       public_id: result.public_id, // ✅ Save public_id
     };
@@ -37,7 +37,7 @@ const uploadToCloudinary = async (image) => {
 export async function POST(req) {
   try {
     await connectdb();
-    
+
     // ✅ Authorization
     const user = await requireSignIn(req);
     if (!user) {
@@ -74,7 +74,6 @@ export async function POST(req) {
       specifications = {},
       tradeShopping = {},
     } = body;
-    
 
     // ✅ Validate Required Fields
     if (!name || !minimumOrderQuantity || !Array.isArray(images) || images.length === 0) {
@@ -87,44 +86,57 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: "You can upload up to 5 images only" }, { status: 400 });
     }
 
-    // ✅ Process Trade Pricing (Fixed vs Slab)
-    // if (!tradeShopping.sellingPriceType) {
-    //   return NextResponse.json({ success: false, message: "Selling price type is required" }, { status: 400 });
-    // }
+    // --- START: Changes for sellingPriceType and fixedSellingPrice ---
 
+    let finalSellingPriceType = null; // Default to null as per schema
     let fixedSellingPrice = null;
     let slabPricing = [];
 
-    if (tradeShopping.sellingPriceType === "Fixed") {
-      if (!tradeShopping.fixedSellingPrice || isNaN(Number(tradeShopping.fixedSellingPrice))) {
-        return NextResponse.json({ success: false, message: "Fixed selling price is required and must be a number" }, { status: 400 });
-      }
-      fixedSellingPrice = Number(tradeShopping.fixedSellingPrice); // Ensure it's saved as a number
-    }
-    else if (tradeShopping.sellingPriceType === "Slab Based") {
-      if (!Array.isArray(tradeShopping.slabPricing) || tradeShopping.slabPricing.length === 0) {
-        slabPricing = []; // 👈 Slab pricing optional hai, toh empty array assign karo
-      } else {
-        let validationFailed = false;
-    
-        for (let i = 0; i < tradeShopping.slabPricing.length; i++) {
-          const slab = tradeShopping.slabPricing[i];
-          if (!slab.minQuantity || !slab.maxQuantity || !slab.price) {
-            validationFailed = true;
-            return NextResponse.json({ success: false, message: `Slab ${i + 1} is missing details` }, { status: 400 });
+    // Only process if tradeShopping.sellingPriceType is provided and is a valid enum value
+    if (tradeShopping.sellingPriceType && ["Fixed", "Slab Based"].includes(tradeShopping.sellingPriceType)) {
+      finalSellingPriceType = tradeShopping.sellingPriceType;
+
+      if (finalSellingPriceType === "Fixed") {
+        // Allow fixedSellingPrice to be null if not provided, but validate if present
+        if (tradeShopping.fixedSellingPrice !== undefined && tradeShopping.fixedSellingPrice !== null && tradeShopping.fixedSellingPrice !== '') {
+          const parsedPrice = Number(tradeShopping.fixedSellingPrice);
+          if (isNaN(parsedPrice)) {
+            return NextResponse.json({ success: false, message: "Fixed selling price must be a valid number" }, { status: 400 });
           }
-          if (slab.minQuantity >= slab.maxQuantity) {
-            validationFailed = true;
-            return NextResponse.json({ success: false, message: `Slab ${i + 1}: Min quantity must be less than max quantity` }, { status: 400 });
+          fixedSellingPrice = parsedPrice;
+        }
+      } else if (finalSellingPriceType === "Slab Based") {
+        if (!Array.isArray(tradeShopping.slabPricing) || tradeShopping.slabPricing.length === 0) {
+          slabPricing = []; // Allow empty array if no slabs provided for Slab Based
+        } else {
+          let validationFailed = false;
+          for (let i = 0; i < tradeShopping.slabPricing.length; i++) {
+            const slab = tradeShopping.slabPricing[i];
+            // Ensure all slab fields are present and valid numbers
+            if (isNaN(Number(slab.minQuantity)) || isNaN(Number(slab.maxQuantity)) || isNaN(Number(slab.price))) {
+                validationFailed = true;
+                return NextResponse.json({ success: false, message: `Slab ${i + 1} has invalid numerical values.` }, { status: 400 });
+            }
+            if (Number(slab.minQuantity) >= Number(slab.maxQuantity)) {
+              validationFailed = true;
+              return NextResponse.json({ success: false, message: `Slab ${i + 1}: Min quantity must be less than max quantity` }, { status: 400 });
+            }
+          }
+          if (!validationFailed) {
+            // Convert slab values to numbers
+            slabPricing = tradeShopping.slabPricing.map(slab => ({
+                minQuantity: Number(slab.minQuantity),
+                maxQuantity: Number(slab.maxQuantity),
+                price: Number(slab.price)
+            }));
           }
         }
-    
-        if (!validationFailed) {
-          slabPricing = tradeShopping.slabPricing;
-        }
       }
+    } else {
+        // If sellingPriceType is not provided or is invalid, set it to null
+        finalSellingPriceType = null;
     }
-    
+    // --- END: Changes for sellingPriceType and fixedSellingPrice ---
 
 
     // ✅ Validate Category & SubCategory
@@ -148,7 +160,7 @@ export async function POST(req) {
       throw new Error("❌ Invalid Image Data: Each image must be a Base64 string or URL");
     });
 
-    
+
     const imageUrls = await Promise.all(validImages.map(uploadToCloudinary));
 
     // ✅ Create & Save Product
@@ -174,20 +186,20 @@ export async function POST(req) {
         foldable: specifications.foldable === "Yes",
       },
       tradeShopping: {
-        sellingPriceType: tradeShopping.sellingPriceType,
-        gst: Number(tradeShopping.gst) || null, 
-        fixedSellingPrice: Number(tradeShopping.fixedSellingPrice) || null,  // ✅ Always store this
-        slabPricing,
-        isReturnable: tradeShopping.isReturnable === "Yes" ? "Yes" : "No", // ✅ Explicitly set
+        sellingPriceType: finalSellingPriceType, // Use the validated/defaulted type
+        gst: Number(tradeShopping.gst) || null,
+        fixedSellingPrice: fixedSellingPrice, // Use the processed fixedSellingPrice
+        slabPricing, // Use the processed slabPricing
+        isReturnable: tradeShopping.isReturnable === "Yes" ? "Yes" : "No",
         shippingType: tradeShopping.shippingType || "Free", // Default to "Free"
         packageDimensions: {
-          length: Number(tradeShopping.packageDimensions.length) || null,
-          width: Number(tradeShopping.packageDimensions.width) || null,
-          height: Number(tradeShopping.packageDimensions.height) || null,
-          unit: tradeShopping.packageDimensions.unit || "cm",
+          length: Number(tradeShopping.packageDimensions?.length) || null,
+          width: Number(tradeShopping.packageDimensions?.width) || null,
+          height: Number(tradeShopping.packageDimensions?.height) || null,
+          unit: tradeShopping.packageDimensions?.unit || "cm",
+        },
       },
-      },
-            
+
     });
 
     console.log("Saving product with images:", imageUrls.map(({ url, public_id }) => ({ url, public_id })));
@@ -198,6 +210,10 @@ export async function POST(req) {
 
   } catch (error) {
     console.error("❌ Error creating product:", error);
+    // More specific error message for validation errors
+    if (error.name === 'ValidationError') {
+      return NextResponse.json({ success: false, message: error.message }, { status: 400 });
+    }
     return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }
 }

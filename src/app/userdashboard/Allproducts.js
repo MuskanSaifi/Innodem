@@ -746,7 +746,7 @@ dialogClassName="custom-modal">
   <div className="col-md-6">
     <label className="form-label">Thickness Tolerance</label>
     <input
-      type="text"
+      type="number"
       className="form-control"
       name="specifications.thicknessTolerance"
       value={formData.specifications?.thicknessTolerance || ""}
@@ -759,7 +759,7 @@ dialogClassName="custom-modal">
   <div className="col-md-6">
     <label className="form-label">Width</label>
     <input
-      type="text"
+      type="number"
       className="form-control"
       name="specifications.width"
       value={formData.specifications?.width || ""}
@@ -770,7 +770,7 @@ dialogClassName="custom-modal">
   <div className="col-md-6">
     <label className="form-label">Length</label>
     <input
-      type="text"
+      type="number"
       className="form-control"
       name="specifications.length"
       value={formData.specifications?.length || ""}
@@ -783,7 +783,7 @@ dialogClassName="custom-modal">
   <div className="col-md-6">
     <label className="form-label">Weight</label>
     <input
-      type="text"
+      type="number"
       className="form-control"
       name="specifications.weight"
       value={formData.specifications?.weight || ""}
@@ -855,7 +855,7 @@ dialogClassName="custom-modal">
   <div className="col-md-6">
     <label className="form-label">Thickness</label>
     <input
-      type="text"
+      type="number"
       className="form-control"
       name="specifications.thickness"
       value={formData.specifications?.thickness || ""}

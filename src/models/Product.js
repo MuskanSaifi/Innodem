@@ -92,7 +92,7 @@ const productSchema = new mongoose.Schema(
     tradeShopping: {
       brandName: { type: String },
       gst: { type: Number, enum: [0, 5, 12, 18, 28, null], default: null },
-      sellingPriceType: { type: String, enum: ["Fixed", "Slab"], default: null }, // Adjusted enum
+      sellingPriceType: { type: String, enum: ["Fixed", "Slab Based"], default: null }, // Adjusted enum
       fixedSellingPrice: { type: Number },
       slabPricing: [
         {

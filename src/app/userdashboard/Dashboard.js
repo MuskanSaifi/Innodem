@@ -145,6 +145,7 @@ const Dashboard = () => {
                   <span>Total payments made</span>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
