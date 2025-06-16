@@ -1,8 +1,9 @@
+// src/app/dashboard/CreateBlog.js
 "use client";
 
 import { useState, useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
+import StarterKit from "@tiptap/starter-kit"; // CORRECTED IMPORT: Changed from "@tiptap/extension-starter-kit"
 import Heading from "@tiptap/extension-heading";
 import Bold from "@tiptap/extension-bold";
 import Italic from "@tiptap/extension-italic";
@@ -15,10 +16,11 @@ import CodeBlock from "@tiptap/extension-code-block";
 import Link from "@tiptap/extension-link";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import Swal from "sweetalert2";  // ✅ Import SweetAlert2
+import Swal from "sweetalert2";
 import Image from "next/image";
+// import ImageExtension from "@tiptap/extension-image"; // No longer needed, using CustomImage
+import CustomImage from "@/extensions/CustomImage"; // Adjust this path to your CustomImage.js
 
-// ✅ Initial State for Form Data
 const initialState = {
   title: "",
   slug: "",
@@ -31,17 +33,17 @@ const initialState = {
 
 const CreateBlog = () => {
   const [formData, setFormData] = useState(initialState);
-  const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState(null);
+  const [file, setFile] = useState(null); // For main blog image
+  const [preview, setPreview] = useState(null); // For main blog image preview
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
 
-  // ✅ TipTap Editor Setup
   const editor = useEditor({
     extensions: [
       StarterKit,
-Heading.configure({ levels: [1, 2, 3, 4, 5] }),
+      CustomImage, // 👈 Use your custom image extension here!
+      Heading.configure({ levels: [1, 2, 3, 4, 5] }),
       Bold,
       Italic,
       Underline,
@@ -58,29 +60,29 @@ Heading.configure({ levels: [1, 2, 3, 4, 5] }),
     },
   });
 
+  // Slug auto-generate
   useEffect(() => {
     setFormData((prev) => {
-      // Agar slug manually edit hua hai toh use preserve karein
       if (prev.slugEdited) return prev;
-  
       return {
         ...prev,
         slug: prev.title
           .toLowerCase()
           .trim()
-          .replace(/[^a-z0-9]+/g, "-") // Special characters -> "-"
-          .replace(/^-+|-+$/g, ""), // Extra hyphens remove
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, ""),
       };
     });
   }, [formData.title]);
-  
-  // ✅ Allow Manual Slug Editing
+
   const handleSlugChange = (e) => {
     setFormData({ ...formData, slug: e.target.value, slugEdited: true });
   };
 
-  
-  // ✅ File Upload Preview
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
   useEffect(() => {
     if (!file) return;
     const objectUrl = URL.createObjectURL(file);
@@ -88,19 +90,12 @@ Heading.configure({ levels: [1, 2, 3, 4, 5] }),
     return () => URL.revokeObjectURL(objectUrl);
   }, [file]);
 
-  // ✅ Handle Form Input Changes
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  // ✅ Handle Image Upload
   const handleImageUpload = (e) => {
     const uploadedFile = e.target.files[0];
     if (!uploadedFile) return;
     setFile(uploadedFile);
   };
 
-  // ✅ Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -108,24 +103,31 @@ Heading.configure({ levels: [1, 2, 3, 4, 5] }),
 
     try {
       const formDataObj = new FormData();
-      formDataObj.append("title", formData.title);
-      formDataObj.append("slug", formData.slug);
-      formDataObj.append("author", formData.author);
-      formDataObj.append("content", formData.content);
-      formDataObj.append("metaTitle", formData.metaTitle);
-      formDataObj.append("metaDescription", formData.metaDescription);
-      formDataObj.append("metaKeywords", formData.metaKeywords);
-      
+      Object.entries(formData).forEach(([key, value]) => {
+        if (key !== "slugEdited") {
+          formDataObj.append(key, value);
+        }
+      });
+
       if (file) {
         formDataObj.append("image", file);
       }
 
+      // --- NEW LOGIC: Extract inline image public_ids ---
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(formData.content, "text/html");
+      const inlineImagePublicIds = Array.from(doc.querySelectorAll("img[data-public-id]")) // Select only images with data-public-id
+        .map((img) => img.getAttribute("data-public-id"))
+        .filter(Boolean); // Filter out null or empty values
+
+      formDataObj.append("inlineImagePublicIds", JSON.stringify(inlineImagePublicIds));
+      // --- END NEW LOGIC ---
+
       const response = await axios.post("/api/blogs", formDataObj, {
         headers: { "Content-Type": "multipart/form-data" },
-      }); 
+      });
 
       if (response.status === 201) {
-        // ✅ Success Alert
         Swal.fire({
           icon: "success",
           title: "Blog Created!",
@@ -138,27 +140,27 @@ Heading.configure({ levels: [1, 2, 3, 4, 5] }),
       }
     } catch (error) {
       console.error("❌ Submission Error:", error);
-      setError(error.response?.data?.error || "Failed to create blog. Please try again!");
-
-      // ❌ Error Alert
+      const message =
+        error.response?.data?.error || "Failed to create blog. Please try again!";
+      setError(message);
       Swal.fire({
         icon: "error",
         title: "Submission Failed",
-        text: error.response?.data?.error || "Something went wrong. Try again!",
+        text: message,
         confirmButtonColor: "#d33",
       });
     }
 
     setLoading(false);
   };
+
   return (
     <div className="container mt-4">
       <div className="card p-4 rounded-3 shadow-sm">
         <h1 className="fs-3 mb-4">📝 Create Blog</h1>
         {error && <div className="alert alert-danger">{error}</div>}
         <form onSubmit={handleSubmit}>
-
-        <input
+          <input
             type="text"
             name="metaTitle"
             value={formData.metaTitle}
@@ -173,8 +175,7 @@ Heading.configure({ levels: [1, 2, 3, 4, 5] }),
             placeholder="Meta Description"
             className="form-control mb-2"
           />
-
-        <input
+          <input
             type="text"
             name="metaKeywords"
             value={formData.metaKeywords}
@@ -182,7 +183,6 @@ Heading.configure({ levels: [1, 2, 3, 4, 5] }),
             placeholder="Meta Keywords"
             className="form-control mb-2"
           />
-          
           <input
             type="text"
             name="title"
@@ -192,14 +192,14 @@ Heading.configure({ levels: [1, 2, 3, 4, 5] }),
             required
             className="form-control mb-2"
           />
-<input
-  type="text"
-  name="slug"
-  value={formData.slug}
-  onChange={handleSlugChange}
-  placeholder="Slug (Blog Url) automatic generated"
-  className="form-control mb-2"
-/>
+          <input
+            type="text"
+            name="slug"
+            value={formData.slug}
+            onChange={handleSlugChange}
+            placeholder="Slug (Blog URL)"
+            className="form-control mb-2"
+          />
           <input
             type="text"
             name="author"
@@ -210,46 +210,85 @@ Heading.configure({ levels: [1, 2, 3, 4, 5] }),
             className="form-control mb-2"
           />
 
-          {/* ✅ TipTap Toolbar */}
           {editor && (
-        <div className="toolbar mb-2">
-  <button type="button" onClick={() => editor.chain().focus().toggleBold().run()}>Bold</button>
-  <button type="button" onClick={() => editor.chain().focus().toggleItalic().run()}>Italic</button>
-  <button type="button" onClick={() => editor.chain().focus().toggleUnderline().run()}>Underline</button>
-  <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>H1</button>
-  <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>H2</button>
-  <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}>H3</button>
-  <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}>H4</button>
-  <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}>H5</button>
-  <button type="button" onClick={() => editor.chain().focus().toggleBulletList().run()}>Bullet List</button>
-  <button type="button" onClick={() => editor.chain().focus().toggleOrderedList().run()}>Ordered List</button>
-  <button type="button" onClick={() => editor.chain().focus().toggleBlockquote().run()}>Blockquote</button>
-  <button type="button" onClick={() => editor.chain().focus().toggleCodeBlock().run()}>Code</button>
-  <button type="button" onClick={() => {
-    const url = prompt("Enter link URL");
-    if (url) editor.chain().focus().setLink({ href: url }).run();
-  }}>Link</button>
-</div>
+            <div className="toolbar mb-2">
+              <button type="button" onClick={() => editor.chain().focus().toggleBold().run()}>Bold</button>
+              <button type="button" onClick={() => editor.chain().focus().toggleItalic().run()}>Italic</button>
+              <button type="button" onClick={() => editor.chain().focus().toggleUnderline().run()}>Underline</button>
+              <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>H1</button>
+              <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>H2</button>
+              <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}>H3</button>
+              <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}>H4</button>
+              <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}>H5</button>
+              <button type="button" onClick={() => editor.chain().focus().toggleBulletList().run()}>Bullet List</button>
+              <button type="button" onClick={() => editor.chain().focus().toggleOrderedList().run()}>Ordered List</button>
+              <button type="button" onClick={() => editor.chain().focus().toggleBlockquote().run()}>Blockquote</button>
+              <button type="button" onClick={() => editor.chain().focus().toggleCodeBlock().run()}>Code</button>
+              <button
+                type="button"
+                onClick={() => {
+                  const url = prompt("Enter link URL");
+                  if (url) editor.chain().focus().setLink({ href: url }).run();
+                }}
+              >
+                Link
+              </button>
+              {editor && (
+                <div className="toolbar mb-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const input = document.createElement("input");
+                      input.type = "file";
+                      input.accept = "image/*";
+                      input.onchange = async () => {
+                        const file = input.files[0];
+                        if (!file) return;
 
+                        const formData = new FormData();
+                        formData.append("file", file);
+
+                        const res = await fetch("/api/upload-editor-image", {
+                          method: "POST",
+                          body: formData,
+                        });
+
+                        const data = await res.json();
+                        if (data.url && data.public_id) {
+                          // Pass publicId to the CustomImage extension
+                          editor.chain().focus().setImage({ src: data.url, publicId: data.public_id }).run();
+                        } else {
+                            console.error("❌ Failed to get URL or public_id from inline image upload.");
+                        }
+                      };
+                      input.click();
+                    }}
+                  >
+                    Upload Inline Image
+                  </button>
+                </div>
+              )}
+            </div>
           )}
 
-          {/* ✅ TipTap Editor */}
-          <div className=" editor-wrapper border p-1 mb-2 rounded bg-white">
+          <div className="editor-wrapper border p-1 mb-2 rounded bg-white">
             {editor ? <EditorContent editor={editor} /> : <p>Loading Editor...</p>}
           </div>
 
           <input type="file" accept="image/*" onChange={handleImageUpload} className="form-control mb-2" />
+
           {preview && (
-  <Image
-    src={preview}
-    alt="Preview"
-    width={300}
-    height={200}
-    className="img-fluid rounded mb-2"
-    unoptimized
-    loader={() => preview} // Important for local object URLs
-  />
-)}
+            <Image
+              src={preview}
+              alt="Preview"
+              width={300}
+              height={200}
+              className="img-fluid rounded mb-2"
+              unoptimized
+              loader={() => preview}
+            />
+          )}
+
           <button type="submit" className="btn btn-primary w-100" disabled={loading}>
             {loading ? "Submitting..." : "Submit"}
           </button>

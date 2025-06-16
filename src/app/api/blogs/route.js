@@ -35,6 +35,7 @@ export async function POST(req) {
   try {
     await connectdb();
     const formData = await req.formData();
+
     const title = formData.get("title")?.trim();
     const slug = formData.get("slug")?.trim();
     const author = formData.get("author")?.trim();
@@ -42,6 +43,17 @@ export async function POST(req) {
     const metaTitle = formData.get("metaTitle")?.trim();
     const metaDescription = formData.get("metaDescription")?.trim();
     const metaKeywords = formData.get("metaKeywords")?.trim();
+
+    // Parse inlineImagePublicIds
+    let inlineImagePublicIds = [];
+    const inlinePublicIdsString = formData.get("inlineImagePublicIds");
+    if (inlinePublicIdsString) {
+      try {
+        inlineImagePublicIds = JSON.parse(inlinePublicIdsString);
+      } catch (parseError) {
+        console.error("Error parsing inlineImagePublicIds:", parseError);
+      }
+    }
 
     if (!title || !metaKeywords || !slug || !author || !content) {
       console.log("❌ Missing required fields!");
@@ -56,26 +68,15 @@ export async function POST(req) {
 
     let imageUrl = "";
     let imagePublicId = "";
-    const image = formData.get("image");
+    const image = formData.get("image"); // This is the main blog image
 
     if (image && image.size > 0) {
-      console.log("📤 Uploading image to Cloudinary...");
-      const uploadResult = await uploadToCloudinary(image);
+      console.log("📤 Uploading main blog image to Cloudinary...");
+      const uploadResult = await uploadToCloudinary(image, "blog-main-images"); // Specify folder
       imageUrl = uploadResult.imageUrl;
       imagePublicId = uploadResult.imagePublicId;
-      console.log("✅ Image Uploaded:", imageUrl);
+      console.log("✅ Main Image Uploaded:", imageUrl);
     }
-
-    console.log("⚡ Before saving to database:", {
-      title,
-      slug,
-      author,
-      content,
-      metaTitle,
-      metaDescription,
-      metaKeywords,
-      image: imageUrl,  
-    });
 
     const newBlog = new Blog({
       title,
@@ -87,8 +88,9 @@ export async function POST(req) {
       metaKeywords,
       image: imageUrl,
       imagePublicId: imagePublicId,
+      inlineImagePublicIds: inlineImagePublicIds, // Save the extracted public_ids
     });
-    
+
     await newBlog.save();
 
     return NextResponse.json({ success: true, message: "Blog created successfully!", blog: newBlog }, { status: 201 });
@@ -180,20 +182,36 @@ export async function DELETE(req) {
     }
 
     await connectdb();
+
     const blog = await Blog.findById(blogId);
     if (!blog) {
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });
     }
 
+    // ✅ Delete main blog image from Cloudinary
     if (blog.imagePublicId) {
       try {
         await cloudinary.uploader.destroy(blog.imagePublicId);
-        console.log("✅ Image deleted from Cloudinary");
+        console.log("✅ Main image deleted from Cloudinary");
       } catch (error) {
-        console.error("❌ Cloudinary Image Delete Error:", error);
+        console.error("❌ Cloudinary Main Image Delete Error:", error);
+      {/* this part is for inline-images */}
       }
     }
 
+    // ✅ Delete inline images from Cloudinary
+    if (blog.inlineImagePublicIds?.length > 0) {
+      for (const publicId of blog.inlineImagePublicIds) {
+        try {
+          await cloudinary.uploader.destroy(publicId);
+          console.log(`✅ Deleted inline image: ${publicId}`);
+        } catch (err) {
+          console.error(`❌ Failed to delete inline image: ${publicId}`, err);
+        }
+      }
+    }
+
+    // ✅ Delete the blog from the database
     await Blog.findByIdAndDelete(blogId);
 
     return NextResponse.json({ message: "Blog deleted successfully" }, { status: 200 });
