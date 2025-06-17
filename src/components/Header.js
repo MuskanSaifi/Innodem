@@ -536,10 +536,10 @@ Hi! {user.fullname || "User"}
       </button>
 
       {/* Bottom Drawer */}
-   <div
+<div
   className={`fixed bottom-0 left-0 w-full bg-white shadow-lg transition-transform ${
     isOpen ? "translate-y-0" : "translate-y-full"
-  } h-[60vh]`}
+  } h-[60vh] z-[9999]`} // Increased z-index
 >
 
         {/* Drawer Header */}
@@ -557,7 +557,7 @@ Hi! {user.fullname || "User"}
         </div>
 
         {/* Drawer Content */}
-        <div className="p-4">
+<div className="p-4">
           {user ? ( <>
             👋 Welcome!
           
@@ -615,9 +615,10 @@ Hi! {user.fullname || "User"}
           </> 
           }
           <p className="mt-4 text-center text-sm text-gray-500">
-            Registered Users: <span className="text-green-600">    <SmoothCounter end={totalUsers+350000} duration={2} /></span>
+            Registered Users phonr: <span className="text-green-600">    <SmoothCounter end={totalUsers+350000} duration={2} /></span>
           </p>
         </div>
+
       </div>
     </div>
 
