@@ -116,7 +116,7 @@ export async function DELETE(req, context) {
       for (const image of product.images) {
         if (image.public_id) {
           try {
-            await cloudinary.v2.uploader.destroy(image.public_id);
+            await cloudinary.uploader.destroy(image.public_id);
           } catch (err) {
             console.warn(`⚠️ Failed to delete Cloudinary image with public_id: ${image.public_id}`);
           }
