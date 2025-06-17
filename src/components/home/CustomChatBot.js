@@ -46,7 +46,7 @@ export default function CustomChatBot() {
   };
 
   return (
-<div className="fixed bottom-5 right-5 z-[1000]">
+<div className="custom-fab-position">
       {isOpen && (
         <div className="chatbot-container">
           <button className="close-btn" onClick={() => setIsOpen(false)}>×</button>
@@ -74,9 +74,8 @@ export default function CustomChatBot() {
 
       {!isOpen && (
 <button className="support-btn" onClick={() => setIsOpen(true)}>
-  <Image src={supportIcon} alt="support" width={20} height={20} /> Support
+  <Image src={supportIcon} alt="support" width={20} height={20} /> Support 
 </button>
-
       )}
     </div>
   );

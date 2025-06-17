@@ -282,7 +282,7 @@ const socialLinks = [
       {/* Scroll-to-Top Button */}
     <span
   onClick={scrollToTop}
-  className={`fixed bottom-5 right-5 res-des3 text-white p-3 bot-to-top rounded-full shadow-lg transition-opacity cursor-pointer
+  className={`fixed bottom-2 right-5 res-des3 text-white p-3 bot-to-top rounded-full shadow-lg transition-opacity cursor-pointer
     ${isVisible ? "opacity-100" : "opacity-0"} w-[50px] h-[50px] z-[1000]`}
 >
   <FaArrowUp size={20} />

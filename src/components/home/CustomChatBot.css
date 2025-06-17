@@ -10,6 +10,12 @@
   font-family: 'Segoe UI', sans-serif;
   position: relative;
 }
+.custom-fab-position {
+  position: fixed;
+  bottom: 4.55rem; /* equivalent to bottom-5 */
+  right: 1.25rem;  /* equivalent to right-5 */
+  z-index: 1000;
+}
 
 .chat-window {
   flex: 1;
@@ -67,8 +73,8 @@
 
 .support-btn {
   position: fixed;
-  bottom: 20px;
-  right: 90px;
+  bottom: 65px;
+  right: 20px;
   z-index: 1001;
   padding: 12px 20px;
   border-radius: 50px;
