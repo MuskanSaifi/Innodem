@@ -272,15 +272,21 @@ const [currency, setCurrency] = useState("INR");
                       onChange={setCountryCode}
                       className="me-2"
                     />
-                    <input
-                      type="number"
-                      value={mobileNumber}
-                      onChange={(e) => setMobileNumber(e.target.value)}
-                      required
-                      maxLength={10}
-                      className="form-control"
-                      placeholder="Mobile Number"
-                    />
+                 <input
+  type="text"
+  value={mobileNumber}
+  onChange={(e) => {
+    const value = e.target.value;
+    if (/^\d{0,10}$/.test(value)) {
+      setMobileNumber(value);
+    }
+  }}
+  required
+  maxLength={10}
+  className="form-control"
+  placeholder="Mobile Number"
+/>
+
                   </div>
 
                   {buySell === "sell" && (

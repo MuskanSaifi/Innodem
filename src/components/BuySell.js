@@ -183,15 +183,20 @@ console.log(productname, "TATT")
 
               <div className="mb-2 d-flex">
                 <Select options={countryCodes} value={countryCode} onChange={setCountryCode} className="me-2" />
-                <input
-                  type="number"
-                  value={mobileNumber}
-                  onChange={(e) => setMobileNumber(e.target.value)}
-                  required
-                  maxLength={10}
-                  className="form-control"
-                  placeholder="Mobile Number"
-                />
+             <input
+  type="text"
+  value={mobileNumber}
+  onChange={(e) => {
+    const value = e.target.value;
+    if (/^\d{0,10}$/.test(value)) {
+      setMobileNumber(value);
+    }
+  }}
+  required
+  className="form-control"
+  placeholder="Mobile Number"
+/>
+
               </div>
 
               <input

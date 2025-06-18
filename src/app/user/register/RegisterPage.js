@@ -420,15 +420,20 @@ export default function Register() {
                                 }}
                             />
                         </div>
-                        <input
-                            type="tel"
-                            value={mobileNumber}
-                            onChange={(e) => setMobileNumber(e.target.value)}
-                            required
-                            maxLength={10}
-                            className="w-full p-2 border rounded-r h-[42px]"
-                            placeholder="Enter your mobile number"
-                        />
+                    <input
+    type="text"
+    value={mobileNumber}
+    onChange={(e) => {
+        const value = e.target.value;
+        if (/^\d{0,10}$/.test(value)) {
+            setMobileNumber(value);
+        }
+    }}
+    required
+    className="w-full p-2 border rounded-r h-[42px]"
+    placeholder="Enter your mobile number"
+/>
+
                     </div>
                 </div>
 
