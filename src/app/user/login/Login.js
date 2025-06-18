@@ -1,11 +1,12 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Select from "react-select";
 import Image from "next/image";
 
-import { useDispatch } from "react-redux";
+import { useDispatch,  useSelector } from "react-redux";
+
 import { setUser } from "@/app/store/userSlice";
 
 
@@ -244,9 +245,17 @@ export default function Login() {
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
     const [showOtpField, setShowOtpField] = useState(false);
+const token = useSelector((state) => state.user.token);
 
     const dispatch = useDispatch();
     const router = useRouter();
+
+      useEffect(() => {
+    if (token) {
+      router.push("/userdashboard"); // or '/' if you want to go to homepage
+    }
+  }, [token, router]);
+
 
     // Send OTP
     const handleSendOtp = async (e) => {

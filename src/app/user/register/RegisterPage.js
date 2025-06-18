@@ -1,11 +1,11 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Select from "react-select";
 import Image from "next/image";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/app/store/userSlice";
 
 
@@ -235,9 +235,6 @@ const countryCodes = [
     { value: "+263", label: "🇿🇼 +263", name: "Zimbabwe" }
   ];
   
-
-  
-
 export default function Register() {
     const [fullname, setFullname] = useState("");
     const [email, setEmail] = useState("");
@@ -253,10 +250,17 @@ export default function Register() {
     const [otp, setOtp] = useState("");
     const [loginnumber, setLoginnumber] = useState("");
     const [signup, setSignup] = useState(false);
+const token = useSelector((state) => state.user.token);
 
     const dispatch = useDispatch();
     const router = useRouter();
 
+       useEffect(() => {
+        if (token) {
+          router.push("/userdashboard"); // or '/' if you want to go to homepage
+        }
+      }, [token, router]);
+    
     // Handle Registration Form Submission
     const handleSubmit = async (e) => {
         e.preventDefault();

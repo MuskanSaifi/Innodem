@@ -393,12 +393,12 @@ const JoinUs = () => {
             value={otp}
             onChange={(e) => {
               const value = e.target.value;
-              if (/^\d{0,6}$/.test(value)) {
+              if (/^\d{0,4}$/.test(value)) {
                 setOtp(value);
               }
             }}
             required
-            maxLength={6}
+            maxLength={4}
             className="w-full p-3 mb-4 rounded bg-gray-700 text-white"
             placeholder="Enter OTP"
           />
