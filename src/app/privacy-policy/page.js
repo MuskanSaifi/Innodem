@@ -17,11 +17,11 @@ export const metadata = {
     title: "Privacy Policy - Dial Export Mart",
     description:
       "Read the privacy policy of Dial Export Mart to understand how we collect, use, and protect your personal information in compliance with data regulations.",
-    url: "https://dialexportmart.com/privacy-policy",
+    url: "https://www.dialexportmart.com/privacy-policy",
     siteName: "Dial Export Mart",
     images: [
       {
-        url: "https://dialexportmart.com/assets/pagesbanner/Privacy%20Policy.png",
+        url: "https://www.dialexportmart.com/assets/pagesbanner/Privacy%20Policy.png",
         width: 1200,
         height: 630,
         alt: "Privacy Policy Banner",
@@ -31,7 +31,7 @@ export const metadata = {
     locale: "en_US",
   },
   alternates: {
-    canonical: "https://dialexportmart.com/privacy-policy",
+    canonical: "https://www.dialexportmart.com/privacy-policy",
   },
   robots: {
     index: true,
@@ -41,11 +41,11 @@ export const metadata = {
   authors: [
     {
       name: 'Dial Export Mart',
-      url: 'https://dialexportmart.com',
+      url: 'https://www.dialexportmart.com',
     },
   ],
   publisher: 'Dial Export Mart',
-  metadataBase: new URL('https://dialexportmart.com'),
+  metadataBase: new URL('https://www.dialexportmart.com'),
 };
 
 

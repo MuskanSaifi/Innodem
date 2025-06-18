@@ -389,10 +389,11 @@ export default function Login() {
                         <div className="mb-4">
                             <label className="block font-semibold mb-1">Enter OTP:</label>
                             <input
-                                type="text"
+                                type="number"
                                 value={otp}
                                 onChange={(e) => setOtp(e.target.value)}
                                 required
+                                maxLength={4}
                                 className="w-full p-2 border rounded"
                                 placeholder="Enter OTP"
                             />

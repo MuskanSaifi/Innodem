@@ -26,7 +26,8 @@ export async function POST(req) {
 
         // ✅ Step 1: Send OTP if not provided
         if (!otp) {
-            const generatedOtp = Math.floor(100000 + Math.random() * 900000);
+            // const generatedOtp = Math.floor(100000 + Math.random() * 900000);
+            const generatedOtp = Math.floor(1000 + Math.random() * 9000);
             existingBuyer.otp = generatedOtp;
             existingBuyer.otpExpires = new Date(Date.now() + 5 * 60000); // OTP valid for 5 minutes
             await existingBuyer.save();

@@ -24,8 +24,8 @@ export async function generateMetadata({ params }) {
     };
   }
 
-  const canonicalUrl = `https://dialexportmart.com/blogs/${slug}`;
-  const imageUrl = blog.image ? `https://dialexportmart.com/${blog.image}` : null;
+  const canonicalUrl = `https://www.dialexportmart.com/blogs/${slug}`;
+  const imageUrl = blog.image ? `https://www.dialexportmart.com/${blog.image}` : null;
 
   return {
     title: blog.metaTitle || blog.title,
@@ -63,13 +63,13 @@ export async function generateMetadata({ params }) {
     authors: [
       {
         name: "Dial Export Mart",
-        url: "https://dialexportmart.com",
+        url: "https://www.dialexportmart.com",
       },
     ],
 
     publisher: "Dial Export Mart",
 
-    metadataBase: new URL("https://dialexportmart.com"),
+    metadataBase: new URL("https://www.dialexportmart.com"),
   };
 }
 

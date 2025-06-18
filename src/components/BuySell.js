@@ -131,10 +131,11 @@ console.log(productname, "TATT")
             <form onSubmit={handleOtpVerify}>
               <div className="mb-3">
                 <input
-                  type="text"
+                  type="number"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
                   required
+                  maxLength={4}
                   className="form-control"
                   placeholder="Enter OTP"
                 />
@@ -183,10 +184,11 @@ console.log(productname, "TATT")
               <div className="mb-2 d-flex">
                 <Select options={countryCodes} value={countryCode} onChange={setCountryCode} className="me-2" />
                 <input
-                  type="text"
+                  type="number"
                   value={mobileNumber}
                   onChange={(e) => setMobileNumber(e.target.value)}
                   required
+                  maxLength={10}
                   className="form-control"
                   placeholder="Mobile Number"
                 />

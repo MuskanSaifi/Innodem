@@ -67,7 +67,7 @@ export async function generateMetadata({ params }) {
       description: metaDescription || generateMetaDescription(),
       keywords: metaKeywords || name?.split(" ")?.join(", "),
        alternates: {
-        canonical: `https://dialexportmart.com/manufacturers/${productslug}`,
+        canonical: `https://www.dialexportmart.com/manufacturers/${productslug}`,
       },
     };
   } catch (err) {

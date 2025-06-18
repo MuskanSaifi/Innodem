@@ -14,7 +14,7 @@ export const metadata = {
   openGraph: {
     title: "Pricing and Membership Plans | Dial Export Mart",
     description: "Explore flexible and affordable pricing plans at Dial Export Mart. Choose the ideal membership package to boost your business growth.",
-    url: "https://dialexportmart.com/become-a-member",
+    url: "https://www.dialexportmart.com/become-a-member",
     siteName: "Dial Export Mart",
     images: [
       {
@@ -28,7 +28,7 @@ export const metadata = {
     locale: "en_US",
   },
   alternates: {
-    canonical: "https://dialexportmart.com/become-a-member",
+    canonical: "https://www.dialexportmart.com/become-a-member",
   },
   robots: {
     index: true,
@@ -38,11 +38,11 @@ export const metadata = {
   authors: [
     {
       name: 'Dial Export Mart',
-      url: 'https://dialexportmart.com',
+      url: 'https://www.dialexportmart.com',
     },
   ],
   publisher: 'Dial Export Mart',
-  metadataBase: new URL('https://dialexportmart.com'),
+  metadataBase: new URL('https://www.dialexportmart.com'),
 };
 
 const Page = () => {

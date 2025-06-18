@@ -4,7 +4,7 @@ import SubcategoryProductPage from "./SubcategoryProductPage";
 
 // Define fetchCategories function directly
 export async function fetchCategories() {
-  const response = await fetch(`https://dialexportmart.com/api/adminprofile/category`);
+  const response = await fetch(`https://www.dialexportmart.com/api/adminprofile/category`);
   if (!response.ok) {
     throw new Error("Failed to fetch categories");
   }
@@ -43,7 +43,7 @@ export async function generateMetadata({ params }) {
         title: "Subcategory Not Found",
         description: "The requested subcategory does not exist.",
           alternates: {
-          canonical: `https://dialexportmart.com/seller/not-found`,
+          canonical: `https://www.dialexportmart.com/seller/not-found`,
         },
       };
     }
@@ -55,7 +55,7 @@ export async function generateMetadata({ params }) {
         `Explore ${subcategory.name} products under ${category.name}.`,
       keywords: subcategory.metakeywords || "",
        alternates: {
-        canonical: `https://dialexportmart.com/seller/${category.categoryslug}/${subcategory.subcategoryslug}`,
+        canonical: `https://www.dialexportmart.com/seller/${category.categoryslug}/${subcategory.subcategoryslug}`,
       },
     };
   } catch (error) {

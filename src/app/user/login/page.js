@@ -12,17 +12,17 @@ export const metadata = {
     "Export Import Dashboard",
   ],
   alternates: {
-    canonical: "https://dialexportmart.com/login",
+    canonical: "https://www.dialexportmart.com/login",
   },
   openGraph: {
     title: "Login | Access Your DialExportMart Account | B2B Export Platform",
     description:
       "Securely log in to your Dial Export Mart account to manage your business profile, connect with global buyers, and grow your export opportunities.",
-    url: "https://dialexportmart.com/login",
+    url: "https://www.dialexportmart.com/login",
     siteName: "Dial Export Mart",
     images: [
       {
-        url: "https://dialexportmart.com/assets/pagesbanner/Login.png", // Make sure the image exists
+        url: "https://www.dialexportmart.com/assets/pagesbanner/Login.png", // Make sure the image exists
         width: 1200,
         height: 630,
         alt: "Login to Dial Export Mart",

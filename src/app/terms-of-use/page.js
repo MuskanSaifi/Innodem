@@ -15,11 +15,11 @@ export const metadata = {
   openGraph: {
     title: 'Terms of Use | Dial Export Mart',
     description: 'Detailed Terms of Use policy for clients of Dial Export Mart.',
-    url: 'https://dialexportmart.com/terms-of-use',
+    url: 'https://www.dialexportmart.com/terms-of-use',
     siteName: 'Dial Export Mart',
     images: [
       {
-        url: 'https://dialexportmart.com/assets/pagesbanner/tou.png',
+        url: 'https://www.dialexportmart.com/assets/pagesbanner/tou.png',
         width: 1000,
         height: 450,
         alt: 'Terms of Use Banner',
@@ -29,7 +29,7 @@ export const metadata = {
     locale: 'en_US',
   },
   alternates: {
-    canonical: 'https://dialexportmart.com/terms-of-use',
+    canonical: 'https://www.dialexportmart.com/terms-of-use',
   },
   robots: {
     index: true,
@@ -39,11 +39,11 @@ export const metadata = {
   authors: [
     {
       name: 'Dial Export Mart',
-      url: 'https://dialexportmart.com',
+      url: 'https://www.dialexportmart.com',
     },
   ],
   publisher: 'Dial Export Mart',
-  metadataBase: new URL('https://dialexportmart.com'),
+  metadataBase: new URL('https://www.dialexportmart.com'),
 };
 
 

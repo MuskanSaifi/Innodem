@@ -5,7 +5,7 @@ export const metadata = {
   description: "Connect with Dial Export Mart for support, business inquiries, and B2B assistance. Reach us for live help and seamless global trade support.",
   keywords: ["Contact Dial Export Mart", "Customer Support", "Business Inquiry", "Export Help", "Import Assistance", "Partnerships"],
   alternates: {
-    canonical: "https://dialexportmart.com/contact-us",
+    canonical: "https://www.dialexportmart.com/contact-us",
   },
   robots: {
   index: true,
@@ -14,11 +14,11 @@ export const metadata = {
   openGraph: {
     title: "Contact Dial Export Mart | Export Solutions & Support | Get in Touch Today",
     description: "Connect with Dial Export Mart for support, business inquiries, and B2B assistance. Reach us for live help and seamless global trade support.",
-    url: "https://dialexportmart.com/contact-us",
+    url: "https://www.dialexportmart.com/contact-us",
     siteName: "Dial Export Mart",
     images: [
       {
-        url: "https://dialexportmart.com/assets/pagesbanner/Contact Us.png",
+        url: "https://www.dialexportmart.com/assets/pagesbanner/Contact Us.png",
         width: 1200,
         height: 630,
         alt: "Contact Us Banner",

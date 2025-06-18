@@ -374,7 +374,7 @@ const BuySellForm = ({ productname: initialProductName }) => {
             {otpSent ? (
               <form onSubmit={handleOtpVerify}>
                 <div className="mb-3">
-                  <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} required className="form-control" placeholder="Enter OTP" />
+                  <input type="number" maxLength={4}  value={otp} onChange={(e) => setOtp(e.target.value)} required className="form-control" placeholder="Enter OTP" />
                 </div>
                 <button type="submit" className="btn btn-success w-100" disabled={loading}>{loading ? "Verifying OTP..." : "Verify OTP"}</button>
               </form>
@@ -392,7 +392,7 @@ const BuySellForm = ({ productname: initialProductName }) => {
                 </div>
                 <div className="mb-2 d-flex">
                   <Select options={countryCodes} value={countryCode} onChange={setCountryCode} className="me-2" />
-                  <input type="text" value={mobileNumber} onChange={(e) => setMobileNumber(e.target.value)} required className="form-control" placeholder="Mobile Number" />
+                  <input type="number" maxLength={10} value={mobileNumber} onChange={(e) => setMobileNumber(e.target.value)} required className="form-control" placeholder="Mobile Number" />
                 </div>
                
                 {buySell === "sell" && (

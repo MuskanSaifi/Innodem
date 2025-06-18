@@ -1,8 +1,8 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://dialexportmart.com/sitemap.xml
-Host: https://dialexportmart.com
+Sitemap: https://www.dialexportmart.com/sitemap.xml
+Host: https://www.dialexportmart.com
 
 # Optional: Block specific bots if needed
 # User-agent: BadBot

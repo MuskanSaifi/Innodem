@@ -5,7 +5,7 @@ export const metadata = {
   description: "Read insightful blogs and updates from our team.",
   keywords: ["blogs", "articles", "updates", "insights"],
   alternates: {
-    canonical: "https://dialexportmart.com/blogs", 
+    canonical: "https://www.dialexportmart.com/blogs", 
   },
 };
 

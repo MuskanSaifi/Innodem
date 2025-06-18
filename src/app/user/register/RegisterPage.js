@@ -344,10 +344,11 @@ export default function Register() {
                     <form onSubmit={handleVerifyOtp}>
                         <div className="mb-2">
                             <input
-                                type="text"
+                                type="number"
                                 value={otp}
                                 onChange={(e) => setOtp(e.target.value)}
                                 required
+                                maxLength={4}
                                 className="w-full p-2 border rounded"
                                 placeholder="Enter OTP"
                             />

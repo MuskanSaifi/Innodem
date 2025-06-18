@@ -17,11 +17,11 @@ export const metadata = {
     title: "About Dial Export Mart | Trusted Global Export Solutions Provider",
     description:
       "Dial Export Mart is a trusted platform that connects verified Indian manufacturers and exporters with buyers worldwide using smart AI technology.",
-    url: "https://dialexportmart.com/about-us",
+    url: "https://www.dialexportmart.com/about-us",
     siteName: "Dial Export Mart",
     images: [
       {
-        url: "https://dialexportmart.com/assets/pagesbanner/About-Us.png",
+        url: "https://www.dialexportmart.com/assets/pagesbanner/About-Us.png",
         width: 1200,
         height: 630,
         alt: "About Us Banner",
@@ -31,7 +31,7 @@ export const metadata = {
     locale: "en_US",
   },
   alternates: {
-    canonical: "https://dialexportmart.com/about-us",
+    canonical: "https://www.dialexportmart.com/about-us",
   },
   robots: {
     index: true,
@@ -41,11 +41,11 @@ export const metadata = {
   authors: [
     {
       name: "Dial Export Mart",
-      url: "https://dialexportmart.com",
+      url: "https://www.dialexportmart.com",
     },
   ],
   publisher: "Dial Export Mart",
-  metadataBase: new URL("https://dialexportmart.com"),
+  metadataBase: new URL("https://www.dialexportmart.com"),
 };
 
 

@@ -22,16 +22,16 @@ const res = await fetch(`http://localhost:3000/api/products/${id}`, {
         "B2B Marketplace",
       ].filter(Boolean),
       alternates: {
-        canonical: `https://dialexportmart.com/products/${id}`,
+        canonical: `https://www.dialexportmart.com/products/${id}`,
       },
       openGraph: {
         title: `${product?.name || "Product"} | Dial Export Mart`,
         description: product?.description?.slice(0, 160) || "Explore products on Dial Export Mart.",
-        url: `https://dialexportmart.com/products/${id}`,
+        url: `https://www.dialexportmart.com/products/${id}`,
         siteName: "Dial Export Mart",
         images: [
           {
-            url: product?.images?.[0] || "https://dialexportmart.com/assets/product-default.png",
+            url: product?.images?.[0] || "https://www.dialexportmart.com/assets/product-default.png",
             width: 1200,
             height: 630,
             alt: product?.name || "Product Image",

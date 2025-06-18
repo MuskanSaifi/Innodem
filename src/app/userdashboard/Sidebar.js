@@ -18,12 +18,14 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
     {
       icon: "/assets/dashboardicons/products.png",
       label: "Manage Products",
-      subItems: ["Add New Product", "My Product", "My Catalog"],
+      // subItems: ["Add New Product", "My Product", "My Catalog"],
+      subItems: ["Add New Product", "My Product"],
     },
     {
       icon: "/assets/dashboardicons/Leads-Enquiry.png",
       label: "Leads & Enquiry",
-      subItems: ["Recieved Enquiry", "Buy Leads", "My Business Requirement", "Contact Book", "Call Alerts"],
+      // subItems: ["Recieved Enquiry", "Buy Leads", "My Business Requirement", "Contact Book", "Call Alerts"],
+      subItems: ["Recieved Enquiry"],
     },
     { icon: "/assets/dashboardicons/support-person.png", label: "Support Person" },
 

@@ -17,7 +17,7 @@ export const metadata = {
     title: "Refund Policy | Dial Export Mart",
     description:
       "Understand our refund and cancellation policy for memberships and services. Read before making payments.",
-    url: "https://dialexportmart.com/refund-policy", // ✅ Replace `yourdomain.com`
+    url: "https://www.dialexportmart.com/refund-policy", // ✅ Replace `yourdomain.com`
     type: "website",
     siteName: "Dial Export Mart",
     images: [
@@ -30,7 +30,7 @@ export const metadata = {
     ]
   },
   alternates: {
-    canonical: "https://dialexportmart.com/refund-policy", // ✅ Replace `yourdomain.com`
+    canonical: "https://www.dialexportmart.com/refund-policy", // ✅ Replace `yourdomain.com`
   },
   robots: {
     index: true,
@@ -40,11 +40,11 @@ export const metadata = {
   authors: [ // ✅ You had this outside metadata (move it inside)
     {
       name: 'Dial Export Mart',
-      url: 'https://dialexportmart.com',
+      url: 'https://www.dialexportmart.com',
     },
   ],
   publisher: 'Dial Export Mart',
-  metadataBase: new URL('https://dialexportmart.com'),
+  metadataBase: new URL('https://www.dialexportmart.com'),
 };
 
 

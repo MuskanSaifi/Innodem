@@ -9,7 +9,8 @@ const Bannerslider = () => {
     "/assets/bannerslider/banner-4.png",
     "/assets/bannerslider/banner-1.png",
     "/assets/bannerslider/banner-2.png",
-    "/assets/bannerslider/banner-3.png"
+    "/assets/bannerslider/banner-3.png",
+    "/assets/bannerslider/banner-5.png",
   ];
 
   return (

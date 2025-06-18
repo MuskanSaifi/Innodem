@@ -61,8 +61,8 @@ export async function POST(req) {
       firstname: name,
       email,
       phone,  // Keep phone here for the request, though it's not part of the hash string
-      surl: `https://dialexportmart.com/api/payment/success`,
-      furl: `https://dialexportmart.com/api/payment/failure`,
+      surl: `https://www.dialexportmart.com/api/payment/success`,
+      furl: `https://www.dialexportmart.com/api/payment/failure`,
       hash,
       productinfo: productInfo, // Added product info
       udf1,

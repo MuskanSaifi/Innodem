@@ -214,10 +214,11 @@ const [currency, setCurrency] = useState("INR");
               {otpSent ? (
                 <form onSubmit={handleOtpVerify}>
                   <input
-                    type="text"
+                    type="number"
                     value={otp}
                     onChange={(e) => setOtp(e.target.value)}
                     required
+                    maxLength={4}
                     className="form-control mb-3"
                     placeholder="Enter OTP"
                   />
@@ -272,10 +273,11 @@ const [currency, setCurrency] = useState("INR");
                       className="me-2"
                     />
                     <input
-                      type="text"
+                      type="number"
                       value={mobileNumber}
                       onChange={(e) => setMobileNumber(e.target.value)}
                       required
+                      maxLength={10}
                       className="form-control"
                       placeholder="Mobile Number"
                     />

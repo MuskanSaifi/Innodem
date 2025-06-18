@@ -27,7 +27,9 @@ export async function POST(req) {
                 });
             }
 
-            const generatedOtp = Math.floor(100000 + Math.random() * 900000);
+            // const generatedOtp = Math.floor(100000 + Math.random() * 900000);
+            const generatedOtp = Math.floor(1000 + Math.random() * 9000); // 4-digit OTP
+
             const otpExpires = new Date(Date.now() + 5 * 60000);
 
             user.otp = generatedOtp;

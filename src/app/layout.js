@@ -18,7 +18,7 @@ export const metadata = {
   keywords:
     "B2B Marketplace in India, B2B Portal, Export Import Marketplace, Indian B2B Platform...",
   alternates: {
-    canonical: "https://dialexportmart.com/",
+    canonical: "https://www.dialexportmart.com/",
   },
   robots: {
     index: true,
@@ -28,16 +28,16 @@ export const metadata = {
   authors: [
     {
       name: "Dial Export Mart",
-      url: "https://dialexportmart.com",
+      url: "https://www.dialexportmart.com",
     },
   ],
   publisher: "Dial Export Mart",
-  metadataBase: new URL("https://dialexportmart.com"),
+  metadataBase: new URL("https://www.dialexportmart.com"),
   openGraph: {
     title: "Dial Export Mart | India’s Leading B2B Marketplace",
     description:
       "Find trusted exporters, suppliers, and global buyers with Dial Export Mart...",
-    url: "https://dialexportmart.com",
+    url: "https://www.dialexportmart.com",
     siteName: "Dial Export Mart",
     images: [
       {
