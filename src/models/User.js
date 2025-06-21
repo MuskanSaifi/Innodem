@@ -14,7 +14,6 @@ const userSchema = new mongoose.Schema({
   mobileNumber: { type: String, unique: true }, 
   icon: { type: String },
   iconPublicId: String,
-
     alternateMobileNumber: String, 
     alternateEmail: String, 
     whatsappNumber: String, 
