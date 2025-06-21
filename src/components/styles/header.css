@@ -27,6 +27,25 @@
     color: rgb(0, 0, 0);
 }
 
+.marq {
+  display: none;
+}
+
+.marq2 {
+  display: block;
+}
+
+@media (max-width: 700px) {
+  .marq {
+    display: block;
+  }
+
+  .marq2 {
+    display: none;
+  }
+}
+
+
 .logo {
     font-size: 1.25rem;
     font-weight: bold;

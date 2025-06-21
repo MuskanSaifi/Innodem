@@ -21,7 +21,7 @@ const { id } = await params;
     const product = await Product.findById(id)
       .populate("category", "name")
       .populate("subCategory", "name")
-      .populate("userId", "fullname companyName")
+      .populate("userId", "fullname companyName _id")
       .select("-__v");
 
     if (!product) {

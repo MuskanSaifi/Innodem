@@ -5,8 +5,9 @@ const BuyerSchema = new mongoose.Schema({
   email: { type: String },
   mobileNumber: { type: String, required: true, unique: true },
   countryCode: { type: String, required: true },
-  productname: { type: String, required: true },
-  
+  productname: { type: String},
+    inquiredProducts: [{ type: String }], 
+
   quantity: { type: Number},
   unit: { type: String},
   orderValue: { type: Number },

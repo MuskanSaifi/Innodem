@@ -36,7 +36,6 @@ export async function PATCH(req) {
     if (!user) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
-
     const body = await req.json();
     const { productId, images = [], ...updateFields } = body;
 

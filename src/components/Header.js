@@ -271,12 +271,14 @@ export default function Header() {
   <header className="bg-light shadow-sm Main-header">
 
   <div className="container-fluid p-2 text-center top-bar text-dark">
-  <marquee behavior="scroll" direction="left" scrollamount="6">
-  <p className="mb-0 text-light text-sm">
-    We connect you with verified export buyers within 24 hours, guaranteed genuine and confirmed conversations with buyers.
-  </p>
-</marquee>
-  </div>
+<p className="mb-0 text-light text-sm marq">
+  We connect you with verified export buyers within 24 hours.
+</p>
+<p className="mb-0 text-light text-sm marq2">
+We connect you with verified export buyers within 24 hours, guaranteed genuine and confirmed conversations with buyers.
+</p>
+
+    </div>
 
 
   {isOpenpopup && (
@@ -340,11 +342,9 @@ export default function Header() {
     </li>
   ))}
 </ul>
-
         </div>
       </div>
     </div>
-
             <button
               className="absolute top-2 right-2 text-xl font-bold text-gray-500 hover:text-gray-800"
               onClick={togglepopup}
@@ -354,8 +354,6 @@ export default function Header() {
           </div>
         </div>
       )}
-
-
 
   <div className="container-fluid py-3">
     <div className="row align-items-center">
@@ -529,10 +527,16 @@ Hi! {user.fullname || "User"}
 <div>
       {/* Button to open the drawer */}
       <button
-        className="bg-grey-500 text-white px-3 text-2xl py-2 rounded-2 common-shad  d-none-web"
+        className="bg-grey-500 text-white  text-2xl  rounded-2  d-none-web"
         onClick={toggleDrawer}
       >
-      👨‍💼
+     <Image 
+  src="/assets/dashboardicons/profile1.png"  // or external URL if allowed
+  alt="Description of image"
+  className="d-inline"
+  width={40}
+  height={40}
+/>
       </button>
 
       {/* Bottom Drawer */}

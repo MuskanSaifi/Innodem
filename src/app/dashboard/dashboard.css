@@ -148,7 +148,14 @@
 
 
   
-
+.highlight-row {
+  background-color: #053d6e !important; /* A light blue color, adjust as desired */
+  /* Or a light yellow: #fffde7 !important; */
+  /* Or a light green: #e8f5e9 !important; */
+  /* You can also add other styles for emphasis */
+  /* font-weight: bold; */
+  /* border-left: 4px solid #64b5f6; */ /* Example: a border on the left */
+}
 
 
   /* Ensure the dropdown remains within the sidebar */

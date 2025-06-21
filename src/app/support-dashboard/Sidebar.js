@@ -39,40 +39,40 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
             <Image src="/assets/logo123.png" alt="Innodem Logo" width={100} height={50} />
           </Link>        </div>
           <h6 className="text-center mt-2">🧑  Welcome! Support Team</h6>
-        <ul>
-          {sidebarItems.map((item, index) => (
-            <li key={index} className={activeContent === item.label || openDropdown === index ? "active" : ""}>
-              <div
-                className={`sidebar-item ${openDropdown === index ? "active" : ""}`}
-                onClick={() => handleItemClick(item.label, index, !!item.subItems)}
-              >
-                {item.icon && <span className="sidebar-icon">
-                    {item.icon.startsWith("/") ? (
-                      <Image src={item.icon} alt={item.label} width={40} height={40} />
-                    ) : (
-                      item.icon
-                    )}
-                    </span>}
-                {item.label}
-                {item.subItems && <span className="dropdown-arrow">{openDropdown === index ? "▲" : "▼"}</span>}
-              </div>
+          <ul>
+            {sidebarItems.map((item, index) => (
+              <li key={index} className={activeContent === item.label || openDropdown === index ? "active" : ""}>
+                <div
+                  className={`sidebar-item ${openDropdown === index ? "active" : ""}`}
+                  onClick={() => handleItemClick(item.label, index, !!item.subItems)}
+                >
+                  {item.icon && <span className="sidebar-icon">
+                      {item.icon.startsWith("/") ? (
+                        <Image src={item.icon} alt={item.label} width={40} height={40} />
+                      ) : (
+                        item.icon
+                      )}
+                      </span>}
+                  {item.label}
+                  {item.subItems && <span className="dropdown-arrow">{openDropdown === index ? "▲" : "▼"}</span>}
+                </div>
 
-              {item.subItems && openDropdown === index && (
-                <ul className="dropdown">
-                  {item.subItems.map((subItem, subIndex) => (
-                    <li
-                      key={subIndex}
-                      className={activeContent === subItem ? "active" : ""}
-                      onClick={() => setActiveContent(subItem)}
-                    >
-                      {subItem}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
-        </ul>
+                {item.subItems && openDropdown === index && (
+                  <ul className="dropdown">
+                    {item.subItems.map((subItem, subIndex) => (
+                      <li
+                        key={subIndex}
+                        className={activeContent === subItem ? "active" : ""}
+                        onClick={() => setActiveContent(subItem)}
+                      >
+                        {subItem}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
       </div>
     </div>
   );

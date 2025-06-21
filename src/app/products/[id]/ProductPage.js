@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import Buyfrom from "./Buyfrom";
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -185,13 +186,9 @@ const ProductDetailPage = () => {
                 </div>
 
                 <div className="flex gap-4 pt-6 border-t">
-                  <button className="flex-1 py-3 px-5 bg-blue-600 text-white font-semibold rounded-xl shadow hover:bg-blue-700">
-                    Buy Now
-                  </button>
-                  <button className="flex-1 py-3 px-5 bg-gray-800 text-white font-semibold rounded-xl shadow hover:bg-gray-900">
-                    Send Inquiry
-                  </button>
+                    <Buyfrom product={product} sellerId={product?.userId?._id} />
                 </div>
+                
               </div>
 
               {/* Zoom Modal */}
