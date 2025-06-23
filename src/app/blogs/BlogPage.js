@@ -2,7 +2,9 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { Container, Row, Col, Card, Pagination } from "react-bootstrap";
+import { Pagination } from "react-bootstrap";
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'; // Import Skeleton components
+import 'react-loading-skeleton/dist/skeleton.css'; // Import skeleton CSS
 
 const BlogPage = () => {
   const [blogs, setBlogs] = useState([]);
@@ -51,7 +53,33 @@ const BlogPage = () => {
           Our <span className="text-primary">Blogs</span>
         </h1>
 
-        {loading && <p className="text-center">Loading blogs...</p>}
+{loading && (
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    {Array.from({ length: blogsPerPage }).map((_, index) => (
+      <div key={index} className="bg-white shadow-md rounded-lg overflow-hidden flex flex-col">
+        <div className="h-44 overflow-hidden relative">
+          <Skeleton height="100%" />
+        </div>
+
+        <div className="p-4 text-center flex flex-col flex-1">
+          <h2 className="text-lg font-semibold mb-2">
+            <Skeleton width="80%" height={20} />
+          </h2>
+          <p className="text-sm text-gray-600 flex-1">
+            <Skeleton count={3} />
+          </p>
+          <div className="mt-4">
+            <Skeleton width={100} height={36} className="rounded-full" />
+          </div>
+        </div>
+
+        <div className="bg-gray-100 text-center text-sm text-gray-500 p-2">
+          <Skeleton width={120} />
+        </div>
+      </div>
+    ))}
+  </div>
+)}
         {error && <p className="text-center text-red-500">Error: {error}</p>}
         {!loading && !error && currentBlogs.length === 0 && (
           <p className="text-center">No blogs found.</p>

@@ -21,7 +21,7 @@ const uploadToCloudinary = async (image) => {
     const base64Image = `data:${image.type};base64,${buffer.toString("base64")}`;
     const result = await cloudinary.uploader.upload(base64Image, {
       folder: "blogs",
-      transformation: [{ width: 500, height: 500, crop: "limit" }],
+            transformation: [{ width: 840, height: 420, crop: "limit" }],
     });
     return { imageUrl: result.secure_url, imagePublicId: result.public_id };
   } catch (error) {

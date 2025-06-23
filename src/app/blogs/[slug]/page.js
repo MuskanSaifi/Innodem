@@ -3,6 +3,7 @@ import BlogDetail from "./BlogDetail";
 import connectdb from "@/lib/dbConnect";
 import Blog from "@/models/Blogs";
 
+
 export async function generateMetadata({ params }) {
   // Ensure params is fully resolved first
   const { slug } = await params;  // Await params to access slug

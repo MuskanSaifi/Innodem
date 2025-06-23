@@ -23,11 +23,10 @@ const userSchema = new mongoose.Schema({
     otp: String,
     otpExpires: Date,
     isVerified: { type: Boolean, default: false },
-  remark: {
+    remark: {
     type: String,
     default: ""
   },
-
 
     // ✅ Add this line to reference products
     products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
@@ -55,8 +54,6 @@ const userSchema = new mongoose.Schema({
           expiredAt: { type: Date, default: Date.now }
         }
       ],
-      
-
 },
 { timestamps: true }
 );

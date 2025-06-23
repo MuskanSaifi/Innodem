@@ -112,7 +112,6 @@ const Enquiry = () => {
       <div className="text-center text-lg font-semibold text-blue-600 mb-6">
         Total Leads: <span className="text-lg  text-blue-800">{requests.length}</span>
       </div>
-
       {requests.length === 0 ? (
         <p className="text-center text-gray-500 text-lg">No enquiries found. Please try again later.</p>
       ) : (
