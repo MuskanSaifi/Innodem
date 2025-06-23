@@ -93,7 +93,6 @@ const handleSubscribe = async (e) => {
           <p className="text-muted text-center mb-2">
             <small>Published on {formattedDate}</small>
           </p>
-          <h1 className="mb-4">{blog.title}</h1>
           <div
             className="blog-content"
             dangerouslySetInnerHTML={{ __html: blog.content }}
