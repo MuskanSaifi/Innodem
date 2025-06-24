@@ -5,6 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import beautify from 'js-beautify'; // Install using `npm install js-beautify`
 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 const AllBlogs = () => {
   const [blogs, setBlogs] = useState([]);
   const [filteredBlogs, setFilteredBlogs] = useState([]);
@@ -180,7 +183,35 @@ const handleSave = async () => {
 </div>
 
 
-        {loading && <p>Loading blogs...</p>}
+{loading && (
+  <table className="table table-bordered table-hover mt-2">
+    <thead className="table-dark">
+      <tr>
+        <th>#</th>
+        <th>Image</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Created At</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {Array.from({ length: 5 }).map((_, idx) => (
+        <tr key={idx}>
+          <td><Skeleton width={20} /></td>
+          <td><Skeleton width={80} height={60} /></td>
+          <td><Skeleton width={150} /></td>
+          <td><Skeleton width={100} /></td>
+          <td><Skeleton width={90} /></td>
+          <td className="d-flex gap-2">
+            <Skeleton width={60} height={30} />
+            <Skeleton width={60} height={30} />
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+)}
         {error && <p className="text-danger">Error: {error}</p>}
         {!loading && !error && filteredBlogs.length === 0 && <p>No blogs found.</p>}
 

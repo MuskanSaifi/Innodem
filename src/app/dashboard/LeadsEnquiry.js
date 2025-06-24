@@ -3,13 +3,17 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 const LeadsEnquiry = () => {
   const [leads, setLeads] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState('');
   const [selectedInfo, setSelectedInfo] = useState(null);
   const [searchTerm, setSearchTerm] = useState(''); // New state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchLeads = async () => {
@@ -79,11 +83,26 @@ const LeadsEnquiry = () => {
       />
       </div>
 
-      {loading ? (
-        <div className="flex justify-center items-center h-48">
-          <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+{loading ? (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {Array(4).fill().map((_, index) => (
+      <div
+        key={index}
+        className="bg-white border border-gray-200 rounded-xl shadow-lg p-5"
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+          <Skeleton height={80} />
+          <Skeleton height={80} />
+          <Skeleton height={80} />
         </div>
-      ) : filteredLeads.length === 0 ? (
+        <Skeleton height={20} className="mb-2" />
+        <Skeleton height={20} className="mb-2" />
+        <Skeleton height={20} className="mb-2" />
+        <Skeleton height={20} className="mb-2" />
+      </div>
+    ))}
+  </div>
+) : filteredLeads.length === 0 ? (
         <div className="text-center text-gray-500">No leads found.</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

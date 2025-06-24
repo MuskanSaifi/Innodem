@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const AllSubscribers = ({ supportMember }) => {
   const [subscribers, setSubscribers] = useState([]);
@@ -33,7 +35,6 @@ const AllSubscribers = ({ supportMember }) => {
     }
   };
 
-  // ✅ Show popup instead of delete
   const handleDelete = () => {
     Swal.fire({
       icon: "info",
@@ -43,7 +44,6 @@ const AllSubscribers = ({ supportMember }) => {
     });
   };
 
-  // ✅ Filter Logic
   useEffect(() => {
     let filtered = subscribers;
 
@@ -63,16 +63,15 @@ const AllSubscribers = ({ supportMember }) => {
     setFilteredSubscribers(filtered);
   }, [searchEmail, filterDate, subscribers]);
 
-
-    if (!supportMember?.allSubscribersAccess) {
+  if (!supportMember?.allSubscribersAccess) {
     return (
       <div className="text-center text-danger fw-bold mt-5">
         Admin can't give you access to this page.
       </div>
     );
   }
-  
- return (
+
+  return (
     <div className="container mt-4">
       <div className="card shadow p-4">
         <h1 className="fs-4 fw-bold mb-4">📩 All Subscribers</h1>
@@ -80,28 +79,57 @@ const AllSubscribers = ({ supportMember }) => {
         {/* Filters */}
         <div className="row g-3 mb-4">
           <div className="col-md-6">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search by email..."
-              value={searchEmail}
-              onChange={(e) => setSearchEmail(e.target.value)}
-            />
+            {loading ? (
+              <Skeleton height={38} />
+            ) : (
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Search by email..."
+                value={searchEmail}
+                onChange={(e) => setSearchEmail(e.target.value)}
+              />
+            )}
           </div>
           <div className="col-md-6">
-            <input
-              type="date"
-              className="form-control"
-              value={filterDate}
-              onChange={(e) => setFilterDate(e.target.value)}
-            />
+            {loading ? (
+              <Skeleton height={38} />
+            ) : (
+              <input
+                type="date"
+                className="form-control"
+                value={filterDate}
+                onChange={(e) => setFilterDate(e.target.value)}
+              />
+            )}
           </div>
         </div>
 
+        {error && <p className="text-danger">{error}</p>}
+
         {loading ? (
-          <p className="text-muted">Loading subscribers...</p>
-        ) : error ? (
-          <p className="text-danger">{error}</p>
+          <div className="table-responsive">
+            <table className="table">
+              <thead className="table-dark">
+                <tr>
+                  <th>#</th>
+                  <th>Email</th>
+                  <th>Subscribed On</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <tr key={index}>
+                    <td><Skeleton width={20} /></td>
+                    <td><Skeleton width={200} /></td>
+                    <td><Skeleton width={180} /></td>
+                    <td><Skeleton width={60} height={30} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : filteredSubscribers.length === 0 ? (
           <p className="text-muted">No subscribers found.</p>
         ) : (
@@ -132,10 +160,7 @@ const AllSubscribers = ({ supportMember }) => {
                       }).format(new Date(subscriber.createdAt))}
                     </td>
                     <td>
-                      <button
-                        className="btn btn-danger btn-sm"
-                        onClick={handleDelete}
-                      >
+                      <button className="btn btn-danger btn-sm" onClick={handleDelete}>
                         🗑️ Delete
                       </button>
                     </td>
@@ -149,6 +174,5 @@ const AllSubscribers = ({ supportMember }) => {
     </div>
   );
 };
- 
 
 export default AllSubscribers;

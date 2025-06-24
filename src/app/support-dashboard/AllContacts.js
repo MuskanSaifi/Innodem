@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const AllContacts = ({ supportMember }) => {
   const [contacts, setContacts] = useState([]);
@@ -8,7 +10,6 @@ const AllContacts = ({ supportMember }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Filters
   const [searchName, setSearchName] = useState('');
   const [searchEmail, setSearchEmail] = useState('');
   const [searchPhone, setSearchPhone] = useState('');
@@ -74,17 +75,14 @@ const AllContacts = ({ supportMember }) => {
     }).format(new Date(date));
   };
 
-  // ✅ Show popup instead of delete
   const handleDelete = () => {
     Swal.fire({
-      icon: "info",
-      title: "Restricted Action",
-      text: "Only admin can delete subscribers",
-      confirmButtonColor: "#3085d6",
+      icon: 'info',
+      title: 'Restricted Action',
+      text: 'Only admin can delete contacts',
+      confirmButtonColor: '#3085d6',
     });
   };
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
 
   if (!supportMember?.allContactAccess) {
     return (
@@ -93,6 +91,7 @@ const AllContacts = ({ supportMember }) => {
       </div>
     );
   }
+
   return (
     <div className="container mt-4">
       <div className="card shadow p-4">
@@ -100,44 +99,57 @@ const AllContacts = ({ supportMember }) => {
 
         {/* Filters */}
         <div className="row g-3 mb-4">
-          <div className="col-md-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search by name"
-              value={searchName}
-              onChange={(e) => setSearchName(e.target.value)}
-            />
-          </div>
-          <div className="col-md-3">
-            <input
-              type="email"
-              className="form-control"
-              placeholder="Search by email"
-              value={searchEmail}
-              onChange={(e) => setSearchEmail(e.target.value)}
-            />
-          </div>
-          <div className="col-md-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search by phone"
-              value={searchPhone}
-              onChange={(e) => setSearchPhone(e.target.value)}
-            />
-          </div>
-          <div className="col-md-3">
-            <input
-              type="date"
-              className="form-control"
-              value={filterDate}
-              onChange={(e) => setFilterDate(e.target.value)}
-            />
-          </div>
+          {loading ? (
+            <>
+              {[...Array(4)].map((_, i) => (
+                <div className="col-md-3" key={i}>
+                  <Skeleton height={38} />
+                </div>
+              ))}
+            </>
+          ) : (
+            <>
+              <div className="col-md-3">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Search by name"
+                  value={searchName}
+                  onChange={(e) => setSearchName(e.target.value)}
+                />
+              </div>
+              <div className="col-md-3">
+                <input
+                  type="email"
+                  className="form-control"
+                  placeholder="Search by email"
+                  value={searchEmail}
+                  onChange={(e) => setSearchEmail(e.target.value)}
+                />
+              </div>
+              <div className="col-md-3">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Search by phone"
+                  value={searchPhone}
+                  onChange={(e) => setSearchPhone(e.target.value)}
+                />
+              </div>
+              <div className="col-md-3">
+                <input
+                  type="date"
+                  className="form-control"
+                  value={filterDate}
+                  onChange={(e) => setFilterDate(e.target.value)}
+                />
+              </div>
+            </>
+          )}
         </div>
 
-        {/* Table */}
+        {error && <p className="text-danger">{error}</p>}
+
         <div className="table-responsive">
           <table className="table table-bordered table-hover">
             <thead className="table-dark">
@@ -151,23 +163,39 @@ const AllContacts = ({ supportMember }) => {
               </tr>
             </thead>
             <tbody>
-              {filteredContacts.map((contact) => (
-                <tr key={contact._id}>
-                  <td>{contact.name}</td>
-                  <td>{contact.email}</td>
-                  <td>{contact.phone}</td>
-                  <td>{contact.description}</td>
-                  <td>{formatDate(contact.createdAt)}</td>
-                  <td>
-                  <button
-                        className="btn btn-danger btn-sm"
-                        onClick={handleDelete}
-                      >
-                        🗑️ Delete
-                      </button>
-                  </td>
-                </tr>
-              ))}
+              {loading
+                ? [...Array(5)].map((_, i) => (
+                    <tr key={i}>
+                      <td><Skeleton width={80} /></td>
+                      <td><Skeleton width={150} /></td>
+                      <td><Skeleton width={100} /></td>
+                      <td><Skeleton count={1} /></td>
+                      <td><Skeleton width={160} /></td>
+                      <td><Skeleton width={60} height={30} /></td>
+                    </tr>
+                  ))
+                : filteredContacts.length > 0
+                ? filteredContacts.map((contact) => (
+                    <tr key={contact._id}>
+                      <td>{contact.name}</td>
+                      <td>{contact.email}</td>
+                      <td>{contact.phone}</td>
+                      <td>{contact.description}</td>
+                      <td>{formatDate(contact.createdAt)}</td>
+                      <td>
+                        <button className="btn btn-danger btn-sm" onClick={handleDelete}>
+                          🗑️ Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                : !loading && (
+                    <tr>
+                      <td colSpan="6" className="text-center text-muted">
+                        No contacts found.
+                      </td>
+                    </tr>
+                  )}
             </tbody>
           </table>
         </div>

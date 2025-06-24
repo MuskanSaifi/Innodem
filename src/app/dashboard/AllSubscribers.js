@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const AllSubscribers = () => {
     const [subscribers, setSubscribers] = useState([]);
@@ -107,9 +109,44 @@ const AllSubscribers = () => {
                     </div>
                 </div>
 
-                {loading ? (
-                    <p className="text-muted">Loading subscribers...</p>
-                ) : error ? (
+              {loading ? (
+    <>
+        {/* Skeleton Filters */}
+        <div className="row g-3 mb-4">
+            <div className="col-md-6">
+                <Skeleton height={38} />
+            </div>
+            <div className="col-md-6">
+                <Skeleton height={38} />
+            </div>
+        </div>
+
+        {/* Skeleton Table */}
+        <div className="table-responsive">
+            <table className="table table-bordered">
+                <thead className="table-dark">
+                    <tr>
+                        <th><Skeleton /></th>
+                        <th><Skeleton /></th>
+                        <th><Skeleton /></th>
+                        <th><Skeleton /></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {Array(5).fill().map((_, i) => (
+                        <tr key={i}>
+                            <td><Skeleton height={20} /></td>
+                            <td><Skeleton height={20} /></td>
+                            <td><Skeleton height={20} /></td>
+                            <td><Skeleton height={30} width={80} /></td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    </>
+) : error ? (
+
                     <p className="text-danger">{error}</p>
                 ) : filteredSubscribers.length === 0 ? (
                     <p className="text-muted">No subscribers found.</p>

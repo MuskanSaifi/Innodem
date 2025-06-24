@@ -1,23 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
+
 const Payments = () => {
   const [payments, setPayments] = useState([]);
   const [expandedUserId, setExpandedUserId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchPayments = async () => {
-      try {
-        const response = await axios.get('/api/adminprofile/payments');
-        setPayments(response.data.data || []);
-      } catch (error) {
-        console.error('Error fetching payments:', error);
-      }
-    };
+useEffect(() => {
+  const fetchPayments = async () => {
+    try {
+      const response = await axios.get("/api/adminprofile/payments");
+      setPayments(response.data.data || []);
+    } catch (error) {
+      console.error("Error fetching payments:", error);
+    } finally {
+      setLoading(false); // ✅ stop loading
+    }
+  };
 
-    fetchPayments();
-  }, []);
+  fetchPayments();
+}, []);
+
 
   const toggleDropdown = (userId) => {
     setExpandedUserId((prevId) => (prevId === userId ? null : userId));
@@ -51,11 +59,18 @@ const Payments = () => {
 </div>
 
 <div className="overflow-auto max-h-[500px]">
-  {filteredPayments.length === 0 ? (
-    <p className="text-center text-muted">No matching users found.</p>
+{loading ? (
+  Array.from({ length: 5 }).map((_, index) => (
+    <div key={index} className="mb-3 p-3 border rounded">
+      <Skeleton height={20} width={`60%`} />
+      <Skeleton count={3} />
+    </div>
+  ))
+) : filteredPayments.length === 0 ? (
+  <p className="text-center text-muted">No matching users found.</p>
   ) : (
     filteredPayments.map((user, userIndex) => (
-      <div key={user._id} className="mb-3">
+      <div key={user._id} className="mb-2 text-sm">
         <button
           className="res-color1 w-100 text-start rounded-2 px-4 py-2 shadow-sm"
           onClick={() => toggleDropdown(user._id)}
@@ -64,12 +79,12 @@ const Payments = () => {
         </button>
 
         {expandedUserId === user._id && (
-          <div className="mt-3">
+          <div className="mt-1">
             {user.userPackage?.length > 0 ? (
               <div className="table-responsive">
                 <table className="table table-hover table-bordered mt-2 shadow-sm">
                   <thead className="table-primary sticky-top">
-                    <tr>
+                    <tr  className="text-sm">
                       <th>S. No</th>
                       <th>Package Name</th>
                       <th>Total Amount</th>
@@ -108,10 +123,7 @@ const Payments = () => {
     ))
   )}
 </div>
-
-
         </div>
-
       </div>
     </div>
   );

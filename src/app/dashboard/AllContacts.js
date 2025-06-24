@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 const AllContacts = () => {
   const [contacts, setContacts] = useState([]);
   const [filteredContacts, setFilteredContacts] = useState([]);
@@ -77,9 +78,51 @@ const AllContacts = () => {
     }).format(new Date(date));
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+if (loading) {
+  return (
+    <div className="container mt-4">
+      <div className="card shadow p-4">
+        <h1 className="fs-4 fw-bold mb-4">📞 All Contacts</h1>
+
+        {/* Skeleton filters */}
+        <div className="row g-3 mb-4">
+          {Array(4).fill().map((_, i) => (
+            <div className="col-md-3" key={i}>
+              <Skeleton height={38} />
+            </div>
+          ))}
+        </div>
+
+        {/* Skeleton table */}
+        <div className="table-responsive">
+          <table className="table table-bordered">
+            <thead className="table-dark">
+              <tr>
+                <th><Skeleton /></th>
+                <th><Skeleton /></th>
+                <th><Skeleton /></th>
+                <th><Skeleton /></th>
+                <th><Skeleton /></th>
+              </tr>
+            </thead>
+            <tbody>
+              {Array(5).fill().map((_, rowIndex) => (
+                <tr key={rowIndex}>
+                  <td><Skeleton height={20} /></td>
+                  <td><Skeleton height={20} /></td>
+                  <td><Skeleton height={20} /></td>
+                  <td><Skeleton height={20} /></td>
+                  <td><Skeleton height={20} /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
   if (error) {
     return <div>{error}</div>;

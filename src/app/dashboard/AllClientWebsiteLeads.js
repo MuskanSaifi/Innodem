@@ -2,30 +2,37 @@ import axios from 'axios';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 const AllClientWebsiteLeads = () => {
   const [groupedData, setGroupedData] = useState({});
   const [selectedWebsite, setSelectedWebsite] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     clientdata();
   }, []);
 
-  const clientdata = async () => {
-    try {
-      const result = await axios.get("api/clientwebsitedatapost");
-      const grouped = result.data.reduce((acc, curr) => {
-        if (!acc[curr.websitename]) {
-          acc[curr.websitename] = [];
-        }
-        acc[curr.websitename].push(curr);
-        return acc;
-      }, {});
-      setGroupedData(grouped);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+const clientdata = async () => {
+  try {
+    const result = await axios.get("api/clientwebsitedatapost");
+    const grouped = result.data.reduce((acc, curr) => {
+      if (!acc[curr.websitename]) {
+        acc[curr.websitename] = [];
+      }
+      acc[curr.websitename].push(curr);
+      return acc;
+    }, {});
+    setGroupedData(grouped);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setLoading(false); // Done loading
+  }
+};
+
 
   const openModal = (website) => {
     setSelectedWebsite(website);
@@ -43,15 +50,24 @@ const AllClientWebsiteLeads = () => {
 
       {/* Website boxes */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {Object.keys(groupedData).map((website) => (
-          <div
-            key={website}
-            onClick={() => openModal(website)}
-            className="cursor-pointer bg-white border border-gray-300 p-6 rounded-xl shadow hover:shadow-md transition text-center"
-          >
-            <h2 className="text-lg font-semibold text-indigo-600">{website}</h2>
-          </div>
-        ))}
+      {loading ? (
+  Array(6).fill().map((_, i) => (
+    <div key={i} className="p-6 rounded-xl shadow bg-white border border-gray-200">
+      <Skeleton height={20} width={`80%`} />
+    </div>
+  ))
+) : (
+  Object.keys(groupedData).map((website) => (
+    <div
+      key={website}
+      onClick={() => openModal(website)}
+      className="cursor-pointer bg-white border border-gray-300 p-6 rounded-xl shadow hover:shadow-md transition text-center"
+    >
+      <h2 className="text-lg font-semibold text-indigo-600">{website}</h2>
+    </div>
+  ))
+)}
+
       </div>
 
   {isModalOpen && selectedWebsite && (
@@ -138,11 +154,7 @@ const AllClientWebsiteLeads = () => {
     </div>
   ))}
 </div>
-
-
-
-      
-    </div>
+</div>
   </div>
 )}
 

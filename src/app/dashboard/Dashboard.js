@@ -3,6 +3,9 @@ import "./dashboard.css";
 import axios from "axios";
 import Swal from "sweetalert2";
 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 const Dashboard = () => {
   const [users, setUsers] = useState(null);
   const [buyers, setBuyers] = useState(null);
@@ -94,21 +97,21 @@ const Dashboard = () => {
                 <div className="col-md-6">
                   <div className="resdes-card res-color3 text-light">
                     <h6>Total Users</h6>
-                    <p className="fs-1">{loading ? "Loading..." : users}</p>
+                    <p className="fs-1">{loading ? <Skeleton width={60} height={40} /> : users}</p>
                     <span>Total registered users</span>
                   </div>
                 </div>
                 <div className="col-md-6 mb-4">
                   <div className="resdes-card res-color2 text-light">
                     <h6>Total Buyers</h6>
-                    <p className="fs-1">{loading ? "Loading..." : buyers}</p>
+                    <p className="fs-1"><p className="fs-1">{loading ? <Skeleton width={60} height={40} /> : buyers}</p></p>
                     <span>Total registered buyers</span>
                   </div>
                 </div>
                 <div className="col-md-6 mb-4">
                   <div className="resdes-card res-color2 text-light">
                     <h6>Total Products</h6>
-                    <p className="fs-1">{loading ? "Loading..." : products}</p>
+                    <p className="fs-1"><p className="fs-1">{loading ? <Skeleton width={60} height={40} /> : products}</p></p>
                     <span>Total products available</span>
                   </div>
                 </div>

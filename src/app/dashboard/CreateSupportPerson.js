@@ -8,6 +8,9 @@ import { differenceInCalendarDays } from 'date-fns';
 import SupportMemberModal from "./components/SupportMemberModal"; // adjust path
 import axios from 'axios';
 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 
 const CreateSupportPerson = () => {
   const [formData, setFormData] = useState({ name: "", email: "", password: "", number:"" });
@@ -290,9 +293,38 @@ return (
   <div className="w-full lg:w-2/3">
     <h4 className="text-2xl font-bold mb-4 text-blue-700">📋 Assign Clients To Support Members</h4>
 
-    {loading ? (
-      <p className="text-gray-500">Loading...</p>
-    ) : supportMembers.length === 0 ? (
+{loading ? (
+  <div className="overflow-x-auto rounded-xl shadow-lg border border-blue-200 bg-white">
+    <table className="min-w-full table-auto text-left">
+      <thead className="bg-blue-100 text-blue-800 uppercase text-sm">
+        <tr>
+          <th className="px-6 py-3 border-b"><Skeleton width={20} /></th>
+          <th className="px-6 py-3 border-b"><Skeleton width={80} /></th>
+          <th className="px-6 py-3 border-b"><Skeleton width={120} /></th>
+          <th className="px-6 py-3 border-b"><Skeleton width={150} /></th>
+          <th className="px-6 py-3 border-b"><Skeleton width={80} /></th>
+        </tr>
+      </thead>
+      <tbody>
+        {Array(5).fill().map((_, i) => (
+          <tr key={i} className="hover:bg-blue-50 transition">
+            <td className="px-6 py-3 border-b"><Skeleton width={20} /></td>
+            <td className="px-6 py-3 border-b"><Skeleton width={80} /></td>
+            <td className="px-6 py-3 border-b"><Skeleton width={120} /></td>
+            <td className="px-6 py-3 border-b"><Skeleton height={35} /></td>
+            <td className="px-6 py-3 border-b">
+              <div className="flex gap-2">
+                <Skeleton width={60} height={30} />
+                <Skeleton width={60} height={30} />
+              </div>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+) : supportMembers.length === 0 ? (
+
       <p className="text-gray-500">No support members found.</p>
     ) : (
       <div className="overflow-x-auto rounded-xl shadow-lg border border-blue-200 bg-white">

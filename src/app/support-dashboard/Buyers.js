@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const Buyers = ({ supportMember }) => {
   const [buyers, setBuyers] = useState([]);
@@ -18,9 +20,7 @@ const Buyers = ({ supportMember }) => {
         if (!response.ok) throw new Error("Failed to fetch buyers");
         const data = await response.json();
 
-        // ✅ Sort buyers by `createdAt` (newest first)
         const sortedBuyers = data.buyers.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
         setBuyers(sortedBuyers);
         setFilteredBuyers(sortedBuyers);
       } catch (err) {
@@ -33,21 +33,18 @@ const Buyers = ({ supportMember }) => {
     fetchBuyers();
   }, []);
 
-  // ✅ Search Filter
   const handleSearch = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
     filterBuyers(term, searchDate);
   };
 
-  // ✅ Date Filter
   const handleDateFilter = (e) => {
     const date = e.target.value;
     setSearchDate(date);
     filterBuyers(searchTerm, date);
   };
 
-  // ✅ Filtering Buyers List
   const filterBuyers = (term, date) => {
     let filtered = buyers;
     if (term) {
@@ -65,7 +62,6 @@ const Buyers = ({ supportMember }) => {
     setFilteredBuyers(filtered);
   };
 
-  // ✅ Show popup only – No delete
   const handleDeleteBuyer = () => {
     Swal.fire({
       icon: "info",
@@ -75,7 +71,7 @@ const Buyers = ({ supportMember }) => {
     });
   };
 
-      if (!supportMember?.allBuyerAccess) {
+  if (!supportMember?.allBuyerAccess) {
     return (
       <div className="text-center text-danger fw-bold mt-5">
         Admin can't give you access to this page.
@@ -90,7 +86,6 @@ const Buyers = ({ supportMember }) => {
           All Buyers
         </h6>
 
-        {/* ✅ Search & Date Filter */}
         <Form className="mb-3 d-flex gap-2 res-color2 rounded-3 common-shad p-3">
           <Form.Control
             type="text"
@@ -111,26 +106,36 @@ const Buyers = ({ supportMember }) => {
           </Button>
         </Form>
 
-        {loading && <p>Loading buyers...</p>}
         {error && <p className="text-danger">Error: {error}</p>}
         {!loading && !error && filteredBuyers.length === 0 && <p>No buyers found.</p>}
 
-        {!loading && !error && filteredBuyers.length > 0 && (
-          <Table className="table-striped table-bordered table-hover table-responsive common-shad">
-            <thead className="table-dark">
-              <tr>
-                <th>#</th>
-                <th>Full Name</th>
-                <th>Email</th>
-                <th>Mobile Number</th>
-                <th>Product Name</th>
-                <th>Created At</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {filteredBuyers.map((buyer, index) => (
+        <Table className="table-striped table-bordered table-hover table-responsive common-shad">
+          <thead className="table-dark">
+            <tr>
+              <th>#</th>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>Mobile Number</th>
+              <th>Product Name</th>
+              <th>Created At</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              Array.from({ length: 5 }).map((_, index) => (
+                <tr key={index}>
+                  <td><Skeleton width={20} /></td>
+                  <td><Skeleton width={100} /></td>
+                  <td><Skeleton width={150} /></td>
+                  <td><Skeleton width={120} /></td>
+                  <td><Skeleton width={130} /></td>
+                  <td><Skeleton width={170} /></td>
+                  <td><Skeleton width={60} height={30} /></td>
+                </tr>
+              ))
+            ) : (
+              filteredBuyers.map((buyer, index) => (
                 <tr key={buyer._id}>
                   <td>{index + 1}</td>
                   <td>{buyer.fullname || "N/A"}</td>
@@ -156,10 +161,10 @@ const Buyers = ({ supportMember }) => {
                     </Button>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
-        )}
+              ))
+            )}
+          </tbody>
+        </Table>
       </div>
     </div>
   );

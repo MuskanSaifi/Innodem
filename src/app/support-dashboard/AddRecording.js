@@ -3,6 +3,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const AddRecording = ({ supportPersonId }) => {
   const [file, setFile] = useState(null);
@@ -253,11 +255,27 @@ const filteredRecordings = recordings.filter((rec) => {
 </div>
 </div>
 
-
 {/* RIGHT COLUMN */}
 <div className="w-full lg:w-2/3">
 
-  {filteredRecordings.length === 0 ? (
+  {loading ? (
+    <div className="space-y-4">
+      {[...Array(3)].map((_, index) => (
+        <div key={index} className="p-4 bg-white rounded-xl shadow border space-y-3">
+          <div className="flex justify-between items-center">
+            <Skeleton width={120} height={16} />
+            <Skeleton width={60} height={20} />
+          </div>
+          <Skeleton height={32} />
+          <Skeleton count={2} height={18} />
+          <div className="flex items-center gap-2 mt-2">
+            <Skeleton width={'100%'} height={32} />
+            <Skeleton circle width={40} height={32} />
+          </div>
+        </div>
+      ))}
+    </div>
+  ) : filteredRecordings.length === 0 ? (
     <p className="text-gray-500 italic">No recordings found.</p>
   ) : (
     <div className="h-[520px] overflow-y-auto pr-2 space-y-6">
@@ -266,28 +284,26 @@ const filteredRecordings = recordings.filter((rec) => {
           key={rec._id || i}
           className="p-3 bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition"
         >
-             
-      
 
-            {/* Metadata */}
-<p className="text-sm text-gray-600 mb-2 flex items-center justify-between">
-  <span>{new Date(rec.uploadTime).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
-  <span className={`px-2 py-0.5 rounded-full text-xs font-medium 
-    ${rec.tag === 'genuine' ? 'bg-green-100 text-green-800' :
-      rec.tag === 'fake' ? 'bg-red-100 text-red-800' :
-      'bg-gray-100 text-gray-800'}
-  `}>
-    {rec.tag || 'Other'}
-  </span>
-</p>
-            
-          <audio controls src={rec.url} className="w-full mb-2 rounded" />  
+          {/* Metadata */}
+          <p className="text-sm text-gray-600 mb-2 flex items-center justify-between">
+            <span>{new Date(rec.uploadTime).toLocaleDateString('en-IN', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric'
+            })}</span>
+            <span className={`px-2 py-0.5 rounded-full text-xs font-medium 
+              ${rec.tag === 'genuine' ? 'bg-green-100 text-green-800' :
+                rec.tag === 'fake' ? 'bg-red-100 text-red-800' :
+                  'bg-gray-100 text-gray-800'}`}>
+              {rec.tag || 'Other'}
+            </span>
+          </p>
 
-            
-          {/* Main Row: Messages + Metadata */}
+          <audio controls src={rec.url} className="w-full mb-2 rounded" />
+
+          {/* Messages */}
           <div className="flex flex-col sm:flex-row sm:justify-between gap-4 mb-4">
-            
-            {/* Combined Messages */}
             <div className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 p-3 rounded-xl z-10">
               <div className="space-y-2 max-h-[200px] overflow-y-auto p-2">
                 {(() => {
@@ -334,11 +350,10 @@ const filteredRecordings = recordings.filter((rec) => {
                 })()}
               </div>
             </div>
-
           </div>
 
           {/* Send Message Input */}
-          <div className="mt-3 flex gap-2  items-center bg-gray-50 p-3 rounded-xl shadow-sm">
+          <div className="mt-3 flex gap-2 items-center bg-gray-50 p-3 rounded-xl shadow-sm">
             <input
               type="text"
               placeholder="Type a new message..."
@@ -357,12 +372,12 @@ const filteredRecordings = recordings.filter((rec) => {
               Send
             </button>
           </div>
+
         </div>
       ))}
     </div>
   )}
 </div>
-
 
 
   </div>

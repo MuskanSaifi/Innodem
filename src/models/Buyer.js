@@ -15,6 +15,10 @@ const BuyerSchema = new mongoose.Schema({
   buyer: { type: String}, // from localStorage
   otp: { type: Number},
   otpExpires: { type: Date },
+    remark: {
+    type: String,
+    default: ""
+  },
 },
 { timestamps: true }
 );

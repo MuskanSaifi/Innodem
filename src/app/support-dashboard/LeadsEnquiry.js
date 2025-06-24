@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const LeadsEnquiry = () => {
   const [leads, setLeads] = useState([]);
@@ -9,7 +11,7 @@ const LeadsEnquiry = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState('');
   const [selectedInfo, setSelectedInfo] = useState(null);
-  const [searchTerm, setSearchTerm] = useState(''); // New state
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchLeads = async () => {
@@ -17,7 +19,7 @@ const LeadsEnquiry = () => {
         const res = await fetch('/api/admin/leadandwnquiry');
         const data = await res.json();
         if (data.success) {
-            setLeads(data.data.reverse()); // Reverse the array here
+          setLeads(data.data.reverse());
         }
       } catch (error) {
         console.error('Failed to fetch leads:', error);
@@ -69,19 +71,29 @@ const LeadsEnquiry = () => {
       <h2 className="text-3xl font-extrabold text-indigo-600 mb-4">Leads Enquiry</h2>
 
       {/* Search Bar */}
-      <div className='sticky top-0 z-10'>
-      <input
-        type="text"
-        placeholder="Search by seller/buyer name, phone or product name..."
-        className="w-full border shadow border-gray-300 rounded-lg px-4 py-2 mb-6 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
+      <div className="sticky top-0 z-10">
+        <input
+          type="text"
+          placeholder="Search by seller/buyer name, phone or product name..."
+          className="w-full border shadow border-gray-300 rounded-lg px-4 py-2 mb-6 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
       </div>
 
       {loading ? (
-        <div className="flex justify-center items-center h-48">
-          <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div key={index} className="p-5 border rounded-xl shadow">
+              <Skeleton height={20} width="30%" className="mb-2" />
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                <Skeleton height={80} />
+                <Skeleton height={80} />
+                <Skeleton height={80} />
+              </div>
+              <Skeleton height={15} className="mb-1" count={4} />
+            </div>
+          ))}
         </div>
       ) : filteredLeads.length === 0 ? (
         <div className="text-center text-gray-500">No leads found.</div>
@@ -92,9 +104,7 @@ const LeadsEnquiry = () => {
               key={index}
               className="bg-white border border-gray-200 rounded-xl shadow-lg p-5 transition hover:scale-[1.02]"
             >
-              {/* 3 Colorful Boxes Row */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-                {/* Buyer Box */}
                 <div
                   onClick={() => openModal('Buyer', lead.buyer)}
                   className="cursor-pointer bg-gradient-to-r from-indigo-100 to-indigo-300 p-4 rounded-lg shadow-inner text-center hover:ring-2 hover:ring-indigo-400"
@@ -103,8 +113,6 @@ const LeadsEnquiry = () => {
                   <p className="text-indigo-900 text-sm mb-0">{lead.buyer?.fullname || 'N/A'}</p>
                   <p className="text-indigo-900 text-sm mb-0">{lead.buyer?.mobileNumber || 'N/A'}</p>
                 </div>
-
-                {/* Seller Box */}
                 <div
                   onClick={() => openModal('Seller', lead.seller)}
                   className="cursor-pointer bg-gradient-to-r from-pink-100 to-pink-300 p-4 rounded-lg shadow-inner text-center hover:ring-2 hover:ring-pink-400"
@@ -113,8 +121,6 @@ const LeadsEnquiry = () => {
                   <p className="text-pink-900 text-sm mb-0">{lead.seller?.fullname || 'N/A'}</p>
                   <p className="text-pink-900 text-sm mb-0">{lead.seller?.mobileNumber || 'N/A'}</p>
                 </div>
-
-                {/* Product Box */}
                 <div
                   onClick={() => openModal('Product', lead.product)}
                   className="cursor-pointer bg-gradient-to-r from-blue-100 to-blue-300 p-4 rounded-lg shadow-inner text-center hover:ring-2 hover:ring-blue-400"
@@ -124,7 +130,6 @@ const LeadsEnquiry = () => {
                 </div>
               </div>
 
-              {/* Other Details */}
               <p><span className="font-semibold">Quantity:</span> {lead.quantity}</p>
               <p><span className="font-semibold">Unit:</span> {lead.unit}</p>
               <p>
@@ -139,7 +144,7 @@ const LeadsEnquiry = () => {
         </div>
       )}
 
-      {/* Modal Code (unchanged) */}
+      {/* Modal Code */}
       {modalOpen && selectedInfo && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
           <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full relative">
@@ -188,13 +193,12 @@ const LeadsEnquiry = () => {
                 <>
                   {selectedInfo?.images?.[0]?.url && (
                     <div className="mb-3 relative w-[70px] h-[70px]">
-                 <Image
-  src={selectedInfo.images[0].url}
-  alt={selectedInfo.name}
-  fill
-  className="rounded-md border object-contain"
-/>
-
+                      <Image
+                        src={selectedInfo.images[0].url}
+                        alt={selectedInfo.name}
+                        fill
+                        className="rounded-md border object-contain"
+                      />
                     </div>
                   )}
                   <div><strong>Name:</strong> {selectedInfo?.name || 'N/A'}</div>

@@ -4,6 +4,9 @@ import { AiOutlineClose } from 'react-icons/ai';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 const AllRecordings = () => {
   const [supportPeople, setSupportPeople] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -134,13 +137,43 @@ const handleCloseModal = () => {
 };
 
 
-  if (loading) {
-    return (
-      <div className="text-center mt-10 text-lg font-medium text-gray-700 animate-pulse">
-        Loading recordings...
+if (loading) {
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-10">
+      <h2 className="text-4xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500 mb-12">
+        All Recordings
+      </h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {Array(6).fill().map((_, i) => (
+          <div
+            key={i}
+            className="bg-white/90 border border-gray-200 rounded-2xl shadow-lg p-6 animate-pulse"
+          >
+            <div className="w-full h-4 bg-gray-300 rounded mb-2"></div>
+            <div className="w-2/3 h-3 bg-gray-200 rounded mb-4"></div>
+
+            <div className="w-24 h-4 bg-purple-200 rounded mb-4"></div>
+
+            <div className="space-y-3">
+              {Array(2).fill().map((_, j) => (
+                <div key={j} className="space-y-2">
+                  <div className="w-40 h-3 bg-gray-200 rounded"></div>
+                  <div className="w-full h-10 bg-gray-100 rounded"></div>
+                  <div className="flex justify-between">
+                    <div className="w-24 h-8 bg-blue-200 rounded"></div>
+                    <div className="w-32 h-8 bg-red-200 rounded"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
-    );
-  }
+    </div>
+  );
+}
+
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
