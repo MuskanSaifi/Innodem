@@ -464,7 +464,7 @@ We connect you with verified export buyers within 24 hours, guaranteed genuine a
               aria-expanded={dropdownOpen}
             >
 <Image 
-  src="/assets/dashboardicons/profile1.png"  // or external URL if allowed
+  src="/assets/dashboardicons/profile-1.png"  // or external URL if allowed
   alt="Description of image"
   className="d-inline"
   width={40}
@@ -531,7 +531,7 @@ Hi! {user.fullname || "User"}
         onClick={toggleDrawer}
       >
      <Image 
-  src="/assets/dashboardicons/profile1.png"  // or external URL if allowed
+  src="/assets/dashboardicons/profile-1.png"  // or external URL if allowed
   alt="Description of image"
   className="d-inline"
   width={40}

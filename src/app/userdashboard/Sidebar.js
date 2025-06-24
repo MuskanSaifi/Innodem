@@ -11,7 +11,7 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
     { icon: "/assets/dashboardicons/Dashboard.png", label: "Dashboard" },
     { icon: "/assets/dashboardicons/Payments.png", label: "Payments" },
     {
-      icon: "/assets/dashboardicons/profile1.png",
+      icon: "/assets/dashboardicons/profile-1.png",
       label: "Profile",
       subItems: ["User Profile", "Business Profile", "Bank Details", "Manage Users"],
     },
