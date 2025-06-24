@@ -34,8 +34,8 @@ export default function Home() {
 </div> */}
       {/* Product Sections */}
       <div className="banner-container">
-        <Link href="/all-categories">
-    <Image
+<Link href="/all-categories">
+<Image
   className="m-auto"
   src="/assets/subbanner/banner-min.png"
   alt="Banner for website dial"

@@ -4,6 +4,8 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const SidebarMenu = () => {
   const [activeCategory, setActiveCategory] = useState(null);
@@ -22,12 +24,29 @@ const SidebarMenu = () => {
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, []);
 
-  if (loading) return <div className="spinner">Loading...</div>;
+  if (loading) {
+    return (
+      <SkeletonTheme baseColor="#f2f2f2" highlightColor="#e0e0e0">
+        <div className="menu bg-white rounded-md w-64 d-none-mob p-4">
+          <Skeleton height={30} width={`60%`} className="mb-4" />
+          <ul className="space-y-2">
+            {Array(8)
+              .fill()
+              .map((_, i) => (
+                <li key={i} className="flex items-center space-x-2 py-1">
+                  <Skeleton circle={true} height={24} width={24} />
+                  <Skeleton height={20} width={`80%`} />
+                </li>
+              ))}
+          </ul>
+        </div>
+      </SkeletonTheme>
+    );
+  }
+
   if (error) return <p className="error-message">{error}</p>;
 
   return (
-  <>
-    
     <div className="menu bg-white rounded-md w-64 d-none-mob" ref={menuRef}>
       {/* Top Categories */}
       <Link href="/industry">
@@ -52,9 +71,10 @@ const SidebarMenu = () => {
                 width={24}
                 height={24}
                 className="w-6 h-6 mr-2"
-                loading="lazy"  
+                loading="lazy"
               />
-              <span className="text-sm">{category.name.replace(/\b\w/g, c => c.toUpperCase())}
+              <span className="text-sm">
+                {category.name.replace(/\b\w/g, (c) => c.toUpperCase())}
               </span>
             </div>
           </li>
@@ -87,9 +107,10 @@ const SidebarMenu = () => {
                           width={24}
                           height={24}
                           className="w-6 h-6"
-                          loading="lazy"  
+                          loading="lazy"
                         />
-                        <span className="ml-2">{subcategory.name.replace(/\b\w/g, c => c.toUpperCase())}
+                        <span className="ml-2">
+                          {subcategory.name.replace(/\b\w/g, (c) => c.toUpperCase())}
                         </span>
                       </div>
                     </h3>
@@ -102,7 +123,7 @@ const SidebarMenu = () => {
                             href={`/manufacturers/${product.productslug}`}
                             className="text-sm text-blue-700 hover:underline"
                           >
-                            {product.name.replace(/\b\w/g, c => c.toUpperCase())}
+                            {product.name.replace(/\b\w/g, (c) => c.toUpperCase())}
                           </Link>
                         </li>
                       ))}
@@ -114,7 +135,6 @@ const SidebarMenu = () => {
           )
       )}
     </div>
-    </>
   );
 };
 
