@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { Tab, Nav } from "react-bootstrap";
 import Image from "next/image";
 import { Country, State, City } from 'country-state-city';
+import Link from "next/link";
 
 
 // Slug generator function
@@ -513,8 +514,11 @@ const handleSubmit = async (e) => {
 
                             {/* Image Upload Section */}
                             <div className="mb-3">
-                                <label className="text-gray-600 text-sm">Product Images (Max 6)</label>
-                                <input type="file" className="form-control" name="images" onChange={handleImageChange} accept="image/*" multiple />
+                      <label className="text-gray-600 text-sm">
+                        Product Images (Max 6, each less than 500KB)
+                         <Link href="https://www.iloveimg.com/compress-image" target="blank"> click here to compress image</Link>
+                      </label>
+                       <input type="file" className="form-control" name="images" onChange={handleImageChange} accept="image/*" multiple />
                                 {product?.images?.length > 0 && (
                                     <div className="mt-2 d-flex">
                                         {product?.images.map((img, index) => (

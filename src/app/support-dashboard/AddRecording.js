@@ -284,7 +284,6 @@ const filteredRecordings = recordings.filter((rec) => {
           key={rec._id || i}
           className="p-3 bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition"
         >
-
           {/* Metadata */}
           <p className="text-sm text-gray-600 mb-2 flex items-center justify-between">
             <span>{new Date(rec.uploadTime).toLocaleDateString('en-IN', {
@@ -378,8 +377,6 @@ const filteredRecordings = recordings.filter((rec) => {
     </div>
   )}
 </div>
-
-
   </div>
 </div>
 
