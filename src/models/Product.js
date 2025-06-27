@@ -37,6 +37,7 @@ const productSchema = new mongoose.Schema(
     // ✅ Trade Information
     tradeInformation: {
       supplyAbility: { type: String },
+      supplyQuantity: { type:  Number }, // CHANGED TO Number
       deliveryTime: { type: String },
       fobPort: { type: String },
       samplePolicy: { type: String },
