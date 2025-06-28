@@ -102,6 +102,7 @@ const productSchema = new mongoose.Schema(
           price: { type: Number },
         },
       ],
+      mrp: { type: Number },// Assuming this should be a Number
       unit: { type: String },
       packSize: { type: Number }, // Assuming this should be a Number
       minOrderedPacks: { type: Number }, // Assuming this should be a Number

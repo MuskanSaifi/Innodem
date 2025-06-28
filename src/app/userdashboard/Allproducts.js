@@ -86,6 +86,7 @@ const AllProducts = () => {
       sellingPriceType: null,
       fixedSellingPrice: "",
       slabPricing: [],
+      mrp: "",
       unit: "",
       packSize: "",
       minOrderedPacks: "",
@@ -306,6 +307,7 @@ const AllProducts = () => {
             ...formData.tradeShopping, // Apply changes from form
             // Ensure numbers are converted
             gst: Number(formData.tradeShopping.gst) || null,
+            mrp: Number(formData.tradeShopping.mrp) || null,
             fixedSellingPrice: Number(formData.tradeShopping.fixedSellingPrice) || null,
             packSize: Number(formData.tradeShopping.packSize) || null,
             minOrderedPacks: Number(formData.tradeShopping.minOrderedPabs) || null,
@@ -1486,6 +1488,18 @@ const AllProducts = () => {
                 </div>
               )}
 
+<div className="row">
+      <div className="col-12 mb-3">
+                <label className="form-label">MRP</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    name="tradeShopping.mrp"
+                    value={formData.tradeShopping?.mrp || ""}
+                    onChange={handleChange}
+                  />
+                </div>
+</div>
               <div className="row">
                 <div className="col-md-6 mb-3">
                   <label className="form-label">Unit</label>
@@ -1539,7 +1553,7 @@ const AllProducts = () => {
 
               <div className="row">
                 <div className="col-md-6 mb-3">
-                  <label className="form-label">Stock Quantity (Trade Shopping)</label>
+                  <label className="form-label">Stock Quantity</label>
                   <input
                     type="number"
                     className="form-control"
