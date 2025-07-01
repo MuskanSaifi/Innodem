@@ -20,7 +20,6 @@ const productSchema = new mongoose.Schema(
     video: { type: String },
     youtubeUrl: { type: String },
     description: { type: String },
-    stock: { type: Number, default: 0 },
     country: {type: String},
     state: {type: String},
     city: {type: String},

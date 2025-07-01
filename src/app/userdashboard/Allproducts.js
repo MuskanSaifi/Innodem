@@ -22,7 +22,6 @@ const AllProducts = () => {
       currency: "INR",
       minimumOrderQuantity: "",
       moqUnit: "Number",
-      stock: "",
       state: "",
       city: "",
       images: [],
@@ -182,7 +181,6 @@ const AllProducts = () => {
         currency: product.currency || "INR",
         minimumOrderQuantity: product.minimumOrderQuantity || "",
         moqUnit: product.moqUnit || "Number",
-        stock: product.stock || "",
         state: product.state || "",
         city: product.city || "",
         images: product.images || [], // Keep existing images
@@ -265,7 +263,6 @@ const AllProducts = () => {
           currency: formData.basicDetails.currency,
           minimumOrderQuantity: Number(formData.basicDetails.minimumOrderQuantity),
           moqUnit: formData.basicDetails.moqUnit,
-          stock: Number(formData.basicDetails.stock),
           state: formData.basicDetails.state,
           city: formData.basicDetails.city,
           images: formData.basicDetails.images, // Send updated images
@@ -690,20 +687,6 @@ const AllProducts = () => {
                   <option value="Meter">Meter</option>
                 </select>
               </div>
-
-
-              {/* Stock */}
-              <div className="mb-3">
-                <label className="form-label">Stock</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  name="basicDetails.stock"
-                  value={formData.basicDetails.stock}
-                  onChange={handleChange}
-                />
-              </div>
-
               <LocationSelector formData={formData} setFormData={setFormData} />
 
             </div>
@@ -1501,16 +1484,20 @@ const AllProducts = () => {
                 </div>
 </div>
               <div className="row">
-                <div className="col-md-6 mb-3">
-                  <label className="form-label">Unit</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="tradeShopping.unit"
-                    value={formData.tradeShopping?.unit || ""}
-                    onChange={handleChange}
-                  />
-                </div>
+              <div className="col-md-6 mb-3">
+  <label className="form-label">Unit</label>
+  <select
+    className="form-select" // Use form-select for Bootstrap styling if applicable
+    name="tradeShopping.unit"
+    value={formData.tradeShopping?.unit || ""}
+    onChange={handleChange}
+  >
+    <option value="">Select Unit</option>
+    <option value="kg">kg</option>
+    <option value="liter">liter</option>
+    <option value="piece">piece</option>
+  </select>
+</div>
 
                 <div className="col-md-6 mb-3">
                   <label className="form-label">Pack Size</label>

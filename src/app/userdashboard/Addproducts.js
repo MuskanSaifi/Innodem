@@ -501,11 +501,9 @@ const handleSubmit = async (e) => {
                                                 required
                                             >
                                                 <option value="Kilograms">Kg</option>
-                                                <option value="Number">Number</option>
                                                 <option value="Piece/Pieces">Piece</option>
                                                 <option value="Ton/Tons">Ton</option>
                                                 <option value="Unit/Units">Unit</option>
-                                                <option value="Twenty-Foot">Twenty-Foot</option>
                                             </select>
                                         </div>
                                     </div>
