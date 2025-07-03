@@ -15,9 +15,9 @@ export async function POST(req) {
     const txnid = params.get("txnid");
     const productInfo = params.get("productinfo");
 
-        console.log("Received productInfo from PayU:", productInfo); // Add this line
+console.log("Received productInfo:", productInfo);
+console.log("Available plan titles:", plans.map(p => p.title));
 
-        
     if (!userId || !status || !amountStr || !txnid || !productInfo) {
       return NextResponse.json({ success: false, message: "Missing required fields" });
     }
@@ -32,7 +32,14 @@ export async function POST(req) {
     }
 
     // Match productInfo with plans to get base price
-    const matchedPlan = plans.find(plan => plan.title === productInfo);
+
+    // const matchedPlan = plans.find(plan => plan.title === productInfo);
+
+    const matchedPlan = plans.find(
+  plan => plan.title.trim().toLowerCase() === productInfo.trim().toLowerCase()
+);
+
+
     if (!matchedPlan) {
       return NextResponse.json({ success: false, message: "Invalid package selected" });
     }
