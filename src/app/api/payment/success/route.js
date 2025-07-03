@@ -15,6 +15,9 @@ export async function POST(req) {
     const txnid = params.get("txnid");
     const productInfo = params.get("productinfo");
 
+        console.log("Received productInfo from PayU:", productInfo); // Add this line
+
+        
     if (!userId || !status || !amountStr || !txnid || !productInfo) {
       return NextResponse.json({ success: false, message: "Missing required fields" });
     }
