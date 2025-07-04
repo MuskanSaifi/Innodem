@@ -481,22 +481,24 @@ Hi! {user.fullname || "User"}
                   </Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" href="/profile">
-                    🧑 Profile
-                  </Link>
+               <Link className="dropdown-item" href="/userdashboard?activeTab=User%20Profile">
+  🧑 Profile
+</Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" href="/inquiries">
+             <li>
+                  <Link className="dropdown-item" href="/userdashboard?activeTab=Recieved%20Enquiry">
                     📩 Inquiries
                   </Link>
                 </li>
-                <li>
+                </li>
+                {/* <li>
                   <Link className="dropdown-item" href="/buy-leads">
                     🛒 Buy Leads
                   </Link>
-                </li>
+                </li> */}
                 <li>
-                  <Link className="dropdown-item" href="/membership">
+                  <Link className="dropdown-item" href="/userdashboard?activeTab=Payments">
                     🎟️ My Membership
                   </Link>
                 </li>
@@ -572,22 +574,22 @@ Hi! {user.fullname || "User"}
                   </Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" href="/profile">
-                    🧑 Profile
-                  </Link>
+                               <Link className="dropdown-item" href="/userdashboard?activeTab=User%20Profile">
+  🧑 Profile
+</Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" href="/inquiries">
+                 <Link className="dropdown-item" href="/userdashboard?activeTab=Recieved%20Enquiry">
                     📩 Inquiries
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link className="dropdown-item" href="/buy-leads">
                     🛒 Buy Leads
                   </Link>
-                </li>
+                </li> */}
                 <li>
-                  <Link className="dropdown-item" href="/membership">
+                 <Link className="dropdown-item" href="/userdashboard?activeTab=Payments">
                     🎟️ My Membership
                   </Link>
                 </li>

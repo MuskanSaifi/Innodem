@@ -1,12 +1,13 @@
+// app/userdashboard/page.js
 'use client';
 
 import React, { useEffect, useState } from "react";
 import "./dashboard.css";
-import { useRouter } from 'next/navigation'; // ✅ Next.js 13+ ke liye
+import { useRouter, useSearchParams } from 'next/navigation'; // ✅ Import useSearchParams
 import Sidebar from "./Sidebar";
 import Dashboard from "./Dashboard";
 import Userprofile from "./Userprofile";
-import BusinessProfile from "./Businessprofile"; // ✅ Corrected import
+import BusinessProfile from "./Businessprofile";
 import BankDetails from "./Bankdetails";
 import AddProducts from "./Addproducts";
 import AllProducts from "./Allproducts";
@@ -20,22 +21,26 @@ function UserDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeContent, setActiveContent] = useState("Dashboard");
 
- const router = useRouter();
-  const { user, token } = useSelector((state) => state.user || {}); // ✅ Use 'user' not 'auth'
-
+  const router = useRouter();
+  const searchParams = useSearchParams(); // ✅ Initialize useSearchParams
+  const { user, token } = useSelector((state) => state.user || {});
 
   useEffect(() => {
     if (!token || !user) {
-      router.push('/user/login'); // 🔐 redirect if not logged in
+      router.push('/user/login');
     }
   }, [token, user, router]);
+
+  useEffect(() => {
+    const activeTab = searchParams.get('activeTab'); // ✅ Read the query parameter
+    if (activeTab) {
+      setActiveContent(activeTab); // ✅ Set activeContent based on the query parameter
+    }
+  }, [searchParams]); // ✅ Re-run effect when searchParams change
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-
-
-
 
   return (
     <div className="resdes-dashboard">
@@ -48,16 +53,16 @@ function UserDashboard() {
           <h1 className="text-lg mb-0">{activeContent}</h1>
         </div>
         <div className="resdes-dynamic-content">
-          {activeContent === "Dashboard" && <Dashboard/>}
-          {activeContent === "Payments" && <Payments/>}
-          {activeContent === "User Profile" && <Userprofile/>}
+          {activeContent === "Dashboard" && <Dashboard />}
+          {activeContent === "Payments" && <Payments />}
+          {activeContent === "User Profile" && <Userprofile />}
           {activeContent === "Business Profile" && <BusinessProfile />}
           {activeContent === "Bank Details" && <BankDetails />}
           {activeContent === "Add New Product" && <AddProducts />}
           {activeContent === "My Product" && <AllProducts />}
           {activeContent === "Recieved Enquiry" && <Enquiry />}
           {activeContent === "Support Person" && <Supportperson />}
-        </div> 
+        </div>
       </div>
     </div>
   );
