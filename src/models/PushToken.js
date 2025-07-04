@@ -17,8 +17,6 @@ const pushTokenSchema = new mongoose.Schema({
   },
 });
 
-// Create an index for faster lookups by userId
-pushTokenSchema.index({ userId: 1 });
 
 const PushToken = mongoose.models.PushToken || mongoose.model('PushToken', pushTokenSchema);
 
