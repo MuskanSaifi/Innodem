@@ -1,3 +1,5 @@
+// app/api/payment/initiate/route.js
+
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 

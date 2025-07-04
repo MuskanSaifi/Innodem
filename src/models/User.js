@@ -54,6 +54,9 @@ const userSchema = new mongoose.Schema({
           expiredAt: { type: Date, default: Date.now }
         }
       ],
+
+// --- ADD THIS LINE FOR EXPO PUSH NOTIFICATIONS ---
+expoPushTokens: [{ type: String }], // Array to store Expo Push Tokens
 },
 { timestamps: true }
 );

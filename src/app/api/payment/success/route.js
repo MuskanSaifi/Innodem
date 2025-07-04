@@ -1,3 +1,5 @@
+// app/api/payment/success/route.js
+
 import User from "@/models/User";
 import connectdb from "@/lib/dbConnect";
 import { NextResponse } from "next/server";
