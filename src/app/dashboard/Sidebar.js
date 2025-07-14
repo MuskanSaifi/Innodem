@@ -31,6 +31,11 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
       label: "Manage Blogs",
       subItems: ["All Blogs", "Create Blogs"],
     },
+//    {
+//   icon: "/assets/dashboardicons/Manage Blogs.png",
+//   label: "Manage Salary",
+//   subItems: ["Add Employee", "Leave Requests", "Salary Report"]
+// }
 
   ];
 

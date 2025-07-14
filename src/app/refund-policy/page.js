@@ -92,6 +92,9 @@ const page = () => {
       <ul className="list-disc pl-6 space-y-2">
         <li>If you paid for membership and after one month decide not to continue services because your company closes, we can transfer your payment to another company or reference, but no refund will be issued.</li>
         <li>Deals promised in a membership package are counted within the tenure period. If a deal does not close in one month, Dial Export Mart has the entire membership tenure to close all deals. No refund will be processed based on the commitment of one deal per month.</li>
+     <li>We request full cooperation from our clients to ensure smooth and effective service delivery throughout the year. If you choose to discontinue your association with the company during the service year, no refund will be applicable.
+</li>
+<li>DEM retains the full duration of the membership to deliver the services as outlined in your selected package.</li>
       </ul>
 
       <h2 className="font-semibold text-lg mt-4">Cancellation and Refund Claim:</h2>

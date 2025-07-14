@@ -24,6 +24,9 @@ import LeadsEnquiry from "./LeadsEnquiry";
 import CreateSupportPerson from "./CreateSupportPerson";
 import AllRecordings from "./AllRecordings";
 import AllClientWebsiteLeads from "./AllClientWebsiteLeads";
+import SalaryReport from "./SalaryReport";
+import LeaveRequests from "./LeaveRequests";
+import AddEmployeeForm from "./AddEmployeeForm";
 
 function ResponsiveDashboard() {
   const router = useRouter();
@@ -89,8 +92,7 @@ function ResponsiveDashboard() {
 </button>
 
 
-        </div>
-
+   </div>
         <div className="resdes-dynamic-content">
           {activeContent === "Dashboard" && <Dashboard />}
           {activeContent === "Payments" && <Payments />}
@@ -111,10 +113,12 @@ function ResponsiveDashboard() {
           {activeContent === "Manage Support Members" && <CreateSupportPerson />}
           {activeContent === "All Recordings" && <AllRecordings />}
           {activeContent === "All Clients Website Leads" && <AllClientWebsiteLeads />}
+          {activeContent === "Add Employee" && <AddEmployeeForm />}
+          {activeContent === "Salary Report" && <SalaryReport />}
+          {activeContent === "Leave Requests" && <LeaveRequests />}
         </div>
       </div>
     </div>
   );
 }
-
 export default ResponsiveDashboard;
