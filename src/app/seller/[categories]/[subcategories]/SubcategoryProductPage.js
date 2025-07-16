@@ -263,6 +263,7 @@ const SubcategoryProductPage = () => {
             )}
           </div>
         </aside>
+        
       </div>
     </div>
   );
