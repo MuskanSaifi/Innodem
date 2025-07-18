@@ -502,7 +502,7 @@ const ProductDetailPage = () => {
                 <Link
                   key={rc._id}
                   // Link logic: if type is product_as_category_display, link to product, else link to category
-                  href={rc.type === 'product_as_category_display' ? `/products/${rc.slug}` : `/seller/${rc.slug}`}
+                  href={rc.type === 'product_as_category_display' ? `/manufacturers/${rc.slug}` : `/seller/${rc.slug}`}
                   className="block"
                 >
                   <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 bg-white text-center flex flex-col items-center p-3 h-full">

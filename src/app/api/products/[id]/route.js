@@ -35,7 +35,7 @@ export async function GET(req, { params }) {
     };
 
     let relatedProducts = [];
-    const maxRelatedProducts = 40; // Max number of related products to fetch
+    const maxRelatedProducts = 12; // Max number of related products to fetch
 
     const relatedProductSelectFields =
       "name images tradeShopping minimumOrderQuantity specifications description userId";
@@ -98,7 +98,7 @@ export async function GET(req, { params }) {
 
     // --- Logic for "Explore More in Similar Categories" (MODIFIED) ---
     let relatedCategories = [];
-    const maxCategoriesToShow = 5; // Max number of categories to show
+    const maxCategoriesToShow = 18; // Max number of categories to show
 
     const currentCategoryId = product.category?._id;
     const currentSubCategoryId = product.subCategory?._id;

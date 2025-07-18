@@ -250,7 +250,7 @@ const Buyfrom = ({ product, sellerId }) => {
 
   return (
     <>
-      <button onClick={toggleModal} className="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl shadow-md transition-all duration-300 flex items-center justify-center gap-2">
+      <button onClick={toggleModal} className=" bg-blue-600 hover:bg-blue-700 text-sm text-white font-semibold py-2 px-3 rounded-xl shadow-md transition-all duration-300 flex items-center justify-center gap-2">
         <span>🛒</span> Purchase Product
       </button>
 

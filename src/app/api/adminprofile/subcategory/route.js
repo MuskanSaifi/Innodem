@@ -81,7 +81,20 @@ export async function PATCH(req) {
     // ✅ Update Subcategory
     subCategory.name = name?.trim() || subCategory.name;
     subCategory.category = category || subCategory.category;
-    subCategory.products = products || subCategory.products;
+
+    // Add new product in to subcategoru old products from this subcategory will be removed
+    // subCategory.products = products || subCategory.products;
+
+    // New product IDs ko purane product IDs ke saath merge karna hai, taaki existing products bhi subcategory me bane rahein, aur naye bhi jud jaayein.
+    if (products && products.length > 0) {
+  const existingProductIds = subCategory.products.map((id) => id.toString());
+  const newProductIds = products.map((id) => id.toString());
+
+  const mergedProducts = Array.from(new Set([...existingProductIds, ...newProductIds]));
+  subCategory.products = mergedProducts;
+}
+
+
     subCategory.icon = uploadedIconUrl;
 
     const updatedSubCategory = await subCategory.save();
@@ -193,8 +206,6 @@ const newSubCategory = new SubCategory({
     );
   }
 }
-
-
 
 
 export async function GET(req) {

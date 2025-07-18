@@ -1,14 +1,14 @@
+// api/manufacturers/[productslug]/route.js
 import { NextResponse } from "next/server";
 import connectdb from "@/lib/dbConnect";
 import Product from "@/models/Product";
 import SubCategory from "@/models/SubCategory";
+import BusinessProfile from "@/models/BusinessProfile"; // ✅ Import this
 
 export async function GET(request, { params }) {
-  // Ensure params are awaited properly for dynamic routes
   await connectdb();
 
-  // Await params if needed (awaiting in async route context)
-  const { productslug } = await params; // await here to properly access params
+  const { productslug } = params;
 
   if (!productslug) {
     return NextResponse.json(
@@ -19,33 +19,36 @@ export async function GET(request, { params }) {
 
   try {
     const decodedProductSlug = decodeURIComponent(productslug);
-    // Find the product by its slug
-    const product = await Product.findOne({ productslug: decodedProductSlug })
+
+    const products = await Product.find({ productslug: decodedProductSlug })
       .populate("subCategory category userId");
 
-    if (!product) {
+    if (!products || products.length === 0) {
       return NextResponse.json(
-        { message: "Product not found", success: false },
+        { message: "Product(s) not found", success: false },
         { status: 404 }
       );
     }
 
-    // Fetch the subcategories based on the product's category
-    const subcategories = await SubCategory.find({ category: product.category })
-      .populate("category");
+    const baseProduct = products[0];
 
-    // Fetch related products that share the same subcategory
+    const subcategories = await SubCategory.find({ category: baseProduct.category }).populate("category");
+
     const relatedProducts = await Product.find({
-      subCategory: product.subCategory,
-      _id: { $ne: product._id }, // Exclude the current product
+      subCategory: baseProduct.subCategory,
+      _id: { $nin: products.map(p => p._id) },
     }).limit(5);
+
+    // ✅ Get Business Profile of the seller
+    const businessProfile = await BusinessProfile.findOne({ userId: baseProduct.userId });
 
     return NextResponse.json(
       {
         success: true,
-        product,
+        products,
         subcategories,
         relatedProducts,
+        businessProfile, // ✅ Send this to frontend
       },
       { status: 200 }
     );

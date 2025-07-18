@@ -6,15 +6,18 @@ import Image from "next/image";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useParams } from "next/navigation";
-import BuySellForm from "./BuySellform";
-import Buyfrom from "./Buyfrom";
-import BuySell from "@/components/BuySell";
+import BuySellForm from "./BuySellform"; // Assuming these are correctly imported and used
+import Buyfrom from "./Buyfrom"; // Assuming these are correctly imported and used
+import BuySell from "@/components/BuySell"; // Assuming these are correctly imported and used
 
 const ProductDetailClient = ({ productslug: propProductSlug }) => {
   const params = useParams();
   const slugFromURL = params?.productslug || propProductSlug;
-  const [product, setProduct] = useState(null);
+  // Change from 'product' to 'products' (array)
+  const [products, setProducts] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
+    const [businessProfile, setBusinessProfile] = useState(null); // ✅ Added
+
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,13 +34,17 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
 
       try {
         const encodedSlug = encodeURIComponent(slugFromURL);
+        // Ensure the API path is correct
         const response = await fetch(`/api/manufacturers/${encodedSlug}`);
-        if (!response.ok) throw new Error(`Failed to fetch product data: ${response.status}`);
+        if (!response.ok)
+          throw new Error(`Failed to fetch product data: ${response.status}`);
         const data = await response.json();
 
-        setProduct(data.product || null);
+        // Set ALL products returned by the API
+        setProducts(data.products || []);
         setSubcategories(data.subcategories || []);
         setRelatedProducts(data.relatedProducts || []);
+                setBusinessProfile(data.businessProfile || null); // ✅ Added
       } catch (err) {
         console.error("Error fetching product:", err?.message || err);
         setError("Could not load product details.");
@@ -45,10 +52,9 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
         setLoading(false);
       }
     };
-    
+
     fetchProductData();
   }, [slugFromURL]);
-
 
   return (
     <div className="container mt-4 mb-5">
@@ -59,7 +65,6 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
 
       {/* Mobile Dropdowns */}
       <div className="d-md-none mb-4">
-      
         {/* Subcategories Dropdown */}
         <div className="mb-3">
           <button
@@ -113,13 +118,12 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
             </ul>
           )}
         </div>
-
       </div>
 
       <div className="row">
         {/* Subcategories (Desktop Only) */}
         <aside className="col-md-3 mb-4 d-none d-md-block">
-  <div className="bg-white p-3 rounded common-shad sticky top-20">
+          <div className="bg-white p-3 rounded common-shad sticky top-20">
             <div className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
               Subcategories
             </div>
@@ -133,7 +137,9 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
                     href={`/seller/${sub?.category?.categoryslug}/${sub?.subcategoryslug}`}
                     className="text-decoration-none"
                   >
-                    <li className="list-group-item hover:bg-gray-100">{sub.name}</li>
+                    <li className="list-group-item hover:bg-gray-100">
+                      {sub.name}
+                    </li>
                   </Link>
                 ))}
               </ul>
@@ -143,49 +149,95 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
           </div>
         </aside>
 
-        {/* Product Details */}
-        <div className="col-md-6 mb-4">
-          {loading ? (
-            <Skeleton height={400} />
-          ) : error ? (
-            <p className="text-danger">{error}</p>
-          ) : product ? (
-            <div className="card p-4 common-shad border-0 rounded">
-          <Image
-  src={product?.images?.[0]?.url || "/placeholder.png"}
-  alt={product?.name || "Product Image"}
-  width={400}
-  height={400}
-  className="rounded-md object-cover mx-auto block"
-  onError={(e) => {
-    e.currentTarget.onerror = null;
-    e.currentTarget.src = "/placeholder.png";
-  }}
-/>
+        {/* Product Details - Iterate over 'products' */}
+<div className="col-md-6 mb-4">
+  {loading ? (
+    <Skeleton height={400} />
+  ) : error ? (
+    <p className="text-danger">{error}</p>
+  ) : products.length > 0 ? (
+    products.map((product) => (
+      <div key={product._id} className="card shadow-sm border-0 mb-3 rounded-4 overflow-hidden">
+        <div className="row g-0">
+          {/* Product Image */}
+          <div className="col-12 col-md-4 bg-light d-flex align-items-center justify-content-center p-2">
+            <Image
+              src={product?.images?.[0]?.url || "/placeholder.png"}
+              alt={product?.name || "Product Image"}
+              width={150}
+              height={150}
+              className="img-fluid rounded"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = "/placeholder.png";
+              }}
+            />
+          </div>
 
-              <h2 className="mt-3 text-primary">{product.name}</h2>
-              <p className="text-secondary">
-                <strong>Price:</strong> ₹{product.price} {product.currency || "INR"}
-              </p>
-              <p><strong>MOQ:</strong> {product.minimumOrderQuantity || "N/A"}</p>
-              <p>{product.description}</p>
-              <Link
-                href={`/products/${product._id}`}
-                className="btn btn-outline-primary btn-sm mt-2 w-100"
-              >
-                More details
-              </Link>
-<Buyfrom product={product} sellerId={product?.userId} />
+          {/* Product Details */}
+          <div className="col-12 col-md-8 p-3">
+            <h5 className="text-primary fw-bold mb-2">{product.name}</h5>
 
+            <div className="d-flex flex-wrap justify-content-between mb-2">
+              <p className="mb-0"><strong>Price:</strong> ₹{product.price} {product.currency || "INR"}</p>
+              <p className="mb-0"><strong>MOQ:</strong> {product.minimumOrderQuantity} {product.moqUnit || "Number"}</p>
             </div>
-          ) : (
-            <p className="text-warning">Product details not available.</p>
-          )}
+
+       
+
+
+            {/* Short Description */}
+            {product.description && (
+              <p className="text-muted small mb-2">
+                {product.description.length > 120
+                  ? `${product.description.slice(0, 120)}...`
+                  : product.description}
+              </p>
+            )}
+
+      {/* ✅ Business Profile Info */}
+                    {businessProfile && (
+                      <div className="border-top pt-3 mt-3 small">
+                        {/* <h6 className="text-dark fw-bold mb-2">Business Details</h6> */}
+                        <p className="mb-1"><strong>Company Name:</strong> {businessProfile.companyName}</p>
+                        <p className="mb-1"><strong>GST Number:</strong> {businessProfile.gstNumber}</p>
+                        <p className="mb-1"><strong>Year Established:</strong> {businessProfile.yearOfEstablishment}</p>
+                      </div>
+                    )}
+
+            {/* GST / Selling Price / Returnable */}
+            {product?.tradeShopping && (
+              <div className="mb-2">
+                <p className="mb-0 small"><strong>GST:</strong> {product.tradeShopping.gst}%</p>
+                <p className="mb-0 small"><strong>Selling Price Type:</strong> {product.tradeShopping.sellingPriceType}</p>
+                <p className="mb-0 small"><strong>Returnable:</strong> {product.tradeShopping.isReturnable}</p>
+              </div>
+            )}
+
+            <div className="d-flex justify-content-between align-items-center mt-3">
+            <Link
+  href={`/products/${product._id}`}
+  className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-blue-600 border border-blue-500 rounded hover:bg-blue-50 transition"
+>
+  More Details
+</Link>
+
+              <Buyfrom product={product} sellerId={product?.userId} />
+            </div>
+          </div>
+
+
         </div>
+      </div>
+    ))
+  ) : (
+    <p className="text-warning">Product details not available.</p>
+  )}
+</div>
 
         {/* Related Products (Desktop Only) */}
         <aside className="col-md-3 mb-4 d-none d-md-block">
-  <div className="bg-white p-3 rounded common-shad sticky top-20">
+          <div className="bg-white p-3 rounded common-shad sticky top-20">
             <div className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
               Related Products
             </div>
@@ -199,14 +251,20 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
                     href={`/manufacturers/${prod.productslug}`}
                     className="text-web text-decoration-none"
                   >
-                    <li className="list-group-item hover:bg-gray-100">{prod.name}</li>
+                    <li className="list-group-item hover:bg-gray-100">
+                      {prod.name}
+                    </li>
                   </Link>
                 ))}
               </ul>
             ) : (
               <p className="text-muted">No related products available.</p>
             )}
-{product && <BuySell initialProductName={product.name} />}
+            {/* If there are multiple products, you might need to decide which one's name to pass
+                to BuySell. For now, it passes the name of the first product in the list. */}
+            {products.length > 0 && (
+              <BuySell initialProductName={products[0].name} />
+            )}
           </div>
         </aside>
       </div>

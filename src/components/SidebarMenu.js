@@ -117,16 +117,25 @@ const SidebarMenu = () => {
 
                     {/* Products */}
                     <ul className="text-gray-700">
-                      {subcategory.products.map((product) => (
-                        <li key={product._id}>
-                          <Link
-                            href={`/manufacturers/${product.productslug}`}
-                            className="text-sm text-blue-700 hover:underline"
-                          >
-                            {product.name.replace(/\b\w/g, (c) => c.toUpperCase())}
-                          </Link>
-                        </li>
-                      ))}
+{Array.from(
+  new Map(
+    subcategory.products.map((p) => [p.name.trim().toLowerCase(), p])
+  ).values()
+)
+  .slice(0, 6) // ✅ Only show the first 6 unique products
+  .map((product) => (
+    <li key={product._id}>
+      <Link
+        href={`/manufacturers/${product.productslug}`}
+        className="text-sm text-blue-700 hover:underline"
+      >
+        {product.name.replace(/\b\w/g, (c) => c.toUpperCase())}
+      </Link>
+    </li>
+))}
+
+
+
                     </ul>
                   </div>
                 ))}

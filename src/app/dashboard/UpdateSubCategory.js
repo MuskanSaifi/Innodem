@@ -192,10 +192,6 @@ const [deletingProductId, setDeletingProductId] = useState(null); // To disable 
           </div>
         )}
 
-        
-
-
-
         <input className="form-control mb-3" type="date" value={selectedDate} onChange={handleDateFilter} />
 
 
