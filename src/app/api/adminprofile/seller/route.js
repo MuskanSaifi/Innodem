@@ -1,8 +1,9 @@
+// api/adminprofile/seller/route.js
 import connectDB from "@/lib/dbConnect";
 import Product from "@/models/Product";
 import Category from "@/models/Category";
 import SubCategory from "@/models/SubCategory";
-
+import mongoose from "mongoose"; //
 // POST method - Create a new product
 export async function POST(req) {
   try {
@@ -89,6 +90,8 @@ export async function GET(req) {
     const products = await Product.find()
       .populate("category")
       .populate("subCategory") // Ensure subCategory is populated
+            .populate("userId", "fullname companyName") // <--- CRITICAL CHANGE: Populate userId and select fullname and companyName
+
       .exec();
 
 
@@ -100,6 +103,44 @@ export async function GET(req) {
     console.error("❌ Error fetching products:", error);
     return new Response(
       JSON.stringify({ error: "Failed to fetch products" }),
+      { status: 500 }
+    );
+  }
+}
+
+
+// DELETE method - Delete a product by ID
+export async function DELETE(req) {
+  try {
+    await connectDB();
+    const url = new URL(req.url);
+    const productId = url.searchParams.get("id"); // Get product ID from query parameter
+
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+      return new Response(JSON.stringify({ error: "Invalid product ID." }), {
+        status: 400,
+      });
+    }
+
+    const deletedProduct = await Product.findByIdAndDelete(productId);
+
+    if (!deletedProduct) {
+      return new Response(JSON.stringify({ error: "Product not found." }), {
+        status: 404,
+      });
+    }
+
+    return new Response(
+      JSON.stringify({ message: "Product deleted successfully!" }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  } catch (error) {
+    console.error("❌ Error deleting product:", error);
+    return new Response(
+      JSON.stringify({ error: error.message || "Failed to delete product." }),
       { status: 500 }
     );
   }

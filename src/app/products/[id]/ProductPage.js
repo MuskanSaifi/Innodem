@@ -14,6 +14,7 @@ const ProductDetailPage = () => {
 
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [relatedCategories, setRelatedCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hoveredImage, setHoveredImage] = useState(null);
@@ -31,6 +32,7 @@ const ProductDetailPage = () => {
         if (!res.ok) throw new Error(data.error || "Error fetching product.");
         setProduct(data);
         setRelatedProducts(data.relatedProducts || []);
+        setRelatedCategories(data.relatedCategories || []);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -40,12 +42,10 @@ const ProductDetailPage = () => {
 
     if (id) {
       fetchProduct();
-      // Reset hovered image when ID changes to ensure the new product's first image is shown
       setHoveredImage(null);
     }
   }, [id]);
 
-  // Set the initial hovered image once product data is loaded
   useEffect(() => {
     if (product && product.images && product.images.length > 0 && !hoveredImage) {
       setHoveredImage(product.images[0]);
@@ -94,10 +94,10 @@ const ProductDetailPage = () => {
           </button>
         </div>
 
-        <div className="bg-white rounded-3xl shadow-xl grid md:grid-cols-12 gap-8 p-6">
+        <div className="bg-white rounded-3xl  grid md:grid-cols-12 gap-8 p-6">
           {loading ? (
             <>
-              <div className="md:col-span-6"> {/* Changed to 6 for consistency */}
+              <div className="md:col-span-6">
                 <Skeleton height={400} className="rounded-2xl" />
                 <div className="flex mt-4 space-x-3">
                   <Skeleton circle width={80} height={80} />
@@ -105,7 +105,7 @@ const ProductDetailPage = () => {
                   <Skeleton circle width={80} height={80} />
                 </div>
               </div>
-              <div className="md:col-span-6 space-y-4"> {/* Changed to 6 for consistency */}
+              <div className="md:col-span-6 space-y-4">
                 <Skeleton height={30} width="80%" />
                 <Skeleton count={2} width="60%" />
                 <Skeleton height={20} width="40%" />
@@ -169,7 +169,7 @@ const ProductDetailPage = () => {
                   <p className="text-yellow-500 text-sm font-semibold">⭐⭐⭐⭐ Rating</p>
 
                   <div className="mt-4 flex items-center space-x-6">
-                    <div className="bg-green-100 bg-opacity-40 text-green-700 text-4xl font-extrabold px-6 py-3 rounded-lg shadow-sm">
+                    <div className="bg-green-100 bg-opacity-40 text-green-700 text-4xl font-extrabold px-6 py-3 rounded-lg ">
                       ₹{product.tradeShopping?.slabPricing?.[0]?.price || "N/A"}
                     </div>
                     <div className="text-gray-700 font-medium text-lg">
@@ -206,6 +206,27 @@ const ProductDetailPage = () => {
                             <td className="py-2 px-3 font-medium text-gray-600">Stock</td>
                             <td className="py-2 px-3">{product.stock ?? "Not Available"}</td>
                           </tr>
+                          {/* Add more specifications based on your schema if needed */}
+                          <tr className="even:bg-gray-50">
+                            <td className="py-2 px-3 font-medium text-gray-600">Product Type</td>
+                            <td className="py-2 px-3">{product.specifications?.productType || "N/A"}</td>
+                          </tr>
+                          <tr className="even:bg-gray-50">
+                            <td className="py-2 px-3 font-medium text-gray-600">Finish</td>
+                            <td className="py-2 px-3">{product.specifications?.finish || "N/A"}</td>
+                          </tr>
+                          <tr className="even:bg-gray-50">
+                            <td className="py-2 px-3 font-medium text-gray-600">Design</td>
+                            <td className="py-2 px-3">{product.specifications?.design || "N/A"}</td>
+                          </tr>
+                          <tr className="even:bg-gray-50">
+                            <td className="py-2 px-3 font-medium text-gray-600">Usage</td>
+                            <td className="py-2 px-3">{product.specifications?.usage || "N/A"}</td>
+                          </tr>
+                          <tr className="even:bg-gray-50">
+                            <td className="py-2 px-3 font-medium text-gray-600">Application</td>
+                            <td className="py-2 px-3">{product.specifications?.application || "N/A"}</td>
+                          </tr>
                         </tbody>
                       </table>
                     </div>
@@ -231,11 +252,22 @@ const ProductDetailPage = () => {
                             <td className="py-2 px-3 font-medium text-gray-600">Sample Policy</td>
                             <td className="py-2 px-3">{product.tradeInformation?.samplePolicy || "N/A"}</td>
                           </tr>
+                          <tr className="even:bg-gray-50">
+                            <td className="py-2 px-3 font-medium text-gray-600">Sample Available</td>
+                            <td className="py-2 px-3">{product.tradeInformation?.sampleAvailable || "N/A"}</td>
+                          </tr>
+                          <tr className="even:bg-gray-50">
+                            <td className="py-2 px-3 font-medium text-gray-600">Payment Terms</td>
+                            <td className="py-2 px-3">{product.tradeInformation?.paymentTerms || "N/A"}</td>
+                          </tr>
+                          <tr className="even:bg-gray-50">
+                            <td className="py-2 px-3 font-medium text-gray-600">Packaging Details</td>
+                            <td className="py-2 px-3">{product.tradeInformation?.packagingDetails || "N/A"}</td>
+                          </tr>
                         </tbody>
                       </table>
                     </div>
                   </div>
-
 
                   {product.businessProfile && (
                     <div className="mt-6 border-t pt-4">
@@ -282,8 +314,6 @@ const ProductDetailPage = () => {
                           </div>
                         </div>
 
-
-
                         {/* GST Number */}
                         <div className="flex items-start space-x-4">
                           <div className="bg-orange-100 p-3 rounded-full">
@@ -295,7 +325,7 @@ const ProductDetailPage = () => {
                           </div>
                         </div>
 
-                        {/* Payment Mode (assuming samplePolicy is used for this) */}
+                        {/* Payment Mode (using samplePolicy as a placeholder based on previous context) */}
                         <div className="flex items-start space-x-4">
                           <div className="bg-orange-100 p-3 rounded-full">
                             💳
@@ -320,7 +350,6 @@ const ProductDetailPage = () => {
                             </p>
                           </div>
                         </div>
-
                       </div>
 
                       {/* Logo */}
@@ -331,25 +360,19 @@ const ProductDetailPage = () => {
                             alt="Company Logo"
                             width={120}
                             height={120}
-                            className="rounded border shadow-md"
+                            className="rounded border "
                             unoptimized
                           />
                         </div>
                       )}
                     </div>
                   )}
-
-
                 </div>
 
                 <div className="flex gap-4 pt-6 border-t">
                   <Buyfrom product={product} sellerId={product?.userId?._id} />
-
                 </div>
-
               </div>
-
-
 
               {/* Zoom Modal */}
               {showZoomModal && (
@@ -378,8 +401,6 @@ const ProductDetailPage = () => {
                   </div>
                 </div>
               )}
-
-
             </>
           ) : (
             <p className="md:col-span-12 text-center">No product found.</p>
@@ -388,9 +409,9 @@ const ProductDetailPage = () => {
 
         {/* --- Related Products Section --- */}
         {relatedProducts.length > 0 && (
-          <div className="mt-12 bg-white rounded-3xl shadow-xl p-6">
+          <div className="mt-12 bg-white rounded-3xl  p-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Related Products</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"> {/* Adjusted grid for more cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {relatedProducts.map((relatedProduct) => (
                 <Link key={relatedProduct._id} href={`/products/${relatedProduct._id}`} className="block">
                   <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 bg-white flex flex-col h-full">
@@ -412,7 +433,6 @@ const ProductDetailPage = () => {
                         <h3 className="text-lg font-semibold text-gray-800 mb-1 line-clamp-2">
                           {relatedProduct.name}
                         </h3>
-                        {/* Price / Ask Price */}
                         <div className="text-blue-600 font-bold text-xl mb-2">
                           {relatedProduct.tradeShopping?.slabPricing?.[0]?.price ?
                             `₹${relatedProduct.tradeShopping.slabPricing[0].price}` : "Ask Price"
@@ -422,60 +442,45 @@ const ProductDetailPage = () => {
                           {relatedProduct.specifications?.usage && (
                             <p><span className="font-medium text-gray-600">Usage:</span> {relatedProduct.specifications.usage}</p>
                           )}
-                          {relatedProduct.specifications?.typeOfWood && (
-                            <p><span className="font-medium text-gray-600">Type of Wood:</span> {relatedProduct.specifications.typeOfWood}</p>
+                          {relatedProduct.specifications?.woodType && (
+                            <p><span className="font-medium text-gray-600">Wood Type:</span> {relatedProduct.specifications.woodType}</p>
                           )}
-                          {relatedProduct.specifications?.doorPosition && (
-                            <p><span className="font-medium text-gray-600">Door Position:</span> {relatedProduct.specifications.doorPosition}</p>
-                          )}
-                           {relatedProduct.specifications?.design && (
+                          {relatedProduct.specifications?.design && (
                             <p><span className="font-medium text-gray-600">Design:</span> {relatedProduct.specifications.design}</p>
                           )}
-                          {relatedProduct.specifications?.surfaceFinishing && (
-                            <p><span className="font-medium text-gray-600">Surface Finishing:</span> {relatedProduct.specifications.surfaceFinishing}</p>
+                          {relatedProduct.specifications?.finish && (
+                            <p><span className="font-medium text-gray-600">Finish:</span> {relatedProduct.specifications.finish}</p>
                           )}
-                          {relatedProduct.tradeInformation?.countryOfOrigin && (
-                            <p><span className="font-medium text-gray-600">Country of Origin:</span> {relatedProduct.tradeInformation.countryOfOrigin}</p>
+                          {relatedProduct.tradeInformation?.mainExportMarkets?.length > 0 && (
+                            <p><span className="font-medium text-gray-600">Export Markets:</span> {relatedProduct.tradeInformation.mainExportMarkets.join(', ')}</p>
+                          )}
+                          {relatedProduct.tradeInformation?.mainDomesticMarket && (
+                            <p><span className="font-medium text-gray-600">Domestic Market:</span> {relatedProduct.tradeInformation.mainDomesticMarket}</p>
                           )}
                         </div>
                       </div>
 
                       <div className="mt-4 pt-3 border-t border-gray-100">
-                        {/* Seller Name and Location */}
                         {(relatedProduct.userId?.companyName || relatedProduct.userId?.fullname) && (
                           <p className="text-gray-800 font-semibold text-base">
                             {relatedProduct.userId?.companyName || relatedProduct.userId?.fullname}
                           </p>
                         )}
-                        {/* You'd need to fetch location info for the seller. Assuming it's on BusinessProfile or User. */}
-                        {/* For demonstration, I'll put a placeholder if no location is available */}
-                        {/* This part requires actual location data from your models */}
-                        {/* <p className="text-gray-500 text-sm">📍 Fatehpura, Yamuna Nagar</p> */}
-
-                        {/* Verification Badges */}
                         <div className="flex items-center space-x-2 mt-2">
                           {relatedProduct.businessProfile?.gstNumber && (
                             <span className="flex items-center text-green-700 text-sm font-medium bg-green-50 px-2 py-1 rounded-full">
                               ✅ GST
                             </span>
                           )}
-                          {/* Assuming you have a field for TrustSeal Verified */}
-                          {/* <span className="flex items-center text-blue-700 text-sm font-medium bg-blue-50 px-2 py-1 rounded-full">
-                            ✔ TrustSeal Verified
-                          </span> */}
                           {relatedProduct.businessProfile?.yearOfEstablishment && (
                             <span className="flex items-center text-gray-600 text-sm font-medium bg-gray-100 px-2 py-1 rounded-full">
                               👤 {new Date().getFullYear() - relatedProduct.businessProfile.yearOfEstablishment} yrs
                             </span>
                           )}
                         </div>
-
-                        {/* Rating (Placeholder for now, assuming you have a rating field) */}
                         <p className="text-yellow-500 text-sm font-semibold mt-2">
                           ⭐⭐⭐⭐ 4.2 (79)
                         </p>
-
-                        {/* Contact Supplier Button */}
                         <button className="mt-4 w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition-colors duration-200 font-medium">
                           Contact Supplier
                         </button>
@@ -487,7 +492,39 @@ const ProductDetailPage = () => {
             </div>
           </div>
         )}
-        {/* --- End of Related Products Section --- */}
+
+        {/* --- Related Categories Section --- */}
+        {relatedCategories.length > 0 && (
+          <div className="mt-12 bg-white rounded-3xl  p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Explore More in Similar Categories</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+              {relatedCategories.map((rc) => (
+                <Link
+                  key={rc._id}
+                  // Link logic: if type is product_as_category_display, link to product, else link to category
+                  href={rc.type === 'product_as_category_display' ? `/products/${rc.slug}` : `/seller/${rc.slug}`}
+                  className="block"
+                >
+                  <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 bg-white text-center flex flex-col items-center p-3 h-full">
+                    <div className="relative w-24 h-24 sm:w-32 sm:h-32 bg-gray-100 rounded-full flex items-center justify-center mb-3 overflow-hidden">
+                      <Image
+                        src={rc.image || "/placeholder.png"} // Use rc.image as it's passed from API (which is icon or product image)
+                        alt={rc.name}
+                        width={96}
+                        height={96}
+                        className="object-cover rounded-full w-full h-full"
+                        unoptimized
+                      />
+                    </div>
+                    <h3 className="text-sm font-medium text-gray-800 line-clamp-2">
+                      {rc.name}
+                    </h3>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

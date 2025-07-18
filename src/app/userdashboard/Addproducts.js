@@ -754,6 +754,7 @@ const handleSubmit = async (e) => {
                                         <option value="">Select</option>
                                         <option value="Kilograms">Kg</option>
                                         <option value="Grams">Grams</option>
+                                        <option value="Mg">Mg</option>
                                     </select>
                                 </div>
 
