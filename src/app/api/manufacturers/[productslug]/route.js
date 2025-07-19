@@ -1,23 +1,23 @@
-// api/manufacturers/[productslug]/route.js
 import { NextResponse } from "next/server";
 import connectdb from "@/lib/dbConnect";
 import Product from "@/models/Product";
 import SubCategory from "@/models/SubCategory";
-import BusinessProfile from "@/models/BusinessProfile"; // ✅ Import this
+import BusinessProfile from "@/models/BusinessProfile";
 
-export async function GET(request, { params }) {
+export async function GET(request) {
   await connectdb();
 
-  const { productslug } = params;
-
-  if (!productslug) {
-    return NextResponse.json(
-      { message: "Product slug is required", success: false },
-      { status: 400 }
-    );
-  }
-
   try {
+    const url = new URL(request.url);
+    const productslug = url.pathname.split("/").pop(); // ✅ Extract slug manually
+
+    if (!productslug) {
+      return NextResponse.json(
+        { message: "Product slug is required", success: false },
+        { status: 400 }
+      );
+    }
+
     const decodedProductSlug = decodeURIComponent(productslug);
 
     const products = await Product.find({ productslug: decodedProductSlug })
@@ -39,7 +39,6 @@ export async function GET(request, { params }) {
       _id: { $nin: products.map(p => p._id) },
     }).limit(5);
 
-    // ✅ Get Business Profile of the seller
     const businessProfile = await BusinessProfile.findOne({ userId: baseProduct.userId });
 
     return NextResponse.json(
@@ -48,7 +47,7 @@ export async function GET(request, { params }) {
         products,
         subcategories,
         relatedProducts,
-        businessProfile, // ✅ Send this to frontend
+        businessProfile,
       },
       { status: 200 }
     );

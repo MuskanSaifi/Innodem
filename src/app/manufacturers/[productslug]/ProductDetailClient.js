@@ -184,8 +184,6 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
             </div>
 
        
-
-
             {/* Short Description */}
             {product.description && (
               <p className="text-muted small mb-2">

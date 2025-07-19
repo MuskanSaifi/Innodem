@@ -128,6 +128,7 @@ const Enquiry = () => {
                   <th className="px-6 py-3 text-left">Status</th>
                   <th className="px-6 py-3 text-left">Chat via WhatsApp</th>
                   <th className="px-6 py-3 text-left">Actions</th>
+                  <th className="px-6 py-3 text-left">Date & Time</th>
                 </tr>
               </thead>
               <tbody className="text-gray-700">
@@ -188,6 +189,18 @@ const Enquiry = () => {
                         <option value="Cancelled">Cancelled</option>
                       </select>
                     </td>
+                  <td className="px-6 py-4 text-sm font-medium">
+  {new Date(req.createdAt).toLocaleString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  }).replace(",", "")}
+</td>
+
                   </tr>
                 ))}
               </tbody>
@@ -224,13 +237,42 @@ const Enquiry = () => {
                   <span className="font-semibold text-gray-700">Quantity:</span>{' '}
                   <span className="text-sm text-gray-900">{req.quantity}</span>
                 </div>
-                <div className="mb-4">
+                <div className="mb-2">
                   <span className="font-semibold text-gray-700">Status:</span>{' '}
                   <span className={`px-3 py-1 text-xs rounded-lg font-medium ${req.status === 'Pending' ? 'bg-yellow-500 text-white' : req.status === 'Completed' ? 'bg-green-500 text-white' : req.status === 'Responded' ? 'bg-blue-500 text-white' : 'bg-red-500 text-white'}`}>
                     {req.status}
                   </span>
                 </div>
-                <div className="mb-4">
+         
+                <div  className="mb-2">
+                  <span className="font-semibold text-gray-700">Update Status:</span>{' '}
+                  <select
+                    value={req.status}
+                    onChange={(e) => handleStatusUpdate(req._id, e.target.value)}
+                    className="border w-full border-gray-300 rounded-md p-1 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="Responded">Responded</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                  </select>
+                </div>
+                 <div className="mb-2">
+                  <span className="font-semibold text-gray-700">Date & Time:</span>{' '}
+                 <span className="text-sm text-gray-900">
+  {new Date(req.createdAt).toLocaleString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false, // use 24-hour format
+  })}
+</span>
+
+                </div>
+                       <div>
                   {req?.buyer?.mobileNumber ? (
                     <button
                       onClick={() => openWhatsAppChat(
@@ -248,19 +290,6 @@ const Enquiry = () => {
                   ) : (
                     <span className="text-gray-500 text-sm">N/A</span>
                   )}
-                </div>
-                <div>
-                  <span className="font-semibold text-gray-700">Update Status:</span>{' '}
-                  <select
-                    value={req.status}
-                    onChange={(e) => handleStatusUpdate(req._id, e.target.value)}
-                    className="border w-full border-gray-300 rounded-md p-1 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                  >
-                    <option value="Pending">Pending</option>
-                    <option value="Responded">Responded</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Cancelled">Cancelled</option>
-                  </select>
                 </div>
               </div>
             ))}

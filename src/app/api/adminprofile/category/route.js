@@ -3,6 +3,8 @@ import connectDB from "@/lib/dbConnect";
 import Category from "@/models/Category"; // Assuming you have the Category model
 import SubCategory from "@/models/SubCategory";
 import Product from "@/models/Product"; // ✅ Import Product to ensure it's registered
+import User from "@/models/User"; // Import User model
+import BusinessProfile from "@/models/BusinessProfile"; // Import BusinessProfile model
 import cloudinary from "@/lib/cloudinary"; // ✅ Import Cloudinary Config
 import { URL } from "url";  // Import URL for parsing query
 
@@ -125,19 +127,49 @@ export async function GET() {
         path: "subcategories",
         populate: {
           path: "products",
-          select: "name price images productslug",
+          select: "name description price images productslug tradeShopping userId", // Select userId
+          populate: [
+            {
+              path: "userId", // Populate the user details
+              model: "User",
+              select: "fullname mobileNumber", // Select only necessary user fields
+            },
+          ],
         },
       })
       .exec();
 
-    if (!categories.length) {
+    // Now, for each product, fetch its associated business profile
+    const categoriesWithBusinessProfiles = await Promise.all(
+      categories.map(async (category) => {
+        const subcategoriesWithBusinessProfiles = await Promise.all(
+          category.subcategories.map(async (subcat) => {
+            const productsWithBusinessProfiles = await Promise.all(
+              subcat.products.map(async (product) => {
+                let businessProfile = null;
+                if (product.userId) {
+                  businessProfile = await BusinessProfile.findOne({
+                    userId: product.userId._id,
+                  }).select("companyName address city state country"); // Select necessary business profile fields
+                }
+                return { ...product.toObject(), businessProfile };
+              })
+            );
+            return { ...subcat.toObject(), products: productsWithBusinessProfiles };
+          })
+        );
+        return { ...category.toObject(), subcategories: subcategoriesWithBusinessProfiles };
+      })
+    );
+
+    if (!categoriesWithBusinessProfiles.length) {
       return new Response(JSON.stringify({ message: "No categories found" }), {
         status: 404,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    return new Response(JSON.stringify(categories), {
+    return new Response(JSON.stringify(categoriesWithBusinessProfiles), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
