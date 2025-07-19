@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import Buyfrom from "./Buyfrom"; // Assuming these are correctly imported and used
+import { FaCheckCircle, FaMapMarkerAlt, FaUserClock } from "react-icons/fa";
 
 const CategoryPage = ({ categorySlug }) => {
   const [categories, setCategories] = useState([]);
@@ -58,6 +60,22 @@ const CategoryPage = ({ categorySlug }) => {
     const matched = categories.find((cat) => cat.categoryslug === categorySlug);
     return matched?.name || categorySlug;
   };
+
+
+    // Helper function to check if a value should be displayed
+  const shouldDisplay = (value) => {
+    if (value === null || typeof value === 'undefined') {
+      return false;
+    }
+    if (typeof value === 'string' && (value.trim() === '' || value.trim().toLowerCase() === 'n/a')) {
+      return false;
+    }
+    if (Array.isArray(value) && value.length === 0) {
+      return false;
+    }
+    return true;
+  };
+
 
   return (
     <div className="container mt-4 mb-5">
@@ -210,18 +228,87 @@ const CategoryPage = ({ categorySlug }) => {
                     <h6 className="mt-2 text-primary text-sm text-center">
                       {product.name}
                     </h6>
+                    <p className=" text-sm">
+                      {product.description
+                        ? product.description.split(" ").slice(0, 15).join(" ") + (product.description.split(" ").length > 20 ? "..." : "")
+                        : "N/A"}
+                    </p>
+                     {/* Company Info Section */}
+                            {product.businessProfile && shouldDisplay(product.businessProfile.companyName) && (
+                              <div className="mb-3 pb-2 border-bottom">
+                                <h6 className="fw-bold text-dark mb-2">{product.businessProfile.companyName}</h6>
+                                <div className="d-flex flex-wrap align-items-center text-sm">
+                                  {/* Location */}
+                                  {(shouldDisplay(product.businessProfile.city) || shouldDisplay(product.businessProfile.state)) && (
+                                    <div className="d-flex align-items-center text-muted me-3 mb-1">
+                                      <FaMapMarkerAlt className="me-1 text-secondary" />
+                                      <span>
+                                        {product.businessProfile.city}
+                                        {product.businessProfile.city && product.businessProfile.state ? ", " : ""}
+                                        {product.businessProfile.state}
+                                      </span>
+                                    </div>
+                                  )}
+                    
+                                  {/* GST */}
+                                  {shouldDisplay(product.businessProfile.gstNumber) && (
+                                    <span className="me-3 text-success d-flex align-items-center mb-1">
+                                      <FaCheckCircle className="me-1" /> GST
+                                    </span>
+                                  )}
+                    
+                                  {/* TrustSEAL badge */}
+                                  {product.businessProfile.trustSealVerified && (
+                                    <span className="me-3 text-warning d-flex align-items-center mb-1">
+                                      <FaCheckCircle className="me-1" /> TrustSEAL Verified
+                                    </span>
+                                  )}
+                    
+                                  {/* Member Year */}
+                                  {shouldDisplay(product.businessProfile.yearOfEstablishment) && (
+                                    <span className="text-muted d-flex align-items-center mb-1">
+                                      <FaUserClock className="me-1" /> Member: {new Date().getFullYear() - product.businessProfile.yearOfEstablishment} yrs
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            )}
                     <table className="table table-sm mt-2 text-sm">
                       <tbody>
-                        <tr>
-                          <th>Price:</th>
-                          <td>
-                            ₹{product.price} {product.currency || "INR"}
-                          </td>
-                        </tr>
-                        <tr>
-                          <th>MOQ:</th>
-                          <td>{product.minimumOrderQuantity || "N/A"}</td>
-                        </tr>
+                        {shouldDisplay(product.tradeShopping?.fixedSellingPrice || product.price) && (
+                          <tr>
+                            <th>Price:</th>
+                            <td>
+                              ₹{product.tradeShopping?.fixedSellingPrice || product.price}{" "}
+                              {product.currency || "INR"}
+                            </td>
+                          </tr>
+                        )}
+                        {shouldDisplay(product.minimumOrderQuantity) && (
+                          <tr>
+                            <th>MOQ:</th>
+                            <td>{product.minimumOrderQuantity}</td>
+                          </tr>
+                        )}
+                        {shouldDisplay(product.tradeShopping?.brandName) && (
+                          <tr>
+                            <th>Brand:</th>
+                            <td>{product.tradeShopping.brandName}</td>
+                          </tr>
+                        )}
+                        {shouldDisplay(product.tradeShopping?.unit) && (
+                          <tr>
+                            <th>Unit:</th>
+                            <td>{product.tradeShopping.unit}</td>
+                          </tr>
+                        )}
+                        {/* GST and Est. Year are moved outside the table */}
+                        {shouldDisplay(product.tradeShopping?.stockQuantity) && (
+                          <tr>
+                            <th>Stock:</th>
+                            <td>{product.tradeShopping.stockQuantity}</td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                     <Link
@@ -230,6 +317,7 @@ const CategoryPage = ({ categorySlug }) => {
                     >
                       More details
                     </Link>
+                    <Buyfrom product={product} sellerId={product?.userId} />
                   </div>
                 </div>
               ))
