@@ -105,57 +105,80 @@ const LeadsEnquiry = () => {
 ) : filteredLeads.length === 0 ? (
         <div className="text-center text-gray-500">No leads found.</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {filteredLeads.map((lead, index) => (
-            <div
-              key={index}
-              className="bg-white border border-gray-200 rounded-xl shadow-lg p-5 transition hover:scale-[1.02]"
-            >
-              {/* 3 Colorful Boxes Row */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-                {/* Buyer Box */}
-                <div
-                  onClick={() => openModal('Buyer', lead.buyer)}
-                  className="cursor-pointer bg-gradient-to-r from-indigo-100 to-indigo-300 p-4 rounded-lg shadow-inner text-center hover:ring-2 hover:ring-indigo-400"
-                >
-                  <h4 className="text-indigo-800 font-semibold mb-1">Buyer</h4>
-                  <p className="text-indigo-900 text-sm mb-0">{lead.buyer?.fullname || 'N/A'}</p>
-                  <p className="text-indigo-900 text-sm mb-0">{lead.buyer?.mobileNumber || 'N/A'}</p>
-                </div>
-
-                {/* Seller Box */}
-                <div
-                  onClick={() => openModal('Seller', lead.seller)}
-                  className="cursor-pointer bg-gradient-to-r from-pink-100 to-pink-300 p-4 rounded-lg shadow-inner text-center hover:ring-2 hover:ring-pink-400"
-                >
-                  <h4 className="text-pink-800 font-semibold mb-1">Seller</h4>
-                  <p className="text-pink-900 text-sm mb-0">{lead.seller?.fullname || 'N/A'}</p>
-                  <p className="text-pink-900 text-sm mb-0">{lead.seller?.mobileNumber || 'N/A'}</p>
-                </div>
-
-                {/* Product Box */}
-                <div
-                  onClick={() => openModal('Product', lead.product)}
-                  className="cursor-pointer bg-gradient-to-r from-blue-100 to-blue-300 p-4 rounded-lg shadow-inner text-center hover:ring-2 hover:ring-blue-400"
-                >
-                  <h4 className="text-blue-800 font-semibold mb-1">Product</h4>
-                  <p className="text-blue-900 text-sm mb-0">{lead.product?.name || 'N/A'}</p>
-                </div>
-              </div>
-
-              {/* Other Details */}
-              <p><span className="font-semibold">Quantity:</span> {lead.quantity}</p>
-              <p><span className="font-semibold">Unit:</span> {lead.unit}</p>
-              <p>
-                <span className="font-semibold">Status:</span>
-                <span className={`ml-2 px-2 py-1 text-sm rounded-full ${getStatusColor(lead.status)}`}>
-                  {lead.status}
-                </span>
-              </p>
-              <p><span className="font-semibold">Requirement Frequency:</span> {lead.requirementFrequency}</p>
-            </div>
-          ))}
+       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+  {filteredLeads.map((lead, index) => (
+    <div
+      key={index}
+      className="bg-white border border-gray-200 rounded-xl shadow-lg p-5 transition hover:scale-[1.02]"
+    >
+      {/* Top Section: Buyer, Seller, Product */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        {/* Buyer */}
+        <div
+          onClick={() => openModal('Buyer', lead.buyer)}
+          className="cursor-pointer bg-gradient-to-r from-indigo-100 to-indigo-300 p-4 rounded-lg shadow-inner text-center hover:ring-2 hover:ring-indigo-400"
+        >
+          <h4 className="text-indigo-800 font-semibold mb-1">Buyer</h4>
+          <p className="text-indigo-900 text-sm">{lead.buyer?.fullname || 'N/A'}</p>
+          <p className="text-indigo-900 text-sm">{lead.buyer?.mobileNumber || 'N/A'}</p>
         </div>
+
+        {/* Seller */}
+        <div
+          onClick={() => openModal('Seller', lead.seller)}
+          className="cursor-pointer bg-gradient-to-r from-pink-100 to-pink-300 p-4 rounded-lg shadow-inner text-center hover:ring-2 hover:ring-pink-400"
+        >
+          <h4 className="text-pink-800 font-semibold mb-1">Seller</h4>
+          <p className="text-pink-900 text-sm">{lead.seller?.fullname || 'N/A'}</p>
+          <p className="text-pink-900 text-sm">{lead.seller?.mobileNumber || 'N/A'}</p>
+        </div>
+
+        {/* Product */}
+        <div
+          onClick={() => openModal('Product', lead.product)}
+          className="cursor-pointer bg-gradient-to-r from-blue-100 to-blue-300 p-4 rounded-lg shadow-inner text-center hover:ring-2 hover:ring-blue-400"
+        >
+          <h4 className="text-blue-800 font-semibold mb-1">Product</h4>
+          <p className="text-blue-900 text-sm">{lead.product?.name || 'N/A'}</p>
+        </div>
+      </div>
+
+      {/* Lead Info Section */}
+      <div className="space-y-2 text-sm text-gray-700">
+        <p>
+          <span className="font-semibold">Quantity:</span> {lead.quantity}
+        </p>
+        <p>
+          <span className="font-semibold">Unit:</span> {lead.unit}
+        </p>
+        <p>
+          <span className="font-semibold">Requirement Frequency:</span> {lead.requirementFrequency}
+        </p>
+        <p>
+          <span className="font-semibold">Status:</span>
+          <span className={`ml-2 px-2 py-1 text-sm rounded-full ${getStatusColor(lead.status)}`}>
+            {lead.status}
+          </span>
+        </p>
+  <p>
+  <span className="font-semibold">Created At:</span>{' '}
+  {new Date(lead.createdAt).toLocaleString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+    timeZone: 'Asia/Kolkata' // Use Indian Standard Time
+  }).replace(',', '')}
+</p>
+
+      </div>
+    </div>
+  ))}
+</div>
+
       )}
 
       {/* Modal Code (unchanged) */}
