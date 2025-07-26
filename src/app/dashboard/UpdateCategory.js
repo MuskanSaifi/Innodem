@@ -57,7 +57,7 @@ const UpdateCategory = () => {
         inline: true,
         allowBase64: true, // Consider using Cloudinary for prod
       }),
-      Heading.configure({ levels: [1, 2, 3, 4, 5] }),
+Heading.configure({ levels: [1, 2, 3, 4, 5, 6] }),
       Bold, Italic, Underline, BulletList, OrderedList, ListItem, Blockquote, CodeBlock,
       Link.configure({ openOnClick: false }),
     ],
@@ -347,6 +347,10 @@ const UpdateCategory = () => {
                 <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className="btn btn-sm btn-outline-secondary me-1">H1</button>
                 <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} className="btn btn-sm btn-outline-secondary me-1">H2</button>
                 <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} className="btn btn-sm btn-outline-secondary me-1">H3</button>
+                <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()} className="btn btn-sm btn-outline-secondary me-1">H4</button>
+                <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()} className="btn btn-sm btn-outline-secondary me-1">H5</button>
+                <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()} className="btn btn-sm btn-outline-secondary me-1">H6</button>
+
                 <button type="button" onClick={() => editor.chain().focus().toggleBulletList().run()} className="btn btn-sm btn-outline-secondary me-1">Bullet List</button>
                 <button type="button" onClick={() => editor.chain().focus().toggleOrderedList().run()} className="btn btn-sm btn-outline-secondary me-1">Ordered List</button>
                 <button type="button" onClick={() => editor.chain().focus().toggleBlockquote().run()} className="btn btn-sm btn-outline-secondary me-1">Blockquote</button>

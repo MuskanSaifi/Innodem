@@ -132,7 +132,7 @@ export async function PATCH(req) {
     blog.metaDescription = metaDescription || blog.metaDescription;
     blog.metaKeywords = metaKeywords || blog.metaKeywords;
 
-    if (image && image.size > 0) {
+if (image && typeof image === "object" && "size" in image && image.size > 0) {
       // 🗑️ Delete old image from Cloudinary
       if (blog.imagePublicId) {
         try {
