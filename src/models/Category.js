@@ -4,6 +4,8 @@ const categorySchema = new mongoose.Schema(
   {
     name: { type: String, required: true, unique: true },
     icon: { type: String },
+    iconPublicId: { type: String }, // ✅ Add this field to store Cloudinary public_id
+    content: String,
     categoryslug: { type: String },
     metatitle: { type: String },
     metadescription: { type: String },

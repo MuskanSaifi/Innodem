@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
+import Image from "next/image";
 
 const AllSubcategory = () => {
   const [subCategories, setSubCategories] = useState([]);
@@ -126,8 +127,8 @@ const AllSubcategory = () => {
           <thead className="bg-dark text-white">
             <tr>
               <th>#</th>
+              <th>Icon</th>
               <th>Name</th>
-              <th>Slug</th>
               <th>Category</th>
               <th>Products</th>
               <th>Actions</th>
@@ -138,8 +139,17 @@ const AllSubcategory = () => {
               subCategories.map((subcategory, index) => (
                 <tr key={subcategory._id}>
                   <td>{index + 1}</td>
+                                <td>
+                                   {subcategory.icon && (
+                                     <Image
+                                       src={subcategory.icon}
+                                       alt={subcategory.name}
+                                       width={50}
+                                       height={50}
+                                     />
+                                   )}
+                                 </td>
                   <td>{subcategory.name}</td>
-                  <td>{subcategory.subcategoryslug}</td>
                   <td>{subcategory.category?.name || "N/A"}</td>
                   <td>{subcategory.products?.length || 0}</td>
                   <td>

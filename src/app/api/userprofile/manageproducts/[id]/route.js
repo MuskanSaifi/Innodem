@@ -4,7 +4,8 @@ import { requireSignIn } from "@/middlewares/requireSignIn";
 import Product from "@/models/Product";
 import User from "@/models/User";
 import cloudinary from "@/lib/cloudinary"; // This imports the configured cloudinary.v2 instance
-
+import SubCategory from "@/models/SubCategory";
+import mongoose from "mongoose"; // Import mongoose for ObjectId validation
 // ✅ Upload Image to Cloudinary Function
 const uploadToCloudinary = async (image) => {
     // This check is refined: Ensure it's a string and starts with data:image
@@ -122,10 +123,10 @@ export async function PATCH(req) {
 
 // ✅ DELETE: Delete Product and its Cloudinary images
 export async function DELETE(req, context) {
+     const params = await context.params; // await required
+  const { id } = params;
   try {
     await connectdb();
-
-    const { id } = await context.params;
 
     if (!id) {
       return NextResponse.json({ success: false, message: "Product ID is required" }, { status: 400 });
@@ -136,34 +137,36 @@ export async function DELETE(req, context) {
       return NextResponse.json({ success: false, message: "Product not found" }, { status: 404 });
     }
 
-    // ✅ Delete product images from Cloudinary
+    // delete images from Cloudinary
     if (product.images && product.images.length > 0) {
       for (const image of product.images) {
         if (image.public_id) {
           try {
             await cloudinary.uploader.destroy(image.public_id);
           } catch (err) {
-            console.warn(`⚠️ Failed to delete Cloudinary image with public_id: ${image.public_id}`);
+            console.warn(`Failed to delete Cloudinary image: ${image.public_id}`);
           }
         }
       }
     }
 
-    const userId = product.userId;
-
-    // ✅ Delete product from DB
+    // delete from DB
     await Product.findByIdAndDelete(id);
 
-    // ✅ Remove reference from user
-    if (userId) {
-      await User.findByIdAndUpdate(userId, {
-        $pull: { products: id }
-      });
+    // remove from user and subcategory
+    if (product.userId) {
+      await User.findByIdAndUpdate(product.userId, { $pull: { products: id } });
+    }
+
+    if (product.subCategory) {
+      await SubCategory.findByIdAndUpdate(product.subCategory, { $pull: { products: id } });
     }
 
     return NextResponse.json({ success: true, message: "Product deleted successfully" }, { status: 200 });
+
   } catch (error) {
     console.error("Error deleting product:", error);
     return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }
 }
+

@@ -1,52 +1,90 @@
 import mongoose from "mongoose";
 import connectDB from "@/lib/dbConnect";
-import Category from "@/models/Category"; // Assuming you have the Category model
-import SubCategory from "@/models/SubCategory";
-import Product from "@/models/Product"; // ✅ Import Product to ensure it's registered
-import User from "@/models/User"; // Import User model
-import BusinessProfile from "@/models/BusinessProfile"; // Import BusinessProfile model
-import cloudinary from "@/lib/cloudinary"; // ✅ Import Cloudinary Config
-import { URL } from "url";  // Import URL for parsing query
+import Category from "@/models/Category";
+import SubCategory from "@/models/SubCategory"; // Assuming you have SubCategory model
+import Product from "@/models/Product"; // Assuming you have Product model
+import User from "@/models/User"; // Assuming you have User model
+import BusinessProfile from "@/models/BusinessProfile"; // Assuming you have BusinessProfile model
+import cloudinary from "@/lib/cloudinary"; // Cloudinary config
+import { URL } from "url";
 
 export async function PATCH(req) {
   try {
-    await connectDB(); // Ensure DB connection
+    await connectDB();
     const body = await req.json();
-    const { id, name, icon, subcategories } = body;
 
-    // ✅ Validate if ID is provided and a valid MongoDB ObjectId
+    const {
+      id,
+      name,
+      icon, // Base64 string if new icon is uploaded
+      categoryslug,
+      metatitle,
+      metadescription,
+      metakeywords,
+      content,
+      isTrending,
+      subcategories,
+    } = body;
+
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return new Response(JSON.stringify({ error: "Invalid category ID." }), {
         status: 400,
       });
     }
 
-    // ✅ Find existing category
     const existingCategory = await Category.findById(id);
     if (!existingCategory) {
       return new Response(JSON.stringify({ error: "Category not found." }), { status: 404 });
     }
 
-    let uploadedIconUrl = existingCategory.icon; // Default to existing icon
+    let uploadedIconUrl = existingCategory.icon;
+    let uploadedIconPublicId = existingCategory.iconPublicId;
 
-    // ✅ Upload new image if a new one is provided
+    // If a new icon (base64 string) is provided
     if (icon && icon !== existingCategory.icon) {
       try {
-        const result = await cloudinary.v2.uploader.upload(icon, {
-          folder: "categories", // ✅ Save in 'categories' folder
-          transformation: [{ width: 500, height: 500, crop: "limit" }], // ✅ Resize image
+        // If there's an old icon associated with a public_id, delete it first
+        if (existingCategory.iconPublicId) {
+          await cloudinary.uploader.destroy(existingCategory.iconPublicId);
+          console.log(`✅ Old icon with public_id ${existingCategory.iconPublicId} deleted from Cloudinary.`);
+        }
+
+        const result = await cloudinary.uploader.upload(icon, {
+          folder: "categories", // Save in 'categories' folder
+          transformation: [{ width: 500, height: 500, crop: "limit" }],
         });
-        uploadedIconUrl = result.secure_url; // ✅ Get Cloudinary URL
+        uploadedIconUrl = result.secure_url;
+        uploadedIconPublicId = result.public_id; // ✅ Save the new public_id
       } catch (uploadError) {
         console.error("❌ Cloudinary Upload Error:", uploadError);
         return new Response(JSON.stringify({ error: "Image upload failed." }), { status: 500 });
       }
     }
 
-    // ✅ Update category with new image
+    const updateFields = {
+      name: name?.trim(),
+      categoryslug: categoryslug?.trim(),
+      metatitle: metatitle?.trim(),
+      metadescription: metadescription?.trim(),
+      metakeywords: metakeywords?.trim(),
+      content: content,
+      isTrending: isTrending,
+      icon: uploadedIconUrl,
+      iconPublicId: uploadedIconPublicId, // ✅ Update iconPublicId
+      subcategories: subcategories,
+    };
+
+    // Validate if the new slug is unique, excluding the current category itself
+    if (categoryslug && categoryslug !== existingCategory.categoryslug) {
+      const slugConflict = await Category.findOne({ categoryslug: categoryslug, _id: { $ne: id } });
+      if (slugConflict) {
+        return new Response(JSON.stringify({ error: "Category slug already exists." }), { status: 409 });
+      }
+    }
+
     const updatedCategory = await Category.findByIdAndUpdate(
       id,
-      { name, icon: uploadedIconUrl, subcategories },
+      updateFields,
       { new: true, runValidators: true }
     );
 
@@ -64,23 +102,35 @@ export async function PATCH(req) {
   }
 }
 
-// Create category
 export async function POST(req) {
   try {
+    await connectDB();
     const body = await req.json();
-    // Validate required fields
-    if (!body.name) {
+
+    const {
+      name,
+      icon,
+      iconPublicId, // ✅ Destructure iconPublicId from the body
+      categoryslug,
+      metatitle,
+      metadescription,
+      metakeywords,
+      content,
+      isTrending,
+      subcategories,
+    } = body;
+
+    if (!name) {
       return new Response(
         JSON.stringify({ error: "Name is required." }),
         { status: 400 }
       );
     }
 
-    // Validate that subcategories (if provided) are valid ObjectIds
     if (
-      body.subcategories &&
-      (!Array.isArray(body.subcategories) ||
-        body.subcategories.some(
+      subcategories &&
+      (!Array.isArray(subcategories) ||
+        subcategories.some(
           (subcategory) => !mongoose.Types.ObjectId.isValid(subcategory)
         ))
     ) {
@@ -90,18 +140,29 @@ export async function POST(req) {
       );
     }
 
-    // Create a new category
+    if (categoryslug) {
+      const existingCategory = await Category.findOne({ categoryslug: categoryslug });
+      if (existingCategory) {
+        return new Response(
+          JSON.stringify({ error: "Category slug already exists. Please choose a different slug." }),
+          { status: 409 }
+        );
+      }
+    }
+
     const newCategory = new Category({
-      name: body.name,
-      categoryslug: body.categoryslug, // new line
-      metatitle: body.metatitle,
-      metadescription: body.metadescription,
-      icon: body.icon || null,
-      isTrending: body.isTrending,
-      subcategories: body.subcategories || [],
+      name: name,
+      categoryslug: categoryslug,
+      metatitle: metatitle,
+      metadescription: metadescription,
+      metakeywords: metakeywords,
+      icon: icon || null,
+      iconPublicId: iconPublicId || null, // ✅ Save iconPublicId here
+      content: content || "",
+      isTrending: isTrending,
+      subcategories: subcategories || [],
     });
 
-    // Save the category
     const savedCategory = await newCategory.save();
 
     return new Response(JSON.stringify(savedCategory), {
@@ -117,7 +178,6 @@ export async function POST(req) {
   }
 }
 
-// Get All Categories
 export async function GET() {
   try {
     await connectDB();
@@ -127,19 +187,18 @@ export async function GET() {
         path: "subcategories",
         populate: {
           path: "products",
-          select: "name description price images productslug tradeShopping userId", // Select userId
+          select: "name description price images productslug tradeShopping userId",
           populate: [
             {
-              path: "userId", // Populate the user details
+              path: "userId",
               model: "User",
-              select: "fullname mobileNumber", // Select only necessary user fields
+              select: "fullname mobileNumber",
             },
           ],
         },
       })
       .exec();
 
-    // Now, for each product, fetch its associated business profile
     const categoriesWithBusinessProfiles = await Promise.all(
       categories.map(async (category) => {
         const subcategoriesWithBusinessProfiles = await Promise.all(
@@ -150,7 +209,7 @@ export async function GET() {
                 if (product.userId) {
                   businessProfile = await BusinessProfile.findOne({
                     userId: product.userId._id,
-                  }).select("companyName address city state country"); // Select necessary business profile fields
+                  }).select("companyName address city state country");
                 }
                 return { ...product.toObject(), businessProfile };
               })
@@ -182,13 +241,11 @@ export async function GET() {
   }
 }
 
-// Delete Category by ID
 export async function DELETE(req) {
   try {
-    // Parse the query parameter from the request URL
     const url = new URL(req.url, `http://${req.headers.host}`);
     const id = url.searchParams.get("id");
-    
+
     if (!id) {
       return new Response(
         JSON.stringify({ error: "Category ID is required" }),
@@ -196,26 +253,49 @@ export async function DELETE(req) {
       );
     }
 
-    // Convert id to ObjectId
     const objectId = new mongoose.Types.ObjectId(id);
 
-    await connectDB(); // Ensure DB connection
+    await connectDB();
 
-    const deletedCategory = await Category.findByIdAndDelete(objectId); // Find and delete the category by ID
+    const categoryToDelete = await Category.findById(objectId);
 
-    if (!deletedCategory) {
+    if (!categoryToDelete) {
       return new Response(
         JSON.stringify({ error: "Category not found" }),
         { status: 404 }
       );
     }
 
+    if (categoryToDelete.iconPublicId) {
+      console.log(`Attempting to delete image from Cloudinary.`);
+      console.log(`Category Name: ${categoryToDelete.name}`);
+      console.log(`Cloudinary Public ID to delete: ${categoryToDelete.iconPublicId}`);
+
+      try {
+        const result = await cloudinary.uploader.destroy(categoryToDelete.iconPublicId);
+        console.log("Cloudinary deletion result:", result);
+
+        if (result.result === "ok") {
+          console.log(`✅ Icon with public_id ${categoryToDelete.iconPublicId} successfully deleted from Cloudinary.`);
+        } else {
+          console.warn(`⚠️ Cloudinary deletion for public_id ${categoryToDelete.iconPublicId} was not 'ok'. Result: ${result.result}`);
+        }
+      } catch (cloudinaryError) {
+        console.error("❌ Error deleting icon from Cloudinary:", cloudinaryError);
+        console.error("Cloudinary Error Details:", cloudinaryError.message, cloudinaryError.http_code, cloudinaryError.response);
+      }
+    } else {
+      console.log(`No iconPublicId found for category: ${categoryToDelete.name}. Skipping Cloudinary deletion.`);
+    }
+
+    const deletedCategory = await Category.findByIdAndDelete(objectId);
+
     return new Response(
       JSON.stringify({ message: "Category deleted successfully" }),
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error deleting category:", error);
+    console.error("❌ General Error deleting category:", error);
     return new Response(
       JSON.stringify({ error: error.message || "Failed to delete category" }),
       { status: 500 }

@@ -5,6 +5,7 @@ const subcategorySchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     icon: { type: String },
+    iconPublicId: { type: String }, // ✅ Add this field to store Cloudinary public_id
     subcategoryslug: { type: String },
     metatitle: { type: String },
     metadescription: { type: String },

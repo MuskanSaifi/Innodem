@@ -13,6 +13,7 @@ const CategoryPage = ({ categorySlug }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+const [categoryContent, setCategoryContent] = useState("");
 
   // State for mobile dropdowns
   const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
@@ -36,6 +37,7 @@ const CategoryPage = ({ categorySlug }) => {
         if (!category) throw new Error("Category not found");
 
         setSubcategories(category.subcategories || []);
+setCategoryContent(category.content || "");
 
         const allProducts =
           category.subcategories?.flatMap((sub) =>
@@ -158,14 +160,15 @@ const CategoryPage = ({ categorySlug }) => {
         </div>
       </div>
 
+
       {/* Main Layout */}
       <div className="row mt-4">
         {/* Sidebar */}
         <aside className="col-md-3 d-none d-md-block">
           <div className="bg-white p-3 rounded common-shad  sticky top-5">
          <div className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
-  All Categories
-</div>
+          All Categories
+        </div>
 
             {loading ? (
               <Skeleton count={5} height={20} />
@@ -225,9 +228,9 @@ const CategoryPage = ({ categorySlug }) => {
   className="rounded-md object-cover mx-auto block"
 />
                     </div>
-                    <h6 className="mt-2 text-primary text-sm text-center">
+                    <h2 className="mt-2 text-primary text-sm text-center">
                       {product.name}
-                    </h6>
+                    </h2>
                     <p className=" text-sm">
                       {product.description
                         ? product.description.split(" ").slice(0, 15).join(" ") + (product.description.split(" ").length > 20 ? "..." : "")
@@ -236,7 +239,7 @@ const CategoryPage = ({ categorySlug }) => {
                      {/* Company Info Section */}
                             {product.businessProfile && shouldDisplay(product.businessProfile.companyName) && (
                               <div className="mb-3 pb-2 border-bottom">
-                                <h6 className="fw-bold text-dark mb-2">{product.businessProfile.companyName}</h6>
+                                <h3 className="fw-bold text-dark text-sm mb-2">{product.businessProfile.companyName}</h3>
                                 <div className="d-flex flex-wrap align-items-center text-sm">
                                   {/* Location */}
                                   {(shouldDisplay(product.businessProfile.city) || shouldDisplay(product.businessProfile.state)) && (
@@ -354,7 +357,19 @@ const CategoryPage = ({ categorySlug }) => {
           </div>
         </aside>
       </div>
+
+<div className="mt-4">
+        {/* Category HTML Content */}
+{categoryContent && (
+  <div
+    className="bg-white p-3 mb-4 rounded common-shad"
+    dangerouslySetInnerHTML={{ __html: categoryContent }}
+  />
+)}
+</div>
     </div>
+
+    
   );
 };
 

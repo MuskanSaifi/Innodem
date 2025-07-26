@@ -107,7 +107,7 @@ const socialLinks = [
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Contact Info */}
             <div>
-              <h5 className="text-lg font-semibold text-white mb-3">Contact</h5>
+              <p className="text-lg font-semibold text-white mb-3">Contact</p>
               <p className="text-sm my-2">📍 Rawat Plaza, Sector 7, Ramphal Chowk</p>
               <p className="text-sm my-2">📞 +91 8448668076</p>
               <p className="text-sm my-2 text-red-400 font-semibold">Mon - Fri, 9 AM - 6 PM (IST)</p>
@@ -118,7 +118,7 @@ const socialLinks = [
 
             {/* Directory Links */}
             <div>
-              <h5 className="text-lg font-semibold text-white mb-3">Directory</h5>
+              <p className="text-lg font-semibold text-white mb-3">Directory</p>
               <ul className="space-y-2 p-0 text-sm">
                 <li>
                   <Link href="/become-a-member" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
@@ -151,7 +151,7 @@ const socialLinks = [
 
             {/* Quick Links (Categories from API) */}
             <div>
-              <h5 className="text-lg font-semibold text-white mb-3">Help & Support</h5>
+              <p className="text-lg font-semibold text-white mb-3">Help & Support</p>
               <ul className="space-y-2 p-0 text-sm">
                 <li>
                   <Link href="/contact-us" className="hover:text-gray-200 transition text-gray-300 text-decoration-none">
@@ -180,7 +180,7 @@ const socialLinks = [
 
             {/* Social Media */}
             <div className="">
-              <h5 className="text-lg font-semibold text-white mb-2">Follow Us</h5>
+              <p className="text-lg font-semibold text-white mb-2">Follow Us</p>
               <div className="flex flex-wrap gap-2">
                 {socialLinks.map((social, index) => (
 <Link
@@ -196,7 +196,7 @@ const socialLinks = [
               </div>
 
               {/* Subscribe Section */}
-              <h5 className="text-lg font-semibold text-white mb-2 mt-4">Subscribe</h5>
+              <p className="text-lg font-semibold text-white mb-2 mt-4">Subscribe</p>
               <form onSubmit={handlesubscribe} className="flex items-center gap-2">
                 <input
                   type="email"

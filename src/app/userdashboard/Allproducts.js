@@ -486,7 +486,7 @@ const AllProducts = () => {
 
                 <div className="w-100">
                   <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
-                    <h6 className="mb-1">{product.name}</h6>
+                    <h6 className="mb-1">{product.name} {product._id}</h6>
                     <div className="d-flex flex-column text-start text-sm-end">
                       <span className="text-grey text-sm common-shad px-3 rounded-2 mb-1">
                         <b>Created At:</b> {product?.createdAt ? new Date(product.createdAt).toLocaleString("en-IN", {

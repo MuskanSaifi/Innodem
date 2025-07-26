@@ -227,9 +227,9 @@ const SubcategoryProductPage = () => {
                       />
                     </div>
 
-                    <h6 className="mt-2 text-primary text-sm text-center">
+                    <h2 className="mt-2 text-primary text-sm text-center">
                       {product.name}
-                    </h6>
+                    </h2>
                     <p className=" text-sm">
                       {product.description
                         ? product.description.split(" ").slice(0, 15).join(" ") + (product.description.split(" ").length > 20 ? "..." : "")
@@ -238,11 +238,11 @@ const SubcategoryProductPage = () => {
        {/* Company Info Section */}
         {product.businessProfile && shouldDisplay(product.businessProfile.companyName) && (
           <div className="mb-3 pb-2 border-bottom">
-            <h6 className="fw-bold text-dark mb-2">{product.businessProfile.companyName}</h6>
+            <h3 className="fw-bold text-dark  text-sm mb-2">{product.businessProfile.companyName}</h3>
             <div className="d-flex flex-wrap align-items-center text-sm">
               {/* Location */}
               {(shouldDisplay(product.businessProfile.city) || shouldDisplay(product.businessProfile.state)) && (
-                <div className="d-flex align-items-center text-muted me-3 mb-1">
+                <div className="d-flex align-items-center text-muted me-3">
                   <FaMapMarkerAlt className="me-1 text-secondary" />
                   <span>
                     {product.businessProfile.city}

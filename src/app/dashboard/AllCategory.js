@@ -4,7 +4,6 @@ import Swal from "sweetalert2";
 import Image from "next/image";
 import "./metamodal.css"; // External CSS for modal
 
-
 const AllCategory = () => {
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,7 +17,6 @@ const AllCategory = () => {
     metakeywords: "",
     categoryslug: "",
   });
-
 
   useEffect(() => {
     fetchCategories();
@@ -50,13 +48,15 @@ const AllCategory = () => {
 
     if (confirmDelete.isConfirmed) {
       try {
+        // The API route will now handle Cloudinary deletion
         const response = await axios.delete(`/api/adminprofile/category?id=${categoryId}`);
         if (response.status === 200) {
           setCategories(categories.filter((c) => c._id !== categoryId));
-          Swal.fire("Deleted!", "Category deleted.", "success");
+          Swal.fire("Deleted!", "Category and its icon deleted.", "success");
         }
-      } catch {
-        Swal.fire("Error", "Failed to delete category", "error");
+      } catch (error) {
+        console.error("Error during deletion:", error);
+        Swal.fire("Error", error.response?.data?.error || "Failed to delete category", "error");
       }
     }
   };
@@ -96,8 +96,9 @@ const AllCategory = () => {
         setShowMetaModal(false);
         fetchCategories();
       }
-    } catch {
-      Swal.fire("Error", "Failed to update category", "error");
+    } catch (error) {
+      console.error("Error updating category:", error);
+      Swal.fire("Error", error.response?.data?.error || "Failed to update category", "error");
     }
   };
 
@@ -108,7 +109,6 @@ const AllCategory = () => {
       .replace(/[^a-z0-9\s-]/g, "") // Remove special chars
       .replace(/\s+/g, "-")         // Replace spaces with hyphens
       .replace(/-+/g, "-");         // Collapse multiple hyphens
-
 
   return (
     <div className="container mt-4">
@@ -142,8 +142,8 @@ const AllCategory = () => {
       <table className="table table-bordered text-center">
         <thead className="bg-dark text-white">
           <tr>
-            <th>Name</th>
             <th>Icon</th>
+            <th>Name</th>
             <th>Subcategories</th>
             <th>Created At</th>
             <th>Operations</th>
@@ -153,7 +153,6 @@ const AllCategory = () => {
           {filteredCategories.length > 0 ? (
             filteredCategories.map((category) => (
               <tr key={category._id}>
-                <td>{category.name}</td>
                 <td>
                   {category.icon && (
                     <Image
@@ -164,6 +163,7 @@ const AllCategory = () => {
                     />
                   )}
                 </td>
+                <td>{category.name}</td>
                 <td>
                   {category.subcategories.length > 0 ? (
                     <ul className="list-unstyled m-0">
@@ -226,7 +226,6 @@ const AllCategory = () => {
               value={metaForm.categoryslug}
               disabled
             />
-
 
             <input
               type="text"

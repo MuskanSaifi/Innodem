@@ -60,7 +60,7 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
     <div className="container mt-4 mb-5">
       <nav className="breadcrumb bg-light p-3 rounded text-sm">
         <Link href="/">Home</Link> / <Link href="/products">Products</Link> /{" "}
-        {loading ? <Skeleton width={100} /> : slugFromURL}
+        {loading ? <Skeleton width={100} /> : <h1 className="text-sm">{slugFromURL}</h1>}
       </nav>
 
       {/* Mobile Dropdowns */}
@@ -176,7 +176,7 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
 
           {/* Product Details */}
           <div className="col-12 col-md-8 p-3">
-            <h5 className="text-primary fw-bold mb-2">{product.name}</h5>
+            <h2 className="text-primary fw-bold mb-2">{product.name}</h2>
 
             <div className="d-flex flex-wrap justify-content-between mb-2">
               <p className="mb-0"><strong>Price:</strong> ₹{product.price} {product.currency || "INR"}</p>

@@ -268,6 +268,17 @@ const [availableCities, setAvailableCities] = useState([]);
     
 const handleSubmit = async (e) => {
     e.preventDefault();
+      // ✅ Manual validation for required fields
+  if (!product.category) {
+    toast.error("Please select a category.");
+    return;
+  }
+
+  if (!product.subCategory) {
+    toast.error("Please select a subcategory.");
+    return;
+  }
+
     setLoading(true);
 
     try {
