@@ -9,7 +9,8 @@ export async function GET(request, { params }) {
   try {
     await connectdb();
 
-    const { userId } = params; // params object is already awaited by Next.js
+   const awaitedParams = await params;
+    const { userId } = awaitedParams;
 
     if (!userId) {
       return NextResponse.json(
@@ -39,7 +40,10 @@ export async function PATCH(request, { params }) {
   try {
     await connectdb();
 
-    const { userId } = params; // params object is already awaited by Next.js
+    // Workaround: Await params explicitly, though usually not needed for App Router
+    const awaitedParams = await params;
+    const { userId } = awaitedParams;
+
     const body = await request.json();
     const { requestId, status } = body;
 

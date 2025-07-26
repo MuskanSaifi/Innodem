@@ -38,7 +38,6 @@ const [categoryContent, setCategoryContent] = useState("");
 
         setSubcategories(category.subcategories || []);
 setCategoryContent(category.content || "");
-
         const allProducts =
           category.subcategories?.flatMap((sub) =>
             (sub.products || []).map((product) => ({
@@ -362,7 +361,7 @@ setCategoryContent(category.content || "");
         {/* Category HTML Content */}
 {categoryContent && (
   <div
-    className="bg-white p-3 mb-4 rounded common-shad"
+    className="bg-white p-3 mb-4"
     dangerouslySetInnerHTML={{ __html: categoryContent }}
   />
 )}

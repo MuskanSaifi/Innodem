@@ -226,7 +226,10 @@ export async function GET(req) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
-    const products = await Product.find({ userId: user.id });
+  const products = await Product.find({ userId: user.id })
+  .populate("category", "name") // only get the name field from Category
+  .populate("subCategory", "name"); // only get the name field from SubCategory
+
 
     if (!products.length) {
       return NextResponse.json({ success: true, products: [] }, { status: 200 });

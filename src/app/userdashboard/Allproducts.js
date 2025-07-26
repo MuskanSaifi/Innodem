@@ -473,77 +473,118 @@ const AllProducts = () => {
           }
           return (
             <div key={product._id} className="p-3 mb-3 bg-white all-pro-img rounded-3">
-              <div className="d-flex flex-column flex-md-row align-items-start gap-3">
-                <Image
-                  src={productImage}
-                  alt="Product"
-                  width={100}
-                  height={100}
-                  className="all-pro-img p-2 object-cover rounded-[5px]"
-                  unoptimized
-                />
+<div className="row g-3 p-3 bg-white rounded-lg shadow-sm mx-0">
+  {/* Image and Created At part - 30% width on desktop */}
+  <div className="col-12 col-md-3 d-flex flex-column align-items-center text-center">
+    {/* col-12 for mobile (full width), col-md-4 for desktop (~33.33% which is close to 30%) */}
+    <Image
+      src={productImage}
+      alt="Product"
+      width={150}
+      height={150}
+      className="object-cover rounded-md mb-2 shadow-sm border border-gray-200"
+      unoptimized
+    />
+    <div className="text-sm text-gray-700 font-medium bg-gray-50 px-3 py-1.5 rounded-md shadow-sm w-full">
+      <span className="font-semibold text-gray-900">Created At:</span> <br />
+      {product?.createdAt
+        ? new Date(product.createdAt).toLocaleString("en-IN", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          })
+        : "N/A"}
+    </div>
+  </div>
 
+  {/* Product Details (Name, Category, Price, Progress, Actions) - remaining width */}
+  <div className="col-12 col-md-9 flex-grow-1">
+    {/* col-12 for mobile (full width), col-md-8 for desktop (~66.66% which is close to 70%) */}
+    <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-2">
+      <h6 className="mb-1 text-lg font-bold text-gray-800">
+        {product.name} {product?.category?.name}
+      </h6>
+      <div className="d-flex flex-wrap justify-content-start justify-content-sm-end gap-1">
+        <span className="badge bg-light text-dark border common-shad px-2 py-1 rounded-2 text-xs">
+          <b>Category:</b> {product?.category?.name}
+        </span>
+        <span className="badge bg-light text-dark border common-shad px-2 py-1 rounded-2 text-xs">
+          <b>Sub Category:</b> {product?.subCategory?.name}
+        </span>
+      </div>
+    </div>
 
-                <div className="w-100">
-                  <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
-                    <h6 className="mb-1">{product.name} {product._id}</h6>
-                    <div className="d-flex flex-column text-start text-sm-end">
-                      <span className="text-grey text-sm common-shad px-3 rounded-2 mb-1">
-                        <b>Created At:</b> {product?.createdAt ? new Date(product.createdAt).toLocaleString("en-IN", {
-                          day: "2-digit", month: "2-digit", year: "numeric",
-                          hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true,
-                        }) : "null"}
-                      </span>
-                      <span className="text-grey text-sm common-shad px-3 rounded-2">
-                        <b>Updated At:</b> {product?.updatedAt ? new Date(product.updatedAt).toLocaleString("en-IN", {
-                          day: "2-digit", month: "2-digit", year: "numeric",
-                          hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true,
-                        }) : "null"}
-                      </span>
-                    </div>
-                  </div>
+    <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2 mb-2">
+      <strong className="text-xl text-primary">
+        INR {product.price ? product.price.toFixed(2) : "N/A"}
+      </strong>
+      <span className="text-muted text-sm">
+        {product.minimumOrderQuantity || "N/A"} Min Order
+      </span>
+    </div>
 
+    <div className="progress mt-2 h-2 rounded-pill">
+      <div
+        className="progress-bar bg-success"
+        role="progressbar"
+        style={{ width: `${calculateProgress(product)}%` }}
+        aria-valuenow={calculateProgress(product)}
+        aria-valuemin="0"
+        aria-valuemax="100"
+      ></div>
+    </div>
 
-                  <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
-                    <strong>INR {product.price ? product.price.toFixed(2) : "N/A"}</strong>
-                    <span className="text-muted text-sm">{product.minimumOrderQuantity || "N/A"} Min Order</span>
-                  </div>
+    <div className="d-flex justify-content-between align-items-center mt-2 flex-wrap gap-2">
+      <small className="text-muted font-medium">
+        {Math.round(calculateProgress(product))}% Complete
+      </small>
+      <span
+        className={`badge ${getBadgeClass(
+          product.strength
+        )} text-uppercase px-2 py-1 rounded-pill`}
+      >
+        {product.strength} Strength
+      </span>
+    </div>
 
-                  <div className="progress mt-2 h-1.5">
-                    <div
-                      className="progress-bar bg-success"
-                      role="progressbar"
-                      style={{ width: `${calculateProgress(product)}%` }}
-                    ></div>
-                  </div>
+    <hr className="my-3" />
 
-                  <div className="d-flex justify-content-between mt-2 flex-column flex-sm-row gap-2">
-                    <small className="text-muted">{Math.round(calculateProgress(product))}% Complete</small>
-                    <span className={`badge ${getBadgeClass(product.strength)}`}>
-                      {product.strength} Strength
-                    </span>
-                  </div>
-
-                  <hr />
-
-                  <div className="mt-2 position-relative d-flex flex-wrap align-items-center gap-3">
-                    <span className="text-primary text-sm" role="button" onClick={() => openModal(product, "basicDetails")}>
-                      + Add Basic Details
-                    </span>
-                    <span className="text-primary text-sm" role="button" onClick={() => openModal(product, "description")}>
-                      + Add Description
-                    </span>
-                    <span className="text-primary text-sm" role="button" onClick={() => openModal(product, "specifications")}>
-                      + Add Specifications & Trade Information
-                    </span>
-                    <span className="text-primary text-sm" role="button" onClick={() => openModal(product, "tradeShopping")}>
-                      + Add Trade Shopping
-                    </span>
-
-                    <FaTrash className="text-danger del-pro-btn" role="button" onClick={() => handleDelete(product._id)} />
-                  </div>
-                </div>
-              </div>
+    <div className="d-flex flex-wrap align-items-center gap-3 justify-content-center justify-content-sm-start">
+      <button
+        className="btn btn-link text-primary text-sm p-0"
+        onClick={() => openModal(product, "basicDetails")}
+      >
+        + Add Basic Details
+      </button>
+      <button
+        className="btn btn-link text-primary text-sm p-0"
+        onClick={() => openModal(product, "description")}
+      >
+        + Add Description
+      </button>
+      <button
+        className="btn btn-link text-primary text-sm p-0"
+        onClick={() => openModal(product, "specifications")}
+      >
+        + Add Specifications & Trade Information
+      </button>
+      <button
+        className="btn btn-link text-primary text-sm p-0"
+        onClick={() => openModal(product, "tradeShopping")}
+      >
+        + Add Trade Shopping
+      </button>
+      <FaTrash
+        className="text-danger del-pro-btn ms-sm-auto"
+        role="button"
+        onClick={() => handleDelete(product._id)}
+      />
+    </div>
+  </div>
+</div>
             </div>
 
           );
