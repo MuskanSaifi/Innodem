@@ -578,7 +578,7 @@ const AllProducts = () => {
         + Add Trade Shopping
       </button>
       <FaTrash
-        className="text-danger del-pro-btn ms-sm-auto"
+        className="text-danger  ms-sm-auto"
         role="button"
         onClick={() => handleDelete(product._id)}
       />
