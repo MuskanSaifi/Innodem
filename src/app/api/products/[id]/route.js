@@ -10,7 +10,7 @@ export async function GET(req, { params }) {
   try {
     await connectdb();
 
-    const { id } = params;
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json({ error: "Product ID is required" }, { status: 400 });

@@ -28,8 +28,11 @@ const userSchema = new mongoose.Schema({
     default: ""
   },
 
-    // ✅ Add this line to reference products
+  // ✅ Add this line to reference products
     products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+
+  // ✅ Add this line for the wishlist
+  wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
 
     // 👇 User package info added here
     userPackage: [

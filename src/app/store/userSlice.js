@@ -1,3 +1,4 @@
+// app/store/userSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -23,14 +24,23 @@ const userSlice = createSlice({
       localStorage.removeItem("user");
       localStorage.removeItem("token");
     },
-    initializeUser: (state) => {
-      const storedUser = localStorage.getItem("user");
-      const storedToken = localStorage.getItem("token");
-      if (storedUser && storedToken) {
-        state.user = JSON.parse(storedUser);
-        state.token = storedToken;
-      }
-    },
+initializeUser: (state) => {
+  const storedUser = localStorage.getItem("user");
+  const storedToken = localStorage.getItem("token");
+  if (storedUser && storedToken) {
+    try {
+      state.user = JSON.parse(storedUser);
+      state.token = storedToken;
+      console.log("User and Token initialized from localStorage! Token length:", storedToken.length);
+    } catch (e) {
+      console.error("Error parsing user from localStorage:", e);
+      state.user = null;
+      state.token = null;
+    }
+  } else {
+    console.log("No user or token found in localStorage to initialize.");
+  }
+},
   },
 });
 

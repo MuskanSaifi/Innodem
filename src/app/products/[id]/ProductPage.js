@@ -9,6 +9,14 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Buyfrom from "./Buyfrom";
 import Link from "next/link";
 
+// Redux Imports
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addProductToWishlist,
+  removeProductFromWishlist,
+  fetchUserWishlist,
+} from "../../store/wishlistSlice";
+
 const ProductDetailPage = () => {
   const { id } = useParams();
   const router = useRouter();
@@ -23,6 +31,37 @@ const ProductDetailPage = () => {
   const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
   const [showZoomModal, setShowZoomModal] = useState(false);
   const modalRef = useRef();
+
+  // Redux Hooks
+  const dispatch = useDispatch();
+  const { items: wishlistItems, loading: wishlistLoading } = useSelector(
+    (state) => state.wishlist
+  );
+  const user = useSelector((state) => state.user.user); // Get user from userSlice
+  // Effect to fetch user's wishlist when component mounts or user state changes
+  useEffect(() => {
+    if (user && user._id) {
+      // Ensure user is logged in and has an ID
+      dispatch(fetchUserWishlist());
+    }
+  }, [user, dispatch]); // Re-fetch if user logs in/out
+
+  // Handle adding/removing product from wishlist
+  const handleToggleWishlist = (productId) => {
+    if (!user) {
+      alert("Please log in to manage your wishlist!"); // Or show a toast/modal
+      return;
+    }
+
+    // Check if the product is currently in the wishlist
+    const isInWishlist = wishlistItems.some((item) => item._id === productId);
+
+    if (isInWishlist) {
+      dispatch(removeProductFromWishlist(productId));
+    } else {
+      dispatch(addProductToWishlist(productId));
+    }
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -53,7 +92,6 @@ const ProductDetailPage = () => {
     }
   }, [product, hoveredImage]);
 
-
   const handleMouseMove = (e) => {
     const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - left) / width) * 100;
@@ -83,6 +121,8 @@ const ProductDetailPage = () => {
     };
   }, [showZoomModal]);
 
+  const isProductInWishlist = product && wishlistItems.some(item => item._id === product._id);
+
   return (
     <section className="min-h-screen bg-white py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -95,7 +135,7 @@ const ProductDetailPage = () => {
           </button>
         </div>
 
-        <div className="bg-white rounded-3xl  grid md:grid-cols-12 gap-8 p-6">
+        <div className="bg-white rounded-3xl grid md:grid-cols-12 gap-8 p-6">
           {loading ? (
             <>
               <div className="md:col-span-6">
@@ -162,7 +202,60 @@ const ProductDetailPage = () => {
               {/* Product Info - This will scroll */}
               <div className="md:col-span-6 space-y-6">
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+                  <div className="d-flex justify-between">
+                    <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+                   <button
+  onClick={() => handleToggleWishlist(product._id)}
+  disabled={wishlistLoading}
+  className={`w-8 h-8 flex items-center justify-center rounded-full transition-all duration-200 ${
+    isProductInWishlist
+      ? "bg-red-500 text-white hover:bg-red-600"
+      : "bg-gray-200 text-gray-500 hover:bg-gray-300"
+  }`}
+  title={isProductInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+  aria-label={isProductInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+>
+  {wishlistLoading ? (
+    <svg
+      className="animate-spin h-4 w-4 text-white"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+      ></circle>
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 
+           1.135 5.824 3 7.938l3-2.647z"
+      ></path>
+    </svg>
+  ) : (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-4 w-4"
+      viewBox="0 0 24 24"
+      fill={isProductInWishlist ? "currentColor" : "none"}
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 
+               0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 
+               1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+    </svg>
+  )}
+</button>
+
+                  </div>
                   <div className="text-gray-500 text-sm mt-1 space-x-2">
                     {product.userId?.fullname && <span>👤 {product.userId.fullname}</span>}
                     {product.userId?.companyName && <span>🏢 {product.userId.companyName}</span>}
@@ -410,93 +503,134 @@ const ProductDetailPage = () => {
 
         {/* --- Related Products Section --- */}
         {relatedProducts.length > 0 && (
-          <div className="mt-12 bg-white rounded-3xl  p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Related Products</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {relatedProducts.map((relatedProduct) => (
-                <Link key={relatedProduct._id} href={`/products/${relatedProduct._id}`} className="block">
-                  <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 bg-white flex flex-col h-full">
-                    <div className="relative w-full h-48 bg-gray-100 flex items-center justify-center p-2">
-                      <Image
-                        src={relatedProduct.images?.[0] || "/placeholder.png"}
-                        alt={relatedProduct.name}
-                        width={200}
-                        height={150}
-                        className="object-contain max-h-full max-w-full"
-                        unoptimized
-                      />
-                      <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
-                        +{relatedProduct.images?.length || 0}
-                      </div>
-                    </div>
-                    <div className="p-4 flex-grow flex flex-col justify-between">
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-800 mb-1 line-clamp-2">
-                          {relatedProduct.name}
-                        </h3>
-                        <div className="text-blue-600 font-bold text-xl mb-2">
-                          {relatedProduct.tradeShopping?.slabPricing?.[0]?.price ?
-                            `₹${relatedProduct.tradeShopping.slabPricing[0].price}` : "Ask Price"
-                          }
-                        </div>
-                        <div className="text-sm text-gray-700 space-y-1">
-                          {relatedProduct.specifications?.usage && (
-                            <p><span className="font-medium text-gray-600">Usage:</span> {relatedProduct.specifications.usage}</p>
-                          )}
-                          {relatedProduct.specifications?.woodType && (
-                            <p><span className="font-medium text-gray-600">Wood Type:</span> {relatedProduct.specifications.woodType}</p>
-                          )}
-                          {relatedProduct.specifications?.design && (
-                            <p><span className="font-medium text-gray-600">Design:</span> {relatedProduct.specifications.design}</p>
-                          )}
-                          {relatedProduct.specifications?.finish && (
-                            <p><span className="font-medium text-gray-600">Finish:</span> {relatedProduct.specifications.finish}</p>
-                          )}
-                          {relatedProduct.tradeInformation?.mainExportMarkets?.length > 0 && (
-                            <p><span className="font-medium text-gray-600">Export Markets:</span> {relatedProduct.tradeInformation.mainExportMarkets.join(', ')}</p>
-                          )}
-                          {relatedProduct.tradeInformation?.mainDomesticMarket && (
-                            <p><span className="font-medium text-gray-600">Domestic Market:</span> {relatedProduct.tradeInformation.mainDomesticMarket}</p>
-                          )}
-                        </div>
-                      </div>
+   <div className="mt-12 bg-white rounded-3xl p-6">
+  <h2 className="text-2xl font-bold text-gray-900 mb-6">Related Products</h2>
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    {relatedProducts.map((relatedProduct) => {
+      // Determine if the *current* related product is in the wishlist
+      const isRelatedProductInWishlist = wishlistItems.some(item => item._id === relatedProduct._id);
 
-                      <div className="mt-4 pt-3 border-t border-gray-100">
-                        {(relatedProduct.userId?.companyName || relatedProduct.userId?.fullname) && (
-                          <p className="text-gray-800 font-semibold text-base">
-                            {relatedProduct.userId?.companyName || relatedProduct.userId?.fullname}
-                          </p>
-                        )}
-                        <div className="flex items-center space-x-2 mt-2">
-                          {relatedProduct.businessProfile?.gstNumber && (
-                            <span className="flex items-center text-green-700 text-sm font-medium bg-green-50 px-2 py-1 rounded-full">
-                              ✅ GST
-                            </span>
-                          )}
-                          {relatedProduct.businessProfile?.yearOfEstablishment && (
-                            <span className="flex items-center text-gray-600 text-sm font-medium bg-gray-100 px-2 py-1 rounded-full">
-                              👤 {new Date().getFullYear() - relatedProduct.businessProfile.yearOfEstablishment} yrs
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-yellow-500 text-sm font-semibold mt-2">
-                          ⭐⭐⭐⭐ 4.2 (79)
-                        </p>
-                        <button className="mt-4 w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition-colors duration-200 font-medium">
-                          Contact Supplier
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
+      return (
+        <Link key={relatedProduct._id} href={`/products/${relatedProduct._id}`} className="block">
+          <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 bg-white flex flex-col h-full">
+            <div className="relative w-full h-48 bg-gray-100 flex items-center justify-center p-2">
+              {/* Image Count - Moved to top-2 left-2 */}
+              <div className="absolute top-2 left-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
+                +{relatedProduct.images?.length || 0}
+              </div>
+
+              {/* Wishlist Button - Remains at top-2 right-2 */}
+              <button
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent navigating to the product page when clicking the wishlist button
+                  handleToggleWishlist(relatedProduct._id);
+                }}
+                disabled={wishlistLoading}
+                className={`absolute top-2 right-2 p-2 rounded-full transition-colors duration-200 ${
+                  isRelatedProductInWishlist
+                    ? "bg-red-500 text-white hover:bg-red-600"
+                    : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                }`}
+                title={isRelatedProductInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+              >
+                {wishlistLoading ? (
+                  <svg className="animate-spin h-3 w-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-3 w-3"
+                    viewBox="0 0 23 23"
+                    fill={isRelatedProductInWishlist ? "currentColor" : "none"}
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                  </svg>
+                )}
+              </button>
+              <Image
+                src={relatedProduct.images?.[0] || "/placeholder.png"}
+                alt={relatedProduct.name}
+                width={200}
+                height={150}
+                className="object-contain max-h-full max-w-full"
+                unoptimized
+              />
+            </div>
+            <div className="p-4 flex-grow flex flex-col justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-1 line-clamp-2">
+                  {relatedProduct.name}
+                </h3>
+                <div className="text-blue-600 font-bold text-xl mb-2">
+                  {relatedProduct.tradeShopping?.slabPricing?.[0]?.price ?
+                    `₹${relatedProduct.tradeShopping.slabPricing[0].price}` : "Ask Price"
+                  }
+                </div>
+                <div className="text-sm text-gray-700 space-y-1">
+                  {relatedProduct.specifications?.usage && (
+                    <p><span className="font-medium text-gray-600">Usage:</span> {relatedProduct.specifications.usage}</p>
+                  )}
+                  {relatedProduct.specifications?.woodType && (
+                    <p><span className="font-medium text-gray-600">Wood Type:</span> {relatedProduct.specifications.woodType}</p>
+                  )}
+                  {relatedProduct.specifications?.design && (
+                    <p><span className="font-medium text-gray-600">Design:</span> {relatedProduct.specifications.design}</p>
+                  )}
+                  {relatedProduct.specifications?.finish && (
+                    <p><span className="font-medium text-gray-600">Finish:</span> {relatedProduct.specifications.finish}</p>
+                  )}
+                  {relatedProduct.tradeInformation?.mainExportMarkets?.length > 0 && (
+                    <p><span className="font-medium text-gray-600">Export Markets:</span> {relatedProduct.tradeInformation.mainExportMarkets.join(', ')}</p>
+                  )}
+                  {relatedProduct.tradeInformation?.mainDomesticMarket && (
+                    <p><span className="font-medium text-gray-600">Domestic Market:</span> {relatedProduct.tradeInformation.mainDomesticMarket}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-gray-100">
+                {(relatedProduct.userId?.companyName || relatedProduct.userId?.fullname) && (
+                  <p className="text-gray-800 font-semibold text-base">
+                    {relatedProduct.userId?.companyName || relatedProduct.userId?.fullname}
+                  </p>
+                )}
+                <div className="flex items-center space-x-2 mt-2">
+                  {relatedProduct.businessProfile?.gstNumber && (
+                    <span className="flex items-center text-green-700 text-sm font-medium bg-green-50 px-2 py-1 rounded-full">
+                      ✅ GST
+                    </span>
+                  )}
+                  {relatedProduct.businessProfile?.yearOfEstablishment && (
+                    <span className="flex items-center text-gray-600 text-sm font-medium bg-gray-100 px-2 py-1 rounded-full">
+                      👤 {new Date().getFullYear() - relatedProduct.businessProfile.yearOfEstablishment} yrs
+                    </span>
+                  )}
+                </div>
+                <p className="text-yellow-500 text-sm font-semibold mt-2">
+                  ⭐⭐⭐⭐ 4.2 (79)
+                </p>
+                <button className="mt-4 w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition-colors duration-200 font-medium">
+                  Contact Supplier
+                </button>
+              </div>
             </div>
           </div>
+        </Link>
+      );
+    })}
+  </div>
+</div>
         )}
 
         {/* --- Related Categories Section --- */}
         {relatedCategories.length > 0 && (
-          <div className="mt-12 bg-white rounded-3xl  p-6">
+          <div className="mt-12 bg-white rounded-3xl p-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Explore More in Similar Categories</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
               {relatedCategories.map((rc) => (

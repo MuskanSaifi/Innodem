@@ -1,3 +1,4 @@
+// src/lib/auth.js
 import jwt from "jsonwebtoken";
 
 export const generateToken = (id) => {

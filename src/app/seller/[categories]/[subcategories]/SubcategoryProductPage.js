@@ -1,5 +1,3 @@
-// components/SubcategoryProductPage.jsx
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -9,11 +7,23 @@ import Image from "next/image";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Buyfrom from "./Buyfrom"; // Assuming these are correctly imported and used
+import {
+  FaCheckCircle,
+  FaMapMarkerAlt,
+  FaMobileAlt,
+  FaUser,
+  FaUserClock,
+  FaHeart, // Import filled heart icon
+  FaRegHeart, // Import regular (empty) heart icon
+} from "react-icons/fa";
 
-// You might need to install react-icons for these.
-// If not using react-icons, you'll need to use SVG icons or other icon solutions.
-// npm install react-icons
-import { FaCheckCircle, FaMapMarkerAlt, FaMobileAlt, FaUser, FaUserClock } from "react-icons/fa"; // Using FaCheckCircle for GST, FaUserClock for Member yrs
+// Redux Imports
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addProductToWishlist,
+  removeProductFromWishlist,
+  fetchUserWishlist,
+} from "../../../store/wishlistSlice";
 
 const SubcategoryProductPage = () => {
   const params = useParams();
@@ -30,6 +40,38 @@ const SubcategoryProductPage = () => {
   const [productDropdownOpen, setProductDropdownOpen] = useState(false);
 
   const decode = (str) => decodeURIComponent(str).toLowerCase();
+
+  // Redux Hooks
+  const dispatch = useDispatch();
+  const { items: wishlistItems, loading: wishlistLoading } = useSelector(
+    (state) => state.wishlist
+  );
+  const user = useSelector((state) => state.user.user); // Get user from userSlice
+
+  // Effect to fetch user's wishlist when component mounts or user state changes
+  useEffect(() => {
+    if (user && user._id) {
+      // Ensure user is logged in and has an ID
+      dispatch(fetchUserWishlist());
+    }
+  }, [user, dispatch]); // Re-fetch if user logs in/out
+
+  // Handle adding/removing product from wishlist
+  const handleToggleWishlist = (productId) => {
+    if (!user) {
+      alert("Please log in to manage your wishlist!"); // Or show a toast/modal
+      return;
+    }
+
+    // Check if the product is currently in the wishlist
+    const isInWishlist = wishlistItems.some((item) => item._id === productId);
+
+    if (isInWishlist) {
+      dispatch(removeProductFromWishlist(productId));
+    } else {
+      dispatch(addProductToWishlist(productId));
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,10 +108,13 @@ const SubcategoryProductPage = () => {
 
   // Helper function to check if a value should be displayed
   const shouldDisplay = (value) => {
-    if (value === null || typeof value === 'undefined') {
+    if (value === null || typeof value === "undefined") {
       return false;
     }
-    if (typeof value === 'string' && (value.trim() === '' || value.trim().toLowerCase() === 'n/a')) {
+    if (
+      typeof value === "string" &&
+      (value.trim() === "" || value.trim().toLowerCase() === "n/a")
+    ) {
       return false;
     }
     if (Array.isArray(value) && value.length === 0) {
@@ -82,11 +127,18 @@ const SubcategoryProductPage = () => {
     <div className="container mt-4 mb-5">
       {/* Breadcrumb */}
       <nav className="breadcrumb bg-light p-3 rounded">
-        <Link href="/" className="text-decoration-none text-secondary">Home</Link> /{" "}
-        <Link href={`/seller/${categorySlug}`} className="text-decoration-none text-secondary">
+        <Link href="/" className="text-decoration-none text-secondary">
+          Home
+        </Link>{" "}
+        /{" "}
+        <Link
+          href={`/seller/${categorySlug}`}
+          className="text-decoration-none text-secondary"
+        >
           {loading ? <Skeleton width={100} /> : decode(categorySlug)}
         </Link>{" "}
-        / <span className="text-primary">
+        /{" "}
+        <span className="text-primary">
           {loading ? <Skeleton width={100} /> : decode(subcategorySlug)}
         </span>
       </nav>
@@ -116,7 +168,8 @@ const SubcategoryProductPage = () => {
                     >
                       <li
                         className={`list-group-item ${
-                          decode(sub.subcategoryslug) === decode(subcategorySlug)
+                          decode(sub.subcategoryslug) ===
+                          decode(subcategorySlug)
                             ? "active text-white bg-purple fw-bold"
                             : "text-dark"
                         }`}
@@ -152,7 +205,9 @@ const SubcategoryProductPage = () => {
                       href={`/products/${product._id}`}
                       className="text-decoration-none"
                     >
-                      <li className="list-group-item text-dark">{product.name}</li>
+                      <li className="list-group-item text-dark">
+                        {product.name}
+                      </li>
                     </Link>
                   ))}
                 </ul>
@@ -201,7 +256,8 @@ const SubcategoryProductPage = () => {
         <main className="col-md-6 common-shad rounded-2 p-3">
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h1 className="text-uppercase text-lg text-secondary">
-              {loading ? <Skeleton width={200} /> : decode(subcategorySlug)} Products
+              {loading ? <Skeleton width={200} /> : decode(subcategorySlug)}{" "}
+              Products
             </h1>
             <span className="badge bg-primary text-white fs-6">
               {loading ? <Skeleton width={30} /> : products.length}
@@ -214,140 +270,172 @@ const SubcategoryProductPage = () => {
             ) : error ? (
               <p className="text-danger">{error}</p>
             ) : products.length > 0 ? (
-              products.map((product, index) => (
-                <div key={`${product._id}-${index}`} className="col-md-6">
-                  <div className="card border-0 shadow-sm p-3 rounded-3">
-                    <div className="position-relative text-center">
-                      <Image
-                        src={product.images?.[0]?.url || "/placeholder.png"}
-                        alt={product.name}
-                        width={180}
-                        height={180}
-                        className="rounded-md object-cover mx-auto block"
-                      />
-                    </div>
+              products.map((product, index) => {
+                const isInWishlist = wishlistItems.some(
+                  (item) => item._id === product._id
+                );
 
-                    <h2 className="mt-2 text-primary text-sm text-center">
-                      {product.name}
-                    </h2>
-                    <p className=" text-sm">
-                      {product.description
-                        ? product.description.split(" ").slice(0, 15).join(" ") + (product.description.split(" ").length > 20 ? "..." : "")
-                        : "N/A"}
-                    </p>
-       {/* Company Info Section */}
-        {product.businessProfile && shouldDisplay(product.businessProfile.companyName) && (
-          <div className="mb-3 pb-2 border-bottom">
-            <h3 className="fw-bold text-dark  text-sm mb-2">{product.businessProfile.companyName}</h3>
-            <div className="d-flex flex-wrap align-items-center text-sm">
-              {/* Location */}
-              {(shouldDisplay(product.businessProfile.city) || shouldDisplay(product.businessProfile.state)) && (
-                <div className="d-flex align-items-center text-muted me-3">
-                  <FaMapMarkerAlt className="me-1 text-secondary" />
-                  <span>
-                    {product.businessProfile.city}
-                    {product.businessProfile.city && product.businessProfile.state ? ", " : ""}
-                    {product.businessProfile.state}
-                  </span>
-                </div>
-              )}
-
-              {/* GST */}
-              {shouldDisplay(product.businessProfile.gstNumber) && (
-                <span className="me-3 text-success d-flex align-items-center mb-1">
-                  <FaCheckCircle className="me-1" /> GST
-                </span>
-              )}
-
-              {/* TrustSEAL badge */}
-              {product.businessProfile.trustSealVerified && (
-                <span className="me-3 text-warning d-flex align-items-center mb-1">
-                  <FaCheckCircle className="me-1" /> TrustSEAL Verified
-                </span>
-              )}
-
-              {/* Member Year */}
-              {shouldDisplay(product.businessProfile.yearOfEstablishment) && (
-                <span className="text-muted d-flex align-items-center mb-1">
-                  <FaUserClock className="me-1" /> Member: {new Date().getFullYear() - product.businessProfile.yearOfEstablishment} yrs
-                </span>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Seller Name & Phone */}
-        {/* {product.userId && (shouldDisplay(product.userId.fullname) || shouldDisplay(product.userId.mobileNumber)) && (
-          <div className="row g-2 align-items-center text-sm mb-3">
-            {shouldDisplay(product.userId.fullname) && (
-              <div className="col-auto d-flex align-items-center">
-                <FaUser className="me-1 text-secondary" />
-                <span className="fw-bold text-dark">{product.userId.fullname}</span>
-              </div>
-            )}
-            {shouldDisplay(product.userId.mobileNumber) && (
-              <div className="col-auto d-flex align-items-center">
-                <FaMobileAlt className="me-1 text-secondary" />
-                <span className="text-muted">{product.userId.mobileNumber}</span>
-              </div>
-            )}
-          </div>
-        )} */}
-
-
-
-
-                    <table className="table table-sm mt-2 text-sm">
-                      <tbody>
-                        {shouldDisplay(product.tradeShopping?.fixedSellingPrice || product.price) && (
-                          <tr>
-                            <th>Price:</th>
-                            <td>
-                              ₹{product.tradeShopping?.fixedSellingPrice || product.price}{" "}
-                              {product.currency || "INR"}
-                            </td>
-                          </tr>
+                return (
+                  <div key={`${product._id}-${index}`} className="col-md-6">
+                    <div className="card border-0 shadow-sm p-3 rounded-3">
+                      <div className="position-relative text-center">
+                        <Image
+                          src={product.images?.[0]?.url || "/placeholder.png"}
+                          alt={product.name}
+                          width={180}
+                          height={180}
+                          className="rounded-md object-cover mx-auto block"
+                        />
+                        {/* Wishlist Icon */}
+                        {user && ( // Only show wishlist icon if a user is logged in
+                          <button
+                            className={`btn btn-link p-0 position-absolute top-0 end-0 m-2 ${
+                              isInWishlist ? "text-danger" : "text-muted"
+                            }`}
+                            onClick={() => handleToggleWishlist(product._id)}
+                            disabled={wishlistLoading} // Disable button while API call is in progress
+                            title={
+                              isInWishlist
+                                ? "Remove from Wishlist"
+                                : "Add to Wishlist"
+                            }
+                            aria-label={
+                              isInWishlist
+                                ? "Remove from Wishlist"
+                                : "Add to Wishlist"
+                            }
+                          >
+                            {isInWishlist ? <FaHeart /> : <FaRegHeart />}
+                          </button>
                         )}
-                        {shouldDisplay(product.minimumOrderQuantity) && (
-                          <tr>
-                            <th>MOQ:</th>
-                            <td>{product.minimumOrderQuantity}</td>
-                          </tr>
+                      </div>
+
+                      <h2 className="mt-2 text-primary text-sm text-center">
+                        {product.name}
+                      </h2>
+                      <p className=" text-sm">
+                        {product.description
+                          ? product.description
+                              .split(" ")
+                              .slice(0, 15)
+                              .join(" ") +
+                            (product.description.split(" ").length > 20
+                              ? "..."
+                              : "")
+                          : "N/A"}
+                      </p>
+                      {/* Company Info Section */}
+                      {product.businessProfile &&
+                        shouldDisplay(product.businessProfile.companyName) && (
+                          <div className="mb-3 pb-2 border-bottom">
+                            <h3 className="fw-bold text-dark text-sm mb-2">
+                              {product.businessProfile.companyName}
+                            </h3>
+                            <div className="d-flex flex-wrap align-items-center text-sm">
+                              {/* Location */}
+                              {(shouldDisplay(product.businessProfile.city) ||
+                                shouldDisplay(
+                                  product.businessProfile.state
+                                )) && (
+                                <div className="d-flex align-items-center text-muted me-3">
+                                  <FaMapMarkerAlt className="me-1 text-secondary" />
+                                  <span>
+                                    {product.businessProfile.city}
+                                    {product.businessProfile.city &&
+                                    product.businessProfile.state
+                                      ? ", "
+                                      : ""}
+                                    {product.businessProfile.state}
+                                  </span>
+                                </div>
+                              )}
+                              {/* GST */}
+                              {shouldDisplay(
+                                product.businessProfile.gstNumber
+                              ) && (
+                                <span className="me-3 text-success d-flex align-items-center mb-1">
+                                  <FaCheckCircle className="me-1" /> GST
+                                </span>
+                              )}
+                              {/* TrustSEAL badge */}
+                              {product.businessProfile.trustSealVerified && (
+                                <span className="me-3 text-warning d-flex align-items-center mb-1">
+                                  <FaCheckCircle className="me-1" /> TrustSEAL
+                                  Verified
+                                </span>
+                              )}
+                              {/* Member Year */}
+                              {shouldDisplay(
+                                product.businessProfile.yearOfEstablishment
+                              ) && (
+                                <span className="text-muted d-flex align-items-center mb-1">
+                                  <FaUserClock className="me-1" /> Member:{" "}
+                                  {new Date().getFullYear() -
+                                    product.businessProfile
+                                      .yearOfEstablishment}{" "}
+                                  yrs
+                                </span>
+                              )}
+                            </div>
+                          </div>
                         )}
-                        {shouldDisplay(product.tradeShopping?.brandName) && (
-                          <tr>
-                            <th>Brand:</th>
-                            <td>{product.tradeShopping.brandName}</td>
-                          </tr>
-                        )}
-                        {shouldDisplay(product.tradeShopping?.unit) && (
-                          <tr>
-                            <th>Unit:</th>
+
+                      <table className="table table-sm mt-2 text-sm">
+                        <tbody>
+                          {shouldDisplay(
+                            product.tradeShopping?.fixedSellingPrice ||
+                              product.price
+                          ) && (
+                            <tr>
+                              <th>Price:</th>
+                              <td>
+                                ₹
+                                {product.tradeShopping?.fixedSellingPrice ||
+                                  product.price}{" "}
+                                {product.currency || "INR"}
+                              </td>
+                            </tr>
+                          )}
+                          {shouldDisplay(product.minimumOrderQuantity) && (
+                            <tr>
+                              <th>MOQ:</th>
+                              <td>{product.minimumOrderQuantity}</td>
+                            </tr>
+                          )}
+                          {shouldDisplay(product.tradeShopping?.brandName) && (
+                            <tr>
+                              <th>Brand:</th>
+                              <td>{product.tradeShopping.brandName}</td>
+                            </tr>
+                          )}
+                          {shouldDisplay(product.tradeShopping?.unit) && (
+                            <tr>
+                              <th>Unit:</th>
                             <td>{product.tradeShopping.unit}</td>
-                          </tr>
-                        )}
-                        {/* GST and Est. Year are moved outside the table */}
-                        {shouldDisplay(product.tradeShopping?.stockQuantity) && (
-                          <tr>
-                            <th>Stock:</th>
-                            <td>{product.tradeShopping.stockQuantity}</td>
-                          </tr>
-                        )}
-                     
-                   
-                      </tbody>
-                    </table>
+                            </tr>
+                          )}
+                          {shouldDisplay(
+                            product.tradeShopping?.stockQuantity
+                          ) && (
+                            <tr>
+                              <th>Stock:</th>
+                              <td>{product.tradeShopping.stockQuantity}</td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
 
-                    <Link
-                      href={`/products/${product._id}`}
-                      className="btn btn-outline-primary btn-sm mt-2 w-100"
-                    >
-                      More details
-                    </Link>
-                     <Buyfrom product={product} sellerId={product?.userId} />
+                      <Link
+                        href={`/products/${product._id}`}
+                        className="btn btn-outline-primary btn-sm mt-2 w-100"
+                      >
+                        More details
+                      </Link>
+                      <Buyfrom product={product} sellerId={product?.userId} />
+                    </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             ) : (
               <p className="text-warning text-center">
                 No products found for this subcategory.
@@ -380,7 +468,6 @@ const SubcategoryProductPage = () => {
             )}
           </div>
         </aside>
-
       </div>
     </div>
   );
