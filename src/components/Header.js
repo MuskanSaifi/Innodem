@@ -345,31 +345,40 @@ export default function Header() {
                 </div>
 
                 {/* Product Search */}
-                <div
-                  className="position-relative flex-grow-1 pro-ser-div"
-                  ref={searchRef}
-                >
-                  <input
-                    className="product-search form-control "
-                    type="text"
-                    placeholder="🔍 Dial Export Mart | B2B Marketplace in India"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                  {suggestions.length > 0 && (
-                    <ul className="list-group position-absolute w-100 shadow-sm bg-white text-sm">
-                      {suggestions.map((product) => (
-                        <li
-                          key={product._id}
-                          className="list-group-item list-group-item-action cursor-pointer"
-                          onClick={() => handleSearchSelect(product)}
-                        >
-                          {product.name}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
+       {/* Product Search */}
+<div
+  className="position-relative flex-grow-1 pro-ser-div"
+  ref={searchRef}
+>
+  <input
+    className="product-search form-control"
+    type="text"
+    placeholder="🔍 Dial Export Mart | B2B Marketplace in India"
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+  />
+
+  {/* Show suggestions or "not found" */}
+  {(searchTerm.trim() !== "") && (
+    <ul className="list-group position-absolute w-100 shadow-sm bg-white text-sm z-50">
+      {suggestions.length > 0 ? (
+        suggestions.map((product) => (
+          <li
+            key={product._id}
+            className="list-group-item list-group-item-action cursor-pointer"
+            onClick={() => handleSearchSelect(product)}
+          >
+            {product.name}
+          </li>
+        ))
+      ) : (
+        <li className="list-group-item text-muted text-center">
+          🚫 Product not found
+        </li>
+      )}
+    </ul>
+  )}
+</div>
 
                 {/* Registered Users */}
                 <div className="registered-users-box text-center d-none-mob">

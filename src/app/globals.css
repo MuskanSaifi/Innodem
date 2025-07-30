@@ -171,22 +171,25 @@ a{
   z-index: 20 !important;
   max-height: 200px !important;
   overflow-y: auto;
-  scrollbar-width: thin;          /* Firefox ke liye */
-  scrollbar-color: #ccc transparent;  /* Firefox ke liye */
+  overflow-x: hidden;  /* ✅ Prevent horizontal scrollbar */
+  scrollbar-width: thin;          
+  scrollbar-color: #ccc transparent;  
 }
 
 .list-group::-webkit-scrollbar {
-  width: 4px;                     /* Chrome/Safari ke liye scrollbar ki patli width */
+  width: 4px;
+  height: 0px !important; /* ✅ Disable horizontal scrollbar on WebKit */
 }
 
 .list-group::-webkit-scrollbar-track {
-  background: transparent;        /* Track transparent rahe */
+  background: transparent;
 }
 
 .list-group::-webkit-scrollbar-thumb {
-  background-color: #ccc;         /* Scrollbar ka color */
+  background-color: #ccc;
   border-radius: 10px;
 }
+
 
 
 .custom-active {
