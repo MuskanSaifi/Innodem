@@ -160,3 +160,38 @@ a{
   width: 100%;
   height: auto;
 }
+
+
+.list-group-item{
+  padding: 5px 10px !important;
+  font-size: 14px;
+}
+
+.list-group {
+  z-index: 20 !important;
+  max-height: 200px !important;
+  overflow-y: auto;
+  scrollbar-width: thin;          /* Firefox ke liye */
+  scrollbar-color: #ccc transparent;  /* Firefox ke liye */
+}
+
+.list-group::-webkit-scrollbar {
+  width: 4px;                     /* Chrome/Safari ke liye scrollbar ki patli width */
+}
+
+.list-group::-webkit-scrollbar-track {
+  background: transparent;        /* Track transparent rahe */
+}
+
+.list-group::-webkit-scrollbar-thumb {
+  background-color: #ccc;         /* Scrollbar ka color */
+  border-radius: 10px;
+}
+
+
+.custom-active {
+  /* Don't inherit Bootstrap's .active styles */
+  color: #7c3aed !important; /* Tailwind's purple-600 */
+  background-color: #ffffff !important;
+  font-weight: bold;
+}

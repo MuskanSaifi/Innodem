@@ -286,7 +286,7 @@ export default function Header() {
             </div>
 
             {/* Search Bar Section */}
-            <div className="col-7 col-md-8">
+            <div className="col-7 col-md-8 p-0  ">
               <div className="d-flex align-items-center justify-content-between">
                 <span
                   className="text-4xl p-2 rounded me-3 d-none-mob cursor-pointer"
@@ -350,7 +350,7 @@ export default function Header() {
                   ref={searchRef}
                 >
                   <input
-                    className="product-search form-control"
+                    className="product-search form-control "
                     type="text"
                     placeholder="🔍 Dial Export Mart | B2B Marketplace in India"
                     value={searchTerm}

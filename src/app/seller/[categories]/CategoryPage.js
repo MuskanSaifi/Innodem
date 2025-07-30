@@ -1,22 +1,26 @@
-// src/components/CategoryPage.js
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Buyfrom from "./Buyfrom";
-import { FaCheckCircle, FaMapMarkerAlt, FaUserClock } from "react-icons/fa";
+import { FaCheckCircle, FaFilter, FaMapMarkerAlt, FaUserClock } from "react-icons/fa";
 import { FaHeart, FaRegHeart } from 'react-icons/fa'; // Import heart icons
+
+// Import Slider component and styles from rc-slider
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css'; // Don't forget to import the styles!
 
 // Redux imports
 import { useDispatch, useSelector } from 'react-redux';
 import { addProductToWishlist, removeProductFromWishlist } from '../../store/wishlistSlice'; // Adjust path if necessary
 
+
 const CategoryPage = ({ categorySlug }) => {
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]); // This will store the *original* fetched products
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [categoryContent, setCategoryContent] = useState("");
@@ -24,11 +28,57 @@ const CategoryPage = ({ categorySlug }) => {
   // State for mobile dropdowns
   const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
   const [subcategoryDropdownOpen, setSubcategoryDropdownOpen] = useState(false);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false); // NEW: State for mobile filter dropdown
 
   // Redux hooks for wishlist
   const dispatch = useDispatch();
   const wishlistItems = useSelector((state) => state.wishlist.items);
   const user = useSelector((state) => state.user.user); // Assuming you have user state for login check
+
+  // --- NEW: Filter States ---
+  const [filters, setFilters] = useState({
+    // Initial values for price range slider. These should be numerical.
+    // Set a default min and max, or derive from product data if possible.
+    minPrice: 0, // Default min price for slider
+    maxPrice: 100000, // Default max price for slider (adjust based on your product data)
+    minMOQ: "",
+    maxMOQ: "",
+    productName: "",
+    // Tags filter state
+    tags: {
+      newArrivals: false,
+      trending: false,
+      upcoming: false,
+      diwaliOffer: false,
+      holiOffer: false,
+    },
+  });
+
+  // --- Price Range Options for Dropdowns (Example) ---
+  const priceOptions = [
+    { label: "Min", value: 0 },
+    { label: "₹100", value: 100 },
+    { label: "₹500", value: 500 },
+    { label: "₹1,000", value: 1000 },
+    { label: "₹5,000", value: 5000 },
+    { label: "₹10,000", value: 10000 },
+    { label: "₹50,000", value: 50000 },
+    { label: "₹1,00,000", value: 100000 },
+    { label: "₹5,00,000", value: 500000 },
+  ];
+
+  // --- NEW: Debounce for product name filter ---
+  const [debouncedProductName, setDebouncedProductName] = useState("");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedProductName(filters.productName);
+    }, 500); // 500ms debounce delay
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [filters.productName]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,29 +86,54 @@ const CategoryPage = ({ categorySlug }) => {
         setLoading(true);
         setError(null);
 
+        // Fetch categories and products from your API route
         const response = await fetch("/api/adminprofile/category");
-        if (!response.ok) throw new Error("Failed to fetch category data");
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to fetch category data");
+        }
 
         const data = await response.json();
         setCategories(data);
 
-        if (!categorySlug) return;
+        if (!categorySlug) {
+          setProducts([]); // No category slug means no products for this page
+          setLoading(false);
+          return;
+        }
 
+        // Find the specific category based on the slug
         const category = data.find((cat) => cat.categoryslug === categorySlug);
-        if (!category) throw new Error("Category not found");
+        if (!category) {
+          throw new Error("Category not found for the given slug.");
+        }
 
         setSubcategories(category.subcategories || []);
         setCategoryContent(category.content || "");
+
+        // Flatten all products from all subcategories of the *matched* category
         const allProducts =
           category.subcategories?.flatMap((sub) =>
             (sub.products || []).map((product) => ({
               ...product,
-              subcategory: sub.name,
+              subcategory: sub.name, // Add subcategory name for potential display/future filtering
             }))
           ) || [];
 
-        setProducts(allProducts);
+        setProducts(allProducts); // Store the original full list of products
+
+        // --- Dynamically set initial max price for slider if products are available ---
+        if (allProducts.length > 0) {
+          const maxProductPrice = Math.max(...allProducts.map(p => p.tradeShopping?.fixedSellingPrice || p.price || 0));
+          // Set a reasonable upper bound for the slider, at least the max product price or a default high value
+          setFilters(prev => ({
+            ...prev,
+            maxPrice: Math.max(prev.maxPrice, maxProductPrice + 1000), // Add some buffer
+          }));
+        }
+
       } catch (err) {
+        console.error("Error fetching category page data:", err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -66,7 +141,7 @@ const CategoryPage = ({ categorySlug }) => {
     };
 
     fetchData();
-  }, [categorySlug]);
+  }, [categorySlug]); // Re-fetch data if categorySlug changes
 
   const getCategoryName = () => {
     const matched = categories.find((cat) => cat.categoryslug === categorySlug);
@@ -105,6 +180,84 @@ const CategoryPage = ({ categorySlug }) => {
     }
   };
 
+  // --- Handle Filter Changes for text inputs and dropdowns ---
+  const handleFilterChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: value,
+    }));
+  }, []);
+
+  // --- NEW: Handle Price Slider Change ---
+  const handlePriceSliderChange = useCallback((value) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      minPrice: value[0],
+      maxPrice: value[1],
+    }));
+  }, []);
+
+  // NEW: Handle Tag Filter Change
+  const handleTagFilterChange = useCallback((e) => {
+    const { name, checked } = e.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      tags: {
+        ...prevFilters.tags,
+        [name]: checked,
+      },
+    }));
+  }, []);
+
+  // --- NEW: Memoized filtered products ---
+  const filteredProducts = useMemo(() => {
+    let currentProducts = products; // Start with the full list of products fetched from the API
+
+    // Filter by Product Name (using debounced value)
+    if (debouncedProductName) {
+      const lowercasedName = debouncedProductName.toLowerCase();
+      currentProducts = currentProducts.filter(product =>
+        product.name.toLowerCase().includes(lowercasedName)
+      );
+    }
+
+    // Filter by Price (using slider values)
+    currentProducts = currentProducts.filter(product => {
+      const productPrice = product.tradeShopping?.fixedSellingPrice || product.price;
+      // If productPrice is not available or invalid, treat it as not matching the filter.
+      // Otherwise, check if it falls within the selected min/max range.
+      return shouldDisplay(productPrice) && productPrice >= filters.minPrice && productPrice <= filters.maxPrice;
+    });
+
+
+    // Filter by MOQ
+    if (shouldDisplay(filters.minMOQ)) {
+      const minM = parseFloat(filters.minMOQ);
+      currentProducts = currentProducts.filter(product =>
+        shouldDisplay(product.minimumOrderQuantity) && product.minimumOrderQuantity >= minM
+      );
+    }
+    if (shouldDisplay(filters.maxMOQ)) {
+      const maxM = parseFloat(filters.maxMOQ);
+      currentProducts = currentProducts.filter(product =>
+        shouldDisplay(product.minimumOrderQuantity) && product.minimumOrderQuantity <= maxM
+      );
+    }
+
+    // Filter by Tags
+    const activeTags = Object.keys(filters.tags).filter(tag => filters.tags[tag]);
+    if (activeTags.length > 0) {
+      currentProducts = currentProducts.filter(product => {
+        // Check if the product has *any* of the selected tags set to true
+        return activeTags.some(tag => product.tags?.[tag]);
+      });
+    }
+
+    return currentProducts;
+  }, [products, debouncedProductName, filters.minPrice, filters.maxPrice, filters.minMOQ, filters.maxMOQ, filters.tags, shouldDisplay]);
+
+
   return (
     <div className="container mt-4 mb-5">
       {/* Breadcrumb */}
@@ -112,9 +265,24 @@ const CategoryPage = ({ categorySlug }) => {
         <span className="text-secondary">Home / {getCategoryName()}</span>
       </nav>
 
-      {/* Mobile Dropdowns */}
+      {/* Mobile Dropdowns for Categories and Subcategories */}
       <div className="d-md-none mb-3">
-        {/* Category Dropdown */}
+    
+
+        {/* --- Mobile Filters Section --- */}
+        <div className="mt-3">
+          
+<button
+  className="btn btn-outline-info w-100 mb-2 d-flex justify-content-center align-items-center gap-2 py-2"
+  type="button"
+  onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
+>
+  <FaFilter size={16} />
+  <span>{mobileFilterOpen ? "Hide Filters" : "Show Filters"}</span>
+</button>
+          {mobileFilterOpen && (
+            <div className="mt-2 bg-white p-3 rounded common-shad">
+                  {/* Category Dropdown */}
         <div className="mb-2">
           <button
             className="btn btn-outline-primary w-100"
@@ -136,11 +304,12 @@ const CategoryPage = ({ categorySlug }) => {
                         key={cat._id}
                         href={`/seller/${cat.categoryslug}`}
                         className="text-decoration-none"
+                        onClick={() => setCategoryDropdownOpen(false)} // Close on click
                       >
                         <li
                           className={`list-group-item ${
                             isActive
-                              ? "active text-white bg-purple fw-bold"
+                              ? "custom-active"
                               : "text-dark"
                           }`}
                         >
@@ -156,9 +325,9 @@ const CategoryPage = ({ categorySlug }) => {
         </div>
 
         {/* Subcategory Dropdown */}
-        <div>
+        <div className="mb-3">
           <button
-            className="btn btn-outline-secondary w-100"
+            className="btn btn-outline-primary w-100"
             type="button"
             onClick={() => setSubcategoryDropdownOpen(!subcategoryDropdownOpen)}
           >
@@ -175,6 +344,7 @@ const CategoryPage = ({ categorySlug }) => {
                       key={sub._id}
                       href={`/seller/${categorySlug}/${sub.subcategoryslug}`}
                       className="text-decoration-none"
+                      onClick={() => setSubcategoryDropdownOpen(false)} // Close on click
                     >
                       <li className="list-group-item text-dark">{sub.name}</li>
                     </Link>
@@ -184,16 +354,187 @@ const CategoryPage = ({ categorySlug }) => {
             </div>
           )}
         </div>
+              <div className="mb-3">
+                <label htmlFor="productName" className="form-label fw-bold">Product Name</label>
+                <input
+                  type="text"
+                  className="form-control form-control-sm"
+                  id="productName"
+                  name="productName"
+                  value={filters.productName}
+                  onChange={handleFilterChange}
+                  placeholder="Search by name..."
+                />
+              </div>
+
+              {/* NEW: Price Range Filter for Mobile (Slider + Dropdowns) */}
+              <div className="mb-4">
+                <label className="form-label fw-bold">Price Range (₹)</label>
+                <div className="px-2 mb-3"> {/* Add padding for the slider */}
+                  <Slider
+                    range
+                    min={0}
+                    max={filters.maxPrice} // Use the state's maxPrice, which can be dynamically set
+                    defaultValue={[0, 100000]} // Initial default value
+                    value={[filters.minPrice, filters.maxPrice]}
+                    onChange={handlePriceSliderChange}
+                    trackStyle={[{ backgroundColor: '#6f42c1' }]} // Custom color for the track
+                    handleStyle={[ // Custom color for handles
+                      { backgroundColor: '#6f42c1', borderColor: '#6f42c1' },
+                      { backgroundColor: '#6f42c1', borderColor: '#6f42c1' },
+                    ]}
+                    railStyle={{ backgroundColor: '#e9ecef' }} // Custom color for the rail
+                  />
+                </div>
+                <div className="d-flex justify-content-between align-items-center">
+                  <select
+                    className="form-select form-select-sm w-auto me-2"
+                    name="minPrice"
+                    value={filters.minPrice}
+                    onChange={handleFilterChange} // Reusing handleFilterChange for dropdown
+                  >
+                    {priceOptions.map(option => (
+                      <option key={`min-${option.value}`} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  <span>to</span>
+                  <select
+                    className="form-select form-select-sm w-auto ms-2"
+                    name="maxPrice"
+                    value={filters.maxPrice}
+                    onChange={handleFilterChange} // Reusing handleFilterChange for dropdown
+                  >
+                    {priceOptions.map(option => (
+                      <option key={`max-${option.value}`} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+
+              <div className="mb-3">
+                <label className="form-label fw-bold">MOQ Range</label>
+                <div className="row g-2">
+                  <div className="col">
+                    <input
+                      type="number"
+                      className="form-control form-control-sm"
+                      name="minMOQ"
+                      value={filters.minMOQ}
+                      onChange={handleFilterChange}
+                      placeholder="Min MOQ"
+                      min="0"
+                    />
+                  </div>
+                  <div className="col">
+                    <input
+                      type="number"
+                      className="form-control form-control-sm"
+                      name="maxMOQ"
+                      value={filters.maxMOQ}
+                      onChange={handleFilterChange}
+                      placeholder="Max MOQ"
+                      min="0"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Tags Filter for Mobile */}
+              <div className="mb-3">
+                <label className="form-label fw-bold">Tags</label>
+                <div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="newArrivalsMobile"
+                      name="newArrivals"
+                      checked={filters.tags.newArrivals}
+                      onChange={handleTagFilterChange}
+                    />
+                    <label className="form-check-label" htmlFor="newArrivalsMobile">
+                      New Arrivals
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="trendingMobile"
+                      name="trending"
+                      checked={filters.tags.trending}
+                      onChange={handleTagFilterChange}
+                    />
+                    <label className="form-check-label" htmlFor="trendingMobile">
+                      Trending
+                    </label>
+                  </div>
+                   <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="upcomingMobile"
+                      name="upcoming"
+                      checked={filters.tags.upcoming}
+                      onChange={handleTagFilterChange}
+                    />
+                    <label className="form-check-label" htmlFor="upcomingMobile">
+                      Upcoming
+                    </label>
+                  </div>
+                   <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="diwaliOfferMobile"
+                      name="diwaliOffer"
+                      checked={filters.tags.diwaliOffer}
+                      onChange={handleTagFilterChange}
+                    />
+                    <label className="form-check-label" htmlFor="diwaliOfferMobile">
+                      Diwali Offer
+                    </label>
+                  </div>
+                   <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="holiOfferMobile"
+                      name="holiOffer"
+                      checked={filters.tags.holiOffer}
+                      onChange={handleTagFilterChange}
+                    />
+                    <label className="form-check-label" htmlFor="holiOfferMobile">
+                      Holi Offer
+                    </label>
+                  </div>
+                  {/* Add other tags here following the same pattern */}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        {/* --- END Mobile Filters Section --- */}
       </div>
 
       {/* Main Layout */}
       <div className="row mt-4">
-        {/* Sidebar */}
+        {/* Sidebar - Categories & Filters (Desktop Only) */}
         <aside className="col-md-3 d-none d-md-block">
-          <div className="bg-white p-3 rounded common-shad sticky top-5">
-            <div className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
-              All Categories
+        
+
+          {/* --- Filters Section in Desktop Sidebar --- */}
+          <div className="bg-white p-3 rounded common-shad mt-4 sticky top-5">
+              <div >
+                   <div className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
+              Filters
             </div>
+<label className="form-label fw-bold"> All Categories</label>
 
             {loading ? (
               <Skeleton count={5} height={20} />
@@ -202,46 +543,220 @@ const CategoryPage = ({ categorySlug }) => {
                 {categories.map((cat) => {
                   const isActive = cat.categoryslug === categorySlug;
                   return (
-                    <Link
-                      key={cat._id}
-                      href={`/seller/${cat.categoryslug}`}
-                      className="text-decoration-none"
-                    >
-                      <li
-                        className={`list-group-item ${
-                          isActive
-                            ? "active text-white bg-purple fw-bold"
-                            : "text-dark"
-                        }`}
-                      >
-                        {cat.name}
-                      </li>
-                    </Link>
+              <Link
+  key={cat._id}
+  href={`/seller/${cat.categoryslug}`}
+  className="text-decoration-none"
+>
+  <li
+    className={`list-group-item ${
+      isActive
+        ? "custom-active"
+        : "text-dark"
+    }`}
+  >
+    {cat.name}
+  </li>
+</Link>
                   );
                 })}
               </ul>
             )}
           </div>
+            <div className="mb-3 mt-3">
+              <label htmlFor="productNameDesktop" className="form-label fw-bold">Product Name</label>
+              <input
+                type="text"
+                className="form-control form-control-sm"
+                id="productNameDesktop"
+                name="productName" // Matches the filter state key
+                value={filters.productName}
+                onChange={handleFilterChange}
+                placeholder="Search by name..."
+              />
+            </div>
+
+            {/* NEW: Price Range Filter for Desktop (Slider + Dropdowns) */}
+            <div className="mb-4">
+              <label className="form-label fw-bold">Price Range (₹)</label>
+              <div className="px-2 mb-3"> {/* Add padding for the slider */}
+                <Slider
+                  range
+                  min={0}
+                  max={filters.maxPrice} // Use the state's maxPrice, which can be dynamically set
+                  defaultValue={[0, 100000]} // Initial default value
+                  value={[filters.minPrice, filters.maxPrice]}
+                  onChange={handlePriceSliderChange}
+                  trackStyle={[{ backgroundColor: '#6f42c1' }]} // Custom color for the track
+                  handleStyle={[ // Custom color for handles
+                    { backgroundColor: '#6f42c1', borderColor: '#6f42c1' },
+                    { backgroundColor: '#6f42c1', borderColor: '#6f42c1' },
+                  ]}
+                  railStyle={{ backgroundColor: '#e9ecef' }} // Custom color for the rail
+                />
+              </div>
+              <div className="d-flex justify-content-between align-items-center">
+                <select
+                  className="form-select form-select-sm w-auto me-2"
+                  name="minPrice"
+                  value={filters.minPrice}
+                  onChange={handleFilterChange} // Reusing handleFilterChange for dropdown
+                >
+                  {priceOptions.map(option => (
+                    <option key={`min-desktop-${option.value}`} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <span>to</span>
+                <select
+                  className="form-select form-select-sm w-auto ms-2"
+                  name="maxPrice"
+                  value={filters.maxPrice}
+                  onChange={handleFilterChange} // Reusing handleFilterChange for dropdown
+                >
+                  {priceOptions.map(option => (
+                    <option key={`max-desktop-${option.value}`} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+
+            <div className="mb-3">
+              <label className="form-label fw-bold">MOQ Range</label>
+              <div className="row g-2">
+                <div className="col">
+                  <input
+                    type="number"
+                    className="form-control form-control-sm"
+                    name="minMOQ" // Matches the filter state key
+                    value={filters.minMOQ}
+                    onChange={handleFilterChange}
+                    placeholder="Min MOQ"
+                    min="0"
+                  />
+                </div>
+                <div className="col">
+                  <input
+                    type="number"
+                    className="form-control form-control-sm"
+                    name="maxMOQ" // Matches the filter state key
+                    value={filters.maxMOQ}
+                    onChange={handleFilterChange}
+                    placeholder="Max MOQ"
+                    min="0"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Tags Filter for Desktop */}
+            <div className="mb-3">
+              <label className="form-label fw-bold">Tags</label>
+              <div>
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="newArrivalsDesktop"
+                    name="newArrivals"
+                    checked={filters.tags.newArrivals}
+                    onChange={handleTagFilterChange}
+                  />
+                  <label className="form-check-label" htmlFor="newArrivalsDesktop">
+                    New Arrivals
+                  </label>
+                </div>
+                 <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="trendingDesktop"
+                    name="trending"
+                    checked={filters.tags.trending}
+                    onChange={handleTagFilterChange}
+                  />
+                  <label className="form-check-label" htmlFor="trendingDesktop">
+                    Trending
+                  </label>
+                </div>
+                 <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="upcomingDesktop"
+                    name="upcoming"
+                    checked={filters.tags.upcoming}
+                    onChange={handleTagFilterChange}
+                  />
+                  <label className="form-check-label" htmlFor="upcomingDesktop">
+                    Upcoming
+                  </label>
+                </div>
+                 <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="diwaliOfferDesktop"
+                    name="diwaliOffer"
+                    checked={filters.tags.diwaliOffer}
+                    onChange={handleTagFilterChange}
+                  />
+                  <label className="form-check-label" htmlFor="diwaliOfferDesktop">
+                    Diwali Offer
+                  </label>
+                </div>
+                 <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="holiOfferDesktop"
+                    name="holiOffer"
+                    checked={filters.tags.holiOffer}
+                    onChange={handleTagFilterChange}
+                  />
+                  <label className="form-check-label" htmlFor="holiOfferDesktop">
+                    Holi Offer
+                  </label>
+                </div>
+                {/* Add other tags here following the same pattern */}
+              </div>
+            </div>
+          </div>
+          {/* --- END Filters Section --- */}
         </aside>
 
-        {/* Main Product Listing */}
+        {/* Main Product Listing Area */}
         <main className="col-md-6 common-shad rounded-2 p-3">
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h1 className="text-uppercase text-lg text-secondary">
               {getCategoryName()} Products
             </h1>
-            <span className="badge bg-primary text-white fs-6">
-              {loading ? <Skeleton width={30} /> : products.length}
+            <span className="badge text-dark text-sm">
+              {loading ? <Skeleton width={30} /> :  <>Total Products: {filteredProducts.length}</>}
             </span>
           </div>
 
           <div className="row g-4">
             {loading ? (
-              <Skeleton count={6} height={150} />
+              // Display skeleton loaders while loading
+              Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="col-md-6">
+                  <div className="card border-0 shadow-sm p-3 rounded-3">
+                    <Skeleton height={180} />
+                    <Skeleton count={3} />
+                    <Skeleton width={100} height={20} className="mt-2" />
+                  </div>
+                </div>
+              ))
             ) : error ? (
-              <p className="text-danger">{error}</p>
-            ) : products.length > 0 ? (
-              products.map((product, index) => (
+              <p className="text-danger text-center col-12">{error}</p>
+            ) : filteredProducts.length > 0 ? (
+              // Map through filtered products
+              filteredProducts.map((product, index) => (
                 <div key={`${product._id}-${index}`} className="col-md-6">
                   <div className="card border-0 shadow-sm p-3 rounded-3 position-relative">
                     {/* Wishlist Button */}
@@ -249,7 +764,7 @@ const CategoryPage = ({ categorySlug }) => {
                       className="btn btn-link p-0 position-absolute top-0 end-0 m-2"
                       onClick={() => handleWishlistToggle(product)}
                       title={isProductInWishlist(product._id) ? "Remove from Wishlist" : "Add to Wishlist"}
-                      disabled={loading} // Disable if product data is still loading
+                      disabled={loading}
                     >
                       {isProductInWishlist(product._id) ? (
                         <FaHeart size={16} className="text-danger" />
@@ -273,8 +788,8 @@ const CategoryPage = ({ categorySlug }) => {
                     </h2>
                     <p className="text-sm">
                       {product.description
-                        ? product.description.split(" ").slice(0, 15).join(" ") + (product.description.split(" ").length > 20 ? "..." : "")
-                        : "N/A"}
+                        ? product.description.split(" ").slice(0, 15).join(" ") + (product.description.split(" ").length > 15 ? "..." : "") // Shorten description
+                        : "No description available."}
                     </p>
                     {/* Company Info Section */}
                     {product.businessProfile && shouldDisplay(product.businessProfile.companyName) && (
@@ -359,19 +874,20 @@ const CategoryPage = ({ categorySlug }) => {
                     >
                       More details
                     </Link>
-                    <Buyfrom product={product} sellerId={product?.userId} />
+                    {/* Assuming Buyfrom component handles product and sellerId correctly */}
+                    <Buyfrom product={product} sellerId={product?.userId?._id} />
                   </div>
                 </div>
               ))
             ) : (
-              <p className="text-warning text-center">
-                No products found for this category.
+              <p className="text-warning text-center col-12">
+                No products found for this category matching your filter criteria.
               </p>
             )}
           </div>
         </main>
 
-        {/* Subcategories Sidebar */}
+        {/* Subcategories Sidebar (Desktop Only) */}
         <aside className="col-md-3 d-none d-md-block">
           <div className="bg-white p-3 rounded common-shad sticky top-5">
             <div className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
@@ -401,7 +917,7 @@ const CategoryPage = ({ categorySlug }) => {
         {/* Category HTML Content */}
         {categoryContent && (
           <div
-            className="bg-white p-3 mb-4"
+            className="bg-white p-3 mb-4 rounded common-shad" // Added common-shad for consistent styling
             dangerouslySetInnerHTML={{ __html: categoryContent }}
           />
         )}
@@ -409,5 +925,4 @@ const CategoryPage = ({ categorySlug }) => {
     </div>
   );
 };
-
 export default CategoryPage;

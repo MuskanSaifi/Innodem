@@ -177,28 +177,28 @@ export async function POST(req) {
     );
   }
 }
-
 export async function GET() {
   try {
     await connectDB();
-
     const categories = await Category.find()
       .populate({
         path: "subcategories",
         populate: {
           path: "products",
-          select: "name description price images productslug tradeShopping userId",
+          // Select all necessary fields for display and filtering
+          select: "name description price images productslug tradeShopping userId minimumOrderQuantity currency tags",
           populate: [
             {
               path: "userId",
               model: "User",
-              select: "fullname mobileNumber",
+              select: "fullname mobileNumber", // Assuming you want user info
             },
           ],
         },
       })
       .exec();
 
+    // Manually populate business profiles for each product's userId
     const categoriesWithBusinessProfiles = await Promise.all(
       categories.map(async (category) => {
         const subcategoriesWithBusinessProfiles = await Promise.all(
@@ -207,11 +207,12 @@ export async function GET() {
               subcat.products.map(async (product) => {
                 let businessProfile = null;
                 if (product.userId) {
+                  // Fetch BusinessProfile based on userId
                   businessProfile = await BusinessProfile.findOne({
                     userId: product.userId._id,
-                  }).select("companyName address city state country");
+                  }).select("companyName address city state country gstNumber trustSealVerified yearOfEstablishment");
                 }
-                return { ...product.toObject(), businessProfile };
+                return { ...product.toObject(), businessProfile: businessProfile ? businessProfile.toObject() : null };
               })
             );
             return { ...subcat.toObject(), products: productsWithBusinessProfiles };
@@ -236,7 +237,7 @@ export async function GET() {
     console.error("❌ Error fetching categories:", error);
     return new Response(
       JSON.stringify({ error: error.message || "Failed to fetch categories" }),
-      { status: 500 }
+      { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
 }

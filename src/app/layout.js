@@ -57,6 +57,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <meta name="google-site-verification" content="R9WyXTgozYVTSKMCjWbQZkact5ZWyCqa9sMQGmKhwnY" />
+        <meta name="p:domain_verify" content="d98356c446071847eac6ef2c6611c6cf"/>
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {/* ✅ GTM Fallback */}

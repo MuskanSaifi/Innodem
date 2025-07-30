@@ -293,6 +293,19 @@
     outline: none;
   }
   
+  /* Mobile View Styles */
+@media (max-width: 768px) {
+  .product-search {
+    font-size: 0.95rem;
+    padding: 4px;
+    border-radius: 8px;
+    background:
+    linear-gradient(canvas, canvas) padding-box,
+      linear-gradient(120deg, hsl(278, 44%, 73%), hsl(35, 81%, 73%)) border-box;
+    border-width: 2px;
+  }
+}
+
 
   .registered-users-box {
     display: flex;
