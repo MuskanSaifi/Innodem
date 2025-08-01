@@ -7,7 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-import { FaHeartBroken } from 'react-icons/fa'; // Import an icon for remove, or stick with ❌
+import { FaTrash } from 'react-icons/fa'; // Import an icon for remove, or stick with ❌
 
 import {
   fetchUserWishlist,
@@ -97,7 +97,7 @@ const WishlistPage = () => {
             title="Remove from Wishlist"
             disabled={loading}
           >
-            <FaHeartBroken size={24} /> {/* Using an icon for remove */}
+<FaTrash size={24} color="#dc3545" />
           </button>
         </div>
         <div className="card-footer bg-transparent border-top d-flex justify-content-center py-2">
@@ -162,28 +162,17 @@ const WishlistPage = () => {
         <table className="table table-bordered align-middle text-center">
           <thead className="table-light">
             <tr>
-              <th></th>
               <th>Product</th>
               <th>Price</th>
               <th>Status</th>
               <th>Added</th>
-              <th>Action</th>
+              <th>Remove Product</th>
             </tr>
           </thead>
           <tbody>
             {wishlistItems.map((product) => (
               <tr key={product._id}>
-                {/* Remove Button */}
-                <td>
-                  <button
-                    className="btn btn-link text-danger p-0"
-                    onClick={() => dispatch(removeProductFromWishlist(product._id))}
-                    title="Remove"
-                    disabled={loading}
-                  >
-                    <FaHeartBroken size={20} /> {/* Icon for remove */}
-                  </button>
-                </td>
+           
 
                 {/* Product Name and Image */}
                 <td className="text-start">
@@ -223,12 +212,19 @@ const WishlistPage = () => {
                 {/* Date Added */}
                 <td>{new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</td>
 
-                {/* View More */}
+                     {/* Remove Button */}
                 <td>
-                  <Link href={`/products/${product._id}`} className="btn btn-primary btn-sm">
-                    View More
-                  </Link>
+                  <button
+                    className="btn btn-link text-danger p-0"
+                    onClick={() => dispatch(removeProductFromWishlist(product._id))}
+                    title="Remove"
+                    disabled={loading}
+                  >
+                    <FaTrash size={24} color="#dc3545" />
+
+                  </button>
                 </td>
+
               </tr>
             ))}
           </tbody>

@@ -11,6 +11,5 @@ export const store = configureStore({
     products: productReducer,  // ✅ Add productSlice to store
     user: userReducer,
     wishlist: wishlistReducer, // ✅ Add the wishlist reducer
-
   },
 });
