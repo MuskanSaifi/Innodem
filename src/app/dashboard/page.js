@@ -27,6 +27,7 @@ import AllClientWebsiteLeads from "./AllClientWebsiteLeads";
 import SalaryReport from "./SalaryReport";
 import LeaveRequests from "./LeaveRequests";
 import AddEmployeeForm from "./AddEmployeeForm";
+import AddNotifucations from "./AddNotifucations";
 
 function ResponsiveDashboard() {
   const router = useRouter();
@@ -108,6 +109,7 @@ function ResponsiveDashboard() {
           {activeContent === "All Blogs" && <AllBlogs />}
           {activeContent === "Create Blogs" && <CreateBlog />}
           {activeContent === "All Subscribers" && <AllSubscribers />}
+          {activeContent === "Manage Notifications" && <AddNotifucations />}
           {activeContent === "All Contacts" && <AllContacts />}
           {activeContent === "Leads & Enquiry" && <LeadsEnquiry />}
           {activeContent === "Manage Support Members" && <CreateSupportPerson />}
