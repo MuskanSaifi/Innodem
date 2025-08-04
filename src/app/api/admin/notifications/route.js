@@ -1,4 +1,4 @@
-// app/api/admin/notifications/route.js (Next.js App Router)
+// app/api/admin/notifications/route.js
 
 import { NextResponse } from 'next/server';
 import connectdb from '@/lib/dbConnect';
@@ -23,10 +23,8 @@ export async function POST(req) {
     let expo = new Expo();
     let messages = [];
 
-    // 1. Fetch all users with a push token
     const usersWithTokens = await User.find({ pushToken: { $exists: true, $ne: null } });
 
-    // 2. Create a notification message for each valid token
     for (let user of usersWithTokens) {
       if (!Expo.isExpoPushToken(user.pushToken)) {
         console.error(`Push token ${user.pushToken} is not a valid Expo push token`);
@@ -38,13 +36,14 @@ export async function POST(req) {
         title: title,
         body: message,
         data: {
-          screen: 'NotificationsScreen', // This data will be used for deep linking
-          notificationId: notification._id, // Pass the new notification's ID
+          screen: 'NotificationsScreen',
+          notificationId: notification._id, // <<-- ADD THIS UNIQUE ID
+          // You can also add the full notification object if needed
+          // notification: notification,
         },
       });
     }
 
-    // 3. Send the notifications in chunks
     let chunks = expo.chunkPushNotifications(messages);
     let tickets = [];
     (async () => {
@@ -66,9 +65,6 @@ export async function POST(req) {
     return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 });
   }
 }
-
-// ... GET handler remains the same
-
 
 export async function GET() {
   await connectdb();

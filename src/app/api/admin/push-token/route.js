@@ -1,4 +1,4 @@
-// pages/api/push-token.js (Next.js Pages Router) or app/api/push-token/route.js (App Router)
+// pages/api/admin/push-token.js
 
 import { NextResponse } from 'next/server';
 import connectdb from '@/lib/dbConnect';
