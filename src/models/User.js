@@ -7,8 +7,8 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "SupportPerson",
   },
+  pushToken: {type: String },
   
-
   fullname: String,
   email: { type: String, unique: true },
   mobileNumber: { type: String, unique: true }, 

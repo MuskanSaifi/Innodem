@@ -1,6 +1,10 @@
+// app/api/admin/notifications/route.js (Next.js App Router)
+
 import { NextResponse } from 'next/server';
 import connectdb from '@/lib/dbConnect';
 import Notification from '@/models/Notification';
+import User from '@/models/User'; // Assuming you have a User model
+import { Expo } from 'expo-server-sdk';
 
 export async function POST(req) {
   await connectdb();
@@ -15,7 +19,46 @@ export async function POST(req) {
   try {
     const notification = await Notification.create({ title, message });
 
-    // You can trigger push notification here if using FCM or OneSignal.
+    // --- PUSH NOTIFICATION LOGIC ---
+    let expo = new Expo();
+    let messages = [];
+
+    // 1. Fetch all users with a push token
+    const usersWithTokens = await User.find({ pushToken: { $exists: true, $ne: null } });
+
+    // 2. Create a notification message for each valid token
+    for (let user of usersWithTokens) {
+      if (!Expo.isExpoPushToken(user.pushToken)) {
+        console.error(`Push token ${user.pushToken} is not a valid Expo push token`);
+        continue;
+      }
+      messages.push({
+        to: user.pushToken,
+        sound: 'default',
+        title: title,
+        body: message,
+        data: {
+          screen: 'NotificationsScreen', // This data will be used for deep linking
+          notificationId: notification._id, // Pass the new notification's ID
+        },
+      });
+    }
+
+    // 3. Send the notifications in chunks
+    let chunks = expo.chunkPushNotifications(messages);
+    let tickets = [];
+    (async () => {
+      for (let chunk of chunks) {
+        try {
+          let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+          console.log(ticketChunk);
+          tickets.push(...ticketChunk);
+        } catch (error) {
+          console.error('Error sending push notification chunk:', error);
+        }
+      }
+    })();
+    // -------------------------------
 
     return NextResponse.json({ success: true, data: notification }, { status: 201 });
   } catch (error) {
@@ -24,6 +67,7 @@ export async function POST(req) {
   }
 }
 
+// ... GET handler remains the same
 
 
 export async function GET() {
