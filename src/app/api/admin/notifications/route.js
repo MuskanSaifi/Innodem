@@ -3,7 +3,7 @@
 import { NextResponse } from 'next/server';
 import connectdb from '@/lib/dbConnect';
 import Notification from '@/models/Notification';
-import User from '@/models/User'; // Assuming you have a User model
+import User from '@/models/User';
 import { Expo } from 'expo-server-sdk';
 
 export async function POST(req) {
@@ -19,45 +19,45 @@ export async function POST(req) {
   try {
     const notification = await Notification.create({ title, message });
 
-    // --- PUSH NOTIFICATION LOGIC ---
     let expo = new Expo();
     let messages = [];
 
-    const usersWithTokens = await User.find({ pushToken: { $exists: true, $ne: null } });
+    // Find all users who have at least one push token
+    const usersWithTokens = await User.find({ "pushTokens.0": { "$exists": true } });
 
     for (let user of usersWithTokens) {
-      if (!Expo.isExpoPushToken(user.pushToken)) {
-        console.error(`Push token ${user.pushToken} is not a valid Expo push token`);
-        continue;
+      // Loop through all tokens for this specific user
+      for (let token of user.pushTokens) {
+        if (!Expo.isExpoPushToken(token)) {
+          console.error(`Push token ${token} is not a valid Expo push token`);
+          continue;
+        }
+        messages.push({
+          to: token,
+          sound: 'default',
+          title: title,
+          body: message,
+          data: {
+            screen: 'NotificationsScreen',
+            notificationId: notification._id,
+          },
+        });
       }
-      messages.push({
-        to: user.pushToken,
-        sound: 'default',
-        title: title,
-        body: message,
-        data: {
-          screen: 'NotificationsScreen',
-          notificationId: notification._id, // <<-- ADD THIS UNIQUE ID
-          // You can also add the full notification object if needed
-          // notification: notification,
-        },
-      });
     }
 
+    // Send the messages in chunks (Expo recommends this for large lists)
     let chunks = expo.chunkPushNotifications(messages);
     let tickets = [];
     (async () => {
       for (let chunk of chunks) {
         try {
           let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-          console.log(ticketChunk);
           tickets.push(...ticketChunk);
         } catch (error) {
           console.error('Error sending push notification chunk:', error);
         }
       }
     })();
-    // -------------------------------
 
     return NextResponse.json({ success: true, data: notification }, { status: 201 });
   } catch (error) {

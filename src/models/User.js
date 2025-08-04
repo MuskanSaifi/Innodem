@@ -7,7 +7,10 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "SupportPerson",
   },
-  pushToken: {type: String },
+    pushTokens: {
+    type: [String], // Change this to an array of strings
+    default: [],
+  },
   
   fullname: String,
   email: { type: String, unique: true },
