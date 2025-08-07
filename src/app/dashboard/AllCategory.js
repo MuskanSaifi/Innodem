@@ -163,7 +163,8 @@ const AllCategory = () => {
                     />
                   )}
                 </td>
-                <td>{category.name}</td>
+                <td><div>{category.name}</div>
+                  <div>{category._id}</div> </td>
                 <td>
                   {category.subcategories.length > 0 ? (
                     <ul className="list-unstyled m-0">

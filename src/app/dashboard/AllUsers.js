@@ -6,6 +6,7 @@ import { Table, Spinner, Button, Accordion, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
 import ProductTags from "./components/ProductTags";
 import Image from "next/image";
+import Link from "next/link";
 
 
 const AllUsers = () => {
@@ -308,9 +309,7 @@ const matchesRemark = (
         </div>
       ) : (
         <Table className="common-shad striped bordered hover responsive ">
-          <thead className="table-dark">
-            <tr>
-              <th>#</th>
+          <thead className="table-dark"><tr><th>#</th>
               <th>Full Name</th>
               <th>Email | Mobile</th>
               {/* <th>Mobile</th> */}
@@ -327,8 +326,7 @@ const matchesRemark = (
 </th>
               <th>Remark</th>
               <th>Registered On</th> {/* ✅ Added Date */}
-              <th>Action</th>
-            </tr>
+              <th>Action</th></tr>
           </thead>
           <tbody>
             {filteredUsers.length > 0 ? (
@@ -420,8 +418,7 @@ const matchesRemark = (
                       <Button variant="danger" size="sm" onClick={() => handleDeleteUser(user._id)}>
                         🗑️
                       </Button>
-                    </td>
-                  </tr><tr><td colSpan="7" className="td-bg">
+                    </td></tr><tr><td colSpan="7" className="td-bg">
                       {user.products?.length > 0 ? (
                         <Accordion>
                           {user.products.map((product, i) => {
@@ -453,62 +450,83 @@ const matchesRemark = (
                                     <div>
                                     <span className="res-color2 text-light text-sm common-shad px-3 py-1 rounded-2">
                                     🕒 <b>Created At:</b> {formatDate(product.createdAt)}
-                                    </span> <br></br>
-                                    <span className="res-color2 text-light text-sm common-shad px-3 py-1 rounded-2">
-                                    🕒 <b>Updated At: </b>{formatDate(product.updatedAt)}
-                                    </span>
+                                    </span> 
                                     </div>
 
                                     <div>
-                                    <span className="text-sm rounded-2">
-                                     <b>📍 State:</b> {product?.state} <br></br>
-                                     <b>📍 City:</b> {product?.city}
+                                  <span className="res-color2 text-light text-sm common-shad px-3 py-1 rounded-2">
+                                    🕒 <b>Updated At: </b>{formatDate(product.updatedAt)}
                                     </span>
                                     </div>
                                   </div>
 
                                   <div className="row mb-3 mt-3">
                                     <div className="col-md-2">
-
-                                    <Image
-  src={product?.images[0]?.url || "/default-image.jpg"} // ✅ Fallback image
-  alt="Product"
-  width={100}
-  height={100}
-  className="me-3 p-2 rounded-[5px] object-cover common-shad"
-  unoptimized
-/>
-
+                                <Link href={`/products/${product._id}`}>
+    <Image
+      src={product?.images[0]?.url || "/default-image.jpg"}
+      alt="Product"
+      width={100}
+      height={100}
+      className="me-3 p-2 rounded-[5px] object-cover common-shad"
+      unoptimized
+    />
+</Link>
                                     </div>
 
-                                    <div className="col-md-2">
-                                      <div className="res-color1 text-center p-2 rounded-3 common-shad">
-                                        <span className="text-sm d-block">Product Name</span>  <span className="res1-text-color fw-bold">  {product.name}</span> 
-                                      </div>
-                                    </div>
+                                     <div className="col-md-10">
+                                            <div className="row align-items-stretch">
+                                              <div className="col-md-2">
+                                                <div className="res-color1 text-center p-2 rounded-3 common-shad h-100 d-flex flex-column justify-content-center">
+                                                  <span className="text-sm d-block">Product Name</span>  
+                                                  <span className="res1-text-color fw-bold">{product.name}</span> 
+                                                </div>
+                                              </div>
 
-                                    <div className="col-md-2">
-                                      <div className="res-color1 text-center p-2 rounded-3 common-shad">
-                                        <span className="text-sm d-block">Product Price</span>  <span className="res1-text-color fw-bold">{product.currency}  ₹{product.price} </span>
-                                      </div>
-                                    </div>
+                                              <div className="col-md-2">
+                                                <div className="res-color1 text-center p-2 rounded-3 common-shad h-100 d-flex flex-column justify-content-center">
+                                                  <span className="text-sm d-block">Product Price</span>  
+                                                  <span className="res1-text-color fw-bold">{product.currency} ₹{product.price}</span>
+                                                </div>
+                                              </div>
 
-                                    <div className="col-md-2">
-                                      <div className="res-color1 text-center p-2 rounded-3 common-shad">
-                                        <span className="text-sm d-block">MOQ</span>   <span className="res1-text-color fw-bold"> {product.minimumOrderQuantity}</span>
-                                      </div>
-                                    </div>
-                                    <div className="col-md-2">
-                                      <div className="res-color1 text-center p-2 rounded-3 common-shad">
-                                        <span className="text-sm d-block">Category</span>   <span className="res1-text-color fw-bold"> {product?.category?.name}</span>
-                                      </div>
-                                    </div>
-                                    <div className="col-md-2">
-                                      <div className="res-color1 text-center p-2 rounded-3 common-shad">
-                                        <span className="text-sm d-block">Sub Category</span>   <span className="res1-text-color fw-bold"> {product?.subCategory?.name}</span>
-                                      </div>
+                                              <div className="col-md-2">
+                                                <div className="res-color1 text-center p-2 rounded-3 common-shad h-100 d-flex flex-column justify-content-center">
+                                                  <span className="text-sm d-block">MOQ</span>  
+                                                  <span className="res1-text-color fw-bold">{product.minimumOrderQuantity}</span>
+                                                </div>
+                                              </div>
+
+                                              <div className="col-md-2">
+                                                <div className="res-color1 text-center p-2 rounded-3 common-shad h-100 d-flex flex-column justify-content-center">
+                                                  <span className="text-sm d-block">Category</span>  
+                                                  <span className="res1-text-color fw-bold">{product?.category?.name}</span>
+                                                </div>
+                                              </div>
+
+                                              <div className="col-md-2">
+                                                <div className="res-color1 text-center p-2 rounded-3 common-shad h-100 d-flex flex-column justify-content-center">
+                                                  <span className="text-sm d-block">Sub Category</span>  
+                                                  <span className="res1-text-color fw-bold">{product?.subCategory?.name}</span>
+                                                </div>
+                                              </div>
+
+                                              <div className="col-md-2">
+                                                <div className="res-color1 text-center p-2 rounded-3 common-shad h-100 d-flex flex-column justify-content-center">
+                                                  <span className="text-sm d-block">Location</span>  
+                                                  <span className="text-sm rounded-2">
+                                                    <b>State:</b> {product?.state} <br />
+                                                    <b>City:</b> {product?.city}
+                                                  </span>
+                                                </div>
+                                              </div>
+
+                                              <p className="text-sm mt-2 text-gray-600">{product.description}</p>
+                                            </div>
+
                                     </div>
                                   </div>
+
                                   <div className="progress">
                                     <div className={`progress-bar ${strength.color}`} style={{ width: `${progress}%` }}>
                                       {progress}% Complete
@@ -819,9 +837,7 @@ const matchesRemark = (
                 </React.Fragment>
               ))
             ) : (
-              <tr>
-                <td colSpan="7" className="text-center">No matching users found.</td>
-              </tr>
+              <tr><td colSpan="7" className="text-center">No matching users found.</td></tr>
             )}
           </tbody>
 

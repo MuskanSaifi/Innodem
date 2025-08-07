@@ -149,7 +149,7 @@ const AllSubcategory = () => {
                                      />
                                    )}
                                  </td>
-                  <td>{subcategory.name}</td>
+                  <td>{subcategory.name} || {subcategory._id}</td>
                   <td>{subcategory.category?.name || "N/A"}</td>
                   <td>{subcategory.products?.length || 0}</td>
                   <td>

@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import { Modal, Button } from "react-bootstrap";
 import LocationSelector from "./components/LocationSelector";
 import Image from "next/image";
+import Link from "next/link";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -477,6 +478,7 @@ const AllProducts = () => {
   {/* Image and Created At part - 30% width on desktop */}
   <div className="col-12 col-md-3 d-flex flex-column align-items-center text-center">
     {/* col-12 for mobile (full width), col-md-4 for desktop (~33.33% which is close to 30%) */}
+ <Link href={`/products/${product._id}`}>
     <Image
       src={productImage}
       alt="Product"
@@ -485,6 +487,7 @@ const AllProducts = () => {
       className="object-cover rounded-md mb-2 shadow-sm border border-gray-200"
       unoptimized
     />
+    </Link>
     <div className="text-sm text-gray-700 font-medium bg-gray-50 px-3 py-1.5 rounded-md shadow-sm w-full">
       <span className="font-semibold text-gray-900">Created At:</span> <br />
       {product?.createdAt
