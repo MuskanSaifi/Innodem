@@ -345,7 +345,7 @@ const handleSubmit = async (e) => {
 
         if (error.response) {
           // If the server responded with an error (like missing fields)
-          toast.error(error.response.data.message || "❌ Something went wrong. Please try again later.");
+          toast.error(error.response.data.message || "Image Size Should be Less than 500 KB");
         } else if (error.request) {
           // If no response was received from the server
           toast.error("❌ No response from server. Please check your internet connection.");
