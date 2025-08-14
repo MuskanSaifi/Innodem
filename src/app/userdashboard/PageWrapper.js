@@ -14,6 +14,7 @@ import Payments from "./Payments";
 import Enquiry from "./Enquiry";
 import Supportperson from "./Supportperson";
 import { useSelector } from 'react-redux';
+import UserAggrement from "./UserAggrement";
 
 function DashboardPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -60,6 +61,7 @@ function DashboardPage() {
           {activeContent === "My Product" && <AllProducts />}
           {activeContent === "Recieved Enquiry" && <Enquiry />}
           {activeContent === "Support Person" && <Supportperson />}
+         {activeContent === "Aggrement" && <UserAggrement user={user} />}
         </div>
       </div>
     </div>

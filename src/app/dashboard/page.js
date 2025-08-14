@@ -28,6 +28,7 @@ import SalaryReport from "./SalaryReport";
 import LeaveRequests from "./LeaveRequests";
 import AddEmployeeForm from "./AddEmployeeForm";
 import AddNotifucations from "./AddNotifucations";
+import AdminAggrement from "./AdminAggrement";
 
 function ResponsiveDashboard() {
   const router = useRouter();
@@ -115,6 +116,7 @@ function ResponsiveDashboard() {
           {activeContent === "Manage Support Members" && <CreateSupportPerson />}
           {activeContent === "All Recordings" && <AllRecordings />}
           {activeContent === "All Clients Website Leads" && <AllClientWebsiteLeads />}
+          {activeContent === "Aggrement" && <AdminAggrement/>}
           {activeContent === "Add Employee" && <AddEmployeeForm />}
           {activeContent === "Salary Report" && <SalaryReport />}
           {activeContent === "Leave Requests" && <LeaveRequests />}

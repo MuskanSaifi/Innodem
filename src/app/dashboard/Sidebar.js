@@ -17,6 +17,7 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
     { icon: "/assets/dashboardicons/Manage Support Members.png", label: "Manage Support Members" },
     { icon: "/assets/dashboardicons/add recording.png", label: "All Recordings" },
     { icon: "/assets/dashboardicons/clientswebsiteleads.png", label: "All Clients Website Leads" },
+    { icon: "/assets/dashboardicons/aggrement.png", label: "Aggrement" },
     {
       icon: "/assets/dashboardicons/Manage-Category.png",
       label: "Manage Category",
