@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { toast } from "react-hot-toast"; // optional for notifications
 
 const Userprofile = () => {
   const [userdetail, setUserdetail] = useState(null);
@@ -36,6 +37,7 @@ const Userprofile = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+
   const handleSave = async () => {
     setSaving(true);
     try {
@@ -53,6 +55,27 @@ const Userprofile = () => {
       setSaving(false);
     }
   };
+
+  // Add this function inside your component
+const handleDeactivateRequest = async () => {
+  try {
+    const res = await axios.patch(
+      `/api/userprofile/account-request`,
+      { requestType: "deactivate" },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    toast.success(res.data.message || "Deactivate request sent!");
+  } catch (err) {
+    console.error("Deactivate request error:", err.response?.data || err.message);
+    toast.error(err.response?.data?.message || "Failed to send request");
+  }
+};
+
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -124,6 +147,8 @@ const Userprofile = () => {
         : "Complete profile to generate your website"}
     </Link>
   </div>
+
+
 </div>
 
         {/* Personal Details */}
@@ -156,34 +181,43 @@ const Userprofile = () => {
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="mt-6 flex justify-end gap-4">
-          {editMode ? (
-            <>
-              <button
-                className="px-5 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
-                onClick={() => setEditMode(false)}
-                disabled={saving}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-                onClick={handleSave}
-                disabled={saving}
-              >
-                {saving ? "Saving..." : "Save Details"}
-              </button>
-            </>
-          ) : (
-            <button
-              className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-              onClick={() => setEditMode(true)}
-            >
-              Edit Details
-            </button>
-          )}
-        </div>
+
+          {/* Action Buttons */}
+<div className="mt-6 flex flex-col sm:flex-row justify-end gap-4">
+  {editMode ? (
+    <>
+      <button
+        className="px-5 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
+        onClick={() => setEditMode(false)}
+        disabled={saving}
+      >
+        Cancel
+      </button>
+      <button
+        className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+        onClick={handleSave}
+        disabled={saving}
+      >
+        {saving ? "Saving..." : "Save Details"}
+      </button>
+    </>
+  ) : (
+    <>
+      <button
+        className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+        onClick={() => setEditMode(true)}
+      >
+        Edit Details
+      </button>
+      <button
+        className="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+        onClick={handleDeactivateRequest}
+      >
+        Raise Query for Deactivate
+      </button>
+    </>
+  )}
+</div>
       </div>
     </div>
   );

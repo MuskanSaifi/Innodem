@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "SupportPerson",
   },
+
     pushTokens: {
     type: [String], // Change this to an array of strings
     default: [],
@@ -30,6 +31,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ""
   },
+     accountRequest: {
+  type: String,
+  enum: ["none", "deactivate", "delete"],
+  default: "none"
+},
 
   // ✅ Add this line to reference products
     products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
