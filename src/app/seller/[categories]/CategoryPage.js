@@ -16,7 +16,6 @@ import 'rc-slider/assets/index.css'; // Don't forget to import the styles!
 import { useDispatch, useSelector } from 'react-redux';
 import { addProductToWishlist, removeProductFromWishlist } from '../../store/wishlistSlice'; // Adjust path if necessary
 
-
 const CategoryPage = ({ categorySlug }) => {
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
@@ -917,7 +916,7 @@ const CategoryPage = ({ categorySlug }) => {
         {/* Category HTML Content */}
         {categoryContent && (
           <div
-            className="bg-white p-3 mb-4 rounded common-shad" // Added common-shad for consistent styling
+            className="mb-4" // Added common-shad for consistent styling
             dangerouslySetInnerHTML={{ __html: categoryContent }}
           />
         )}
