@@ -89,7 +89,7 @@ const Dashboard = () => {
                   <p className="fw-light text-light">Your decisions shape the success of this platform. Keep it up! 💪</p>
                   </div>
                   <div className="col-md-5"></div>
-                </div>
+                </div>  
               </div>
             </div>
             <div className="col-md-6 mb-3 mt-4">

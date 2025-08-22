@@ -3,7 +3,7 @@
 import User from "@/models/User";
 import connectdb from "@/lib/dbConnect";
 import { NextResponse } from "next/server";
-import plans from "@/app/become-a-member/PlansData";
+import plans from "@/app/become-a-member-old/PlansData";
 
 
 export async function POST(req) {
