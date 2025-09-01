@@ -16,8 +16,9 @@ export async function POST(req) {
         }
 
         // ✅ Test number & OTP for Apple review
-        const testNumber = "9643685727";
-        const testOtp = "12345";
+        const testNumber = "+919643685727";
+const testOtp = "12345";
+
 
         const formattedMobile = mobileNumber.startsWith("+") ? mobileNumber.slice(1) : `91${mobileNumber}`;
 
