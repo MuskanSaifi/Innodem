@@ -15,11 +15,21 @@ export async function POST(req) {
             });
         }
 
-        const formattedMobile = mobileNumber.startsWith("+") ? mobileNumber.slice(1) : `91${mobileNumber}`;
+        // ✅ Static test number
+        const testNumber = "9643685727";
+        const testOtp = "12345";
 
+        // ========== OTP Send ==========
         if (!otp) {
-            const user = await User.findOne({ mobileNumber });
+            // Agar test number h to OTP send ki zaroorat hi nahi
+            if (mobileNumber === testNumber) {
+                return new Response(
+                    JSON.stringify({ message: `Use OTP ${testOtp} to login`, mobileNumber }),
+                    { status: 200, headers: { "Content-Type": "application/json" } }
+                );
+            }
 
+            const user = await User.findOne({ mobileNumber });
             if (!user) {
                 return new Response(JSON.stringify({ error: "User not found, please register first" }), {
                     status: 400,
@@ -27,9 +37,7 @@ export async function POST(req) {
                 });
             }
 
-            // const generatedOtp = Math.floor(100000 + Math.random() * 900000);
             const generatedOtp = Math.floor(1000 + Math.random() * 9000); // 4-digit OTP
-
             const otpExpires = new Date(Date.now() + 5 * 60000);
 
             user.otp = generatedOtp;
@@ -37,12 +45,11 @@ export async function POST(req) {
             await user.save();
 
             try {
-                // Replace placeholders with your 2Factor API details
-                const apiKey = "afd6c091-063e-11f0-8b17-0200cd936042"; // Add your API key in environment variables
-                const otpTemplateName = "OTPtemplate"; // Replace with your template name
+                const apiKey = "afd6c091-063e-11f0-8b17-0200cd936042"; 
+                const otpTemplateName = "OTPtemplate";
 
                 const response = await fetch(
-                    `https://2factor.in/API/V1/${apiKey}/SMS/${formattedMobile}/${generatedOtp}/${otpTemplateName}`,
+                    `https://2factor.in/API/V1/${apiKey}/SMS/91${mobileNumber}/${generatedOtp}/${otpTemplateName}`,
                     { method: "GET" }
                 );
                 const result = await response.json();
@@ -66,9 +73,28 @@ export async function POST(req) {
                     headers: { "Content-Type": "application/json" },
                 });
             }
-        } else {
-            const user = await User.findOne({ mobileNumber, otp, otpExpires: { $gt: new Date() } });
+        }
 
+        // ========== OTP Verify ==========
+        else {
+            // ✅ Agar test number h to static OTP allow karo
+            if (mobileNumber === testNumber && otp === testOtp) {
+                let user = await User.findOne({ mobileNumber });
+                if (!user) {
+                    // agar user DB me nahi h to ek dummy create kar lo
+                    user = new User({ mobileNumber, isVerified: true });
+                    await user.save();
+                }
+
+                const token = generateToken(user);
+                return new Response(JSON.stringify({ message: "Login successful", token, user }), {
+                    status: 200,
+                    headers: { "Content-Type": "application/json" },
+                });
+            }
+
+            // Normal user ke liye DB OTP verify
+            const user = await User.findOne({ mobileNumber, otp, otpExpires: { $gt: new Date() } });
             if (!user) {
                 return new Response(JSON.stringify({ error: "Invalid or expired OTP" }), {
                     status: 400,
@@ -77,12 +103,11 @@ export async function POST(req) {
             }
 
             user.isVerified = true;
-            user.otp = null; // Clear OTP after verification
+            user.otp = null;
             user.otpExpires = null;
             await user.save();
 
             const token = generateToken(user);
-
             return new Response(JSON.stringify({ message: "Login successful", token, user }), {
                 status: 200,
                 headers: { "Content-Type": "application/json" },
