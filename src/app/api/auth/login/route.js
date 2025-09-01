@@ -15,9 +15,22 @@ export async function POST(req) {
             });
         }
 
+        // ✅ Test number & OTP for Apple review
+        const testNumber = "9643685727";
+        const testOtp = "12345";
+
         const formattedMobile = mobileNumber.startsWith("+") ? mobileNumber.slice(1) : `91${mobileNumber}`;
 
+        // ========== OTP Send ==========
         if (!otp) {
+            // ⚡ Skip sending OTP if test number
+            if (mobileNumber === testNumber) {
+                return new Response(JSON.stringify({ message: "Static OTP enabled for test account", mobileNumber }), {
+                    status: 200,
+                    headers: { "Content-Type": "application/json" },
+                });
+            }
+
             const user = await User.findOne({ mobileNumber });
 
             if (!user) {
@@ -27,9 +40,7 @@ export async function POST(req) {
                 });
             }
 
-            // const generatedOtp = Math.floor(100000 + Math.random() * 900000);
             const generatedOtp = Math.floor(1000 + Math.random() * 9000); // 4-digit OTP
-
             const otpExpires = new Date(Date.now() + 5 * 60000);
 
             user.otp = generatedOtp;
@@ -38,8 +49,8 @@ export async function POST(req) {
 
             try {
                 // Replace placeholders with your 2Factor API details
-                const apiKey = "afd6c091-063e-11f0-8b17-0200cd936042"; // Add your API key in environment variables
-                const otpTemplateName = "OTPtemplate"; // Replace with your template name
+                const apiKey = "afd6c091-063e-11f0-8b17-0200cd936042"; 
+                const otpTemplateName = "OTPtemplate"; 
 
                 const response = await fetch(
                     `https://2factor.in/API/V1/${apiKey}/SMS/${formattedMobile}/${generatedOtp}/${otpTemplateName}`,
@@ -66,7 +77,26 @@ export async function POST(req) {
                     headers: { "Content-Type": "application/json" },
                 });
             }
-        } else {
+        } 
+        
+        // ========== OTP Verify ==========
+        else {
+            // ✅ Static test login bypass
+            if (mobileNumber === testNumber && otp === testOtp) {
+                let user = await User.findOne({ mobileNumber });
+                if (!user) {
+                    user = new User({ mobileNumber, isVerified: true });
+                    await user.save();
+                }
+
+                const token = generateToken(user);
+                return new Response(JSON.stringify({ message: "Login successful (Test Account)", token, user }), {
+                    status: 200,
+                    headers: { "Content-Type": "application/json" },
+                });
+            }
+
+            // ⚡ Normal OTP verification
             const user = await User.findOne({ mobileNumber, otp, otpExpires: { $gt: new Date() } });
 
             if (!user) {
@@ -77,7 +107,7 @@ export async function POST(req) {
             }
 
             user.isVerified = true;
-            user.otp = null; // Clear OTP after verification
+            user.otp = null; 
             user.otpExpires = null;
             await user.save();
 
