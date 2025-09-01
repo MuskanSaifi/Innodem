@@ -76,48 +76,48 @@ export async function POST(req) {
         }
 
         // ========== OTP Verify ==========
-        else {
-            // ✅ Agar test number h to static OTP allow karo
-            if (mobileNumber === testNumber && otp === testOtp) {
-                let user = await User.findOne({ mobileNumber });
-                if (!user) {
-                    // agar user DB me nahi h to ek dummy create kar lo
-                    user = new User({ mobileNumber, isVerified: true });
-                    await user.save();
-                }
-
-                const token = generateToken(user);
-                return new Response(JSON.stringify({ message: "Login successful", token, user }), {
-                    status: 200,
-                    headers: { "Content-Type": "application/json" },
-                });
-            }
-
-            // Normal user ke liye DB OTP verify
-            const user = await User.findOne({ mobileNumber, otp, otpExpires: { $gt: new Date() } });
-            if (!user) {
-                return new Response(JSON.stringify({ error: "Invalid or expired OTP" }), {
-                    status: 400,
-                    headers: { "Content-Type": "application/json" },
-                });
-            }
-
-            user.isVerified = true;
-            user.otp = null;
-            user.otpExpires = null;
+      // ========== OTP Verify ==========
+else {
+    // ✅ Agar test number h to static OTP allow karo
+    if (mobileNumber === testNumber && otp === testOtp) {
+        let user = await User.findOne({ mobileNumber });
+        if (!user) {
+            // agar user DB me nahi h to ek dummy create kar lo
+            user = new User({ mobileNumber, isVerified: true });
             await user.save();
-
-            const token = generateToken(user);
-            return new Response(JSON.stringify({ message: "Login successful", token, user }), {
-                status: 200,
-                headers: { "Content-Type": "application/json" },
-            });
         }
-    } catch (error) {
-        console.error("Error in login API:", error);
-        return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-            status: 500,
+
+        const token = generateToken(user);
+        return new Response(JSON.stringify({ message: "Login successful", token, user }), {
+            status: 200,
             headers: { "Content-Type": "application/json" },
         });
     }
+
+    // ⚡ baki sab ke liye normal OTP verify
+    const user = await User.findOne({
+        mobileNumber,
+        otp,
+        otpExpires: { $gt: new Date() },
+    });
+
+    if (!user) {
+        return new Response(JSON.stringify({ error: "Invalid or expired OTP" }), {
+            status: 400,
+            headers: { "Content-Type": "application/json" },
+        });
+    }
+
+    user.isVerified = true;
+    user.otp = null;
+    user.otpExpires = null;
+    await user.save();
+
+    const token = generateToken(user);
+    return new Response(JSON.stringify({ message: "Login successful", token, user }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+    });
+}
+
 }
