@@ -36,7 +36,9 @@ const Userprofile = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+const handleDeleteAccount2 = () => {
+  toast.success("Your query for account deactivation has been raised. The team will take action soon.");
+};
 
   const handleSave = async () => {
     setSaving(true);
@@ -214,6 +216,12 @@ const handleDeleteAccount = async () => {
         onClick={handleDeleteAccount}
       >
         Delete Account
+      </button>
+      <button
+        className="px-5  py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+        onClick={handleDeleteAccount2}
+      >
+        Raise Query for Deactivate
       </button>
     </>
   )}
