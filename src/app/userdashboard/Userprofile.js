@@ -57,22 +57,22 @@ const Userprofile = () => {
   };
 
   // Add this function inside your component
-const handleDeactivateRequest = async () => {
-  try {
-    const res = await axios.patch(
-      `/api/userprofile/account-request`,
-      { requestType: "deactivate" },
-      {
+const handleDeleteAccount = async () => {
+  if (confirm("Are you sure? This will permanently delete your account and all data.")) {
+    try {
+      const res = await axios.delete(`/api/userprofile/delete`, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
         },
-      }
-    );
-    toast.success(res.data.message || "Deactivate request sent!");
-  } catch (err) {
-    console.error("Deactivate request error:", err.response?.data || err.message);
-    toast.error(err.response?.data?.message || "Failed to send request");
+      });
+      toast.success(res.data.message || "Account deleted successfully");
+      // logout user and redirect
+      localStorage.clear();
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Delete account error:", err.response?.data || err.message);
+      toast.error(err.response?.data?.message || "Failed to delete account");
+    }
   }
 };
 
@@ -210,10 +210,10 @@ const handleDeactivateRequest = async () => {
         Edit Details
       </button>
       <button
-        className="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-        onClick={handleDeactivateRequest}
+        className="px-5 d-none py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+        onClick={handleDeleteAccount}
       >
-        Raise Query for Deactivate
+        Delete Account
       </button>
     </>
   )}
