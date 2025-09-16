@@ -276,7 +276,7 @@ export default function Header() {
             <div className="col-3 col-md-2 d-flex justify-content-center">
               <Link href="/">
                 <Image
-                  src="/assets/logo123.png"
+                  src="/assets/logo1234.png"
                   alt="Innodem Logo"
                   width={160}
                   height={60}

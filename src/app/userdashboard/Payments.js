@@ -54,7 +54,7 @@ const Payments = () => {
               All <span className="text-purple-600">Payments</span>
             </h2>
             <Link href="/become-a-member" className="flex items-center gap-2 text-blue-600 hover:underline">
-              <Image src="/assets/dashboardicons/payment-link.png" alt="Payment Link" width={24} height={24} />
+              <Image src="/assets/dashboardicons/payment-link-img.png" alt="Payment Link" width={24} height={24} />
               <span className="text-sm font-medium">Payment Link</span>
             </Link>
           </div>
