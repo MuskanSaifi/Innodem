@@ -66,9 +66,6 @@ const Footer = () => {
     }
   };
 
-
-
-
   // Handle Scroll-to-Top Button Visibility
   useEffect(() => {
     const toggleVisibility = () => {
@@ -244,7 +241,7 @@ const socialLinks = [
 </Link>
 
 {/* Google Play Logo */}
-<Link href="/coming-soon" className="w-[70%] md:w-auto">
+<Link href="https://play.google.com/store/apps/details?id=com.nazim_saifi.dialexportmart" className="w-[70%] md:w-auto">
   <div className="relative w-full md:w-[128px] h-[40px]"> {/* Set height manually */}
     <Image
       src="/assets/play.png"
