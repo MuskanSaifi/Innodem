@@ -177,6 +177,8 @@ export async function POST(req) {
     );
   }
 }
+
+
 export async function GET() {
   try {
     await connectDB();
@@ -241,6 +243,9 @@ export async function GET() {
     );
   }
 }
+
+
+
 
 export async function DELETE(req) {
   try {

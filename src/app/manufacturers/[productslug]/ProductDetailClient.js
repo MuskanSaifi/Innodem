@@ -331,7 +331,7 @@ useEffect(() => {
               );
             })
           ) : (
-            <p className="text-warning">Product details not available.</p>
+            <p className="text-warning">This Product is not available. it may belong to a seller you have blocked.</p>
           )}
         </div>
 
