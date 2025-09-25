@@ -36,12 +36,19 @@ export async function GET(request) {
       userId: { $nin: blockedSellerIds },
     }).populate("subCategory category userId");
 
-    if (!products || products.length === 0) {
-      return NextResponse.json(
-        { message: "Product(s) not found", success: false },
-        { status: 404 }
-      );
-    }
+  if (!products || products.length === 0) {
+  return NextResponse.json(
+    {
+      success: true,
+      products: [],
+      subcategories: [],
+      relatedProducts: [],
+      businessProfile: null,
+    },
+    { status: 200 }
+  );
+}
+
 
     const baseProduct = products[0];
 
