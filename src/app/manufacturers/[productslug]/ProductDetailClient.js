@@ -42,34 +42,40 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
   const user = useSelector((state) => state.user.user); // Get user from userSlice
 
   // Effect to fetch product data based on slug
-  useEffect(() => {
-    if (!slugFromURL) return;
+useEffect(() => {
+  if (!slugFromURL) return;
 
-    const fetchProductData = async () => {
-      setLoading(true);
-      setError(null);
+  const fetchProductData = async () => {
+    setLoading(true);
+    setError(null);
 
-      try {
-        const encodedSlug = encodeURIComponent(slugFromURL);
-        const response = await fetch(`/api/manufacturers/${encodedSlug}`);
-        if (!response.ok)
-          throw new Error(`Failed to fetch product data: ${response.status}`);
-        const data = await response.json();
+    try {
+      const encodedSlug = encodeURIComponent(slugFromURL);
 
-        setProducts(data.products || []);
-        setSubcategories(data.subcategories || []);
-        setRelatedProducts(data.relatedProducts || []);
-        setBusinessProfile(data.businessProfile || null);
-      } catch (err) {
-        console.error("Error fetching product:", err?.message || err);
-        setError("Could not load product details.");
-      } finally {
-        setLoading(false);
-      }
-    };
+      // 👇 user._id pass kar rahe hain backend ko
+      const response = await fetch(
+        `/api/manufacturers/${encodedSlug}${user && user._id ? `?userId=${user._id}` : ""}`
+      );
 
-    fetchProductData();
-  }, [slugFromURL]);
+      if (!response.ok)
+        throw new Error(`Failed to fetch product data: ${response.status}`);
+      const data = await response.json();
+
+      setProducts(data.products || []);
+      setSubcategories(data.subcategories || []);
+      setRelatedProducts(data.relatedProducts || []);
+      setBusinessProfile(data.businessProfile || null);
+    } catch (err) {
+      console.error("Error fetching product:", err?.message || err);
+      setError("Could not load product details.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProductData();
+}, [slugFromURL, user]); // 👈 user dependency add ki
+
 
   // Effect to fetch user's wishlist when component mounts or user state changes
   useEffect(() => {

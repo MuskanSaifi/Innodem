@@ -4,6 +4,7 @@ import connectdb from "@/lib/dbConnect";
 import Product from "@/models/Product";
 import SubCategory from "@/models/SubCategory";
 import BusinessProfile from "@/models/BusinessProfile";
+import BlockedUser from "@/models/BlockedUser";
 
 export async function GET(request) {
   await connectdb();
@@ -11,6 +12,7 @@ export async function GET(request) {
   try {
     const url = new URL(request.url);
     const productslug = url.pathname.split("/").pop(); // ✅ Extract slug manually
+    const userId = url.searchParams.get("userId"); // 👈 current userId frontend se bhejna hoga
 
     if (!productslug) {
       return NextResponse.json(
@@ -19,10 +21,20 @@ export async function GET(request) {
       );
     }
 
+    // 👇 blocked sellers nikal lo
+    let blockedSellerIds = [];
+    if (userId) {
+      const blockedSellers = await BlockedUser.find({ blockedBy: userId }).select("sellerId");
+      blockedSellerIds = blockedSellers.map((b) => b.sellerId.toString());
+    }
+
     const decodedProductSlug = decodeURIComponent(productslug);
 
-    const products = await Product.find({ productslug: decodedProductSlug })
-      .populate("subCategory category userId");
+    // ✅ sirf unhi products ko lao jo blocked sellers se nahi h
+    const products = await Product.find({
+      productslug: decodedProductSlug,
+      userId: { $nin: blockedSellerIds },
+    }).populate("subCategory category userId");
 
     if (!products || products.length === 0) {
       return NextResponse.json(
@@ -33,14 +45,20 @@ export async function GET(request) {
 
     const baseProduct = products[0];
 
-    const subcategories = await SubCategory.find({ category: baseProduct.category }).populate("category");
+    const subcategories = await SubCategory.find({ category: baseProduct.category }).populate(
+      "category"
+    );
 
     const relatedProducts = await Product.find({
       subCategory: baseProduct.subCategory,
-      _id: { $nin: products.map(p => p._id) },
+      _id: { $nin: products.map((p) => p._id) },
+      userId: { $nin: blockedSellerIds }, // 👈 filter yahan bhi
     }).limit(5);
 
-    const businessProfile = await BusinessProfile.findOne({ userId: baseProduct.userId });
+    const businessProfile =
+      !blockedSellerIds.includes(baseProduct.userId.toString()) // 👈 seller blocked h to businessProfile na do
+        ? await BusinessProfile.findOne({ userId: baseProduct.userId })
+        : null;
 
     return NextResponse.json(
       {
