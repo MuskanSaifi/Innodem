@@ -29,6 +29,8 @@ import LeaveRequests from "./LeaveRequests";
 import AddEmployeeForm from "./AddEmployeeForm";
 import AddNotifucations from "./AddNotifucations";
 import AdminAggrement from "./AdminAggrement";
+import Report from "./Report";
+import Block from "./Block";
 
 function ResponsiveDashboard() {
   const router = useRouter();
@@ -120,6 +122,8 @@ function ResponsiveDashboard() {
           {activeContent === "Add Employee" && <AddEmployeeForm />}
           {activeContent === "Salary Report" && <SalaryReport />}
           {activeContent === "Leave Requests" && <LeaveRequests />}
+          {activeContent === "Report" && <Report />}
+          {activeContent === "Block" && <Block />}
         </div>
       </div>
     </div>

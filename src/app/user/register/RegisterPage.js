@@ -8,8 +8,6 @@ import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/app/store/userSlice";
 
-
-
 // Country Code List (Country Name is hidden but searchable)
 const countryCodes = [
     { value: "+91", label: "🇮🇳 +91", name: "India" },

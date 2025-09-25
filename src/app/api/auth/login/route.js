@@ -114,10 +114,18 @@ const testOtp = "12345";
 
             const token = generateToken(user);
 
-            return new Response(JSON.stringify({ message: "Login successful", token, user }), {
-                status: 200,
-                headers: { "Content-Type": "application/json" },
-            });
+           return new Response(JSON.stringify({
+  message: "Login successful",
+  token,
+  user: {
+    ...user.toObject(),
+    termsAccepted: user.termsAccepted, // 👈 ye bhejna zaroori hai
+  }
+}), {
+  status: 200,
+  headers: { "Content-Type": "application/json" },
+});
+
         }
     } catch (error) {
         console.error("Error in login API:", error);

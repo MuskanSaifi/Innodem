@@ -245,16 +245,21 @@ export default function Login() {
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
     const [showOtpField, setShowOtpField] = useState(false);
-const token = useSelector((state) => state.user.token);
+// const token = useSelector((state) => state.user.token);
+const { user, token } = useSelector((state) => state.user);
 
     const dispatch = useDispatch();
     const router = useRouter();
 
-      useEffect(() => {
-    if (token) {
-      router.push("/userdashboard"); // or '/' if you want to go to homepage
+useEffect(() => {
+  if (token && user) {
+    if (user.termsAccepted) {
+      router.push("/userdashboard");   // ✅ Terms accepted → dashboard
+    } else {
+      router.push("/accept-terms");    // ❌ Not accepted → terms page
     }
-  }, [token, router]);
+  }
+}, [token, user, router]);
 
 
     // Send OTP
@@ -305,14 +310,19 @@ const token = useSelector((state) => state.user.token);
 
             const data = await res.json();
 
-            if (res.ok) {
-                setMessage("Login successful!");
-              // Redux store update karen
-                dispatch(setUser({ user: data.user, token: data.token }));
-                router.push("/userdashboard"); 
-            } else {
-                setError(data.error);
-            }
+         if (res.ok) {
+  setMessage("Login successful!");
+  // Redux store update
+  dispatch(setUser({ user: data.user, token: data.token }));
+
+  if (data.user.termsAccepted) {
+    router.push("/userdashboard");
+  } else {
+    router.push("/accept-terms"); // ✅ Terms page par bhejna
+  }
+} else {
+  setError(data.error);
+}
         } catch (err) {
             setError("Invalid OTP or something went wrong!");
         } finally {

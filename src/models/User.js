@@ -12,6 +12,8 @@ const userSchema = new mongoose.Schema({
     type: [String], // Change this to an array of strings
     default: [],
   },
+ termsAccepted: { type: Boolean, default: false },
+
   
   fullname: String,
   email: { type: String, unique: true },
@@ -38,7 +40,7 @@ const userSchema = new mongoose.Schema({
 },
 
   // ✅ Add this line to reference products
-    products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+  products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
 
   // ✅ Add this line for the wishlist
   wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],

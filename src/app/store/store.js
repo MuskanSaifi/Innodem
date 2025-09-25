@@ -4,6 +4,7 @@ import categoryReducer from "./categorySlice"; // ✅ Import category reducer
 import productReducer from "./productSlice";
 import userReducer from "./userSlice";
 import wishlistReducer from "./wishlistSlice"; // ✅ Import the new slice
+import blockedReducer from "./blockedSlice";
 
 export const store = configureStore({
   reducer: {
@@ -11,5 +12,6 @@ export const store = configureStore({
     products: productReducer,  // ✅ Add productSlice to store
     user: userReducer,
     wishlist: wishlistReducer, // ✅ Add the wishlist reducer
+    blocked: blockedReducer,
   },
 });

@@ -1,4 +1,4 @@
-// app/products/[id]/ProductPage
+// app/products/[id]/ProductPage.js
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
@@ -37,25 +37,25 @@ const ProductDetailPage = () => {
   const { items: wishlistItems, loading: wishlistLoading } = useSelector(
     (state) => state.wishlist
   );
-  const user = useSelector((state) => state.user.user); // Get user from userSlice
-  // Effect to fetch user's wishlist when component mounts or user state changes
+  const user = useSelector((state) => state.user.user);
+  const token = useSelector((state) => state.user.token);
+  const { blockedSellers } = useSelector((state) => state.blocked);
+
+  // Effect to fetch wishlist
   useEffect(() => {
     if (user && user._id) {
-      // Ensure user is logged in and has an ID
       dispatch(fetchUserWishlist());
     }
-  }, [user, dispatch]); // Re-fetch if user logs in/out
+  }, [user, dispatch]);
 
-  // Handle adding/removing product from wishlist
+  // Handle wishlist toggle
   const handleToggleWishlist = (productId) => {
     if (!user) {
-      alert("Please log in to manage your wishlist!"); // Or show a toast/modal
+      alert("Please log in to manage your wishlist!");
       return;
     }
 
-    // Check if the product is currently in the wishlist
     const isInWishlist = wishlistItems.some((item) => item._id === productId);
-
     if (isInWishlist) {
       dispatch(removeProductFromWishlist(productId));
     } else {
@@ -63,16 +63,29 @@ const ProductDetailPage = () => {
     }
   };
 
+  // Fetch product details
   useEffect(() => {
-    const fetchProduct = async () => {
+const fetchProduct = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/products/${id}`);
+        // Add userId to the API request
+        const res = await fetch(`/api/products/${id}${user?._id ? `?userId=${user._id}` : ""}`);
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Error fetching product.");
-        setProduct(data);
-        setRelatedProducts(data.relatedProducts || []);
-        setRelatedCategories(data.relatedCategories || []);
+        
+        // Check if the product itself is from a blocked seller
+        // This is a redundant but safe check if API filtering fails
+        if (data.userId && blockedSellers.includes(data.userId._id)) {
+          setError("This product is from a blocked seller and cannot be viewed.");
+          setProduct(null); // Clear the product state
+          setRelatedProducts([]); // Clear related products
+          setRelatedCategories([]); // Clear related categories
+        } else if (!res.ok) {
+          throw new Error(data.error || "Error fetching product.");
+        } else {
+          setProduct(data);
+          setRelatedProducts(data.relatedProducts || []);
+          setRelatedCategories(data.relatedCategories || []);
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -80,25 +93,28 @@ const ProductDetailPage = () => {
       }
     };
 
+    // Ensure the fetch call is triggered when 'id' or 'user' changes
     if (id) {
       fetchProduct();
       setHoveredImage(null);
     }
-  }, [id]);
+  }, [id, user, blockedSellers]); // Add 'user' and 'blockedSellers' to the dependency array
+  
 
+  // Set initial image
   useEffect(() => {
-    if (product && product.images && product.images.length > 0 && !hoveredImage) {
+    if (product?.images?.length > 0 && !hoveredImage) {
       setHoveredImage(product.images[0]);
     }
   }, [product, hoveredImage]);
 
+  // Zoom modal handlers
   const handleMouseMove = (e) => {
     const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - left) / width) * 100;
     const y = ((e.clientY - top) / height) * 100;
     setZoomPosition({ x, y });
   };
-
   const handleZoomOpen = () => setShowZoomModal(true);
   const handleZoomClose = () => setShowZoomModal(false);
 
@@ -121,8 +137,77 @@ const ProductDetailPage = () => {
     };
   }, [showZoomModal]);
 
-  const isProductInWishlist = product && wishlistItems.some(item => item._id === product._id);
+  // Report seller
+  const handleReportSeller = async (sellerId) => {
+    if (!token) {
+      alert("⚠️ Please login first!");
+      router.push("/user/login");
+      return;
+    }
+    try {
+      const res = await fetch("/api/seller/report", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          sellerId,
+          reason: "Objectionable / fake content",
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert("✅ Report submitted. Admin will review it.");
+      } else {
+        alert(data.error || "Something went wrong");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Network error. Please try again.");
+    }
+  };
 
+  // Block seller
+  const handleBlockSeller = async (sellerId) => {
+    if (!token) {
+      alert("⚠️ Please login first!");
+      router.push("/user/login");
+      return;
+    }
+    try {
+      const res = await fetch("/api/seller/block", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ sellerId }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert(data.message || "🚫 Seller blocked");
+      } else {
+        alert(data.error || "Something went wrong");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Network error. Please try again.");
+    }
+  };
+
+  // ✅ Filter products and categories by blocked sellers
+  const visibleRelatedProducts = relatedProducts.filter(
+    (p) => !blockedSellers.includes(p.userId?._id)
+  );
+  const visibleRelatedCategories = relatedCategories.filter(
+    (c) => !blockedSellers.includes(c._id)
+  );
+
+  const isProductInWishlist =
+    product && wishlistItems.some((item) => item._id === product._id);
+
+    
   return (
     <section className="min-h-screen bg-white py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -202,69 +287,107 @@ const ProductDetailPage = () => {
               {/* Product Info - This will scroll */}
               <div className="md:col-span-6 space-y-6">
                 <div>
-                  <div className="d-flex justify-between">
-                    <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
-                   <button
-  onClick={() => handleToggleWishlist(product._id)}
-  disabled={wishlistLoading}
-  className={`w-8 h-8 flex items-center justify-center rounded-full transition-all duration-200 ${
-    isProductInWishlist
-      ? "bg-red-500 text-white hover:bg-red-600"
-      : "bg-gray-200 text-gray-500 hover:bg-gray-300"
-  }`}
-  title={isProductInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
-  aria-label={isProductInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
->
-  {wishlistLoading ? (
-    <svg
-      className="animate-spin h-4 w-4 text-white"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      ></circle>
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 
-           1.135 5.824 3 7.938l3-2.647z"
-      ></path>
-    </svg>
-  ) : (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-4 w-4"
-      viewBox="0 0 24 24"
-      fill={isProductInWishlist ? "currentColor" : "none"}
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 
-               0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 
-               1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-    </svg>
-  )}
-</button>
+               <div className="d-flex justify-between items-center">
+  {/* Product Name */}
+  <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
 
-                  </div>
-                  <div className="text-gray-500 text-sm mt-1 space-x-2">
+  {/* Action Buttons (Wishlist, Report, Block) */}
+  <div className="flex items-center gap-3">
+    {/* Wishlist Button */}
+    <button
+      onClick={() => handleToggleWishlist(product._id)}
+      disabled={wishlistLoading}
+      className={`w-8 h-8 flex items-center justify-center rounded-full transition-all duration-200 ${
+        isProductInWishlist
+          ? "bg-red-500 text-white hover:bg-red-600"
+          : "bg-gray-200 text-gray-500 hover:bg-gray-300"
+      }`}
+      title={isProductInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+      aria-label={isProductInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+    >
+      {wishlistLoading ? (
+        <svg
+          className="animate-spin h-4 w-4 text-white"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 
+               0 0 5.373 0 12h4zm2 5.291A7.962 
+               7.962 0 014 12H0c0 3.042 1.135 
+               5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+      ) : (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-4 w-4"
+          viewBox="0 0 24 24"
+          fill={isProductInWishlist ? "currentColor" : "none"}
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M20.84 4.61a5.5 5.5 
+                   0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 
+                   5.5 0 0 0-7.78 7.78l1.06 
+                   1.06L12 21.23l7.78-7.78 
+                   1.06-1.06a5.5 5.5 0 0 
+                   0 0-7.78z"></path>
+        </svg>
+      )}
+    </button>
+
+    {/* Report Seller (🚩 icon only) */}
+    <button
+      onClick={() => handleReportSeller(product?.userId?._id)}
+      className="w-8 h-8 flex items-center justify-center rounded-full bg-grey-300 text-white shadow hover:bg-grey-400 transition"
+      title="Report Seller"
+      aria-label="Report Seller"
+    >
+      🚩
+    </button>
+
+    {/* Block Seller (🚫 icon only) */}
+    <button
+      onClick={() => handleBlockSeller(product?.userId?._id)}
+      className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 text-white shadow hover:bg-gray-400 transition"
+      title="Block Seller"
+      aria-label="Block Seller"
+    >
+      🚫
+    </button>
+  </div>
+</div>
+
+                  <div className="text-gray-500 d-flex text-sm mt-1 space-x-2">
                     {product.userId?.fullname && <span>👤 {product.userId.fullname}</span>}
-                    {product.userId?.companyName && <span>🏢 {product.userId.companyName}</span>}
+{product?.userId?.companyName && (
+  <Link
+    href={`/company/${product?.userId?.userProfileSlug}`}
+    className="text-blue-600 hover:underline flex items-center gap-1"
+  >
+    🏢 <span>{product.userId.companyName}</span>
+  </Link>
+)}
                   </div>
                   <p className="text-yellow-500 text-sm font-semibold">⭐⭐⭐⭐ Rating</p>
 
                   <div className="mt-4 flex items-center space-x-6">
                     <div className="bg-green-100 bg-opacity-40 text-green-700 text-4xl font-extrabold px-6 py-3 rounded-lg ">
-                      ₹{product.tradeShopping?.slabPricing?.[0]?.price || "N/A"}
+                      ₹{product.price || "N/A"}
                     </div>
                     <div className="text-gray-700 font-medium text-lg">
                       MOQ: <span className="font-bold text-gray-900">{product.minimumOrderQuantity || "N/A"}</span>
@@ -463,9 +586,12 @@ const ProductDetailPage = () => {
                   )}
                 </div>
 
-                <div className="flex gap-4 pt-6 border-t">
-                  <Buyfrom product={product} sellerId={product?.userId?._id} />
-                </div>
+<div className="pt-6 border-t">
+    {/* Buy Button */}
+    <Buyfrom product={product} sellerId={product?.userId?._id} />
+  </div>
+
+
               </div>
 
               {/* Zoom Modal */}
@@ -502,11 +628,11 @@ const ProductDetailPage = () => {
         </div>
 
         {/* --- Related Products Section --- */}
-        {relatedProducts.length > 0 && (
+        {visibleRelatedProducts.length > 0 && (
    <div className="mt-12 bg-white rounded-3xl p-6">
   <h2 className="text-2xl font-bold text-gray-900 mb-6">Related Products</h2>
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-    {relatedProducts.map((relatedProduct) => {
+    {visibleRelatedProducts.map((relatedProduct) => {
       // Determine if the *current* related product is in the wishlist
       const isRelatedProductInWishlist = wishlistItems.some(item => item._id === relatedProduct._id);
 
@@ -629,11 +755,11 @@ const ProductDetailPage = () => {
         )}
 
         {/* --- Related Categories Section --- */}
-        {relatedCategories.length > 0 && (
+        {visibleRelatedCategories.length > 0 && (
           <div className="mt-12 bg-white rounded-3xl p-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Explore More in Similar Categories</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-              {relatedCategories.map((rc) => (
+              {visibleRelatedCategories.map((rc) => (
                 <Link
                   key={rc._id}
                   // Link logic: if type is product_as_category_display, link to product, else link to category
