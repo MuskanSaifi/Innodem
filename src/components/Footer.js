@@ -242,23 +242,23 @@ const socialLinks = [
 
 {/* Google Play Logo */}
 <Link href="https://play.google.com/store/apps/details?id=com.nazim_saifi.dialexportmart" className="w-[70%] md:w-auto">
-  <div className="relative w-full md:w-[128px] h-[40px]"> {/* Set height manually */}
+  <div className="w-full md:w-[128px]">
     <Image
-      src="/assets/play.png"
+      src="/assets/play-store.png"
       alt="Google Play"
-      fill
-      className="object-contain"
-      sizes="(max-width: 768px) 100vw, 128px"
+    layout="responsive"
+      width={128}
+      height={40}
     />
   </div>
 </Link>
 
 
 {/* App Store Logo */}
-<Link href="/coming-soon" className="w-[70%] md:w-auto">
+<Link href="https://apps.apple.com/in/app/dialexportmart/id6751717591?platform=iphone" className="w-[70%] md:w-auto">
   <div className="w-full md:w-[128px]">
     <Image
-      src="/assets/appstore.png"
+      src="/assets/app-store.png"
       alt="App Store"
       layout="responsive"
       width={128}

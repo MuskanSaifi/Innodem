@@ -13,7 +13,9 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
     {
       icon: "/assets/dashboardicons/profile-1.png",
       label: "Profile",
-      subItems: ["User Profile", "Business Profile", "Bank Details", "Manage Users"],
+      subItems: ["User Profile", "Business Profile", "Bank Details", 
+        // "Manage Users"
+      ],
     },
     {
       icon: "/assets/dashboardicons/products.png",
@@ -29,7 +31,7 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
     },
     { icon: "/assets/dashboardicons/Payments.png", label: "Payments" },
     { icon: "/assets/dashboardicons/support-person.png", label: "Support Person" },
-    { icon: "/assets/dashboardicons/aggrement.png", label: "Aggrement" },
+    // { icon: "/assets/dashboardicons/aggrement.png", label: "Aggrement" },
 
   ];
 

@@ -27,6 +27,57 @@ import {
   FiImage,
 } from "react-icons/fi";
 
+const allStates = [
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+];
+
+const allCities = [
+  "Mumbai",
+  "Delhi",
+  "Bangalore",
+  "Chennai",
+  "Kolkata",
+  "Hyderabad",
+  "Ahmedabad",
+  "Pune",
+  "Jaipur",
+  "Surat",
+];
+
+// Helper function to convert string array to { value, label } options
+const createOptions = (arr) => arr.map(item => ({ value: item, label: item }));
+
+const stateOptions = createOptions(allStates);
+const cityOptions = createOptions(allCities);
+
+
 const BusinessProfile = () => {
   const [formData, setFormData] = useState({
     businessType: [],
@@ -58,6 +109,8 @@ const BusinessProfile = () => {
     preferredBusinessCities: [],
     nonBusinessCities: [],
   });
+
+  
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -136,6 +189,14 @@ const BusinessProfile = () => {
       [section]: { ...prev[section], [name]: value },
     }));
   };
+
+  const handleMultiSelectChange = (fieldName) => (selectedOptions) => {
+    setFormData((prev) => ({
+      ...prev,
+      [fieldName]: selectedOptions ? selectedOptions.map((option) => option.value) : [],
+    }));
+  };
+
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -290,7 +351,7 @@ const BusinessProfile = () => {
             {/* Tax Details */}
        {renderSection("taxationDetails", "Taxation Details", FiFileText, (
   <>
-    {["gstNumber", "panNumber", "aadharNumber", "iecNumber", "tanNumber", "vatNumber"].map((field) => (
+    {["gstNumber", "aadharNumber", "panNumber",  "iecNumber", "tanNumber", "vatNumber"].map((field) => (
       <div className="mb-3" key={field}>
         <label htmlFor={field} className="form-label">
           {field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
@@ -376,8 +437,54 @@ const BusinessProfile = () => {
   />
 </div>
 
+       {/* --- ADDED: Preferred Business States --- */}
+                <div className="mb-3">
+                  <label className="form-label">Preferred Business States</label>
+                  <Select
+                    isMulti
+                    name="preferredBusinessStates"
+                    options={stateOptions}
+                    value={stateOptions.filter((opt) =>
+                      (formData.preferredBusinessStates || []).includes(opt.value)
+                    )}
+                    onChange={handleMultiSelectChange("preferredBusinessStates")}
+                    placeholder="Select states..."
+                  />
+                </div>
+
+                {/* --- ADDED: Preferred Business Cities --- */}
+                <div className="mb-3">
+                  <label className="form-label">Preferred Business Cities</label>
+                  <Select
+                    isMulti
+                    name="preferredBusinessCities"
+                    options={cityOptions}
+                    value={cityOptions.filter((opt) =>
+                      (formData.preferredBusinessCities || []).includes(opt.value)
+                    )}
+                    onChange={handleMultiSelectChange("preferredBusinessCities")}
+                    placeholder="Select cities..."
+                  />
+                </div>
+
+                {/* --- ADDED: Non-Business Cities --- */}
+                <div className="mb-3">
+                  <label className="form-label">Non-Business Cities</label>
+                  <Select
+                    isMulti
+                    name="nonBusinessCities"
+                    options={cityOptions}
+                    value={cityOptions.filter((opt) =>
+                      (formData.nonBusinessCities || []).includes(opt.value)
+                    )}
+                    onChange={handleMultiSelectChange("nonBusinessCities")}
+                    placeholder="Select non-business cities..."
+                  />
+                </div>
+
     {/* Logo, Video, Description */}
     <input type="text" className="form-control mb-3" name="companyLogo" value={formData.companyLogo} onChange={handleChange} placeholder="Company Logo URL" />
+    <input type="text" className="form-control mb-3" name="companyPhotos" value={formData.companyPhotos} onChange={handleChange} placeholder="Company Photoes URL" />
     <input type="text" className="form-control mb-3" name="companyVideo" value={formData.companyVideo} onChange={handleChange} placeholder="Company Video URL" />
    
     {editor && (
@@ -443,8 +550,6 @@ const BusinessProfile = () => {
 
   </>
 ))}
-
-
             <div className="text-center mt-4">
               <button type="submit" className="common-das-btn w-100 py-2 fw-semibold fs-5 text-light shadow-sm">
                 Save Changes

@@ -160,7 +160,7 @@ const handleDeleteAccount = async () => {
             {[
               { label: "Email", name: "email" },
               { label: "Alternate Email", name: "alternateEmail" },
-              { label: "Office Contact", name: "mobileNumber" },
+              { label: "Mobile No.", name: "mobileNumber" },
               { label: "Alternate Mobile No.", name: "alternateMobileNumber" },
               { label: "WhatsApp Number", name: "whatsappNumber" },
               { label: "Company Name", name: "companyName" },

@@ -511,10 +511,31 @@ const handleSubmit = async (e) => {
                                                 onChange={handleChange}
                                                 required
                                             >
-                                                <option value="Kilograms">Kg</option>
-                                                <option value="Piece/Pieces">Piece</option>
-                                                <option value="Ton/Tons">Ton</option>
-                                                <option value="Unit/Units">Unit</option>
+  <option value="Kilograms">Kg</option>
+<option value="Grams">Gram</option>
+<option value="Metric Tons">Metric Ton</option>
+<option value="Ton/Tons">Ton</option>
+<option value="Piece/Pieces">Piece</option>
+<option value="Unit/Units">Unit</option>
+<option value="Dozen">Dozen</option>
+<option value="Pairs">Pair</option>
+<option value="Set/Sets">Set</option>
+<option value="Box/Boxes">Box</option>
+<option value="Carton/Cartons">Carton</option>
+<option value="Bag/Bags">Bag</option>
+<option value="Roll/Rolls">Roll</option>
+<option value="Sheet/Sheets">Sheet</option>
+<option value="Meter/Meters">Meter</option>
+<option value="Centimeter">Centimeter</option>
+<option value="Inch/Inches">Inch</option>
+<option value="Square Feet">Sq. Ft</option>
+<option value="Square Meter">Sq. Mtr</option>
+<option value="Cubic Feet">Cu. Ft</option>
+<option value="Cubic Meter">Cu. Mtr</option>
+<option value="Liter/Liters">Liter</option>
+<option value="Milliliter">Milliliter</option>
+<option value="Gallon/Gallons">Gallon</option>
+<option value="Barrel/Barrels">Barrel</option>
                                             </select>
                                         </div>
                                     </div>
@@ -854,10 +875,13 @@ const handleSubmit = async (e) => {
                                         onChange={(e) => handleNestedChange(e, "specifications")}
                                     >
                                         <option value="">Select</option>
-                                        <option value="Meter">Meter</option>
-                                        <option value="Micrometers (um)">Micrometers (um)</option>
-                                        <option value="Gauge">Gauge</option>
-                                        <option value="Feet (ft)">Feet (ft)</option>
+                                              <option value="Meter">Meter</option>
+                                              <option value="Centimeter (cm)">Centimeter (cm)</option>
+                                              <option value="Millimeter (mm)">Millimeter (mm)</option>
+                                              <option value="Micrometer (µm)">Micrometer (µm)</option>
+                                              <option value="Nanometer (nm)">Nanometer (nm)</option>
+                                              <option value="Inch (in)">Inch (in)</option>
+                                              <option value="Feet (ft)">Feet (ft)</option>
                                     </select>
                                 </div>
 
@@ -1111,13 +1135,32 @@ const handleSubmit = async (e) => {
     value={product.tradeShopping.unit}
     onChange={(e) => handleNestedChange(e, "tradeShopping")}
   >
-    <option value="">Select Unit</option>
-    <option value="Kilograms/Kilograms">Kilograms/Kilograms</option>
-    <option value="Number">Number</option>
-    <option value="Piece/Pieces">Piece/Pieces</option>
-    <option value="Ton/Tons">Ton/Tons</option>
-    <option value="Unit/Units">Unit/Units</option>
-    <option value="Twenty-Foot Container">Twenty-Foot Container</option>
+<option value="">Select Unit</option>
+<option value="Kilograms/Kilograms">Kilograms/Kilograms</option>
+<option value="Grams">Grams</option>
+<option value="Metric Tons">Metric Tons</option>
+<option value="Ton/Tons">Ton/Tons</option>
+<option value="Piece/Pieces">Piece/Pieces</option>
+<option value="Unit/Units">Unit/Units</option>
+<option value="Dozen">Dozen</option>
+<option value="Pair/Pairs">Pair/Pairs</option>
+<option value="Set/Sets">Set/Sets</option>
+<option value="Box/Boxes">Box/Boxes</option>
+<option value="Carton/Cartons">Carton/Cartons</option>
+<option value="Bag/Bags">Bag/Bags</option>
+<option value="Roll/Rolls">Roll/Rolls</option>
+<option value="Sheet/Sheets">Sheet/Sheets</option>
+<option value="Meter/Meters">Meter/Meters</option>
+<option value="Centimeter">Centimeter</option>
+<option value="Inch/Inches">Inch/Inches</option>
+<option value="Square Feet">Square Feet</option>
+<option value="Square Meter">Square Meter</option>
+<option value="Cubic Feet">Cubic Feet</option>
+<option value="Cubic Meter">Cubic Meter</option>
+<option value="Liter/Liters">Liter/Liters</option>
+<option value="Milliliter">Milliliter</option>
+<option value="Gallon/Gallons">Gallon/Gallons</option>
+<option value="Barrel/Barrels">Barrel/Barrels</option>
   </select>
 </div>
 
