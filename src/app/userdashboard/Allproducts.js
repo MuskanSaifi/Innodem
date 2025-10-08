@@ -725,10 +725,32 @@ const AllProducts = () => {
                   value={formData.basicDetails.moqUnit}
                   onChange={handleChange}
                 >
-                  <option value="Number">Number</option>
                   <option value="Kilogram">Kilogram</option>
-                  <option value="Liter">Liter</option>
-                  <option value="Meter">Meter</option>
+                   {/* <!-- New Units Added --> */}
+  <option value="Grams">Gram</option>
+  <option value="Metric Tons">Metric Ton</option>
+  <option value="Ton/Tons">Ton</option>
+  <option value="Piece/Pieces">Piece</option>
+  <option value="Unit/Units">Unit</option>
+  <option value="Dozen">Dozen</option>
+  <option value="Pairs">Pair</option>
+  <option value="Set/Sets">Set</option>
+  <option value="Box/Boxes">Box</option>
+  <option value="Carton/Cartons">Carton</option>
+  <option value="Bag/Bags">Bag</option>
+  <option value="Roll/Rolls">Roll</option>
+  <option value="Sheet/Sheets">Sheet</option>
+  <option value="Meter/Meters">Meter</option>
+  <option value="Centimeter">Centimeter</option>
+  <option value="Inch/Inches">Inch</option>
+  <option value="Square Feet">Square Feet</option>
+  <option value="Square Meter">Square Meter</option>
+  <option value="Cubic Feet">Cubic Feet</option>
+  <option value="Cubic Meter">Cubic Meter</option>
+  <option value="Liter/Liters">Liter</option>
+  <option value="Milliliters">Milliliter</option>
+  <option value="Gallon/Gallons">Gallon</option>
+  <option value="Barrel/Barrels">Barrel</option>
                 </select>
               </div>
               <LocationSelector formData={formData} setFormData={setFormData} />
@@ -852,28 +874,40 @@ const AllProducts = () => {
               </div>
 
               <div className="row">
-                <div className="col-md-6 mb-3">
-                  <label className="form-label">Main Export Market(s)</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="tradeInformation.mainExportMarkets"
-                    value={formData.tradeInformation?.mainExportMarkets || ""}
-                    onChange={(e) => {
-                      // Assuming comma-separated values for multiple markets
-                      setFormData((prev) => ({
-                        ...prev,
-                        tradeInformation: {
-                          ...prev.tradeInformation,
-                          mainExportMarkets: e.target.value.split(",").map(s => s.trim()),
-                        },
-                      }));
-                    }}
-                    placeholder="e.g., Asia, Europe"
-                  />
-                </div>
+             <div className="col-12 mb-3">
+  <label className="form-label">Main Export Market(s)</label>
+  <select
+    multiple
+    className="form-select"
+    name="tradeInformation.mainExportMarkets"
+    value={formData.tradeInformation?.mainExportMarkets || []}
+    onChange={(e) => {
+      const selected = Array.from(e.target.selectedOptions, (option) => option.value);
+      setFormData((prev) => ({
+        ...prev,
+        tradeInformation: {
+          ...prev.tradeInformation,
+          mainExportMarkets: selected,
+        },
+      }));
+    }}
+  >
+    <option value="Asia">Asia</option>
+    <option value="Europe">Europe</option>
+    <option value="North America">North America</option>
+    <option value="South America">South America</option>
+    <option value="Africa">Africa</option>
+    <option value="Australia">Australia</option>
+    <option value="Middle East">Middle East</option>
+    <option value="Eastern Europe">Eastern Europe</option>
+    <option value="Western Europe">Western Europe</option>
+    <option value="Central America">Central America</option>
+  </select>
+  <small className="text-muted">Hold Ctrl (Windows) or Cmd (Mac) to select multiple.</small>
+</div>
 
-                <div className="col-md-6 mb-3">
+
+                <div className="mb-3">
                   <label className="form-label">Certifications</label>
                   <input
                     type="text"

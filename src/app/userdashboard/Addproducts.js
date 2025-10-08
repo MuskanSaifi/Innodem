@@ -669,13 +669,41 @@ const handleSubmit = async (e) => {
                                         onChange={(e) => handleNestedChange(e, "specifications")}
                                         required
                                     >
-                                        <option value="">Select Material</option>
-                                        <option value="Bamboo">Bamboo</option>
-                                        <option value="Ceramic">Ceramic</option>
-                                        <option value="Fabric">Fabric</option>
-                                        <option value="Glass">Glass</option>
-                                        <option value="Leather">Leather</option>
-                                        <option value="Marble">Marble</option>
+                                     <option value="">Select Material</option>
+<option value="Acrylic">Acrylic</option>
+<option value="Aluminum">Aluminum</option>
+<option value="Bamboo">Bamboo</option>
+<option value="Brass">Brass</option>
+<option value="Bronze">Bronze</option>
+<option value="Canvas">Canvas</option>
+<option value="Ceramic">Ceramic</option>
+<option value="Clay">Clay</option>
+<option value="Copper">Copper</option>
+<option value="Cotton">Cotton</option>
+<option value="Fabric">Fabric</option>
+<option value="Fiber">Fiber</option>
+<option value="Foam">Foam</option>
+<option value="Glass">Glass</option>
+<option value="Iron">Iron</option>
+<option value="Jute">Jute</option>
+<option value="Leather">Leather</option>
+<option value="Marble">Marble</option>
+<option value="Metal">Metal</option>
+<option value="Paper">Paper</option>
+<option value="Plastic">Plastic</option>
+<option value="Polyresin">Polyresin</option>
+<option value="PVC">PVC</option>
+<option value="Resin">Resin</option>
+<option value="Silk">Silk</option>
+<option value="Stainless Steel">Stainless Steel</option>
+<option value="Stone">Stone</option>
+<option value="Terracotta">Terracotta</option>
+<option value="Velvet">Velvet</option>
+<option value="Wood">Wood</option>
+<option value="Wool">Wool</option>
+<option value="Zinc">Zinc</option>
+<option value="Other">Other</option>
+
                                     </select>
                                 </div>
 
