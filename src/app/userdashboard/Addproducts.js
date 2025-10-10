@@ -651,11 +651,106 @@ const handleSubmit = async (e) => {
                                         onChange={(e) => handleNestedChange(e, "specifications")}
                                         required
                                     >
-                                        <option value="">Select Product Type</option>
-                                        <option value="Furniture Hardware">Furniture Hardware</option>
-                                        <option value="Furniture Accessories">Furniture Accessories</option>
-                                        <option value="Furniture Parts">Furniture Parts</option>
-                                        <option value="Other">Other</option>
+                                   <option value="">Select Product Type</option>
+
+{/* <!-- Industrial Products --> */}
+<option value="Industrial Machinery">Industrial Machinery</option>
+<option value="Tools & Equipment">Tools & Equipment</option>
+<option value="Electrical Goods">Electrical Goods</option>
+<option value="Electronic Components">Electronic Components</option>
+<option value="Power & Energy">Power & Energy</option>
+<option value="Construction Equipment">Construction Equipment</option>
+<option value="Hydraulics & Pneumatics">Hydraulics & Pneumatics</option>
+
+{/* <!-- Home & Furniture --> */}
+<option value="Furniture">Furniture</option>
+<option value="Home Decor">Home Decor</option>
+<option value="Lighting Products">Lighting Products</option>
+<option value="Kitchenware & Cookware">Kitchenware & Cookware</option>
+<option value="Bathroom Accessories">Bathroom Accessories</option>
+<option value="Home Appliances">Home Appliances</option>
+
+{/* <!-- Fashion & Apparel --> */}
+<option value="Men Clothing">Men Clothing</option>
+<option value="Women Clothing">Women Clothing</option>
+<option value="Kids Wear">Kids Wear</option>
+<option value="Footwear">Footwear</option>
+<option value="Bags & Luggage">Bags & Luggage</option>
+<option value="Textiles & Fabrics">Textiles & Fabrics</option>
+<option value="Fashion Accessories">Fashion Accessories</option>
+
+{/* <!-- Food & Agriculture --> */}
+<option value="Food & Beverages">Food & Beverages</option>
+<option value="Spices & Condiments">Spices & Condiments</option>
+<option value="Fruits & Vegetables">Fruits & Vegetables</option>
+<option value="Dairy Products">Dairy Products</option>
+<option value="Agricultural Equipment">Agricultural Equipment</option>
+<option value="Seeds & Fertilizers">Seeds & Fertilizers</option>
+
+{/* <!-- Chemicals & Minerals --> */}
+<option value="Chemicals">Chemicals</option>
+<option value="Pharmaceutical Raw Materials">Pharmaceutical Raw Materials</option>
+<option value="Fertilizers & Pesticides">Fertilizers & Pesticides</option>
+<option value="Metals & Minerals">Metals & Minerals</option>
+<option value="Plastic & Rubber">Plastic & Rubber</option>
+
+{/* <!-- Handicrafts & Gifts --> */}
+<option value="Handicrafts">Handicrafts</option>
+<option value="Marble & Stone Items">Marble & Stone Items</option>
+<option value="Religious Statues">Religious Statues</option>
+<option value="Decorative Items">Decorative Items</option>
+<option value="Gifts & Souvenirs">Gifts & Souvenirs</option>
+
+{/* <!-- Electronics & Mobile --> */}
+<option value="Mobiles & Accessories">Mobiles & Accessories</option>
+<option value="Computers & Laptops">Computers & Laptops</option>
+<option value="Security Systems">Security Systems</option>
+<option value="CCTV & Surveillance">CCTV & Surveillance</option>
+<option value="Consumer Electronics">Consumer Electronics</option>
+
+{/* <!-- Beauty & Personal Care --> */}
+<option value="Cosmetics & Beauty Products">Cosmetics & Beauty Products</option>
+<option value="Personal Care Products">Personal Care Products</option>
+<option value="Health & Wellness">Health & Wellness</option>
+<option value="Medicines & Drugs">Medicines & Drugs</option>
+
+{/* <!-- Automobile & Transportation --> */}
+<option value="Automobile Parts">Automobile Parts</option>
+<option value="Bikes & Scooters">Bikes & Scooters</option>
+<option value="Cars & Vehicles">Cars & Vehicles</option>
+<option value="Tyres & Tubes">Tyres & Tubes</option>
+<option value="Transport Services">Transport Services</option>
+
+{/* <!-- Packaging & Printing --> */}
+<option value="Packaging Materials">Packaging Materials</option>
+<option value="Printing Services">Printing Services</option>
+<option value="Labels & Stickers">Labels & Stickers</option>
+<option value="Paper Products">Paper Products</option>
+
+{/* <!-- Construction & Real Estate --> */}
+<option value="Building Materials">Building Materials</option>
+<option value="Cement & Sand">Cement & Sand</option>
+<option value="Tiles & Flooring">Tiles & Flooring</option>
+<option value="Real Estate">Real Estate</option>
+
+{/* <!-- Services --> */}
+<option value="IT Services">IT Services</option>
+<option value="Web Development">Web Development</option>
+<option value="Digital Marketing">Digital Marketing</option>
+<option value="Consultancy Services">Consultancy Services</option>
+<option value="Education & Training">Education & Training</option>
+<option value="Financial Services">Financial Services</option>
+
+{/* <!-- Miscellaneous --> */}
+<option value="Toys & Games">Toys & Games</option>
+<option value="Sports Goods">Sports Goods</option>
+<option value="Pet Products">Pet Products</option>
+<option value="Stationery">Stationery</option>
+<option value="Gems & Jewelry">Gems & Jewelry</option>
+<option value="Leather Products">Leather Products</option>
+<option value="Safety Equipment">Safety Equipment</option>
+<option value="Other">Other</option>
+
                                     </select>
                                 </div>
 
