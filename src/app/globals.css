@@ -198,3 +198,10 @@ a{
   background-color: #ffffff !important;
   font-weight: bold;
 }
+
+.section-bg {
+  background-image: url('../../public/assets/diwali-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

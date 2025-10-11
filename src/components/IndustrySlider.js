@@ -40,9 +40,9 @@ const IndustrySlider = () => {
 
   return (
     
-<section className="py-10 bg-gray-50 mt-5">
+<section className="py-10 mt-5 section-bg">
   <div className="container-fluid mx-auto px-4">
-  <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-8 tracking-tight">
+  <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-8 tracking-tight">
   Explore Industries
     </h2>
 
@@ -63,7 +63,7 @@ const IndustrySlider = () => {
     >
       {categories.map((category) => (
         <SwiperSlide key={category._id}>
-          <div className="bg-white rounded-2xl p-4 shadow-md hover:shadow-xl transition-all mb-4">
+          <div className="bg-white rounded-2xl hover:scale-[1.02] transition-all duration-300 p-4 shadow-md hover:shadow-xl transition-all mb-4">
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-2">
                 <Image

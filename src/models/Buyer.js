@@ -6,13 +6,12 @@ const BuyerSchema = new mongoose.Schema({
   mobileNumber: { type: String, required: true, unique: true },
   countryCode: { type: String, required: true },
   productname: { type: String},
-    inquiredProducts: [{ type: String }], 
-
+  inquiredProducts: [{ type: String }], 
   quantity: { type: Number},
   unit: { type: String},
   orderValue: { type: Number },
   currency: { type: String},
-  buyer: { type: String}, // from localStorage
+  buyer: { type: String}, 
   otp: { type: Number},
   otpExpires: { type: Date },
     remark: {

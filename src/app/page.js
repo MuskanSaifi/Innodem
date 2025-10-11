@@ -46,6 +46,7 @@ export default function Home() {
 />
         </Link>
       </div>
+            <IndustrySlider />
       <ProductSections1 tag="trending" Name="Trending" />
       {/* <div className="relative w-full h-[100px] md:h-[100px] lg:h-[300px] flex items-center justify-center">
         <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-contain">
@@ -67,7 +68,6 @@ export default function Home() {
               />
       </Link>
 </div>
-      <IndustrySlider />
       <CategoryGridPage/>
       <ProductSections2 tag="upcoming" Name="Upcoming" />
       <Cities />

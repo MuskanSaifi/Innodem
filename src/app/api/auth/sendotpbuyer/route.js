@@ -7,9 +7,7 @@ export async function POST(req) {
     try {
         await connectdb();
         const body = await req.json();
-
         const { fullname, email, mobileNumber, countryCode, companyName, productname, otp } = body;
-
         if (!mobileNumber || !productname || !countryCode) {
             return new Response(JSON.stringify({ error: "All fields (including country code) are required" }), {
                 status: 400,

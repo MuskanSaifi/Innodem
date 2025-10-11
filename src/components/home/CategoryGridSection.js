@@ -20,17 +20,14 @@ const CategoryGridSection = ({ categories }) => {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-800 capitalize">
               {category.name}
-            </h2>
+</h2>
   <Link
   href={`/seller/${category.categoryslug}`}
   className="text-sm text-blue-600 hover:text-blue-800 underline hover:no-underline transition duration-200"
 >
   View All
 </Link>
-
-
           </div>
-
           {/* Grid */}
           <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
 
@@ -61,9 +58,7 @@ const CategoryGridSection = ({ categories }) => {
       ))}
     </div>
   </div>
-  
 </div>
-
             {/* Right: Subcategories with images */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:col-span-4">
   {category.subcategories?.map((sub) => (

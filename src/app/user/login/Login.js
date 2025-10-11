@@ -9,8 +9,6 @@ import { useDispatch,  useSelector } from "react-redux";
 
 import { setUser } from "@/app/store/userSlice";
 
-
-
 // Country Code List
 const countryCodes = [
     { value: "+91", label: "🇮🇳 +91", name: "India" },
@@ -236,7 +234,6 @@ const countryCodes = [
     { value: "+263", label: "🇿🇼 +263", name: "Zimbabwe" }
   ];
   
-  
 export default function Login() {
     const [countryCode, setCountryCode] = useState(countryCodes[0]); // Default to India
     const [mobileNumber, setMobileNumber] = useState("");
@@ -247,7 +244,6 @@ export default function Login() {
     const [showOtpField, setShowOtpField] = useState(false);
 // const token = useSelector((state) => state.user.token);
 const { user, token } = useSelector((state) => state.user);
-
     const dispatch = useDispatch();
     const router = useRouter();
 
