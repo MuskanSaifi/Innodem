@@ -36,6 +36,7 @@ const Userprofile = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
 const handleDeleteAccount2 = () => {
   toast.success("Your query for account deactivation has been raised. The team will take action soon.");
 };
@@ -77,7 +78,6 @@ const handleDeleteAccount = async () => {
     }
   }
 };
-
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];

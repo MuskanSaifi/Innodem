@@ -27,7 +27,6 @@ const ProductDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hoveredImage, setHoveredImage] = useState(null);
-
   const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
   const [showZoomModal, setShowZoomModal] = useState(false);
   const modalRef = useRef();
@@ -39,18 +38,23 @@ const ProductDetailPage = () => {
   );
   const user = useSelector((state) => state.user.user);
   const token = useSelector((state) => state.user.token);
+// 🎯 NEW: Get buyer details from state
+  const buyer = useSelector((state) => state.buyer.buyer); 
+  const buyerToken = useSelector((state) => state.buyer.token);
+
   const { blockedSellers } = useSelector((state) => state.blocked);
 
-  // Effect to fetch wishlist
+ // Effect to fetch wishlist
   useEffect(() => {
-    if (user && user._id) {
+    // 🎯 UPDATED: Fetch if EITHER user or buyer is logged in
+    if ((user && user._id) || (buyer && buyer.mobileNumber)) {
       dispatch(fetchUserWishlist());
     }
-  }, [user, dispatch]);
-
-  // Handle wishlist toggle
+  }, [user, buyer, dispatch]); // Add 'buyer' to the dependency array
+  
+  // Handle wishlist toggle (KEEP AS IS, as it relies on Redux state which is now role-aware)
   const handleToggleWishlist = (productId) => {
-    if (!user) {
+    if (!user && !buyer) { // 🎯 UPDATED: Check for both user and buyer
       alert("Please log in to manage your wishlist!");
       return;
     }
@@ -62,14 +66,25 @@ const ProductDetailPage = () => {
       dispatch(addProductToWishlist(productId));
     }
   };
-
+  
   // Fetch product details
   useEffect(() => {
 const fetchProduct = async () => {
       try {
         setLoading(true);
         // Add userId to the API request
-        const res = await fetch(`/api/products/${id}${user?._id ? `?userId=${user._id}` : ""}`);
+// Corrected logic: Prioritize the MongoDB _id for both user types
+const authId = user?._id || buyer?._id; // Buyer ID should be the ObjectId
+const authParam = user?._id ? "userId" : buyer?._id ? "buyerId" : null;
+
+const res = await fetch(
+ `/api/products/${id}${
+ authId && authParam
+ ? `?${authParam}=${authId}`
+ : ""
+ }`
+);
+
         const data = await res.json();
         
         // Check if the product itself is from a blocked seller
@@ -100,7 +115,6 @@ const fetchProduct = async () => {
     }
   }, [id, user, blockedSellers]); // Add 'user' and 'blockedSellers' to the dependency array
   
-
   // Set initial image
   useEffect(() => {
     if (product?.images?.length > 0 && !hoveredImage) {
@@ -137,65 +151,95 @@ const fetchProduct = async () => {
     };
   }, [showZoomModal]);
 
+
   // Report seller
-  const handleReportSeller = async (sellerId) => {
-    if (!token) {
-      alert("⚠️ Please login first!");
-      router.push("/user/login");
-      return;
-    }
-    try {
-      const res = await fetch("/api/seller/report", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          sellerId,
-          reason: "Objectionable / fake content",
-        }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        alert("✅ Report submitted. Admin will review it.");
-      } else {
-        alert(data.error || "Something went wrong");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Network error. Please try again.");
-    }
-  };
+const handleReportSeller = async (sellerId) => {
+  const authRole = user ? "user" : buyer ? "buyer" : null;
+  const authToken = user ? token : buyer ? buyerToken : null;
+  const loginPath = user ? "/user/login" : "/buyer/login";
 
-  // Block seller
-  const handleBlockSeller = async (sellerId) => {
-    if (!token) {
-      alert("⚠️ Please login first!");
-      router.push("/user/login");
-      return;
-    }
-    try {
-      const res = await fetch("/api/seller/block", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ sellerId }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        alert(data.message || "🚫 Seller blocked");
-      } else {
-        alert(data.error || "Something went wrong");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Network error. Please try again.");
-    }
-  };
+  if (!authToken) {
+    alert("⚠️ Please login first!");
+    router.push(loginPath);
+    return;
+  }
 
+  // 🎯 Ask user for a reason (custom message)
+  const customMessage = prompt(
+    "Please describe your reason for reporting this seller:",
+    "Objectionable / fake content"
+  );
+
+  if (!customMessage || customMessage.trim() === "") {
+    alert("❗ Report cancelled — no reason provided.");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/seller/report", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+      body: JSON.stringify({
+        sellerId,
+        reason: "Objectionable / fake content", // fallback
+        customMessage, // 👈 your new field
+        authRole,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert("✅ Report submitted successfully. Admin will review it.");
+    } else {
+      alert(data.error || "Something went wrong");
+    }
+  } catch (err) {
+    console.error("Report Error:", err);
+    alert("Network error. Please try again.");
+  }
+};
+
+
+// Block seller (supports both user & buyer)
+const handleBlockSeller = async (sellerId) => {
+  const authRole = user ? "user" : buyer ? "buyer" : null;
+  const authToken = user ? token : buyer ? buyerToken : null;
+  const loginPath = user ? "/user/login" : "/buyer/login";
+
+  if (!authToken) {
+    alert("⚠️ Please login first!");
+    router.push(loginPath);
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/seller/block", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+      body: JSON.stringify({ sellerId, role: authRole }),
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      alert(data.message || "🚫 Seller blocked");
+    } else {
+      alert(data.error || "Something went wrong");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Network error. Please try again.");
+  }
+};
+
+
+  
   // ✅ Filter products and categories by blocked sellers
   const visibleRelatedProducts = relatedProducts.filter(
     (p) => !blockedSellers.includes(p.userId?._id)

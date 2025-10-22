@@ -12,7 +12,7 @@ export async function GET(request) {
     const data = await purchaseRequestSchema.find()
     .populate('buyer', 'fullname email mobileNumber') // Buyer model
     .populate('seller', 'userProfileSlug fullname email mobileNumber userPackage') // User model
-    .populate('product', 'name price currency images'); // Product model
+    .populate('product', 'name price currency images description'); // Product model
     return NextResponse.json({ success: true, data });
   } catch (error) {
     console.error('Error fetching leads:', error);

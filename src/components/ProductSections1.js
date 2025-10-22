@@ -18,11 +18,9 @@ const ProductSections1 = ({ tag, Name }) => {
       try {
         setLoading(true);
         setError(null);
-
         const response = await fetch("/api/adminprofile/seller");
         const data = await response.json();
         if (!response.ok) throw new Error("Failed to fetch products");
-
         const filteredProducts = data.filter((product) => product.tags?.[tag] === true);
         setProducts(filteredProducts);
       } catch (err) {

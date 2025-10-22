@@ -275,6 +275,18 @@
     }
   }
   
+
+  @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
   .product-search::placeholder {
     color: color-mix(in lch, canvas, canvasText 30%);
   }

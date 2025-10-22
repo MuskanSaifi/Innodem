@@ -16,9 +16,8 @@ export async function POST(req) {
         }
 
         // ✅ Test number & OTP for Apple review
-        const testNumber = "+919643685727";
+const testNumber = "+919643685727";
 const testOtp = "12345";
-
 
         const formattedMobile = mobileNumber.startsWith("+") ? mobileNumber.slice(1) : `91${mobileNumber}`;
 
@@ -33,7 +32,6 @@ const testOtp = "12345";
             }
 
             const user = await User.findOne({ mobileNumber });
-
             if (!user) {
                 return new Response(JSON.stringify({ error: "User not found, please register first" }), {
                     status: 400,

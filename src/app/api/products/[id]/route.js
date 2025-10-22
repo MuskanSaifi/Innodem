@@ -12,23 +12,40 @@ export async function GET(req, { params }) {
   try {
     await connectdb();
 
-    const { id } = await params;
-
+    const { id } = params;
     if (!id) {
       return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
     }
 
-    // 👇 current user id nikal lo (yahan query param se le raha hu)
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
+    const buyerId = searchParams.get("buyerId");
 
-    let blockedSellerIds = [];
-    if (userId) {
-      const blockedSellers = await BlockedUser.find({ blockedBy: userId }).select("sellerId");
-      blockedSellerIds = blockedSellers.map((b) => b.sellerId.toString());
-    }
+    // 👇 Determine who is logged in
+const loggedInId = userId || buyerId;
 
-    // 👇 product fetch karo but blocked seller ka product kabhi na mile
+let blockedSellerIds = [];
+
+if (userId) {
+ // 🧍 If a regular user logged in
+ const blockedSellers = await BlockedUser.find({
+  blockedByUser: userId,
+ }).select("sellerId");
+ blockedSellerIds = blockedSellers.map((b) => b.sellerId.toString());
+} else if (buyerId) {
+ // 🛒 If a buyer logged in
+ const blockedSellers = await BlockedUser.find({
+ blockedByBuyer: buyerId,
+ }).select("sellerId");
+ blockedSellerIds = blockedSellers.map((b) => b.sellerId.toString());
+}
+
+// 🛑 DEBUGGING LINE (TEMPORARY)
+console.log(`LoggedIn ID: ${loggedInId}, Role: ${userId ? 'User' : buyerId ? 'Buyer' : 'Guest'}`);
+console.log("Blocked Seller IDs (Expected to be filtered):", blockedSellerIds);
+// 🛑 END DEBUGGING
+
+    // Now filter by blocked sellers
     const product = await Product.findOne({
       _id: id,
       userId: { $nin: blockedSellerIds },

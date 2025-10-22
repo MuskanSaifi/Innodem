@@ -1,41 +1,63 @@
 import { NextResponse } from "next/server";
 import BlockedUser from "@/models/BlockedUser";
 import User from "@/models/User";
+import Buyer from "@/models/Buyer";
 import { requireSignIn } from "@/middlewares/requireSignIn";
+import { requireBuyerAuth } from "@/middlewares/requireBuyerAuth"; // 👈 new
 import connectdb from "@/lib/dbConnect";
 
 export async function POST(req) {
   await connectdb();
-
   try {
-    const authUser = await requireSignIn(req);
-    if (!authUser || !authUser.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const body = await req.json();
+    const { sellerId, role } = body; // 👈 role = "user" or "buyer"
+
+    if (!sellerId) {
+      return NextResponse.json({ error: "Seller ID is required" }, { status: 400 });
     }
 
-    const { sellerId } = await req.json();
-
-    // Check seller exists
+    // validate seller exists
     const seller = await User.findById(sellerId);
     if (!seller) {
       return NextResponse.json({ error: "Seller not found" }, { status: 404 });
     }
 
-    // Check if already blocked
-    const alreadyBlocked = await BlockedUser.findOne({ blockedBy: authUser.id, sellerId });
-    if (alreadyBlocked) {
-      return NextResponse.json({ message: "Seller already blocked" }, { status: 200 });
+    let authUser = null;
+    if (role === "user") {
+      authUser = await requireSignIn(req);
+      if (!authUser?.id)
+        return NextResponse.json({ error: "Unauthorized user" }, { status: 401 });
+    } else if (role === "buyer") {
+      authUser = await requireBuyerAuth(req);
+      if (!authUser?.id)
+        return NextResponse.json({ error: "Unauthorized buyer" }, { status: 401 });
+    } else {
+      return NextResponse.json({ error: "Invalid role" }, { status: 400 });
     }
 
-    // Create block record
-    const block = await BlockedUser.create({
-      blockedBy: authUser.id,
+    // Check if already blocked
+    const alreadyBlocked = await BlockedUser.findOne({
       sellerId,
+      ...(role === "user"
+        ? { blockedByUser: authUser.id }
+        : { blockedByBuyer: authUser.id }),
+    });
+
+    if (alreadyBlocked) {
+      return NextResponse.json({ message: "Already blocked" }, { status: 200 });
+    }
+
+    // Create new block entry
+    const block = await BlockedUser.create({
+      sellerId,
+      ...(role === "user"
+        ? { blockedByUser: authUser.id }
+        : { blockedByBuyer: authUser.id }),
     });
 
     return NextResponse.json({
       success: true,
-      message: "Seller has been blocked. You will not see their products anymore.",
+      message: "Blocked successfully",
       block,
     });
   } catch (err) {
@@ -45,16 +67,16 @@ export async function POST(req) {
 }
 
 
-
 export async function GET(req) {
   await connectdb();
 
   try {
-    // ✅ Fetch all blocked sellers with both details
-    const blockedSellers = await BlockedUser.find({})
-      .populate("blockedBy", "fullname email mobileNumber companyName")
-      .populate("sellerId", "fullname email mobileNumber companyName")
-      .sort({ createdAt: -1 });
+    // Fetch all blocked sellers
+const blockedSellers = await BlockedUser.find({})
+  .populate("blockedByUser", "fullname email mobileNumber companyName") // Correctly populates User details
+  .populate("blockedByBuyer", "fullname email mobileNumber") // Correctly populates Buyer details
+  .populate("sellerId", "fullname email mobileNumber companyName")
+  .sort({ createdAt: -1 });
 
     return NextResponse.json({
       success: true,

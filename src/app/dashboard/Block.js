@@ -20,6 +20,9 @@ const Block = () => {
       });
   }, []);
 
+  // Removed: const blocker = record.blockedByUser || record.blockedByBuyer; 
+  // This line caused the error because 'record' is undefined here.
+
   if (loading) return <p className="p-4">Loading blocked users...</p>;
 
   return (
@@ -32,7 +35,7 @@ const Block = () => {
           <thead>
             <tr className="bg-gray-100">
               <th className="px-4 py-2 border">#</th>
-              <th className="px-4 py-2 border">Blocked By (User)</th>
+              <th className="px-4 py-2 border">Blocked By</th>
               <th className="px-4 py-2 border">Blocked Seller</th>
               <th className="px-4 py-2 border">Seller Email</th>
               <th className="px-4 py-2 border">Seller Mobile</th>
@@ -41,25 +44,33 @@ const Block = () => {
             </tr>
           </thead>
           <tbody>
-            {blockedUsers.map((record, index) => (
-              <tr key={record._id} className="text-center">
-                <td className="px-4 py-2 border">{index + 1}</td>
-                {/* Blocked By User */}
-                <td className="px-4 py-2 border">
-                  {record.blockedBy?.fullname || "N/A"}
-                  <br />
-                  <small className="text-gray-500">{record.blockedBy?.email}</small>
-                </td>
-                {/* Blocked Seller */}
-                <td className="px-4 py-2 border">{record.sellerId?.fullname || "N/A"}</td>
-                <td className="px-4 py-2 border">{record.sellerId?.email || "N/A"}</td>
-                <td className="px-4 py-2 border">{record.sellerId?.mobileNumber || "N/A"}</td>
-                <td className="px-4 py-2 border">{record.sellerId?.companyName || "N/A"}</td>
-                <td className="px-4 py-2 border">
-                  {new Date(record.createdAt).toLocaleString()}
-                </td>
-              </tr>
-            ))}
+            {blockedUsers.map((record, index) => {
+              // CORRECTED: Define 'blocker' inside the map loop where 'record' is accessible.
+              const blocker = record.blockedByUser || record.blockedByBuyer;
+              
+              return (
+                <tr key={record._id} className="text-center">
+                  <td className="px-4 py-2 border">{index + 1}</td>
+                  {/* Blocked By User */}
+                  <td className="px-4 py-2 border">
+                    {blocker?.fullname || "N/A"}
+                    <br />
+                    <small className="text-gray-500">{blocker?.email}</small>
+                    <span className="text-xs font-semibold text-blue-600">
+                      {record.blockedByUser ? " (User)" : record.blockedByBuyer ? " (Buyer)" : ""}
+                    </span>
+                  </td>
+                  {/* Blocked Seller */}
+                  <td className="px-4 py-2 border">{record.sellerId?.fullname || "N/A"}</td>
+                  <td className="px-4 py-2 border">{record.sellerId?.email || "N/A"}</td>
+                  <td className="px-4 py-2 border">{record.sellerId?.mobileNumber || "N/A"}</td>
+                  <td className="px-4 py-2 border">{record.sellerId?.companyName || "N/A"}</td>
+                  <td className="px-4 py-2 border">
+                    {new Date(record.createdAt).toLocaleString()}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       )}

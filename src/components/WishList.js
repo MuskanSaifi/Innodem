@@ -97,7 +97,7 @@ const WishlistPage = () => {
             title="Remove from Wishlist"
             disabled={loading}
           >
-<FaTrash size={24} color="#dc3545" />
+            <FaTrash size={24} color="#dc3545" />
           </button>
         </div>
         <div className="card-footer bg-transparent border-top d-flex justify-content-center py-2">

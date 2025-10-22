@@ -7,6 +7,8 @@ import "./globals.css";
 import "../components/styles/header.css";
 import "../components/styles/footer.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import AppInitializer from "./store/AppInitializer"; // ✅ import added
+
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -84,7 +86,9 @@ export default function RootLayout({ children }) {
 
         <AnalyticsScripts />
         <Providers>
-          <LayoutWrapper>{children}</LayoutWrapper>
+         <AppInitializer> 
+            <LayoutWrapper>{children}</LayoutWrapper>
+          </AppInitializer>
         </Providers>
       </body>
     </html>

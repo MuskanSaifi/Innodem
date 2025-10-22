@@ -6,93 +6,93 @@ import Image from "next/image";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useParams } from "next/navigation";
-import BuySellForm from "./BuySellform"; // Assuming these are correctly imported and used
-import Buyfrom from "./Buyfrom"; // Assuming these are correctly imported and used
-import BuySell from "@/components/BuySell"; // Assuming these are correctly imported and used
+import Buyfrom from "./Buyfrom";
 
-// Redux Imports
 import { useDispatch, useSelector } from "react-redux";
 import {
   addProductToWishlist,
   removeProductFromWishlist,
   fetchUserWishlist,
-} from "../../store/wishlistSlice"; 
+} from "../../store/wishlistSlice";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-
 
 const ProductDetailClient = ({ productslug: propProductSlug }) => {
   const params = useParams();
   const slugFromURL = params?.productslug || propProductSlug;
 
-  const [products, setProducts] = useState([]); // This holds all products returned by API
+  const [products, setProducts] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [businessProfile, setBusinessProfile] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const [showRelatedDropdown, setShowRelatedDropdown] = useState(false);
   const [showSubcategoryDropdown, setShowSubcategoryDropdown] = useState(false);
 
-  // Redux Hooks
+  // Redux
   const dispatch = useDispatch();
   const { items: wishlistItems, loading: wishlistLoading } = useSelector(
     (state) => state.wishlist
   );
-  const user = useSelector((state) => state.user.user); // Get user from userSlice
+  const user = useSelector((state) => state.user.user);
+  const buyer = useSelector((state) => state.buyer.buyer);
 
-  // Effect to fetch product data based on slug
-useEffect(() => {
-  if (!slugFromURL) return;
-
-  const fetchProductData = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const encodedSlug = encodeURIComponent(slugFromURL);
-
-      // 👇 user._id pass kar rahe hain backend ko
-      const response = await fetch(
-        `/api/manufacturers/${encodedSlug}${user && user._id ? `?userId=${user._id}` : ""}`
-      );
-
-      if (!response.ok)
-        throw new Error(`Failed to fetch product data: ${response.status}`);
-      const data = await response.json();
-
-      setProducts(data.products || []);
-      setSubcategories(data.subcategories || []);
-      setRelatedProducts(data.relatedProducts || []);
-      setBusinessProfile(data.businessProfile || null);
-    } catch (err) {
-      console.error("Error fetching product:", err?.message || err);
-      setError("Could not load product details.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchProductData();
-}, [slugFromURL, user]); // 👈 user dependency add ki
-
-
-  // Effect to fetch user's wishlist when component mounts or user state changes
+  // ✅ Fetch product data based on slug + auth info
   useEffect(() => {
-    if (user && user._id) { // Ensure user is logged in and has an ID
-      dispatch(fetchUserWishlist());
-    }
-  }, [user, dispatch]); // Re-fetch if user logs in/out
+    if (!slugFromURL) return;
 
-  // Handle adding/removing product from wishlist
+    const fetchProductData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const encodedSlug = encodeURIComponent(slugFromURL);
+        const authId = user?._id || buyer?._id || buyer?.mobileNumber;
+        const authParam = user?._id ? "userId" : buyer ? "buyerId" : null;
+
+        const url = `/api/manufacturers/${encodedSlug}${
+          authId && authParam ? `?${authParam}=${authId}` : ""
+        }`;
+
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Failed to fetch: ${response.status}`);
+
+        const data = await response.json();
+        setProducts(data.products || []);
+        setSubcategories(data.subcategories || []);
+        setRelatedProducts(data.relatedProducts || []);
+        setBusinessProfile(data.businessProfile || null);
+      } catch (err) {
+        console.error("Error fetching product:", err?.message || err);
+        setError("Could not load product details.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProductData();
+  }, [slugFromURL, user, buyer]); // ✅ include buyer dependency
+
+  // ✅ Fetch wishlist on mount or login change
+  useEffect(() => {
+    const loggedInId = user?._id || buyer?.mobileNumber;
+    const role = user ? "user" : buyer ? "buyer" : null;
+    if (loggedInId && role) {
+      dispatch(fetchUserWishlist({ loggedInId, role }));
+    }
+  }, [user, buyer, dispatch]);
+
+  // ✅ Handle Wishlist Add/Remove
   const handleToggleWishlist = (productId) => {
-    if (!user) {
-      alert("Please log in to manage your wishlist!"); // Or show a toast/modal
+    const loggedInId = user?._id || buyer?._id || buyer?.mobileNumber;
+    if (!loggedInId) {
+      alert("Please log in to manage your wishlist!");
       return;
     }
 
-    // Check if the product is currently in the wishlist
-    const isInWishlist = wishlistItems.some((item) => item._id === productId);
+    const isInWishlist = wishlistItems.some(
+      (item) => item._id === productId || item.productId === productId
+    );
 
     if (isInWishlist) {
       dispatch(removeProductFromWishlist(productId));
@@ -103,13 +103,10 @@ useEffect(() => {
 
   return (
     <div className="container mt-4 mb-5">
+      {/* Breadcrumb */}
       <nav className="breadcrumb bg-light p-3 rounded text-sm">
         <Link href="/">Home</Link> / <Link href="/products">Products</Link> /{" "}
-        {loading ? (
-          <Skeleton width={100} />
-        ) : (
-          <h1 className="text-sm">{slugFromURL}</h1>
-        )}
+        {loading ? <Skeleton width={100} /> : <h1 className="text-sm">{slugFromURL}</h1>}
       </nav>
 
       {/* Mobile Dropdowns */}
@@ -170,7 +167,7 @@ useEffect(() => {
       </div>
 
       <div className="row">
-        {/* Subcategories (Desktop Only) */}
+        {/* Sidebar (Subcategories) */}
         <aside className="col-md-3 mb-4 d-none d-md-block">
           <div className="bg-white p-3 rounded common-shad sticky top-20">
             <div className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
@@ -186,9 +183,7 @@ useEffect(() => {
                     href={`/seller/${sub?.category?.categoryslug}/${sub?.subcategoryslug}`}
                     className="text-decoration-none"
                   >
-                    <li className="list-group-item hover:bg-gray-100">
-                      {sub.name}
-                    </li>
+                    <li className="list-group-item hover:bg-gray-100">{sub.name}</li>
                   </Link>
                 ))}
               </ul>
@@ -198,7 +193,7 @@ useEffect(() => {
           </div>
         </aside>
 
-        {/* Product Details - Iterate over 'products' */}
+        {/* Main Product Section */}
         <div className="col-md-6 mb-4">
           {loading ? (
             <Skeleton height={400} />
@@ -207,7 +202,7 @@ useEffect(() => {
           ) : products.length > 0 ? (
             products.map((product) => {
               const isInWishlist = wishlistItems.some(
-                (item) => item._id === product._id
+                (item) => item._id === product._id || item.productId === product._id
               );
 
               return (
@@ -216,11 +211,11 @@ useEffect(() => {
                   className="card shadow-sm border-0 mb-3 rounded-4 overflow-hidden"
                 >
                   <div className="row g-0">
-                    {/* Product Image */}
+                    {/* Image */}
                     <div className="col-12 col-md-4 bg-light d-flex align-items-center justify-content-center p-2 position-relative">
                       <Image
                         src={product?.images?.[0]?.url || "/placeholder.png"}
-                        alt={product?.name || "Product Image"}
+                        alt={product?.name || "Product"}
                         width={150}
                         height={150}
                         className="img-fluid rounded"
@@ -229,41 +224,29 @@ useEffect(() => {
                           e.currentTarget.src = "/placeholder.png";
                         }}
                       />
+
                       {/* Wishlist Icon */}
-                      {user && ( // Only show wishlist icon if a user is logged in
+                      {(user || buyer) && (
                         <button
                           className={`btn btn-link p-0 position-absolute top-0 end-0 m-2 ${
                             isInWishlist ? "text-danger" : "text-muted"
                           }`}
                           onClick={() => handleToggleWishlist(product._id)}
-                          disabled={wishlistLoading} // Disable button while API call is in progress
-                          title={
-                            isInWishlist
-                              ? "Remove from Wishlist"
-                              : "Add to Wishlist"
-                          }
-                          aria-label={
-                            isInWishlist
-                              ? "Remove from Wishlist"
-                              : "Add to Wishlist"
-                          }
+                          disabled={wishlistLoading}
+                          title={isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+                          aria-label={isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
                         >
-                          {/* You can replace this with an actual icon component like <FaHeart /> or <FaRegHeart /> */}
-                            {isInWishlist ? <FaHeart /> : <FaRegHeart />}
+                          {isInWishlist ? <FaHeart /> : <FaRegHeart />}
                         </button>
                       )}
                     </div>
 
-                    {/* Product Details */}
+                    {/* Product Info */}
                     <div className="col-12 col-md-8 p-3">
-                      <h2 className="text-primary fw-bold mb-2">
-                        {product.name}
-                      </h2>
-
+                      <h2 className="text-primary fw-bold mb-2">{product.name}</h2>
                       <div className="d-flex flex-wrap justify-content-between mb-2">
                         <p className="mb-0">
-                          <strong>Price:</strong> ₹{product.price}{" "}
-                          {product.currency || "INR"}
+                          <strong>Price:</strong> ₹{product.price} {product.currency || "INR"}
                         </p>
                         <p className="mb-0">
                           <strong>MOQ:</strong> {product.minimumOrderQuantity}{" "}
@@ -271,7 +254,6 @@ useEffect(() => {
                         </p>
                       </div>
 
-                      {/* Short Description */}
                       {product.description && (
                         <p className="text-muted small mb-2">
                           {product.description.length > 120
@@ -280,16 +262,14 @@ useEffect(() => {
                         </p>
                       )}
 
-                      {/* ✅ Business Profile Info */}
+                      {/* Business Info */}
                       {businessProfile && (
                         <div className="border-top pt-3 mt-3 small">
                           <p className="mb-1">
-                            <strong>Company Name:</strong>{" "}
-                            {businessProfile.companyName}
+                            <strong>Company Name:</strong> {businessProfile.companyName}
                           </p>
                           <p className="mb-1">
-                            <strong>GST Number:</strong>{" "}
-                            {businessProfile.gstNumber}
+                            <strong>GST Number:</strong> {businessProfile.gstNumber}
                           </p>
                           <p className="mb-1">
                             <strong>Year Established:</strong>{" "}
@@ -298,19 +278,18 @@ useEffect(() => {
                         </div>
                       )}
 
-                      {/* GST / Selling Price / Returnable */}
                       {product?.tradeShopping && (
-                        <div className="mb-2">
-                          <p className="mb-0 small">
+                        <div className="mb-2 small">
+                          <p className="mb-0">
                             <strong>GST:</strong> {product.tradeShopping.gst}%
                           </p>
-                          <p className="mb-0 small">
+                          <p className="mb-0">
                             <strong>Selling Price Type:</strong>{" "}
                             {product.tradeShopping.sellingPriceType}
                           </p>
-                          <p className="mb-0 small">
+                          <p className="mb-0">
                             <strong>Returnable:</strong>{" "}
-                            {product.tradeShopping.isReturnable}
+                            {product.tradeShopping.isReturnable ? "Yes" : "No"}
                           </p>
                         </div>
                       )}
@@ -322,7 +301,6 @@ useEffect(() => {
                         >
                           More Details
                         </Link>
-
                         <Buyfrom product={product} sellerId={product?.userId} />
                       </div>
                     </div>
@@ -331,11 +309,13 @@ useEffect(() => {
               );
             })
           ) : (
-            <p className="text-warning">This Product is not available. it may belong to a seller you have blocked.</p>
+            <p className="text-warning">
+              This Product is not available. It may belong to a seller you have blocked.
+            </p>
           )}
         </div>
 
-        {/* Related Products (Desktop Only) */}
+        {/* Related Products */}
         <aside className="col-md-3 mb-4 d-none d-md-block">
           <div className="bg-white p-3 rounded common-shad sticky top-20">
             <div className="mb-3 text-light global-heading rounded-2 common-shad px-4 text-center py-1 text-sm">
@@ -351,17 +331,12 @@ useEffect(() => {
                     href={`/manufacturers/${prod.productslug}`}
                     className="text-web text-decoration-none"
                   >
-                    <li className="list-group-item hover:bg-gray-100">
-                      {prod.name}
-                    </li>
+                    <li className="list-group-item hover:bg-gray-100">{prod.name}</li>
                   </Link>
                 ))}
               </ul>
             ) : (
               <p className="text-muted">No related products available.</p>
-            )}
-            {products.length > 0 && (
-              <BuySell initialProductName={products[0].name} />
             )}
           </div>
         </aside>

@@ -1,27 +1,26 @@
 import mongoose from "mongoose";
 
 const BuyerSchema = new mongoose.Schema({
-  fullname: { type: String },
-  email: { type: String },
+  fullname: String,
+  email: String,
   mobileNumber: { type: String, required: true, unique: true },
-  countryCode: { type: String, required: true },
-  productname: { type: String},
-  inquiredProducts: [{ type: String }], 
-  quantity: { type: Number},
-  unit: { type: String},
-  orderValue: { type: Number },
-  currency: { type: String},
-  buyer: { type: String}, 
-  otp: { type: Number},
-  otpExpires: { type: Date },
-    remark: {
-    type: String,
-    default: ""
+  countryCode: {
+    value: String,
+    label: String,
+    name: String
   },
-},
-{ timestamps: true }
-);
+  productname: String,
+  inquiredProducts: [String],
+  quantity: Number,
+  unit: String,
+  orderValue: Number,
+  currency: String,
+  buyer: String,
+  otp: Number,
+  otpExpires: Date,
+  remark: { type: String, default: "" },
+  wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+}, { timestamps: true });
 
 const Buyer = mongoose.models.Buyer || mongoose.model("Buyer", BuyerSchema);
-  
 export default Buyer;

@@ -129,27 +129,31 @@ const SubcategoryProductPage = () => {
     (state) => state.wishlist
   );
   const user = useSelector((state) => state.user.user);
+const buyer = useSelector((state) => state.buyer.buyer);
+const token = useSelector((state) => state.user.token);
+const buyerToken = useSelector((state) => state.buyer.token);
 
-  useEffect(() => {
-    if (user && user._id) {
-      dispatch(fetchUserWishlist());
-    }
-  }, [user, dispatch]);
+useEffect(() => {
+  if ((user && user._id) || (buyer && buyer._id)) {
+    dispatch(fetchUserWishlist());
+  }
+}, [user, buyer, dispatch]);
 
-  const handleToggleWishlist = (productId) => {
-    if (!user) {
-      alert("Please log in to manage your wishlist!");
-      return;
-    }
 
-    const isInWishlist = wishlistItems.some((item) => item._id === productId);
+const handleToggleWishlist = (productId) => {
+  if (!user && !buyer) {
+    alert("Please log in to manage your wishlist!");
+    return;
+  }
 
-    if (isInWishlist) {
-      dispatch(removeProductFromWishlist(productId));
-    } else {
-      dispatch(addProductToWishlist(productId));
-    }
-  };
+  const isInWishlist = wishlistItems.some((item) => item._id === productId);
+
+  if (isInWishlist) {
+    dispatch(removeProductFromWishlist(productId));
+  } else {
+    dispatch(addProductToWishlist(productId));
+  }
+};
 
   const fetchData = useCallback(async () => {
     if (!categorySlug || !subcategorySlug) return;
@@ -724,25 +728,17 @@ const SubcategoryProductPage = () => {
                           className="rounded-md object-cover mx-auto block"
                         />
                         {/* Wishlist Icon */}
-                        {user && (
+                      {(user || buyer) && (
                           <button
                             className={`btn btn-link p-0 position-absolute top-0 end-0 m-2 ${
                               isInWishlist ? "text-danger" : "text-muted"
                             }`}
-                            onClick={() => handleToggleWishlist(product._id)}
-                            disabled={wishlistLoading}
-                            title={
-                              isInWishlist
-                                ? "Remove from Wishlist"
-                                : "Add to Wishlist"
-                            }
-                            aria-label={
-                              isInWishlist
-                                ? "Remove from Wishlist"
-                                : "Add to Wishlist"
-                            }
-                          >
-                            {isInWishlist ? <FaHeart /> : <FaRegHeart />}
+                         onClick={() => handleToggleWishlist(product._id)}
+    disabled={wishlistLoading}
+    title={isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+    aria-label={isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+  >
+    {isInWishlist ? <FaHeart /> : <FaRegHeart />}
                           </button>
                         )}
                       </div>

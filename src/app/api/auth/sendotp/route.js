@@ -2,14 +2,13 @@ import User from "@/models/User";
 import BusinessProfile from "@/models/BusinessProfile";
 import connectdb from "@/lib/dbConnect";
 import Bankdetails from "@/models/BankDetails";
-import Product from "@/models/Product";
 
 export async function POST(req) {
     try {
         await connectdb(); // Connect to the database
         const body = await req.json();
 
-        const { productname, fullname, email, mobileNumber, pincode, companyName } = body;
+        const { fullname, email, mobileNumber, pincode, companyName } = body;
 
         if (!fullname || !mobileNumber) {
             return new Response(JSON.stringify({ error: "All fields are required" }), {
@@ -104,15 +103,6 @@ export async function POST(req) {
             await newBankDetails.save();
         }
 
-        if (productname) {
-            // Save Product Name In Product, if not create one
-            const addproduct = new Product({
-                userId: user._id,
-                name: productname,
-                category: "679a65c59a30cb344bae901e", // ✅ Add default category
-            });
-            await addproduct.save();
-        }
 
         // Send OTP via 2Factor
         try {

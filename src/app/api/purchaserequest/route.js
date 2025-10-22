@@ -19,6 +19,7 @@ export async function POST(req) {
       product
     } = await req.json(); // Use .json() to parse the request body
 
+    
     // Validate if required fields are present individually
     if (!buyer) {
       return new Response(

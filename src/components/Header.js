@@ -6,7 +6,9 @@ import Image from "next/image";
 import { FaChevronDown, FaSearch, FaMapMarkerAlt, FaTh } from "react-icons/fa"; // Keep FaTh
 
 import { useSelector, useDispatch } from "react-redux";
-
+import { logoutBuyer } from "@/app/store/buyerSlice";
+import { FaShoppingBag } from "react-icons/fa";
+import { BsBriefcaseFill } from "react-icons/bs";
 import { logout, initializeUser } from "@/app/store/userSlice";
 import SmoothCounter from "./Counter";
 
@@ -41,6 +43,8 @@ export default function Header() {
 
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
+  const { buyer } = useSelector((state) => state.buyer || {});
+
   // NEW: Get wishlist items from the Redux store
   const wishlistItems = useSelector((state) => state.wishlist.items);
 
@@ -115,10 +119,15 @@ export default function Header() {
     setDropdownOpen((prev) => !prev);
   };
 
-  const handleLogout = () => {
+const handleLogout = () => {
+  if (user) {
     dispatch(logout());
-    router.push("/");
-  };
+  } else if (buyer) {
+    dispatch(logoutBuyer());
+  }
+  window.location.href = "/"; // redirect to home after logout
+};
+
 
   useEffect(() => {
     if (searchTerm.trim() === "") {
@@ -294,7 +303,6 @@ export default function Header() {
                 >
                   <FaTh />
                 </span>
-
                 {/* City Dropdown Search */}
                 <div className="relative d-none-mob" ref={cityDropdownRef}>
                   <button
@@ -343,8 +351,6 @@ export default function Header() {
                     </div>
                   )}
                 </div>
-
-                {/* Product Search */}
        {/* Product Search */}
 <div
   className="position-relative flex-grow-1 pro-ser-div"
@@ -379,7 +385,6 @@ export default function Header() {
     </ul>
   )}
 </div>
-
                 {/* Registered Users */}
                 <div className="registered-users-box text-center d-none-mob">
                   <div>Registered Users</div>
@@ -394,94 +399,86 @@ export default function Header() {
             {/* User Sections */}
             <div className="col-2 d-flex justify-content-end">
               <div className="d-none-mob mr-auto">
-                {user ? (
-                  <div className="dropdown2" ref={dropdownRef}>
-                    <button
-                      className="dropdown-toggle"
-                      type="button"
-                      onClick={toggleDropdown}
-                      aria-expanded={dropdownOpen}
-                    >
-                      <Image
-                        src="/assets/dashboardicons/profile-1.png" // or external URL if allowed
-                        alt="Description of image"
-                        className="d-inline"
-                        width={40}
-                        height={40}
-                      />
-                      Hi! {user.fullname || "User"}
-                    </button>
-                    {dropdownOpen && (
-                      <ul className="dropdown-menu show">
-                        <li className="dropdown-header text-center fw-bold">
-                          👋 Welcome!
-                        </li>
-                        <li>
-                          <Link className="dropdown-item" href="/userdashboard">
-                            🏠 Dashboard
-                          </Link>
-                        </li>
-                        <li>
-                          <Link className="dropdown-item" href="/wish-list">
-                            🧡 WishList{" "}
-                            {/* NEW: Display wishlist count */}
-                            {wishlistItems.length > 0 && (
-                              <span className="badge bg-primary rounded-pill ms-1">
-                                {wishlistItems.length}
-                              </span>
-                            )}
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            className="dropdown-item"
-                            href="/userdashboard?activeTab=User%20Profile"
-                          >
-                            🧑 Profile
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            className="dropdown-item"
-                            href="/userdashboard?activeTab=Recieved%20Enquiry"
-                          >
-                            📩 Inquiries
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            className="dropdown-item"
-                            href="/userdashboard?activeTab=Payments"
-                          >
-                            🎟️ My Membership
-                          </Link>
-                        </li>
-                        <li>
-                          <button
-                            className="dropdown-item text-danger"
-                            onClick={handleLogout}
-                          >
-                            🚪 Sign Out
-                          </button>
-                        </li>
-                      </ul>
-                    )}
-                  </div>
-                ) : (
-                  <>
-                    <div className="d-none-mob">
-                      <Link
-                        className="btn btn-outline-primary me-2"
-                        href="/user/login"
-                      >
-                        Login
-                      </Link>
-                      <Link className="btn btn-primary" href="/user/register">
-                        Sign Up
-                      </Link>
-                    </div>
-                  </>
-                )}
+    {user ? (
+  // ✅ Seller Logged In Dropdown
+  <div className="dropdown2" ref={dropdownRef}>
+    <button
+      className="dropdown-toggle d-flex align-items-center"
+      type="button"
+      onClick={toggleDropdown}
+      aria-expanded={dropdownOpen}
+    >
+      <Image
+        src="/assets/dashboardicons/profile-1.png"
+        alt="User"
+        width={40}
+        height={40}
+      />
+      Hi! {user.fullname || "Seller"}
+    </button>
+    {dropdownOpen && (
+      <ul className="dropdown-menu show">
+        <li className="dropdown-header text-center fw-bold">👋 Welcome Seller!</li>
+        <li><Link className="dropdown-item" href="/userdashboard">🏠 Dashboard</Link></li>
+        <li><Link className="dropdown-item" href="/wish-list">🧡 WishList</Link></li>
+        <li><Link className="dropdown-item" href="/userdashboard?activeTab=User%20Profile">🧑 Profile</Link></li>
+        <li><Link className="dropdown-item" href="/userdashboard?activeTab=Recieved%20Enquiry">📩 Inquiries</Link></li>
+        <li><Link className="dropdown-item" href="/userdashboard?activeTab=Payments">🎟️ My Membership</Link></li>
+        <li><button className="dropdown-item text-danger" onClick={handleLogout}>🚪 Logout</button></li>
+      </ul>
+    )}
+  </div>
+) : buyer ? (
+  // ✅ Buyer Logged In Dropdown
+  <div className="dropdown2" ref={dropdownRef}>
+    <button
+      className="dropdown-toggle d-flex align-items-center"
+      type="button"
+      onClick={toggleDropdown}
+      aria-expanded={dropdownOpen}
+    >
+      <Image
+        src="/assets/dashboardicons/profile-1.png"
+        alt="Buyer"
+        width={40}
+        height={40}
+      />
+      Hi! {buyer.fullname || "Buyer"}
+    </button>
+    {dropdownOpen && (
+      <ul className="dropdown-menu show">
+        <li className="dropdown-header text-center fw-bold">👋 Welcome Buyer!</li>
+        <li><Link className="dropdown-item" href="/buyerdashboard">🏠 Dashboard</Link></li>
+        <li><Link className="dropdown-item" href="/buyerdashboard?activeTab=Buyer%20Profile">🧾 Profile</Link></li>
+        <li><button className="dropdown-item text-danger" onClick={handleLogout}>🚪 Logout</button></li>
+      </ul>
+    )}
+  </div>
+) : (
+  // ✅ Default (no login)
+<div className="d-flex gap-2 position-relative">
+  {/* Buyer Button */}
+      <div className="relative">
+        <button
+          onClick={() => router.push("/buyer/register")}
+          className="group flex items-center justify-center gap-1 w-full px-3 py-3 font-semibold text-sm rounded-lg shadow-md transition-all duration-300 bg-white text-green-700 border border-green-500 hover:bg-gradient-to-r hover:from-green-500 hover:to-green-600 hover:text-white"
+        >
+          <FaShoppingBag className="w-4 h-4 text-green-600 transition-colors duration-300 group-hover:text-white" />
+          Buy
+        </button>
+      </div>
+      {/* Seller Button */}
+      <div className="relative">
+        <button
+          onClick={() => router.push("/user/register")}
+          className="group flex items-center justify-center gap-1 w-full px-3 py-3 font-semibold text-sm rounded-lg shadow-md transition-all duration-300 bg-white text-purple-700 border border-purple-500 hover:bg-gradient-to-r hover:from-purple-500 hover:to-purple-600 hover:text-white"
+        >
+          <BsBriefcaseFill className="w-4 h-4 text-purple-600 transition-colors duration-300 group-hover:text-white" />
+          Sell
+        </button>
+      </div>
+</div>
+)}
               </div>
 
               <div className="d-none-web">
@@ -507,109 +504,143 @@ export default function Header() {
                     } h-[60vh] z-[9999]`} // Increased z-index
                   >
                     {/* Drawer Header */}
-                    <div className="flex items-center justify-between px-4 py-2 border-b">
-                      <div className="text-lg font-semibold mb-0">
-                        {user ? (
-                          <span className="text-purple-700">
-                            👤 Hi! {user.fullname || "User"}
-                          </span>
-                        ) : (
-                          "Welcome Guest"
-                        )}
-                      </div>
-                      <button className="text-gray-600" onClick={toggleDrawer}>
-                        ✖
-                      </button>
-                    </div>
+            <div className="flex items-center justify-between px-4 py-2 border-b">
+  <div className="text-lg font-semibold mb-0">
+    {user ? (
+      <span className="text-purple-700">
+        👤 Hi! {user.fullname || "Seller"}
+      </span>
+    ) : buyer ? (
+      <span className="text-green-700">
+        👋 Hi! {buyer.fullname || "Buyer"}
+      </span>
+    ) : (
+      <span className="text-gray-700">Welcome Guest</span>
+    )}
+  </div>
+  <button className="text-gray-600" onClick={toggleDrawer}>
+    ✖
+  </button>
+</div>
+
 
                     {/* Drawer Content */}
-                    <div className="p-4">
-                      {user ? (
-                        <>
-                          👋 Welcome!
-                          <ul className="mt-4 space-y-2">
-                            <li>
-                              <Link
-                                className="dropdown-item"
-                                href="/userdashboard"
-                              >
-                                🏠 Dashboard
-                              </Link>
-                            </li>
+<div className="p-4">
+  {user ? (
+    // ✅ Seller Logged In
+    <>
+      👋 Welcome Seller!
+      <ul className="mt-4 space-y-2">
+        <li>
+          <Link className="dropdown-item" href="/userdashboard">
+            🏠 Dashboard
+          </Link>
+        </li>
+        <li>
+          <Link className="dropdown-item" href="/wish-list">
+            🧡 WishList{" "}
+            {wishlistItems.length > 0 && (
+              <span className="badge bg-primary rounded-pill ms-1">
+                {wishlistItems.length}
+              </span>
+            )}
+          </Link>
+        </li>
+        <li>
+          <Link
+            className="dropdown-item"
+            href="/userdashboard?activeTab=User%20Profile"
+          >
+            🧑 Profile
+          </Link>
+        </li>
+        <li>
+          <Link
+            className="dropdown-item"
+            href="/userdashboard?activeTab=Recieved%20Enquiry"
+          >
+            📩 Inquiries
+          </Link>
+        </li>
+        <li>
+          <Link
+            className="dropdown-item"
+            href="/userdashboard?activeTab=Payments"
+          >
+            🎟️ My Membership
+          </Link>
+        </li>
+        <li>
+          <button className="dropdown-item text-danger" onClick={handleLogout}>
+            🚪 Sign Out
+          </button>
+        </li>
+      </ul>
+    </>
+  ) : buyer ? (
+    // ✅ Buyer Logged In
+    <>
+      👋 Welcome Buyer!
+      <ul className="mt-4 space-y-2">
+        <li>
+          <Link className="dropdown-item" href="/buyerdashboard">
+            🏠 Dashboard
+          </Link>
+        </li>
+        <li>
+          <Link
+            className="dropdown-item"
+            href="/buyerdashboard?activeTab=Buyer%20Profile"
+          >
+            🧾 Profile
+          </Link>
+        </li>
+        <li>
+          <button className="dropdown-item text-danger" onClick={handleLogout}>
+            🚪 Sign Out
+          </button>
+        </li>
+      </ul>
+    </>
+  ) : (
+    // ✅ Guest View
+    <>
+      {/* --- BUYER / SELLER OPTIONS --- */}
+   <div className="flex flex-col gap-4 mb-6">
 
-                            <li>
-                              <Link className="dropdown-item" href="/wish-list">
-                                🧡 WishList{" "}
-                                {/* NEW: Display wishlist count in drawer */}
-                                {wishlistItems.length > 0 && (
-                                  <span className="badge bg-primary rounded-pill ms-1">
-                                    {wishlistItems.length}
-                                  </span>
-                                )}
-                              </Link>
-                            </li>
+      {/* Buyer Button */}
+      <div className="relative">
+        <button
+          onClick={() => router.push("/buyer/register")}
+          className="group flex items-center justify-center gap-2 w-full px-4 py-3 font-semibold text-sm rounded-lg shadow-md transition-all duration-300 bg-white text-green-700 border border-green-500 hover:bg-gradient-to-r hover:from-green-500 hover:to-green-600 hover:text-white"
+        >
+          <FaShoppingBag className="w-5 h-5 text-green-700 group-hover:text-white transition-colors duration-300" />
+          I want to Buy
+        </button>
+      </div>
 
-                            <li>
-                              <Link
-                                className="dropdown-item"
-                                href="/userdashboard?activeTab=User%20Profile"
-                              >
-                                🧑 Profile
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                className="dropdown-item"
-                                href="/userdashboard?activeTab=Recieved%20Enquiry"
-                              >
-                                📩 Inquiries
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                className="dropdown-item"
-                                href="/userdashboard?activeTab=Payments"
-                              >
-                                🎟️ My Membership
-                              </Link>
-                            </li>
-                            <li>
-                              <button
-                                className="dropdown-item text-danger"
-                                onClick={handleLogout}
-                              >
-                                🚪 Sign Out
-                              </button>
-                            </li>
-                          </ul>
-                        </>
-                      ) : (
-                        <>
-                          <p>Welcome! Guest</p>
-                          <div className="mt-6 flex justify-between">
-                            <button
-                              onClick={() => toggleDrawer2("/user/login")}
-                              className="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg"
-                            >
-                              Login
-                            </button>
+      {/* Seller Button */}
+      <div className="relative">
+        <button
+          onClick={() => router.push("/user/register")}
+          className="group flex items-center justify-center gap-2 w-full px-4 py-3 font-semibold text-sm rounded-lg shadow-md transition-all duration-300 bg-white text-purple-700 border border-purple-500 hover:bg-gradient-to-r hover:from-purple-500 hover:to-purple-600 hover:text-white"
+        >
+          <BsBriefcaseFill className="w-5 h-5 text-purple-700 group-hover:text-white transition-colors duration-300" />
+          I want to Sell
+        </button>
+      </div>
 
-                            <button
-                              onClick={() => toggleDrawer2("/user/register")}
-                              className="bg-blue-500 text-white px-4 py-2 rounded-lg"
-                            >
-                              Sign Up
-                            </button>
-                          </div>
-                        </>
-                      )}
-                      <p className="mt-4 text-center text-sm text-gray-500">
-                        Registered Users phonr:{" "}
-                        <span className="text-green-600">
-                          {" "}
-                          <SmoothCounter end={totalUsers + 350000} duration={2} />
-                        </span>
-                      </p>
+    </div>
+
+      {/* Registered Users Counter */}
+      <p className="mt-4 text-center text-sm text-gray-500">
+        Registered Users:{" "}
+        <span className="text-green-600">
+          <SmoothCounter end={totalUsers + 350000} duration={2} />
+        </span>
+      </p>
+    </>
+  )}
                     </div>
                   </div>
                 </div>

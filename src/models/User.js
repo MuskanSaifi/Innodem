@@ -13,7 +13,6 @@ const userSchema = new mongoose.Schema({
     default: [],
   },
  termsAccepted: { type: Boolean, default: false },
-
   
   fullname: String,
   email: { type: String, unique: true },

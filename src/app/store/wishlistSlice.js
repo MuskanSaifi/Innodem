@@ -1,89 +1,103 @@
 // store/wishlistSlice.js
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import toast from 'react-hot-toast'; // Import toast
+import toast from 'react-hot-toast'; 
+
+// 🎯 Helper function to get the current auth details
+const getAuthDetails = (getState) => {
+    const { user, buyer } = getState();
+    // Prioritize 'User' (seller/admin) token if available, otherwise use 'Buyer' token
+    if (user.token && user.user) {
+        return { token: user.token, role: 'user', id: user.user._id };
+    }
+    if (buyer.token && buyer.buyer) {
+        // Assuming buyer._id is the ID for the buyer model
+        return { token: buyer.token, role: 'buyer', id: buyer.buyer._id };
+    }
+    return { token: null, role: null, id: null };
+};
 
 // Async Thunks for API calls
 export const fetchUserWishlist = createAsyncThunk(
-  "wishlist/fetchUserWishlist",
-  async (_, { rejectWithValue, getState }) => {
-    try {
-      // Get token from Redux store (userSlice)
-      const token = getState().user.token;
-      if (!token) {
-        // No toast for this, as it's typically handled by a login redirect or message
-        return rejectWithValue("No authentication token found.");
-      }
+    "wishlist/fetchUserWishlist",
+    async (_, { rejectWithValue, getState }) => {
+        const { token, role } = getAuthDetails(getState); // Use helper
+        if (!token) {
+            return rejectWithValue("No authentication token found.");
+        }
 
-      const response = await axios.get("/api/wishlist", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data.wishlist || [];
-    } catch (error) {
-      console.error("❌ Error fetching user wishlist:", error);
-      // toast.error("Failed to load wishlist."); // Optional: You could show a toast here too
-      return rejectWithValue(error.response?.data?.message || "Failed to fetch wishlist");
+        try {
+            // Pass the role to the API so it knows whether to fetch a User's or a Buyer's wishlist
+            const response = await axios.get(`/api/wishlist?role=${role}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data.wishlist || [];
+        } catch (error) {
+            console.error(`❌ Error fetching ${role} wishlist:`, error);
+            return rejectWithValue(error.response?.data?.message || "Failed to fetch wishlist");
+        }
     }
-  }
 );
 
 export const addProductToWishlist = createAsyncThunk(
-  "wishlist/addProductToWishlist",
-  async (productId, { rejectWithValue, getState }) => {
-    try {
-      const token = getState().user.token;
-      if (!token) {
-        toast.error("Please log in to add to wishlist."); // Inform user to log in
-        return rejectWithValue("No authentication token found.");
-      }
+    "wishlist/addProductToWishlist",
+    async (productId, { rejectWithValue, getState }) => {
+        const { token, role } = getAuthDetails(getState); // Use helper
 
-      const response = await axios.post(
-        "/api/wishlist",
-        { productId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        if (!token) {
+            toast.error("Please log in to add to wishlist.");
+            return rejectWithValue("No authentication token found.");
         }
-      );
-      toast.success("Product added to wishlist!"); // Success toast
-      return response.data.wishlist;
-    } catch (error) {
-      console.error("❌ Error adding product to wishlist:", error);
-      const errorMessage = error.response?.data?.message || "Failed to add product to wishlist";
-      toast.error(errorMessage); // Error toast
-      return rejectWithValue(errorMessage);
+
+        try {
+            const response = await axios.post(
+                "/api/wishlist",
+                { productId, role }, // Pass the role to the API
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            toast.success("Product added to wishlist! 🛒");
+            return response.data.wishlist;
+        } catch (error) {
+            console.error("❌ Error adding product to wishlist:", error);
+            const errorMessage = error.response?.data?.message || "Failed to add product to wishlist";
+            toast.error(errorMessage);
+            return rejectWithValue(errorMessage);
+        }
     }
-  }
 );
 
 export const removeProductFromWishlist = createAsyncThunk(
-  "wishlist/removeProductFromWishlist",
-  async (productId, { rejectWithValue, getState }) => {
-    try {
-      const token = getState().user.token;
-      if (!token) {
-        toast.error("Please log in to remove from wishlist."); // Inform user to log in
-        return rejectWithValue("No authentication token found.");
-      }
+    "wishlist/removeProductFromWishlist",
+    async (productId, { rejectWithValue, getState }) => {
+        const { token, role } = getAuthDetails(getState); // Use helper
 
-      const response = await axios.delete(`/api/wishlist/${productId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      toast.success("Product removed from wishlist!"); // Success toast
-      return response.data.wishlist;
-    } catch (error) {
-      console.error("❌ Error removing product from wishlist:", error);
-      const errorMessage = error.response?.data?.message || "Failed to remove product from wishlist";
-      toast.error(errorMessage); // Error toast
-      return rejectWithValue(errorMessage);
+        if (!token) {
+            toast.error("Please log in to remove from wishlist.");
+            return rejectWithValue("No authentication token found.");
+        }
+
+        try {
+            // Pass the role as a query parameter for DELETE
+            const response = await axios.delete(`/api/wishlist/${productId}?role=${role}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            toast.success("Product removed from wishlist! 💔");
+            return response.data.wishlist;
+        } catch (error) {
+            console.error("❌ Error removing product from wishlist:", error);
+            const errorMessage = error.response?.data?.message || "Failed to remove product from wishlist";
+            toast.error(errorMessage);
+            return rejectWithValue(errorMessage);
+        }
     }
-  }
 );
 
 const wishlistSlice = createSlice({

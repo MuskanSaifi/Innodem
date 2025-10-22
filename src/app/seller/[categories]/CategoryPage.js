@@ -14,7 +14,7 @@ import 'rc-slider/assets/index.css'; // Don't forget to import the styles!
 
 // Redux imports
 import { useDispatch, useSelector } from 'react-redux';
-import { addProductToWishlist, removeProductFromWishlist } from '../../store/wishlistSlice'; // Adjust path if necessary
+import { addProductToWishlist, removeProductFromWishlist, fetchUserWishlist } from '../../store/wishlistSlice'; // Adjust path if necessary
 
 const CategoryPage = ({ categorySlug }) => {
   const [categories, setCategories] = useState([]);
@@ -32,7 +32,10 @@ const CategoryPage = ({ categorySlug }) => {
   // Redux hooks for wishlist
   const dispatch = useDispatch();
   const wishlistItems = useSelector((state) => state.wishlist.items);
-  const user = useSelector((state) => state.user.user); // Assuming you have user state for login check
+ const user = useSelector((state) => state.user.user);
+const buyer = useSelector((state) => state.buyer.buyer);
+const token = useSelector((state) => state.user.token);
+const buyerToken = useSelector((state) => state.buyer.token);
 
   // --- NEW: Filter States ---
   const [filters, setFilters] = useState({
@@ -166,18 +169,26 @@ const CategoryPage = ({ categorySlug }) => {
     return wishlistItems.some(item => item._id === productId);
   };
 
-  // Handle wishlist toggle
-  const handleWishlistToggle = (product) => {
-    if (!user) {
-      alert("Please log in to add items to your wishlist."); // Or redirect to login page
-      return;
-    }
-    if (isProductInWishlist(product._id)) {
-      dispatch(removeProductFromWishlist(product._id));
-    } else {
-      dispatch(addProductToWishlist(product));
-    }
-  };
+  useEffect(() => {
+  if ((user && user._id) || (buyer && buyer._id)) {
+    dispatch(fetchUserWishlist());
+  }
+}, [user, buyer, dispatch]);
+
+
+ const handleWishlistToggle = (product) => {
+  if (!user && !buyer) {
+    alert("Please log in to manage your wishlist.");
+    return;
+  }
+
+  const isInWishlist = wishlistItems.some(item => item._id === product._id);
+  if (isInWishlist) {
+    dispatch(removeProductFromWishlist(product._id));
+  } else {
+    dispatch(addProductToWishlist(product));
+  }
+};
 
   // --- Handle Filter Changes for text inputs and dropdowns ---
   const handleFilterChange = useCallback((e) => {
