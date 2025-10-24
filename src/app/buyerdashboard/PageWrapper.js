@@ -5,12 +5,11 @@ import "./dashboard.css";
 import { useRouter, useSearchParams } from 'next/navigation';
 import Sidebar from "./Sidebar";
 import { useSelector, useDispatch } from 'react-redux';
-import BuyerProfile from "./Buyerprofile";
 import { initializeBuyer } from "@/app/store/buyerSlice";
 import Wishlist from "./Wishlist";
 import Blockedseller from "./Blockedseller";
-import ReportedSeller from "./Help";
 import Help from "./Help";
+import BuyerProfile from "./Buyerprofile";
 
 function BuyerDashboardPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -66,7 +65,6 @@ function BuyerDashboardPage() {
         <div className="resdes-dynamic-content">
           {activeContent === "Buyer Profile" && <BuyerProfile />}
           {activeContent === "Wishlist Items" && <Wishlist />}
-          {activeContent === "Reported Seller" && <ReportedSeller />}
           {activeContent === "Blocked Seller" && <Blockedseller />}
           {activeContent === "Help & Support" && <Help />}
         </div>
