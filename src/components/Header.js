@@ -450,6 +450,9 @@ const handleLogout = () => {
         <li className="dropdown-header text-center fw-bold">👋 Welcome Buyer!</li>
         <li><Link className="dropdown-item" href="/buyerdashboard">🏠 Dashboard</Link></li>
         <li><Link className="dropdown-item" href="/buyerdashboard?activeTab=Buyer%20Profile">🧾 Profile</Link></li>
+        <li><Link className="dropdown-item" href="/buyerdashboard?activeTab=Wishlist%20Items">🧡 WishList</Link></li>
+        <li><Link className="dropdown-item" href="/buyerdashboard?activeTab=Blocked%20Seller">🚫 Blocked Sellers</Link></li>
+        <li><Link className="dropdown-item" href="/buyerdashboard?activeTab=Help%20Desk">🎧 Help & Support</Link></li>
         <li><button className="dropdown-item text-danger" onClick={handleLogout}>🚪 Logout</button></li>
       </ul>
     )}
@@ -593,6 +596,30 @@ const handleLogout = () => {
             href="/buyerdashboard?activeTab=Buyer%20Profile"
           >
             🧾 Profile
+          </Link>
+        </li>
+        <li>
+          <Link
+            className="dropdown-item"
+            href="/buyerdashboard?activeTab=Wishlist%20Items"
+          >
+          🧡 WishList
+          </Link>
+        </li>
+        <li>
+          <Link
+            className="dropdown-item"
+            href="/buyerdashboard?activeTab=Blocked%20Seller"
+          >
+         🚫 Blocked Sellers
+          </Link>
+        </li>
+        <li>
+          <Link
+            className="dropdown-item"
+            href="/buyerdashboard?activeTab=Help%20Desk"
+          >
+        🎧 Help & Support
           </Link>
         </li>
         <li>

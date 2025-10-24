@@ -66,7 +66,7 @@ function BuyerDashboardPage() {
           {activeContent === "Buyer Profile" && <BuyerProfile />}
           {activeContent === "Wishlist Items" && <Wishlist />}
           {activeContent === "Blocked Seller" && <Blockedseller />}
-          {activeContent === "Help & Support" && <Help />}
+          {activeContent === "Help Desk" && <Help />}
         </div>
       </div>
     </div>

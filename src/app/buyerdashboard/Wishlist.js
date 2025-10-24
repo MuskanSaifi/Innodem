@@ -65,7 +65,6 @@ const Wishlist = () => {
       </div>
     );
 
-
   // ✅ Display wishlist products
   return (
     <div className="container mx-auto px-4 py-8">
@@ -115,4 +114,5 @@ const Wishlist = () => {
     </div>
   );
 };
+
 export default Wishlist;

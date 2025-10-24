@@ -9,8 +9,8 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
   const sidebarItems = [
     { icon: "/assets/dashboardicons/profile-1.png", label: "Buyer Profile"},
     { icon: "/assets/dashboardicons/Wishlist.png", label: "Wishlist Items"},
-    { icon: "/assets/dashboardicons/block.png", label: "Blocked Seller" },
-    { icon: "/assets/dashboardicons/help-&-support.png", label: "Help & Support" },
+    { icon: "/assets/dashboardicons/Block.png", label: "Blocked Seller" },
+    { icon: "/assets/dashboardicons/help-&-support.png", label: "Help Desk" },
      ];
 
   const toggleDropdown = (index) => {
