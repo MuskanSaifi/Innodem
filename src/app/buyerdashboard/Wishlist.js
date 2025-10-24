@@ -57,7 +57,7 @@ const Wishlist = () => {
           Add products you love to your wishlist ❤️
         </p>
         <button
-          onClick={() => router.push("/products")}
+          onClick={() => router.push("/")}
           className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
         >
           Browse Products

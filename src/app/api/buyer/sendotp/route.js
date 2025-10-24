@@ -15,8 +15,7 @@ export async function POST(req) {
     }
 
     // Format number (E.164)
-    const formattedMobile = `${countryCode}${mobileNumber}`.replace("+", "");
-
+    const formattedMobile = `${countryCode}${mobileNumber}`
     // Check if already registered
     let existingBuyer = await Buyer.findOne({ mobileNumber });
 
@@ -34,7 +33,7 @@ export async function POST(req) {
     const newBuyer = new Buyer({
       fullname,
       email,
-      mobileNumber,
+      mobileNumber: formattedMobile,
       countryCode,
       productname,
       otp,

@@ -42,13 +42,18 @@ export default function BuyerRegister() {
       const res = await fetch("/api/buyer/sendotp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fullname, email, mobileNumber, countryCode: countryCode?.value, productname }),
+        body: JSON.stringify({
+           fullname,
+            email,
+             mobileNumber,
+              countryCode: countryCode?.value,
+               productname }),
       });
 
       const data = await res.json();
       if (res.ok) {
         setMessage(data.message);
-        setLoginnumber(mobileNumber);
+        setLoginnumber(data.mobileNumber);
         setSignup(true);
       } else {
         setError(data.error);
@@ -100,10 +105,8 @@ export default function BuyerRegister() {
           height={180}
           className="rounded object-cover mx-auto"
         />
-
         {message && <p className="text-green-600">{message}</p>}
         {error && <p className="text-red-600">{error}</p>}
-
         {signup ? (
           <form onSubmit={handleVerifyOtp}>
             <input
