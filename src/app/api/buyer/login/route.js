@@ -26,27 +26,32 @@ export async function POST(req) {
 
     // ========== OTP Send ==========
     if (!otp) {
-      // ✅ For test number, skip sending
-      if (fullMobile === testNumber) {
-        return new Response(JSON.stringify({ message: "Static OTP enabled for test buyer", mobileNumber: fullMobile }), {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        });
+     // ✅ For test number, skip sending
+  if (fullMobile === testNumber) {
+    return new Response(JSON.stringify({ message: "Static OTP enabled for test buyer", mobileNumber: fullMobile }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  let buyer = await Buyer.findOne({ mobileNumber: fullMobile });
+  if (!buyer) {
+    return new Response(
+      JSON.stringify({ error: "Mobile number not found, please register first" }),
+      {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
       }
+    );
+  }
 
-      let buyer = await Buyer.findOne({ mobileNumber: fullMobile });
-      if (!buyer) {
-        buyer = new Buyer({ mobileNumber: fullMobile, countryCode });
-        await buyer.save();
-      }
+  const generatedOtp = Math.floor(1000 + Math.random() * 9000);
+  const otpExpires = new Date(Date.now() + 5 * 60000);
 
-      const generatedOtp = Math.floor(1000 + Math.random() * 9000);
-      const otpExpires = new Date(Date.now() + 5 * 60000);
-
-      buyer.otp = generatedOtp;
-      buyer.otpExpires = otpExpires;
-      await buyer.save();
-
+  buyer.otp = generatedOtp;
+  buyer.otpExpires = otpExpires;
+  await buyer.save();
+  
       // ✅ Send OTP via 2Factor API
       try {
         const apiKey = "afd6c091-063e-11f0-8b17-0200cd936042";

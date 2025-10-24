@@ -4,6 +4,9 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { logoutBuyer } from "@/app/store/buyerSlice"
+import Swal from "sweetalert2";
 
 const BuyerProfile = () => {
   const [buyerDetail, setBuyerDetail] = useState(null);
@@ -13,7 +16,7 @@ const BuyerProfile = () => {
   const [saving, setSaving] = useState(false);
 
   const token = useSelector((state) => state.buyer.token);
-
+const dispatch = useDispatch();
   useEffect(() => {
     if (token) fetchBuyerData();
   }, [token]);
@@ -66,9 +69,39 @@ const BuyerProfile = () => {
     }
   };
 
-  const handleDeactivateRequest = () => {
-    toast.success("Your query for account deactivation has been raised. The team will take action soon.");
-  };
+const handleDeleteAccount = async () => {
+  const result = await Swal.fire({
+    title: 'Are you sure?',
+    text: "This will permanently delete your account!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'Cancel',
+  });
+
+  if (result.isConfirmed) {
+    try {
+      await axios.delete("/api/buyer/delete", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      Swal.fire('Deleted!', 'Your account has been deleted.', 'success');
+
+      // Clear Redux and localStorage
+      dispatch(logoutBuyer());
+
+      // Redirect to home page
+      window.location.href = "/";
+    } catch (err) {
+      console.error(err);
+      Swal.fire('Error!', 'Failed to delete account.', 'error');
+    }
+  }
+};
+
+
 
   if (loading) {
     return (
@@ -154,42 +187,43 @@ const BuyerProfile = () => {
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="mt-6 flex flex-col sm:flex-row justify-end gap-4">
-          {editMode ? (
-            <>
-              <button
-                className="px-5 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
-                onClick={() => setEditMode(false)}
-                disabled={saving}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-                onClick={handleSave}
-                disabled={saving}
-              >
-                {saving ? "Saving..." : "Save Details"}
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-                onClick={() => setEditMode(true)}
-              >
-                Edit Details
-              </button>
-              <button
-                className="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-                onClick={handleDeactivateRequest}
-              >
-                Raise Query for Deactivate
-              </button>
-            </>
-          )}
-        </div>
+    {/* Action Buttons */}
+<div className="mt-6 flex flex-col sm:flex-row justify-end gap-4">
+  {editMode ? (
+    <>
+      <button
+        className="px-5 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
+        onClick={() => setEditMode(false)}
+        disabled={saving}
+      >
+        Cancel
+      </button>
+      <button
+        className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+        onClick={handleSave}
+        disabled={saving}
+      >
+        {saving ? "Saving..." : "Save Details"}
+      </button>
+    </>
+  ) : (
+    <>
+      <button
+        className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+        onClick={() => setEditMode(true)}
+      >
+        Edit Details
+      </button>
+      <button
+        className="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+        onClick={handleDeleteAccount}
+      >
+        Delete Account
+      </button>
+    </>
+  )}
+</div>
+
       </div>
     </div>
   );

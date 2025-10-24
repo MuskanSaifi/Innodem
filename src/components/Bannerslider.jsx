@@ -6,7 +6,6 @@ import Image from 'next/image';
 
 const Bannerslider = () => {
   const banners = [
-    "/assets/bannerslider/banner-00.png",
     "/assets/bannerslider/banner-4.png",
     "/assets/bannerslider/banner-2.png",
     "/assets/bannerslider/banner-3.png",

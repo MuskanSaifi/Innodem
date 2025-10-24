@@ -42,10 +42,8 @@ const token = useSelector((state) => state.user.token);
         setLoading(true);
         setMessage("");
         setError("");
-    
         try {
             const fullMobileNumber = `${countryCode.value}${mobileNumber}`; // ✅ FIXED
-    
             const res = await fetch(`/api/auth/sendotp`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

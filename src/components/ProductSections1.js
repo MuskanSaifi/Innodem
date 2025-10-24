@@ -75,7 +75,7 @@ const ProductSections1 = ({ tag, Name }) => {
               <SwiperSlide key={product._id}>
                 <Link
                   href={`/manufacturers/${product.productslug}`}
-                  className="group block text-center p-4 mb-3 rounded-2xl shadow hover:shadow-lg bg-white transition-all duration-300 border border-gray-100"
+                  className="group block text-center p-4 mb-3 rounded-2xl shadow-md hover:shadow-lg bg-white transition-all duration-300 border border-gray-100"
                 >
                   <div className="relative w-28 h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 mx-auto rounded-full overflow-hidden border border-gray-200 shadow-inner">
                     <Image

@@ -40,9 +40,9 @@ const IndustrySlider = () => {
 
   return (
     
-<section className="py-10 mt-5 section-bg">
+<section className="py-10 mt-5">
   <div className="container-fluid mx-auto px-4">
-  <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-8 tracking-tight">
+  <h2 className="text-3xl md:text-4xl font-bold text-center  mb-8 tracking-tight">
   Explore Industries
     </h2>
 

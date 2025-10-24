@@ -22,7 +22,6 @@ const ProductSections2 = ({ tag, Name }) => {
         const response = await fetch("/api/adminprofile/seller");
         const data = await response.json();
         if (!response.ok) throw new Error("Failed to fetch products");
-
         const filteredProducts = data.filter((product) => product.tags?.[tag] === true);
         setProducts(filteredProducts);
       } catch (err) {
@@ -33,8 +32,6 @@ const ProductSections2 = ({ tag, Name }) => {
     };
     fetchProducts();
   }, [tag]);
-
-
 
   const settings = {
     dots: false,
@@ -53,12 +50,11 @@ const ProductSections2 = ({ tag, Name }) => {
 
   return (
     <section className="mt-5 px-4">
-      <div className="container-fluid bg-white p-4 rounded-xl shadow-lg">
+      <div className="container-fluid bg-white p-4 rounded-xl shadow-md">
         <div className="flex justify-between items-center mb-4">
         <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 tracking-tight">
         {Name} Products</h2>
         </div>
-
         {loading && <Skeleton count={5} height={180} />}
         {error && <p className="text-red-600 text-center">{error}</p>}
         {!loading && !error && products.length === 0 && (
@@ -68,7 +64,6 @@ const ProductSections2 = ({ tag, Name }) => {
         {!loading && !error && (
           <Slider {...settings}>
             {products.map((product) => {
-
               return (
                 <div key={product._id} className="p-2">
                   <div className="bg-white border rounded-xl shadow-md hover:shadow-xl transition p-4 h-full flex flex-col justify-between">
@@ -104,5 +99,4 @@ const ProductSections2 = ({ tag, Name }) => {
     </section>
   );
 };
-
 export default ProductSections2;

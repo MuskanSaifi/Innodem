@@ -50,7 +50,6 @@ export const addProductToWishlist = createAsyncThunk(
             toast.error("Please log in to add to wishlist.");
             return rejectWithValue("No authentication token found.");
         }
-
         try {
             const response = await axios.post(
                 "/api/wishlist",
