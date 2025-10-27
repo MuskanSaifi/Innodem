@@ -25,7 +25,6 @@ const buyerSlice = createSlice({
     logoutBuyer: (state) => {
       state.buyer = null;
       state.token = null;
-
       // ✅ Remove from localStorage
       localStorage.removeItem("buyer");
       localStorage.removeItem("buyerToken");

@@ -1,3 +1,4 @@
+// api/buyer/verifyotp
 import connectdb from "@/lib/dbConnect";
 import Buyer from "@/models/Buyer";
 import { generateToken } from "@/lib/jwt";
