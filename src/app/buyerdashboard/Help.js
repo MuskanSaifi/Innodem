@@ -117,7 +117,6 @@ const Help = () => {
         <p className="text-gray-600 mb-6">
           Can’t find what you’re looking for? Send us a message and our team will get back to you shortly.
         </p>
-
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -154,7 +153,6 @@ const Help = () => {
               className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-purple-300"
             />
           </div>
-
           <button
             type="submit"
             className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-pink-500 text-white font-medium px-8 py-3 rounded-lg shadow hover:shadow-lg hover:scale-[1.02] transition-all"
@@ -166,5 +164,4 @@ const Help = () => {
     </div>
   );
 };
-
 export default Help;

@@ -20,6 +20,7 @@ const CreateSupportPerson = () => {
   const [allClients, setAllClients] = useState([]); // instead of undefined
   const [selectedClients, setSelectedClients] = useState({}); // key: member._id, value: [user ids]
   const [loading, setLoading] = useState(true);
+const [showPassword, setShowPassword] = useState(false);
 
   const [selectedMember, setSelectedMember] = useState(null);
 const [isModalOpen, setIsModalOpen] = useState(false);
@@ -264,17 +265,37 @@ return (
         />
       </div>
 
-      <div className="mb-4">
-        <label className="block mb-1 text-gray-700 font-medium">Password</label>
-        <input
-          type="password"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-      </div>
+    <div className="mb-4 relative">
+  <label className="block mb-1 text-gray-700 font-medium">Password</label>
+
+  <input
+    type={showPassword ? "text" : "password"}
+    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 pr-10"
+    name="password"
+    value={formData.password}
+    onChange={handleChange}
+    required
+  />
+
+  <button
+    type="button"
+    onClick={() => setShowPassword((prev) => !prev)}
+className="absolute right-3 top-[70%] -translate-y-1/2 text-gray-500 hover:text-blue-600"
+  >
+    {showPassword ? (
+      // 👁️ Eye open
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-5 h-5">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-.38 1.221-1.049 2.343-1.958 3.271M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    ) : (
+      // 🚫 Eye off
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-5 h-5">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 3l18 18M10.477 10.477A3 3 0 0112 9c1.657 0 3 1.343 3 3 0 .524-.135 1.018-.373 1.446M9.88 9.88l-2.829 2.829M4.12 4.12A10.969 10.969 0 0012 5c4.478 0 8.268 2.943 9.542 7-.38 1.221-1.049 2.343-1.958 3.271M15 12a3 3 0 01-3 3" />
+      </svg>
+    )}
+  </button>
+</div>
+
 
       <button
         type="submit"
