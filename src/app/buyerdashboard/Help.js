@@ -80,7 +80,7 @@ const Help = () => {
 
       {/* ===== CONTACT SUPPORT ===== */}
       <div className="mb-12">
-        <h2 className="text-2xl font-semibold mb-4 text-purple-700">Contact Support</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-purple-700">Contact & Support</h2>
         <div className="grid sm:grid-cols-3 gap-6">
           {[
             {
@@ -145,7 +145,6 @@ const Help = () => {
               />
             </div>
           </div>
-
           <div>
             <label className="block text-gray-700 font-medium mb-1">Your Message</label>
             <textarea
