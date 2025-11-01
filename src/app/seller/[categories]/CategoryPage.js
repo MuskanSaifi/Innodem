@@ -39,8 +39,6 @@ const buyerToken = useSelector((state) => state.buyer.token);
 
   // --- NEW: Filter States ---
   const [filters, setFilters] = useState({
-    // Initial values for price range slider. These should be numerical.
-    // Set a default min and max, or derive from product data if possible.
     minPrice: 0, // Default min price for slider
     maxPrice: 100000, // Default max price for slider (adjust based on your product data)
     minMOQ: "",
@@ -424,7 +422,6 @@ const buyerToken = useSelector((state) => state.buyer.token);
                   </select>
                 </div>
               </div>
-
 
               <div className="mb-3">
                 <label className="form-label fw-bold">MOQ Range</label>
@@ -896,6 +893,7 @@ const buyerToken = useSelector((state) => state.buyer.token);
             )}
           </div>
         </main>
+
 
         {/* Subcategories Sidebar (Desktop Only) */}
         <aside className="col-md-3 d-none d-md-block">

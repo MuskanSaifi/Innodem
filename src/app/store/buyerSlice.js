@@ -1,5 +1,4 @@
 // app/store/buyerSlice.js
-
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -11,6 +10,7 @@ const buyerSlice = createSlice({
   name: "buyer",
   initialState,
   reducers: {
+
     setBuyer: (state, action) => {
       state.buyer = action.payload.buyer;
       state.token = action.payload.token || null;
@@ -48,8 +48,10 @@ const buyerSlice = createSlice({
         console.log("⚠️ No buyer data found in localStorage");
       }
     },
+
   },
 });
 
 export const { setBuyer, logoutBuyer, initializeBuyer } = buyerSlice.actions;
 export default buyerSlice.reducer;
+

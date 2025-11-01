@@ -1,4 +1,4 @@
-// api/products/[id]/route.js
+import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 import Product from "@/models/Product";
 import connectdb from "@/lib/dbConnect";
@@ -8,47 +8,56 @@ import User from "@/models/User";
 import BusinessProfile from "@/models/BusinessProfile";
 import BlockedUser from "@/models/BlockedUser";
 
-export async function GET(req, { params }) {
+export async function GET(req, context) {
   try {
     await connectdb();
 
-    const { id } = params;
-    if (!id) {
-      return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
-    }
+    const params = await context.params; // await params
+
+ const id = params.id;
+
+if (!id) {
+  return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
+}
+
+if (!mongoose.Types.ObjectId.isValid(id)) {
+  return NextResponse.json({ error: "Invalid product ID format" }, { status: 400 });
+}
 
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
     const buyerId = searchParams.get("buyerId");
 
-    // 👇 Determine who is logged in
-const loggedInId = userId || buyerId;
+    const loggedInId = userId || buyerId;
 
-let blockedSellerIds = [];
+    // 🔹 Fetch blocked sellers based on role
+    let blockedSellerObjectIds = [];
+    if (userId) {
+      const blockedSellers = await BlockedUser.find({
+        blockedByUser: new mongoose.Types.ObjectId(userId),
+      }).select("sellerId");
 
-if (userId) {
- // 🧍 If a regular user logged in
- const blockedSellers = await BlockedUser.find({
-  blockedByUser: userId,
- }).select("sellerId");
- blockedSellerIds = blockedSellers.map((b) => b.sellerId.toString());
-} else if (buyerId) {
- // 🛒 If a buyer logged in
- const blockedSellers = await BlockedUser.find({
- blockedByBuyer: buyerId,
- }).select("sellerId");
- blockedSellerIds = blockedSellers.map((b) => b.sellerId.toString());
-}
+      blockedSellerObjectIds = blockedSellers.map(b => b.sellerId.toString());
+    } else if (buyerId) {
+      const blockedSellers = await BlockedUser.find({
+        blockedByBuyer: new mongoose.Types.ObjectId(buyerId),
+      }).select("sellerId");
 
-// 🛑 DEBUGGING LINE (TEMPORARY)
-console.log(`LoggedIn ID: ${loggedInId}, Role: ${userId ? 'User' : buyerId ? 'Buyer' : 'Guest'}`);
-console.log("Blocked Seller IDs (Expected to be filtered):", blockedSellerIds);
-// 🛑 END DEBUGGING
+      blockedSellerObjectIds = blockedSellers.map(b => b.sellerId.toString());
+    }
 
-    // Now filter by blocked sellers
+    console.log("🔹 LoggedIn ID:", loggedInId);
+    console.log("🚫 Blocked Seller ObjectIds:", blockedSellerObjectIds);
+
+    // Convert to ObjectIds for Mongo queries
+    blockedSellerObjectIds = blockedSellerObjectIds.map(id =>
+      id instanceof mongoose.Types.ObjectId ? id : new mongoose.Types.ObjectId(id)
+    );
+
+    // --- Fetch Product ---
     const product = await Product.findOne({
       _id: id,
-      userId: { $nin: blockedSellerIds },
+      userId: { $nin: blockedSellerObjectIds },
     })
       .populate("category", "name categoryslug icon")
       .populate("subCategory", "name subcategoryslug icon")
@@ -56,7 +65,7 @@ console.log("Blocked Seller IDs (Expected to be filtered):", blockedSellerIds);
       .select("-__v");
 
     if (!product) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+      return NextResponse.json({ error: "Product not found or blocked seller" }, { status: 404 });
     }
 
     const businessProfile = await BusinessProfile.findOne({
@@ -66,76 +75,77 @@ console.log("Blocked Seller IDs (Expected to be filtered):", blockedSellerIds);
     const formattedProduct = {
       ...product.toObject(),
       businessProfile: businessProfile ? businessProfile.toObject() : null,
-      images: product.images?.filter((img) => img && img.url).map((img) => img.url),
+      images: product.images?.filter(img => img?.url).map(img => img.url),
     };
 
     // --- Related Products ---
     let relatedProducts = [];
     const maxRelatedProducts = 12;
-
     const relatedProductSelectFields =
       "name images tradeShopping minimumOrderQuantity specifications description userId";
-
     const relatedProductPopulate = [
       { path: "category", select: "name" },
       { path: "userId", select: "fullname companyName _id" },
     ];
 
-    // 1. Same subCategory
+    // 1️⃣ Same SubCategory
     if (product.subCategory) {
       relatedProducts = await Product.find({
         subCategory: product.subCategory._id,
         _id: { $ne: product._id },
-        userId: { $nin: blockedSellerIds }, // 👈 filter
+        userId: { $nin: blockedSellerObjectIds },
       })
         .populate(relatedProductPopulate)
         .select(relatedProductSelectFields)
         .limit(maxRelatedProducts);
     }
 
-    // 2. Same category
+    // 2️⃣ Same Category
     if (relatedProducts.length < maxRelatedProducts && product.category) {
       const moreRelated = await Product.find({
         category: product.category._id,
-        _id: { $ne: product._id },
-        _id: { $nin: relatedProducts.map((p) => p._id) },
-        userId: { $nin: blockedSellerIds }, // 👈 filter
+        _id: { $nin: relatedProducts.map(p => p._id) },
+        userId: { $nin: blockedSellerObjectIds },
       })
         .populate(relatedProductPopulate)
         .select(relatedProductSelectFields)
         .limit(maxRelatedProducts - relatedProducts.length);
+
       relatedProducts = [...relatedProducts, ...moreRelated];
     }
 
-    // 3. General products
+    // 3️⃣ General Products
     if (relatedProducts.length < maxRelatedProducts) {
       const remainingSlots = maxRelatedProducts - relatedProducts.length;
       const excludedProductIds = new Set([
-        ...relatedProducts.map((p) => p._id.toString()),
+        ...relatedProducts.map(p => p._id.toString()),
         product._id.toString(),
       ]);
 
       const generalRelated = await Product.find({
         _id: { $nin: Array.from(excludedProductIds) },
-        userId: { $nin: blockedSellerIds }, // 👈 filter
+        userId: { $nin: blockedSellerObjectIds },
       })
         .populate(relatedProductPopulate)
         .select(relatedProductSelectFields)
         .limit(remainingSlots);
+
       relatedProducts = [...relatedProducts, ...generalRelated];
     }
 
+    // Add business profiles to related products
     const relatedProductsWithBusinessProfiles = await Promise.all(
-      relatedProducts.map(async (rp) => {
+      relatedProducts.map(async rp => {
         const rpBusinessProfile = rp.userId
           ? await BusinessProfile.findOne({ userId: rp.userId._id })
               .select("gstNumber yearOfEstablishment")
               .lean()
           : null;
+
         return {
           ...rp.toObject(),
           businessProfile: rpBusinessProfile,
-          images: rp.images?.filter((img) => img && img.url).map((img) => img.url),
+          images: rp.images?.filter(img => img?.url).map(img => img.url),
         };
       })
     );
@@ -156,60 +166,46 @@ console.log("Blocked Seller IDs (Expected to be filtered):", blockedSellerIds);
         .select("name subcategoryslug icon")
         .limit(maxCategoriesToShow);
 
-      relatedCategories = [
-        ...subCategories.map((sub) => ({
-          _id: sub._id,
-          name: sub.name,
-          slug: `${sub.category.categoryslug}/${sub.subcategoryslug}`,
-          image: sub.icon || "/placeholder-category.png",
-          type: "subcategory",
-        })),
-      ];
+      relatedCategories = subCategories.map(sub => ({
+        _id: sub._id,
+        name: sub.name,
+        slug: `${sub.category.categoryslug}/${sub.subcategoryslug}`,
+        image: sub.icon || "/placeholder-category.png",
+        type: "subcategory",
+      }));
     }
 
     if (relatedCategories.length < maxCategoriesToShow) {
       const remainingSlots = maxCategoriesToShow - relatedCategories.length;
-      const alreadyIncludedProductSlugs = new Set(
-        relatedCategories
-          .filter((item) => item.type === "product_as_category_display")
-          .map((item) => item.slug)
-      );
+      const alreadyIncludedSlugs = new Set(relatedCategories.map(item => item.slug));
 
       const productsForCategoriesDisplay = await Product.find({
         _id: { $ne: product._id },
         "images.0": { $exists: true },
-        productslug: { $nin: Array.from(alreadyIncludedProductSlugs) },
-        userId: { $nin: blockedSellerIds }, // 👈 filter
+        productslug: { $nin: Array.from(alreadyIncludedSlugs) },
+        userId: { $nin: blockedSellerObjectIds },
       })
         .select("name images productslug")
         .limit(remainingSlots);
 
-      productsForCategoriesDisplay.forEach((p) => {
-        if (relatedCategories.length < maxCategoriesToShow) {
-          relatedCategories.push({
-            _id: p._id,
-            name: p.name,
-            slug: p.productslug || p._id.toString(),
-            image: p.images?.[0]?.url || "/placeholder-product.png",
-            type: "product_as_category_display",
-          });
-        }
+      productsForCategoriesDisplay.forEach(p => {
+        relatedCategories.push({
+          _id: p._id,
+          name: p.name,
+          slug: p.productslug || p._id.toString(),
+          image: p.images?.[0]?.url || "/placeholder-product.png",
+          type: "product_as_category_display",
+        });
       });
     }
 
-    const formattedRelatedCategories = relatedCategories.map((item) => ({
-      _id: item._id,
-      name: item.name,
-      slug: item.slug,
-      image: item.image,
-      type: item.type,
-    }));
-
+    // --- Return product with related data and blocked sellers ---
     return NextResponse.json(
       {
         ...formattedProduct,
         relatedProducts: relatedProductsWithBusinessProfiles,
-        relatedCategories: formattedRelatedCategories,
+        relatedCategories,
+        blockedSellerObjectIds, // 🔹 send blocked sellers for Redux update
       },
       { status: 200 }
     );
