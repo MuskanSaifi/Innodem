@@ -93,25 +93,22 @@ const Bannerslider = () => {
     cursor: b.link ? "pointer" : "default",
   }}
 >
-  <div
-    className="relative w-full max-w-[1066px] aspect-[1066/453] overflow-hidden rounded-lg"
-  >
-    <Image
-      src={b.imageUrl}
-      alt={b.title || `banner-${index + 1}`}
-      fill
-      unoptimized
-      quality={100}
-      priority={index === 0}
-      sizes="(max-width: 1066px) 100vw, 1066px"
-      style={{
-        objectFit: "cover",           // ✅ show true aspect ratio
-        imageRendering: "pixelated",    // ✅ force pixel-level sharpness
-        transform: "translateZ(0)",     // ✅ avoid GPU blur
-        backfaceVisibility: "hidden",
-      }}
-    />
-  </div>
+<div
+  className="relative w-full aspect-[1066/453] overflow-hidden"
+  style={{ borderRadius: "8px" }} // optional
+>
+  <Image
+    src={b.imageUrl}
+    alt={b.title || `banner-${index + 1}`}
+    fill
+    unoptimized
+    quality={100}
+    priority={index === 0}
+    sizes="100vw"
+    style={{ objectFit: "cover" }}
+  />
+</div>
+
 </div>
                 ))}
               </Carousel>

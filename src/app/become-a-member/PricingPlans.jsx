@@ -133,7 +133,7 @@ const PricingPlans = () => {
       {/* Banner */}
       <div className="text-center">
         <Image
-          src="/assets/pagesbanner/Become-a-member.png"
+          src="/assets/pagesbanner/packages.png"
           alt="Membership Banner"
           layout="responsive"
           width={1425}
