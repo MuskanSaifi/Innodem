@@ -7,6 +7,8 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
 
   const sidebarItems = [
     { icon: "/assets/dashboardicons/Dashboard.png", label: "Dashboard" },
+    { icon: "/assets/dashboardicons/DEM-banner.png", label: "DEM Banners" },
+    { icon: "/assets/dashboardicons/packages.png", label: "Our Packages" },
     { icon: "/assets/dashboardicons/Payments.png", label: "Payments" },
     { icon: "/assets/dashboardicons/All Buyers.png", label: "All Buyers" },
     { icon: "/assets/dashboardicons/All-Sellers.png", label: "All Seller" },

@@ -1,15 +1,58 @@
-import React from 'react';
+"use client";
+import React, { useEffect, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Carousel } from 'react-responsive-carousel';
-import SidebarMenu from './SidebarMenu';
-import Image from 'next/image';
+import { Carousel } from "react-responsive-carousel";
+import SidebarMenu from "./SidebarMenu";
+import Image from "next/image";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const Bannerslider = () => {
-  const banners = [
-    "/assets/bannerslider/banner-4.png",
-    "/assets/bannerslider/banner-2.png",
-    "/assets/bannerslider/banner-3.png",
-  ];
+  const [banners, setBanners] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  const fetchBanners = async () => {
+    try {
+      const res = await axios.get("/api/adminprofile/banner");
+      if (res.data.success) {
+        const filtered = res.data.banners.filter(
+          (b) => b.isActive && (b.platform === "web" || b.platform === "both")
+        );
+        setBanners(filtered);
+      }
+    } catch (error) {
+      console.error("Failed to load banners:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBanners();
+  }, []);
+
+  if (loading)
+    return (
+      <div className="text-center py-10 text-gray-500">Loading banners...</div>
+    );
+
+  if (banners.length === 0)
+    return (
+      <div className="text-center py-10 text-gray-400">
+        No active web banners found.
+      </div>
+    );
+
+  // Handle banner click without <a> tag
+  const handleBannerClick = (link) => {
+    if (!link) return;
+    if (link.startsWith("http")) {
+      window.open(link, "_blank", "noopener,noreferrer");
+    } else {
+      router.push(link);
+    }
+  };
 
   return (
     <>
@@ -19,6 +62,7 @@ const Bannerslider = () => {
             <div className="col-md-2">
               <SidebarMenu />
             </div>
+
             <div className="col-md-10">
               <Carousel
                 autoPlay
@@ -27,32 +71,48 @@ const Bannerslider = () => {
                 showThumbs
                 showStatus={false}
                 renderThumbs={() =>
-                  banners.map((src, index) => (
+                  banners.map((b, index) => (
                     <Image
                       key={index}
-                      src={src}
+                      src={b.imageUrl}
                       alt={`thumb ${index + 1}`}
-                      width={150}               // 👈 Resize thumbs to small preview
+                      width={150}
                       height={70}
-                      quality={60}              // 👈 Lower quality for thumbs
-                      style={{ objectFit: 'cover' }}
+                      unoptimized
+                      style={{ objectFit: "cover" }}
                     />
                   ))
                 }
               >
-                {banners.map((src, index) => (
-                  <div key={index}>
-                    <Image
-                      src={src}
-                      alt={`banner ${index + 1}`}
-                      width={2000}
-                      height={650}
-                      quality={90}               // ✅ High quality
-                      priority={index === 0}     // ✅ Preload only first image
-                      placeholder="empty"
-                      style={{ objectFit: 'cover', width: '100%', height: 'auto' }}
-                    />
-                  </div>
+                {banners.map((b, index) => (
+<div
+  key={index}
+  onClick={() => handleBannerClick(b.link)}
+  className="flex justify-center w-full"
+  style={{
+    cursor: b.link ? "pointer" : "default",
+  }}
+>
+  <div
+    className="relative w-full max-w-[1066px] aspect-[1066/453] overflow-hidden rounded-lg"
+  >
+    <Image
+      src={b.imageUrl}
+      alt={b.title || `banner-${index + 1}`}
+      fill
+      unoptimized
+      quality={100}
+      priority={index === 0}
+      sizes="(max-width: 1066px) 100vw, 1066px"
+      style={{
+        objectFit: "cover",           // ✅ show true aspect ratio
+        imageRendering: "pixelated",    // ✅ force pixel-level sharpness
+        transform: "translateZ(0)",     // ✅ avoid GPU blur
+        backfaceVisibility: "hidden",
+      }}
+    />
+  </div>
+</div>
                 ))}
               </Carousel>
             </div>
@@ -64,11 +124,9 @@ const Bannerslider = () => {
         .carousel .slide {
           max-height: 650px;
         }
-
         .carousel .thumb {
           border: 2px solid transparent;
         }
-
         .carousel .thumb.selected {
           border-color: rgb(0, 0, 0);
         }

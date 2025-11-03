@@ -31,6 +31,8 @@ import AddNotifucations from "./AddNotifucations";
 import AdminAggrement from "./AdminAggrement";
 import Report from "./Report";
 import Block from "./Block";
+import Banner from "./Banner";
+import Plans from "./Plans";
 
 function ResponsiveDashboard() {
   const router = useRouter();
@@ -99,6 +101,8 @@ function ResponsiveDashboard() {
    </div>
         <div className="resdes-dynamic-content">
           {activeContent === "Dashboard" && <Dashboard />}
+          {activeContent === "DEM Banners" && <Banner />}
+          {activeContent === "Our Packages" && <Plans />}
           {activeContent === "Payments" && <Payments />}
           {activeContent === "All Products" && <AllProducts />}
           {activeContent === "Create Sub Category" && <CreateSubCategory />}

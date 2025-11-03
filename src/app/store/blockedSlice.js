@@ -13,7 +13,7 @@ const blockedSlice = createSlice({
     setBlockedByBuyer: (state, action) => {
       state.blockedByBuyer = action.payload; // Array of seller IDs
     },
-    blockSeller: (state, action) => {
+    blockSeller: (state, action) => { 
       const { sellerId, role } = action.payload;
       if (role === "user" && !state.blockedByUser.includes(sellerId)) {
         state.blockedByUser.push(sellerId);
