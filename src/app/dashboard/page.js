@@ -97,13 +97,12 @@ function ResponsiveDashboard() {
   </svg>  Logout
 </button>
 
-
    </div>
         <div className="resdes-dynamic-content">
           {activeContent === "Dashboard" && <Dashboard />}
           {activeContent === "DEM Banners" && <Banner />}
           {activeContent === "Our Packages" && <Plans />}
-          {activeContent === "Payments" && <Payments />}
+          {activeContent === "Client Payments" && <Payments />}
           {activeContent === "All Products" && <AllProducts />}
           {activeContent === "Create Sub Category" && <CreateSubCategory />}
           {activeContent === "Update Sub Category" && <UpdateSubCategory />}
@@ -116,7 +115,7 @@ function ResponsiveDashboard() {
           {activeContent === "All Blogs" && <AllBlogs />}
           {activeContent === "Create Blogs" && <CreateBlog />}
           {activeContent === "All Subscribers" && <AllSubscribers />}
-          {activeContent === "Manage Notifications" && <AddNotifucations />}
+          {activeContent === "Manage App Notifications" && <AddNotifucations />}
           {activeContent === "All Contacts" && <AllContacts />}
           {activeContent === "Leads & Enquiry" && <LeadsEnquiry />}
           {activeContent === "Manage Support Members" && <CreateSupportPerson />}

@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./dashboard.css";
 import axios from "axios";
 import Swal from "sweetalert2";
-
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+import { FaUsers, FaUserTie, FaShoppingBag, FaMoneyBillWave } from "react-icons/fa";
 
 const Dashboard = () => {
   const [users, setUsers] = useState(null);
@@ -17,11 +15,8 @@ const Dashboard = () => {
   useEffect(() => {
     fetchDashboardData();
     setGreetingMessage();
-    // ✅ Update time every second
-    const interval = setInterval(() => {
-      updateCurrentTime();
-    }, 1000);
-    return () => clearInterval(interval); // Cleanup interval on unmount
+    const interval = setInterval(() => updateCurrentTime(), 1000);
+    return () => clearInterval(interval);
   }, []);
 
   const fetchDashboardData = async () => {
@@ -32,11 +27,11 @@ const Dashboard = () => {
         axios.get(`/api/adminprofile/products`),
       ]);
 
-      // ✅ Update states only after all requests complete
       setUsers(usersRes.data?.success ? usersRes.data.totalUsers || 0 : 0);
       setBuyers(buyersRes.data?.success ? buyersRes.data.totalBuyers || 0 : 0);
-      setProducts(productsRes.data?.success ? productsRes.data.totalProducts || 0 : 0);
-      
+      setProducts(
+        productsRes.data?.success ? productsRes.data.totalProducts || 0 : 0
+      );
     } catch (error) {
       console.error("❌ Error fetching dashboard data:", error);
       Swal.fire("Error", "Failed to fetch dashboard data", "error");
@@ -48,86 +43,86 @@ const Dashboard = () => {
     }
   };
 
-
   const setGreetingMessage = () => {
-    const currentHour = new Date().getHours();
-    if (currentHour < 12) {
-      setGreeting("Good Morning, Admin! ☀️");
-    } else if (currentHour < 18) {
-      setGreeting("Good Afternoon, Admin! 🌤️");
-    } else {
-      setGreeting("Good Evening, Admin! 🌙");
-    }
+    const hour = new Date().getHours();
+    if (hour < 12) setGreeting("Good Morning, Admin ☀️");
+    else if (hour < 18) setGreeting("Good Afternoon, Admin 🌤️");
+    else setGreeting("Good Evening, Admin 🌙");
   };
-
 
   const updateCurrentTime = () => {
     const now = new Date();
-    const formattedTime = now.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: true, // Change to false for 24-hour format
-    });
-    setCurrentTime(formattedTime);
+    setCurrentTime(
+      now.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+      })
+    );
   };
 
   return (
-    <>
-      <div className="dashboard-content mt-5 bg-light">
-        <div className="container-fluid">
-          <div className="row common-shad m-1">
-            <div className="col-md-6 mt-5 mb-5">
-              <div className="welcome-admin common-shad">
-                <h1 className="fs-2 admin fw-bold">{greeting}</h1>
-                <div className="row">
-                  <div className="col-md-7 text-sm">
-                     <h4 className="text-light text-sm mb-2">  <b>Current Time: </b> <span className="text-light">{currentTime}</span></h4>
-                  <p className="fw-bold mt-4 text-light mb-3">Welcome back, Admin! Keep leading with excellence. 🚀</p>
-                  <p className="fw-light text-light mb-2">Every click you make improves the user experience. Stay ahead! 🎯</p>
-                  {/* <p className="fw-light text-light">A well-managed system is a step toward a thriving business. Keep optimizing! 🔥</p> */}
-                  <p className="fw-light text-light">Your decisions shape the success of this platform. Keep it up! 💪</p>
-                  </div>
-                  <div className="col-md-5"></div>
-                </div>  
-              </div>
+    <div className="dashboard-content mt-4 bg-light">
+      <div className="container-fluid">
+        <div className="row g-4 p-3">
+          {/* Greeting Section */}
+          <div className="col-md-6">
+            <div className="welcome-admin modern-card shadow-lg">
+              <h1 className="fw-bold text-light">{greeting}</h1>
+              <h5 className="mt-2 text-light">
+                ⏰ Current Time: <span className="fw-semibold">{currentTime}</span>
+              </h5>
+              <p className="text-light mt-4 fw-light">
+                Welcome back, Admin! Keep leading with excellence. Every decision
+                you make shapes the platform’s success 🚀
+              </p>
             </div>
-            <div className="col-md-6 mb-3 mt-4">
-              <div className="row">
-                <div className="col-md-6">
-                  <div className="resdes-card res-color3 text-light">
-                    <h6>Total Users</h6>
-                    <p className="fs-1">{loading ? <Skeleton width={60} height={40} /> : users}</p>
-                    <span>Total registered users</span>
-                  </div>
+          </div>
+
+          {/* Stats Section */}
+          <div className="col-md-6">
+            <div className="row g-4">
+              <div className="col-md-6">
+                <div className="resdes-card gradient-blue text-light animate-card">
+                  <FaUsers className="dash-icon" />
+                  <h6>Total Sellers</h6>
+                  <p className="fs-1">{loading ? "..." : users}</p>
+                  <span>Registered Sellers</span>
                 </div>
-                <div className="col-md-6 mb-4">
-                  <div className="resdes-card res-color2 text-light">
-                    <h6>Total Buyers</h6>
-                    <p className="fs-1"><p className="fs-1">{loading ? <Skeleton width={60} height={40} /> : buyers}</p></p>
-                    <span>Total registered buyers</span>
-                  </div>
+              </div>
+
+              <div className="col-md-6">
+                <div className="resdes-card gradient-green text-light animate-card">
+                  <FaUserTie className="dash-icon" />
+                  <h6>Total Buyers</h6>
+                  <p className="fs-1">{loading ? "..." : buyers}</p>
+                  <span>Registered Buyers</span>
                 </div>
-                <div className="col-md-6 mb-4">
-                  <div className="resdes-card res-color2 text-light">
-                    <h6>Total Products</h6>
-                    <p className="fs-1"><p className="fs-1">{loading ? <Skeleton width={60} height={40} /> : products}</p></p>
-                    <span>Total products available</span>
-                  </div>
+              </div>
+
+              <div className="col-md-6">
+                <div className="resdes-card gradient-orange text-light animate-card">
+                  <FaShoppingBag className="dash-icon" />
+                  <h6>Total Products</h6>
+                  <p className="fs-1">{loading ? "..." : products}</p>
+                  <span>Available Products</span>
                 </div>
-                <div className="col-md-6 mb-4">
-                  <div className="resdes-card res-color3 text-light">
-                    <h6>Total Payments</h6>
-                    <p className="fs-1">0</p>
-                    <span>Total payments made</span>
-                  </div>
+              </div>
+
+              <div className="col-md-6">
+                <div className="resdes-card gradient-pink text-light animate-card">
+                  <FaMoneyBillWave className="dash-icon" />
+                  <h6>Total Payments</h6>
+                  <p className="fs-1">0</p>
+                  <span>Payments Made</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </>
+      </div> 
+    </div>
   );
 };
 

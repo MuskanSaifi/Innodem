@@ -26,7 +26,7 @@ const LayoutWrapper = ({ children }) => {
       pathname !== "/about/aboutcollege" ? (
         <Header />
       ) : (
-        <div className="res-color2 text-light p-1 text-sm m-0 text-center">Due to the COVID-19 epidemic, orders may be processed with a slight delay</div>
+        <div className="res-color2 text-light p-1 text-sm m-0 text-center">Welcome back! Let’s make some updates and keep things running great.</div>
       )}
 
       {children} {/* ✅ Render children inside layout */}

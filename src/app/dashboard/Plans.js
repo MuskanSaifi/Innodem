@@ -1,11 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 export default function AdminPlans() {
   const emptyFeature = { text: "", included: true };
   const sections = ["topService", "website", "seo", "smo"];
   const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({
     title: "",
     price: "",
@@ -19,6 +20,7 @@ export default function AdminPlans() {
 
   const fetchPlans = async () => {
     try {
+      setLoading(true);
       const res = await fetch("/api/adminprofile/plans");
       const data = await res.json();
       if (res.ok) {
@@ -28,6 +30,8 @@ export default function AdminPlans() {
       }
     } catch (err) {
       toast.error("Error fetching plans");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -137,17 +141,22 @@ export default function AdminPlans() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <Toaster position="top-right" reverseOrder={false} />
-      
-      <h1 className="text-2xl font-bold mb-2">Manage Packages</h1>
-      <p className="text-gray-600 mb-6 text-sm">
-        Here you can create and manage all your DEM packages.
-        Any package you add here will automatically appear on both the <b>App</b> and the <b>Website</b>.
-        If you make a mistake while creating a package, don’t worry — you can easily update or modify it later.
-      </p>
+   <div className="bg-white p-6 rounded-xl shadow-sm mb-6 border border-gray-100">
+  <h1 className="text-3xl font-bold text-gray-800 mb-2 flex items-center gap-2">
+    <span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-lg text-lg">⚙️</span>
+    Manage Packages
+  </h1>
+  <p className="text-gray-600 text-sm leading-relaxed">
+    Welcome Admin! Here you can easily create and manage your <b>DEM packages</b>.  
+    Any changes you make update instantly on both the <b>App</b> and <b>Website</b>.  
+    Made a mistake? No problem — you can edit, update, or delete packages anytime  
+    with full control and flexibility.
+  </p>
+</div>
+
 
       {/* Form */}
-      <form onSubmit={savePlan} className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
+      <form onSubmit={savePlan} className="bg-white p-4 rounded-lg shadow-md mb-6">
         <div className="grid grid-cols-2 gap-4">
           <input
             name="title"
@@ -178,7 +187,11 @@ export default function AdminPlans() {
 
         {sections.map((section) => (
           <div key={section} className="mt-4">
-            <h3 className="font-semibold mb-2 capitalize">{section}</h3>
+<h5 className="font-semibold bg-white text-gray-800 border-l-4 border-blue-500 p-3 mb-3 rounded-md shadow-sm capitalize">
+  {section}
+</h5>
+
+
             {form[section].map((feature, idx) => (
               <div key={idx} className="flex items-center gap-2 mb-2">
                 <input
@@ -229,54 +242,64 @@ export default function AdminPlans() {
 
       {/* Table */}
       <div className="overflow-x-auto bg-white shadow-md rounded-xl mt-6">
-        <table className="min-w-full border-collapse">
-          <thead>
-            <tr className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
-              <th className="py-3 px-4 text-left text-sm font-semibold uppercase tracking-wide">Title</th>
-              <th className="py-3 px-4 text-left text-sm font-semibold uppercase tracking-wide">Price</th>
-              <th className="py-3 px-4 text-left text-sm font-semibold uppercase tracking-wide">Highlighted</th>
-              <th className="py-3 px-4 text-center text-sm font-semibold uppercase tracking-wide">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {plans.map((p, idx) => (
-              <tr
-                key={p._id}
-                className={`transition-all hover:bg-gray-50 ${
-                  idx % 2 === 0 ? "bg-white" : "bg-gray-50"
-                }`}
-              >
-                <td className="py-3 px-4 text-gray-800 font-medium">{p.title}</td>
-                <td className="py-3 px-4 text-gray-700">₹{p.price}</td>
-                <td className="py-3 px-4 text-center">
-                  {p.highlighted ? (
-                    <span className="inline-flex items-center gap-1 text-green-600 font-semibold">
-                      <span className="w-2.5 h-2.5 bg-green-500 rounded-full"></span> Yes
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 text-gray-500">
-                      <span className="w-2.5 h-2.5 bg-gray-400 rounded-full"></span> No
-                    </span>
-                  )}
-                </td>
-                <td className="py-3 px-4 text-center flex justify-center gap-2">
-                  <button
-                    onClick={() => editPlan(p)}
-                    className="flex items-center gap-1 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium shadow-sm transition"
-                  >
-                    ✏️ Edit
-                  </button>
-                  <button
-                    onClick={() => deletePlan(p._id)}
-                    className="flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium shadow-sm transition"
-                  >
-                    🗑 Delete
-                  </button>
-                </td>
+        {loading ? (
+          <div className="text-center py-10 text-gray-500 animate-pulse">
+            ⏳ Loading plans...
+          </div>
+        ) : plans.length === 0 ? (
+          <p className="text-center py-10 text-gray-600">No plans created yet.</p>
+        ) : (
+          <table className="min-w-full border-collapse">
+            <thead>
+              <tr className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
+                <th className="py-3 px-4 text-left text-sm font-semibold uppercase tracking-wide">S.No</th>
+                <th className="py-3 px-4 text-left text-sm font-semibold uppercase tracking-wide">Title</th>
+                <th className="py-3 px-4 text-left text-sm font-semibold uppercase tracking-wide">Price</th>
+                <th className="py-3 px-4 text-left text-sm font-semibold uppercase tracking-wide">Highlighted</th>
+                <th className="py-3 px-4 text-center text-sm font-semibold uppercase tracking-wide">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {plans.map((p, idx) => (
+                <tr
+                  key={p._id}
+                  className={`transition-all hover:bg-gray-50 ${
+                    idx % 2 === 0 ? "bg-white" : "bg-gray-50"
+                  }`}
+                >
+                  <td className="py-3 px-4 text-gray-800 font-medium">{idx+1}</td>
+                  <td className="py-3 px-4 text-gray-800 font-medium">{p.title}</td>
+                  <td className="py-3 px-4 text-gray-700">₹{p.price}</td>
+                  <td className="py-3 px-4 text-center">
+                    {p.highlighted ? (
+                      <span className="inline-flex items-center gap-1 text-green-600 font-semibold">
+                        <span className="w-2.5 h-2.5 bg-green-500 rounded-full"></span> Yes
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-gray-500">
+                        <span className="w-2.5 h-2.5 bg-gray-400 rounded-full"></span> No
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-3 px-4 text-center flex justify-center gap-2">
+                    <button
+                      onClick={() => editPlan(p)}
+                      className="flex items-center gap-1 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium shadow-sm transition"
+                    >
+                      ✏️ Edit
+                    </button>
+                    <button
+                      onClick={() => deletePlan(p._id)}
+                      className="flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium shadow-sm transition"
+                    >
+                      🗑 Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 
 const Banner = () => {
   const [banners, setBanners] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // ✅ Default true
   const [image, setImage] = useState(null);
   const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
@@ -21,8 +21,11 @@ const Banner = () => {
     } catch (error) {
       toast.error("Failed to load banners");
       console.error(error);
+    } finally {
+      setLoading(false); // ✅ Always stop loading
     }
   };
+
   useEffect(() => {
     fetchBanners();
   }, []);
@@ -40,7 +43,7 @@ const Banner = () => {
       setLoading(true);
       const res = await axios.post("/api/adminprofile/banner", formData);
       if (res.data.success) {
-        toast.success("✅ Banner added successfully");
+        toast.success("Banner added successfully");
         setBanners((prev) => [res.data.banner, ...prev]);
         setTitle("");
         setLink("");
@@ -79,9 +82,7 @@ const Banner = () => {
       });
       if (res.data.success) {
         setBanners((prev) =>
-          prev.map((b) =>
-            b._id === id ? { ...b, isActive: !isActive } : b
-          )
+          prev.map((b) => (b._id === id ? { ...b, isActive: !isActive } : b))
         );
         toast.success(`Banner ${!isActive ? "activated" : "deactivated"}`);
       }
@@ -94,9 +95,20 @@ const Banner = () => {
   // ========================= Render =========================
   return (
     <div className="p-6 max-w-5xl mx-auto">
-      <h1 className="text-2xl font-bold mb-5 text-gray-800 flex items-center gap-2">
-        🎨 Manage Banners
-      </h1>
+     <div className="bg-white p-6 rounded-xl shadow-sm mb-6 border border-gray-100">
+  <h1 className="text-3xl font-bold text-gray-800 mb-2 flex items-center gap-2">
+    <span className="bg-yellow-100 text-yellow-600 px-3 py-1 rounded-lg text-lg">🎨</span>
+    Manage Banners
+  </h1>
+  <p className="text-gray-600 text-sm leading-relaxed">
+    Welcome Admin! Here you can easily manage and control your platform banners.  
+    You can <b>upload</b> new banners, select whether they appear on the <b>Website</b> or <b>App</b>,  
+    and toggle their <b>Active</b> or <b>Inactive</b> status.  
+    When a banner is <span className="text-green-600 font-medium">Active</span>, it will be visible on the platform —  
+    and when <span className="text-red-600 font-medium">Inactive</span>, it will be hidden automatically.
+  </p>
+</div>
+
 
       {/* ========================= Upload Form ========================= */}
       <form
@@ -167,14 +179,16 @@ const Banner = () => {
           disabled={loading}
           className="bg-blue-600 mt-4 text-white px-5 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
         >
-          {loading ? "Uploading..." : "Add Banner"}
+          {loading ? "Please Wait..." : "Add Banner"}
         </button>
       </form>
 
       {/* ========================= Banner List ========================= */}
       <div className="grid gap-4">
-        {banners.length === 0 ? (
-          <p className="text-gray-600 text-center">No banners added yet.</p>
+        {loading ? (
+          <p className="text-center text-gray-600">⏳ Loading banners...</p>
+        ) : banners.length === 0 ? (
+          <p className="text-gray-600 text-center">No banner yet created for show.</p>
         ) : (
           banners.map((b) => (
             <div
@@ -207,24 +221,31 @@ const Banner = () => {
                 </p>
               </div>
 
-              <div className="flex gap-2">
-                <button
-                  onClick={() => toggleActive(b._id, b.isActive)}
-                  className={`px-3 py-1 rounded ${
-                    b.isActive
-                      ? "bg-green-500 text-white"
-                      : "bg-gray-400 text-white"
-                  }`}
-                >
-                  {b.isActive ? "Active" : "Inactive"}
-                </button>
-                <button
-                  onClick={() => handleDelete(b._id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                >
-                  Delete
-                </button>
-              </div>
+             <div className="flex items-center gap-4">
+  {/* Toggle Switch */}
+  <label className="inline-flex items-center cursor-pointer">
+    <input
+      type="checkbox"
+      className="sr-only peer"
+      checked={b.isActive}
+      onChange={() => toggleActive(b._id, b.isActive)}
+    />
+    <div className="relative w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer
+        peer-checked:after:translate-x-full peer-checked:after:border-white
+        after:content-[''] after:absolute after:top-[2px] after:left-[2px]
+        after:bg-white after:border-gray-300 after:border after:rounded-full
+        after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500">
+    </div>
+  </label>
+
+  {/* Delete Button */}
+  <button
+    onClick={() => handleDelete(b._id)}
+    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+  >
+    Delete
+  </button>
+            </div>
             </div>
           ))
         )}
