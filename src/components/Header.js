@@ -193,7 +193,7 @@ const handleLogout = () => {
             We connect you with verified export buyers within 24 hours.
           </p>
           <p className="mb-0 text-light text-sm marq2">
-            We connect you with verified export buyers within 24 hours,
+            We connect you with verified export buyerss within 24 hours,
             guaranteed genuine and confirmed conversations with buyers.
           </p>
         </div>
