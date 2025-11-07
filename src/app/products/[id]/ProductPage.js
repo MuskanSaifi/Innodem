@@ -53,11 +53,12 @@ const ProductDetailPage = () => {
     : [];
 
   // Fetch wishlist if logged in
-  useEffect(() => {
-    if ((user && user._id) || (buyer && buyer._id)) {
-      dispatch(fetchUserWishlist());
-    }
-  }, [user, buyer, dispatch]);
+ useEffect(() => {
+  const id = user?._id || buyer?._id;
+  if (id) dispatch(fetchUserWishlist());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [dispatch, user?._id, buyer?._id]);
+
 
   const handleToggleWishlist = (productId) => {
     if (!user && !buyer) {
@@ -106,11 +107,12 @@ const ProductDetailPage = () => {
       }
     };
 
-    if (id) {
-      fetchProduct();
-      setHoveredImage(null);
-    }
-  }, [id, user, buyer, blockedSellers]);
+     if (id) {
+    fetchProduct();
+    setHoveredImage(null);
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [id, user?._id, buyer?._id]);
 
   // Set initial image
   useEffect(() => {
