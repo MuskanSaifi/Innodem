@@ -9,6 +9,7 @@ const BuyerSchema = new mongoose.Schema({
     label: String,
     name: String
   },
+   termsAccepted: { type: Boolean, default: false },
   productname: String,
   inquiredProducts: [String],
   quantity: Number,

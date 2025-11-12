@@ -29,7 +29,6 @@ const InitiatePayment = () => {
         }),
       });
       
-
       const data = await response.json();
       console.log("Payment Initiate Response:", data);
 
