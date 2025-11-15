@@ -67,6 +67,12 @@ const userSchema = new mongoose.Schema({
           expiredAt: { type: Date, default: Date.now }
         }
       ],
+          // ⭐⭐⭐ NEW FIELD ADDED ⭐⭐⭐
+    createdBy: {
+        type: String,
+        enum: ["user", "data-entry"],
+        default: "user"
+    }
 },
 { timestamps: true }
 );
