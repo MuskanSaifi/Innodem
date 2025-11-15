@@ -49,7 +49,6 @@ export async function GET(request) {
   );
 }
 
-
     const baseProduct = products[0];
 
     const subcategories = await SubCategory.find({ category: baseProduct.category }).populate(

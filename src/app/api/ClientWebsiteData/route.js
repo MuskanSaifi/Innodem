@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import ClientWebsiteData from "@/models/Clientwebsitedata";
+
 import connectdb from "@/lib/dbConnect";
 
 // CORS headers

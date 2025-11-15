@@ -1,16 +1,20 @@
-  import mongoose from 'mongoose';
+// models/Clientwebsitedata
+import mongoose from 'mongoose';
 
-  const clientWebsiteDataSchema = new mongoose.Schema({
-    websitename: { type: String },
-    name: { type: String },
-    number: { type: String },
-    companyName: { type: String },
-    email: { type: String },
-    address: { type: String },
-    requirement: { type: String }
-  });
+const clientWebsiteDataSchema = new mongoose.Schema(
+  {
+    websitename: String,
+    name: String,
+    number: String,
+    companyName: String,
+    email: String,
+    address: String,
+    requirement: String,
+  },
+  {
+    timestamps: true, // <-- this works when model + collection correct
+  }
+);
 
-
-// ✅ Ensure model is not re-registered
-const ClientWebsiteData = mongoose.models.ClientWebsiteData || mongoose.model("ClientWebsiteData", clientWebsiteDataSchema);
-export default ClientWebsiteData;
+export default mongoose.models.ClientWebsiteData ||
+  mongoose.model("ClientWebsiteData", clientWebsiteDataSchema);
