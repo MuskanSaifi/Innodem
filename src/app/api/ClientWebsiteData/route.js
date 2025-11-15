@@ -1,5 +1,6 @@
+// api/ClientWebsiteData/route.js
 import { NextResponse } from "next/server";
-import ClientWebsiteData from "@/models/Clientwebsitedata";
+import ClientWebsiteData from "@/models/Clientwebsitedata.js";
 
 import connectdb from "@/lib/dbConnect";
 

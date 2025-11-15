@@ -17,7 +17,7 @@ const AllClientWebsiteLeads = () => {
 
   const fetchClientData = async () => {
     try {
-      const result = await axios.get("api/clientwebsitedatapost");
+      const result = await axios.get("api/ClientWebsiteData");
 
       const grouped = result.data.reduce((acc, curr) => {
         if (!acc[curr.websitename]) acc[curr.websitename] = [];
