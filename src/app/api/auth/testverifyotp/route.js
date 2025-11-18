@@ -1,3 +1,4 @@
+// api/auth/testveerifyotp
 import User from "@/models/User";
 import connectdb from "@/lib/dbConnect";
 import jwt from "jsonwebtoken";

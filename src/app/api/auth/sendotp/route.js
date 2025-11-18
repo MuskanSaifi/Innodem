@@ -1,3 +1,4 @@
+// api/auth/sendotp
 import User from "@/models/User";
 import BusinessProfile from "@/models/BusinessProfile";
 import connectdb from "@/lib/dbConnect";

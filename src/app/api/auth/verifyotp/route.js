@@ -1,3 +1,4 @@
+// api/auth/verifyotp
 import connectdb from "@/lib/dbConnect";
 import User from "@/models/User";
 import { generateToken } from "@/lib/jwt";

@@ -197,7 +197,6 @@ const BusinessProfile = () => {
     }));
   };
 
-
   const handleSave = async (e) => {
     e.preventDefault();
     try {
