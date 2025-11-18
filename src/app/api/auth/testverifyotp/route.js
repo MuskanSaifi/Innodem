@@ -15,7 +15,8 @@ export async function POST(req) {
             });
         }
 
-  // Check only fixed OTP
+  // Check only fixed
+  //  OTP
 if (otp !== "12345") {
     return new Response(JSON.stringify({ error: "Invalid OTP" }), {
         status: 400,
