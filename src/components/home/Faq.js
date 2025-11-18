@@ -3,73 +3,52 @@ import Image from "next/image";
 
 const allFaqs = [
   {
-    question: "What is Dial Export Mart?",
+    question: "Which is the best B2B marketplace in India for exporters and suppliers?",
     answer:
-      "Dial Export Mart is a trusted B2B platform that connects Indian exporters, manufacturers, and suppliers with verified international buyers...",
+      "Dial Export Mart is one of the leading marketplaces in India, connecting verified exporters, suppliers, and manufacturers with global buyers.",
   },
   {
-    question: "Who can register on Dial Export Mart?",
+    question: "How does Dial Export Mart help in growing an import-export business?",
     answer:
-      "Any exporter, manufacturer, trader, or supplier based in India can register...",
+      "Dial Export Mart helps businesses expand globally by offering verified leads, trusted buyers, and easy access to international markets through its B2B platform.",
   },
   {
-    question: "Is registration on Dial Export Mart free?",
+    question: "Why should I choose Dial Export Mart over other B2B platforms in India?",
     answer:
-      "Yes, basic registration is free. We also offer premium plans with advanced features...",
+      "Unlike many other platforms, Dial Export Mart focuses on verified connections, transparency, and a user-friendly system designed for small and medium businesses.",
   },
   {
-    question: "What products can be listed on the platform?",
+    question: "Can small businesses use Dial Export Mart to find buyers?",
     answer:
-      "You can list products across various industries including Spices, Handicrafts...",
+      "Yes, small and medium businesses can easily list products and find genuine B2B buyers in India through Dial Export Mart.",
   },
   {
-    question: "How do I connect with global buyers?",
+    question: "How can I register my business on Dial Export Mart?",
     answer:
-      "Once you create your profile and list your products, verified international buyers can view...",
+      "To register, visit the Dial Export Mart website, click on “Become a Member,” choose your preferred pricing plan, and complete the process.",
   },
   {
-    question: "Is my data and business information secure?",
+    question: "Is Dial Export Mart a free B2B platform in India?",
     answer:
-      "Yes, we prioritize data security. All business and personal information is stored securely...",
+      "Dial Export Mart offers affordable plans and free basic listing options to help Indian exporters and manufacturers showcase their products to buyers.",
   },
   {
-    question: "What is the verification process?",
+    question: "What industries are supported by Dial Export Mart’s B2B marketplace?",
     answer:
-      "After registration, you can submit business documents to get a Verified Seller badge...",
+      "Dial Export Mart supports a wide range of industries, including apparel & fashion, electronics, agriculture, chemicals, and health & beauty etc.",
   },
   {
-    question: "Can I manage multiple products and categories?",
+    question: "Does Dial Export Mart provide international B2B trade support?",
     answer:
-      "Yes, our dashboard allows you to manage multiple product listings...",
+      "Yes, Dial Export Mart facilitates import-export opportunities with global buyers to help Indian suppliers expand their presence in international B2B markets.",
   },
   {
-    question: "How do I get support if I have questions or issues?",
+    question: "How does Dial Export Mart ensure safe and reliable business deals?",
     answer:
-      "You can reach out to us through our Contact Us page...",
-  },
-  {
-    question: "How does Dial Export Mart help in increasing exports?",
-    answer:
-      "By offering a global platform, we help Indian businesses expand their reach...",
-  },
-  // More FAQs beyond the top 10
-  {
-    question: "How can I get verified leads?",
-    answer: "Premium members receive verified leads through our smart matchmaking engine.",
-  },
-  {
-    question: "Can I track buyer interactions?",
-    answer: "Yes, our dashboard provides analytics on buyer views and inquiries.",
-  },
-  {
-    question: "Is there a mobile app available?",
-    answer: "Yes, our mobile app is coming soon for both Android and iOS platforms.",
-  },
-  {
-    question: "What payment methods are supported?",
-    answer: "We support various payment gateways including Razorpay and Stripe.",
+      "We verify all listings, maintain a secure communication channel, and prioritize credibility and transparency in every trade to ensure reliable B2B transactions.",
   },
 ];
+
 
 const Faq = () => {
   const [openIndex, setOpenIndex] = useState(null);

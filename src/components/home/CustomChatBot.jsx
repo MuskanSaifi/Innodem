@@ -1,23 +1,23 @@
 'use client';
-
 import { useState } from 'react';
 import './CustomChatBot.css';
 import Image from 'next/image';
-import supportIcon from '/public/assets/sp.png'; // Correct absolute import
+import supportIcon from '/public/assets/sp.png';
 
-
-export default function CustomChatBot() {
+const CustomChatBot = () => {
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
   const [issue, setIssue] = useState('');
   const [input, setInput] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+
   const [messages, setMessages] = useState([
     { sender: 'bot', text: '👋 Hi! What is your name?' }
   ]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
+
     const userInput = input.trim();
     setMessages(prev => [...prev, { sender: 'user', text: userInput }]);
     setInput('');
@@ -46,10 +46,11 @@ export default function CustomChatBot() {
   };
 
   return (
-<div className="custom-fab-position">
+    <div className="custom-fab-position">
       {isOpen && (
         <div className="chatbot-container">
           <button className="close-btn" onClick={() => setIsOpen(false)}>×</button>
+
           <div className="chat-window">
             {messages.map((msg, idx) => (
               <div key={idx} className={`message ${msg.sender}`}>
@@ -57,12 +58,13 @@ export default function CustomChatBot() {
               </div>
             ))}
           </div>
+
           {step < 3 && (
             <div className="chat-input">
               <input
                 type="text"
                 value={input}
-                onChange={e => setInput(e.target.value)}
+                onChange={(e) => setInput(e.target.value)}
                 placeholder="Type your answer..."
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
               />
@@ -73,10 +75,13 @@ export default function CustomChatBot() {
       )}
 
       {!isOpen && (
-<button className="support-btn" onClick={() => setIsOpen(true)}>
-  <Image src={supportIcon} alt="support" width={20} height={20} /> Support 
-</button>
+        <button className="support-btn" onClick={() => setIsOpen(true)}>
+          <Image src={supportIcon} alt="support" width={20} height={20} />
+          Support
+        </button>
       )}
     </div>
   );
-}
+};
+
+export default CustomChatBot;

@@ -4,7 +4,7 @@ import Image from "next/image";
 export const metadata = {
   title: "About Dial Export Mart | Trusted Global Export Solutions Provider",
   description:
-    "Dial Export Mart is a trusted platform that connects verified Indian manufacturers and exporters with buyers worldwide using smart AI technology.",
+    "Dial Export Mart is India’s leading B2B marketplace helping exporters, suppliers, and manufacturers connect with verified global buyers.",
   keywords: [
     "about Dial Export Mart",
     "export platform",
@@ -16,7 +16,7 @@ export const metadata = {
   openGraph: {
     title: "About Dial Export Mart | Trusted Global Export Solutions Provider",
     description:
-      "Dial Export Mart is a trusted platform that connects verified Indian manufacturers and exporters with buyers worldwide using smart AI technology.",
+      "Dial Export Mart is a trusted platform connecting Indian manufacturers and exporters with verified global buyers.",
     url: "https://www.dialexportmart.com/about-us",
     siteName: "Dial Export Mart",
     images: [
@@ -48,56 +48,97 @@ export const metadata = {
   metadataBase: new URL("https://www.dialexportmart.com"),
 };
 
-
-
 const Page = () => {
   return (
     <>
-    <div className="text-center">
-<Image
-  src={"/assets/pagesbanner/About-Us.png"}
-  alt="Blog Banner"
-  layout="responsive"
-  width={1000}
-  height={450}
-  className="rounded w-full object-cover"
-  priority
-/>
+      <div className="text-center">
+        <Image
+          src={"/assets/pagesbanner/About-Us.png"}
+          alt="About Us Banner"
+          width={1000}
+          height={450}
+          className="rounded w-full object-cover"
+          priority
+        />
+      </div>
 
-    </div>
+      <div className="container mx-auto p-6">
+        <h1 className="title">About <span>Us</span></h1>
 
-    <div className="container mx-auto p-6">
-    <h1 className="title">About <span>Us</span></h1>
-    <p className="text-sm text-gray-700 mb-6">
-        <strong>Dial Export Mart</strong> is a cutting-edge web network-centric trade platform meticulously crafted for small and medium businesses worldwide. Our platform seamlessly unites traders, wholesalers, retailers, manufacturers, and brands, providing them with a unified space to conduct business efficiently. With a commitment to exporting trade marts, we prioritize delivering exceptional services that empower businesses to scale and thrive in the global market.
-      </p>
-      
-      <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
-      <p className="text-sm text-gray-700 mb-6">
-        At <strong>Dial Export Mart</strong>, we understand the challenges of navigating the complex world of export trade. That's why we have created a platform that makes exporting simple, efficient, and profitable for businesses in Delhi and across India. Our platform connects exporters with a global network of buyers, providing access to new markets and opportunities.
-      </p>
-      
-      <h2 className="text-2xl font-bold mb-4">Our Values</h2>
-      <p className="text-sm text-gray-700 mb-6">
-        Our objective is to extend our reach to a maximum number of small and medium enterprises, providing unwavering support in securing instant business deals. At <strong>Dial Export Mart</strong>, we are dedicated to empowering businesses by connecting them with valuable opportunities in a seamless and efficient manner.
-      </p>
-      
-      <h2 className="text-2xl font-bold mb-4">Core Values</h2>
-      <ul className="list-disc list-inside text-sm text-gray-700 mb-6">
-        <li><strong>Commitment:</strong> We are steadfast in our dedication to our clients, partners, and stakeholders.</li>
-        <li><strong>Consistency:</strong> We strive for uniformity in the quality of our services, interactions, and support.</li>
-        <li><strong>Credibility:</strong> We prioritize transparency, integrity, and reliability in every aspect of our operations.</li>
-      </ul>
-      
-      <h2 className="text-2xl font-bold mb-4">Our Team</h2>
-      <p className="text-sm text-gray-700 mb-6">
-        At <strong>Dial Export Mart</strong>, we recognize that the strength of our organization lies in the collective efforts of our experienced and skilled team. Each member of our team is not only seasoned in their respective fields but also committed to staying abreast of the latest developments. 
-      </p>
-      
-      <p className="text-sm text-gray-700 mb-6">
-        Our team's collaborative efforts are geared towards crafting tailored solutions that meet the unique needs of our clients. By fostering a culture of continual learning and excellence, we strive to maintain a cutting-edge approach, delivering innovative solutions that exceed expectations.
-      </p>
-    </div>
+        <p className="text-sm text-gray-700 mb-6">
+          <strong>Dial Export Mart</strong> is India’s leading B2B marketplace designed to empower 
+          exporters, suppliers, manufacturers, and small and medium businesses. We bridge the gap 
+          between companies and verified global buyers by offering a secure, transparent, and 
+          efficient trade ecosystem. Our platform is built to help businesses grow, collaborate, 
+          and build long-term international partnerships.
+        </p>
+
+        <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
+        <p className="text-sm text-gray-700 mb-6">
+          Exporting can be complex and competitive. Our mission is simple — to make exporting 
+          easier, faster, and more profitable for Indian businesses. We provide a seamless 
+          ecosystem where companies can list their products, connect with global buyers, and 
+          secure verified business deals.
+        </p>
+
+        <h2 className="text-2xl font-bold mb-4">Vision</h2>
+        <p className="text-sm text-gray-700 mb-6">
+          Our vision is to become India’s most trusted and reliable online export marketplace, 
+          helping thousands of businesses expand globally and build long-term international 
+          partnerships.
+        </p>
+
+        <h2 className="text-2xl font-bold mb-4">Core Values</h2>
+        <ul className="list-disc list-inside text-sm text-gray-700 mb-6">
+          <li><strong>Commitment:</strong> We are dedicated to helping exporters grow with real, result-driven global exposure.</li>
+          <li><strong>Consistency:</strong> We ensure smooth communication and reliable support throughout the export journey.</li>
+          <li><strong>Credibility:</strong> Trust and transparency define every part of our platform — from verified buyers to secure trade processes.</li>
+        </ul>
+
+        <h2 className="text-2xl font-bold mb-4">Our Team</h2>
+        <p className="text-sm text-gray-700 mb-6">
+          Behind Dial Export Mart is a passionate team of trade experts, digital strategists, and 
+          export consultants who work together to empower Indian businesses. We stay ahead of 
+          global trade trends, market demands, and digital innovations to deliver:
+        </p>
+
+        <ul className="list-disc list-inside text-sm text-gray-700 mb-6">
+          <li>Updated market insights</li>
+          <li>Authentic and verified buyer connections</li>
+          <li>Growth-focused and practical solutions</li>
+        </ul>
+
+        <p className="text-sm text-gray-700 mb-6">
+          Our collaborative culture encourages innovation, strategic thinking, and solutions 
+          that drive long-term business success.
+        </p>
+
+        <h2 className="text-2xl font-bold mb-4">How We Work</h2>
+        <ol className="list-decimal list-inside text-sm text-gray-700 mb-6 space-y-2">
+          <li><strong>Company Analysis:</strong> We begin by understanding your products, market position, and growth potential.</li>
+          <li><strong>Guidance on Improvement:</strong> We help refine packaging, branding, communication, and export readiness.</li>
+          <li><strong>Requirement Documentation:</strong> We document goals, product details, and target markets for a personalized plan.</li>
+          <li><strong>Buyer Identification:</strong> We match you with verified, relevant buyers aligned with your product category.</li>
+          <li><strong>Facilitated Communication:</strong> We arrange meetings and ensure seamless buyer-seller communication.</li>
+          <li><strong>Negotiation Support:</strong> Experts assist both sides for clarity and confidence in decision-making.</li>
+          <li><strong>Deal Progression:</strong> Both parties proceed based on agreed terms for smooth execution.</li>
+          <li><strong>Deal Closure:</strong> We collect feedback and continue supporting long-term global growth.</li>
+        </ol>
+
+        <h2 className="text-2xl font-bold mb-4">What Makes Us Different</h2>
+        <p className="text-sm text-gray-700 mb-6">
+          As part of We Export Trade Mart, we stay committed to service excellence. Unlike 
+          platforms that only offer buy leads, Dial Export Mart focuses on facilitating genuine 
+          and direct business deals. Our built-in <strong>video conferencing system</strong> helps suppliers 
+          understand buyer requirements clearly, communicate efficiently, and build trust.
+        </p>
+
+        <p className="text-sm text-gray-700 mb-6">
+          We understand that businesses need confirmed opportunities, not endless inquiries. 
+          This is why Dial Export Mart serves as a true growth partner — ensuring reliable, 
+          verified, and profitable trade connections for exporters, suppliers, and manufacturers.
+        </p>
+      </div>
     </>
   );
 };

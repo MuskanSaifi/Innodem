@@ -359,7 +359,7 @@ const handleLogout = () => {
   <input
     className="product-search form-control"
     type="text"
-    placeholder="🔍 Dial Export Mart | B2B Marketplace in India"
+    placeholder="🔍 B2B Marketplace in India, B2B Portal"
     value={searchTerm}
     onChange={(e) => setSearchTerm(e.target.value)}
   />
