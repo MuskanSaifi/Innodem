@@ -153,7 +153,6 @@ const token = useSelector((state) => state.user.token);
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                required
                                 className="w-full p-2 border rounded"
                                 placeholder="Enter your email"
                             />

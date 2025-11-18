@@ -5,24 +5,25 @@ import Bankdetails from "@/models/BankDetails";
 
 export async function POST(req) {
     try {
-        await connectdb(); 
+        await connectdb();
         const body = await req.json();
 
         const { fullname, email, mobileNumber, pincode, companyName } = body;
 
+        // Required fields validation
         if (!fullname || !mobileNumber) {
-            return new Response(JSON.stringify({ error: "All fields are required" }), {
+            return new Response(JSON.stringify({ error: "Name & Mobile number are required" }), {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
             });
         }
 
-        // Mobile format
-        const formattedMobile = mobileNumber.startsWith("+") 
-            ? mobileNumber.slice(1) 
+        // Normalize mobile number
+        const formattedMobile = mobileNumber.startsWith("+")
+            ? mobileNumber.slice(1)
             : `91${mobileNumber}`;
 
-        // Check if mobile number already exists
+        // Check if mobile already exists
         let existingUser = await User.findOne({ mobileNumber });
 
         if (existingUser) {
@@ -32,36 +33,42 @@ export async function POST(req) {
             });
         }
 
-        // Check if email exists
-        let user = await User.findOne({ email });
+        // ---------------------------------------------------------
+        // EMAIL OPTIONAL — Check only if email exists
+        // ---------------------------------------------------------
+        let user = null;
+
+        if (email && email.trim() !== "") {
+            user = await User.findOne({ email });
+        }
 
         if (!user) {
-            user = new User({ 
-                fullname, 
-                email, 
-                mobileNumber, 
-                pincode, 
+            user = new User({
+                fullname,
+                email: email || "", // optional
+                mobileNumber,
+                pincode,
                 companyName,
-                createdBy: "data-entry"  // ✅ NEW FIELD ADDED HERE
+                createdBy: "data-entry",
             });
         } else {
             user.fullname = fullname;
             user.pincode = pincode;
             user.companyName = companyName;
-            user.createdBy = "data-entry"; // ✅ FOR EXISTING EMAIL ALSO
+            user.createdBy = "data-entry";
         }
 
-        // 👉 FIXED OTP
+        // OTP
         const otp = "12345";  
-        const otpExpires = new Date(Date.now() + 10 * 60000);
-
         user.otp = otp;
-        user.otpExpires = otpExpires;
+        user.otpExpires = new Date(Date.now() + 10 * 60000);
 
-        // Save user
+        // Save User
         await user.save();
 
-        // Create Business Profile
+        // ---------------------------------------------------------
+        // BUSINESS PROFILE
+        // ---------------------------------------------------------
         let businessProfile = await BusinessProfile.findOne({ userId: user._id });
 
         if (!businessProfile) {
@@ -98,7 +105,9 @@ export async function POST(req) {
             await businessProfile.save();
         }
 
-        // Create Bank Details (if not existing)
+        // ---------------------------------------------------------
+        // BANK DETAILS
+        // ---------------------------------------------------------
         let existingBankDetails = await Bankdetails.findOne({ userId: user._id });
 
         if (!existingBankDetails) {
