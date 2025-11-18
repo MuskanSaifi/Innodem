@@ -116,15 +116,19 @@ const token = useSelector((state) => state.user.token);
                     // OTP Verification Form
                     <form onSubmit={handleVerifyOtp}>
                         <div className="mb-2">
-                            <input
-                                type="number"
-                                value={otp}
-                                onChange={(e) => setOtp(e.target.value)}
-                                required
-                                maxLength={4}
-                                className="w-full p-2 border rounded"
-                                placeholder="Enter OTP"
-                            />
+                      <input
+    type="text"
+    inputMode="numeric"
+    value={otp}
+    onChange={(e) => {
+        const v = e.target.value;
+        if (/^\d{0,5}$/.test(v)) setOtp(v);
+    }}
+    required
+    className="w-full p-2 border rounded"
+    placeholder="Enter OTP (12345)"
+/>
+
                         </div>
                         <button
                             type="submit"
@@ -192,19 +196,21 @@ const token = useSelector((state) => state.user.token);
                                 }}
                             />
                         </div>
-                    <input
+<input
     type="text"
+    inputMode="numeric"
     value={mobileNumber}
     onChange={(e) => {
         const value = e.target.value;
         if (/^\d{0,10}$/.test(value)) {
-            setMobileNumber(value);
+            setMobileNumber(value.trim());
         }
     }}
     required
     className="w-full p-2 border rounded-r h-[42px]"
     placeholder="Enter your mobile number"
 />
+
 
                     </div>
                 </div>

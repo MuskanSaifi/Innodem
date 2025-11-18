@@ -1,51 +1,56 @@
-import connectdb from "@/lib/dbConnect";
 import User from "@/models/User";
-import { generateToken } from "@/lib/jwt";
+import connectdb from "@/lib/dbConnect";
+import jwt from "jsonwebtoken";
 
 export async function POST(req) {
     try {
         await connectdb();
-        const body = await req.json(); // Parse the request body
+        const { mobileNumber, otp } = await req.json();
 
-        const { mobileNumber, otp } = body;
         if (!mobileNumber || !otp) {
-            return new Response(JSON.stringify({ error: "Mobile number and OTP are required" }), {
-                status: 400,
-                headers: { "Content-Type": "application/json" },
-            });
+            return new Response(JSON.stringify({ error: "All fields required" }), { status: 400 });
         }
 
-  // Check only fixed /  OTP
-if (otp !== "12345") {
-    return new Response(JSON.stringify({ error: "Invalid OTP" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-    });
-}
+        // ⭐ FIXED OTP VALIDATION
+        if (otp !== "12345") {
+            return new Response(JSON.stringify({ error: "Invalid OTP" }), { status: 400 });
+        }
 
-const user = await User.findOne({ mobileNumber });
+        // ⭐ FIND USER
+        const user = await User.findOne({
+            mobileNumber,
+            otp: "12345",
+            otpExpires: { $gt: new Date() },
+        });
 
-if (!user) {
-    return new Response(JSON.stringify({ error: "User not found" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-    });
-}
-
+        if (!user) {
+            return new Response(JSON.stringify({ error: "Invalid or expired OTP" }), { status: 400 });
+        }
 
         user.isVerified = true;
+        user.otp = null;
+        user.otpExpires = null;
         await user.save();
 
-        const token = generateToken(user);
+        // ⭐ JWT TOKEN
+        const token = jwt.sign(
+            { id: user._id },
+            process.env.JWT_SECRET || "my-secret",
+            { expiresIn: "30d" }
+        );
 
-        return new Response(JSON.stringify({ message: "OTP verified successfully", token, user }), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-        });
-    } catch (error) {
-        return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-            status: 500,
-            headers: { "Content-Type": "application/json" },
-        });
+        return new Response(
+            JSON.stringify({
+                success: true,
+                message: "OTP verified",
+                token,
+                user,
+            }),
+            { status: 200 }
+        );
+
+    } catch (err) {
+        console.log("verify error:", err);
+        return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500 });
     }
 }

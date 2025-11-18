@@ -1,7 +1,5 @@
 import User from "@/models/User";
-import BusinessProfile from "@/models/BusinessProfile";
 import connectdb from "@/lib/dbConnect";
-import Bankdetails from "@/models/BankDetails";
 
 export async function POST(req) {
     try {
@@ -10,130 +8,56 @@ export async function POST(req) {
 
         const { fullname, email, mobileNumber, pincode, companyName } = body;
 
-        // Required fields validation
+        console.log("BODY RECEIVED:", body);
+
+        // ⭐ REQUIRED FIELDS CHECK
         if (!fullname || !mobileNumber) {
-            return new Response(JSON.stringify({ error: "Name & Mobile number are required" }), {
-                status: 400,
-                headers: { "Content-Type": "application/json" },
-            });
+            return new Response(JSON.stringify({ error: "All fields required" }), { status: 400 });
         }
 
-        // Normalize mobile number
-        const formattedMobile = mobileNumber.startsWith("+")
-            ? mobileNumber.slice(1)
-            : `91${mobileNumber}`;
+        const finalMobile = mobileNumber.trim();
 
-        // Check if mobile already exists
-        let existingUser = await User.findOne({ mobileNumber });
-
-        if (existingUser) {
-            return new Response(JSON.stringify({ error: "This number already exists. Please sign in." }), {
-                status: 400,
-                headers: { "Content-Type": "application/json" },
-            });
+        // ⭐ CHECK IF MOBILE EXISTS
+        const existingMobile = await User.findOne({ mobileNumber: finalMobile });
+        if (existingMobile) {
+            return new Response(JSON.stringify({ error: "Mobile number already registered" }), { status: 400 });
         }
 
-        // ---------------------------------------------------------
-        // EMAIL OPTIONAL — Check only if email exists
-        // ---------------------------------------------------------
-        let user = null;
-
-        if (email && email.trim() !== "") {
-            user = await User.findOne({ email });
+        // ⭐ CHECK EMAIL DUPLICATE ONLY IF EMAIL PROVIDED
+        if (email) {
+            const existingEmail = await User.findOne({ email });
+            if (existingEmail) {
+                return new Response(JSON.stringify({ error: "Email already registered" }), { status: 400 });
+            }
         }
 
-        if (!user) {
-            user = new User({
-                fullname,
-                email: email || "", // optional
-                mobileNumber,
-                pincode,
-                companyName,
-                createdBy: "data-entry",
-            });
-        } else {
-            user.fullname = fullname;
-            user.pincode = pincode;
-            user.companyName = companyName;
-            user.createdBy = "data-entry";
-        }
+        // ⭐ CREATE OR UPDATE USER FOR OTP TESTING
+        let user = new User({
+            fullname,
+            email,
+            mobileNumber: finalMobile,
+            pincode,
+            companyName,
+        });
 
-        // OTP
-        const otp = "12345";  
-        user.otp = otp;
-        user.otpExpires = new Date(Date.now() + 10 * 60000);
+        // ⭐ FIXED OTP
+        user.otp = "12345";
+        user.otpExpires = new Date(Date.now() + 5 * 60 * 1000);
 
-        // Save User
         await user.save();
 
-        // ---------------------------------------------------------
-        // BUSINESS PROFILE
-        // ---------------------------------------------------------
-        let businessProfile = await BusinessProfile.findOne({ userId: user._id });
-
-        if (!businessProfile) {
-            businessProfile = new BusinessProfile({
-                userId: user._id,
-                companyName,
-                officeContact: mobileNumber,
-                ownershipType: "",
-                annualTurnover: "",
-                yearOfEstablishment: new Date().getFullYear(),
-                numberOfEmployees: 0,
-                address: "",
-                pincode,
-                city: "",
-                state: "",
-                country: "India",
-                gstNumber: "",
-                aadharNumber: "",
-                panNumber: "",
-                iecNumber: "",
-                tanNumber: "",
-                vatNumber: "",
-                companyLogo: "",
-                companyPhotos: [],
-                companyVideo: "",
-                companyDescription: "",
-                workingDays: [],
-                workingTime: { from: "", to: "" },
-                preferredBusinessStates: [],
-                preferredBusinessCities: [],
-                nonBusinessCities: [],
-            });
-
-            await businessProfile.save();
-        }
-
-        // ---------------------------------------------------------
-        // BANK DETAILS
-        // ---------------------------------------------------------
-        let existingBankDetails = await Bankdetails.findOne({ userId: user._id });
-
-        if (!existingBankDetails) {
-            const newBankDetails = new Bankdetails({
-                userId: user._id,
-                accountType: "",
-                accountHolderName: "",
-                accountNumber: "",
-                confirmAccountNumber: "",
-                ifscCode: "",
-                mobileLinked: "",
-            });
-
-            await newBankDetails.save();
-        }
-
         return new Response(
-            JSON.stringify({ message: "OTP generated", mobileNumber }),
-            { status: 200, headers: { "Content-Type": "application/json" } }
+            JSON.stringify({
+                success: true,
+                message: "OTP sent successfully",
+                otp: "12345",
+                mobileNumber: finalMobile,
+            }),
+            { status: 200 }
         );
 
-    } catch (error) {
-        console.error("❌ Error sending OTP:", error);
-        return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-            status: 500,
-            headers: { "Content-Type": "application/json" },
-        });
+    } catch (err) {
+        console.log("Error in sendsotp:", err);
+        return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500 });
     }
 }
