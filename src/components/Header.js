@@ -336,7 +336,7 @@ const handleLogout = () => {
                               <li key={index}>
                                 <button
                                   className="w-full text-left ps-2 p-1 hover:bg-gray-100"
-                                  onClick={() => router.push(`/city/${city}`)}
+                                  onClick={() => router.push(`/${city}`)}
                                 >
                                   {city}
                                 </button>
