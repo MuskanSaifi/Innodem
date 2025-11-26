@@ -61,7 +61,7 @@ if (!mongoose.Types.ObjectId.isValid(id)) {
     })
       .populate("category", "name categoryslug icon")
       .populate("subCategory", "name subcategoryslug icon")
-      .populate("userId", "fullname companyName _id")
+      .populate("userId", "fullname companyName _id userProfileSlug")
       .select("-__v");
 
     if (!product) {

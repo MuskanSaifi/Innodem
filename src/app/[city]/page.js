@@ -1,8 +1,18 @@
-// app/[city]/page.js
 import connectdb from "@/lib/dbConnect";
 import Product from "@/models/Product";
 import Link from "next/link";
 
+// ✅ Dynamic SEO
+export async function generateMetadata({ params }) {
+  const city = params.city;
+
+  return {
+    title: `Business Directory of ${city} | Top Manufacturers & Suppliers`,
+    description: `Find top verified manufacturers, wholesalers, and suppliers in ${city}. Explore business listings across all categories.`,
+  };
+}
+
+// ✅ Page Component
 export default async function CityPage({ params }) {
   const city = params.city;
 
