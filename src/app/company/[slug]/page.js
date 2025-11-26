@@ -2,7 +2,7 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 
 export default async function CompanyProfile({ params }) {
-  const { slug } = await params;   // ✅ FIX
+  const slug = params.slug;  // Directly access slug
 
   if (!slug) {
     notFound();
