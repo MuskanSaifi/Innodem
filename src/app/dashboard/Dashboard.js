@@ -22,7 +22,7 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     try {
       const [usersRes, buyersRes, productsRes] = await Promise.all([
-        axios.get(`/api/adminprofile/users`),
+        axios.get(`/api/adminprofile/users/count`), // ✅ Use dedicated count API
         axios.get(`/api/adminprofile/buyers`),
         axios.get(`/api/adminprofile/products`),
       ]);

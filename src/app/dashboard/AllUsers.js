@@ -16,6 +16,12 @@ const AllUsers = () => {
  const [remarkFilter, setRemarkFilter] = useState(""); // ✅ Remark Filter
 
  const [loading, setLoading] = useState(true);
+const [fetchError, setFetchError] = useState(null); // ✅ New state for robust error reporting
+// ✅ NEW PAGINATION STATES
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalUsersCount, setTotalUsersCount] = useState(0); 
+  const [limit] = useState(50); // Matches the backend default limit
 
 const [remarkUpdates, setRemarkUpdates] = useState({});
 const [selectedRemarks, setSelectedRemarks] = useState({});
@@ -37,26 +43,68 @@ const handleCustomRemarkChange = (userId, value) => {
     });
   }, []);
 
+// 🚨 Dependency change: Fetch only when currentPage changes
   useEffect(() => {
     fetchUsers();
-  }, []);
+}, [currentPage, searchTerm, searchDate, remarkFilter]);
 
+  // You might want to remove the static tooltip initialization if using Bootstrap 5+
+  useEffect(() => {
+    // Note: Tooltip initialization should be guarded against window not existing if this component is server-side rendered.
+    if (typeof window !== 'undefined' && window.bootstrap?.Tooltip) {
+        const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach((tooltipTriggerEl) => {
+            new window.bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    }
+  }, [users]); // Re-run when users load
+
+  // Function to change page
+const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
 
   const fetchUsers = async () => {
+    setLoading(true);
+    setFetchError(null); 
+    
+    // ✅ 1. फ़िल्टर पैरामीटर को URL में जोड़ें
+    const apiUrl = `/api/adminprofile/users?page=${currentPage}&limit=${limit}` +
+                   `&searchTerm=${searchTerm}` +
+                   `&searchDate=${searchDate}` +
+                   `&remarkFilter=${remarkFilter}`;
+                       
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Request timed out")), 45000) 
+    );
+
     try {
-      const response = await axios.get(
-        `/api/adminprofile/users`
-      );
+      const response = await Promise.race([
+        axios.get(apiUrl), 
+        timeoutPromise,
+      ]);
+      
       if (response.data.success) {
-        setUsers(response.data.users.reverse());
+        setUsers(response.data.users); 
+        // ✅ Update pagination state using the filtered total count
+        setTotalUsersCount(response.data.totalUsersCount);
+        setTotalPages(response.data.totalPages);
+        setCurrentPage(response.data.currentPage);
+      } else {
+        throw new Error(response.data.message || "API fetch failed.");
       }
     } catch (error) {
-      console.error("Error fetching users:", error);
-      Swal.fire("Error", "Failed to fetch users", "error");
+      console.error("Error fetching users:", error.message);
+      setFetchError(error.message || "Failed to fetch users due to a network or server error.");
+      Swal.fire("Error", "Failed to fetch users. The server might be slow or the data volume is too high. Loading only one page at a time should fix this.", "error"); 
     } finally {
       setLoading(false);
     }
   };
+
+
 
   const handleDeleteUser = async (userId) => {
     if (!userId) return;
@@ -173,43 +221,47 @@ const saveRemark = async (userId) => {
 };
 
 
-
-
-
-
   // ✅ Handle search input change
-  const handleSearch = (e) => {
+const handleSearch = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
+    setCurrentPage(1); 
   };
 
   // ✅ Handle date filter change
-  const handleDateFilter = (e) => {
+const handleDateFilter = (e) => {
     setSearchDate(e.target.value);
+    setCurrentPage(1);
   };
 
-  // ✅ Filter users based on searchTerm and date
-const filteredUsers = users.filter((user) => {
-  const userDate = user.createdAt ? new Date(user.createdAt).toISOString().split("T")[0] : null;
+// ✅ Handle remark filter change - फ़िल्टर बदलने पर पेज 1 पर रीसेट करें
+  const handleRemarkFilterChange = (e) => {
+    setRemarkFilter(e.target.value);
+    setCurrentPage(1);
+  };
 
-  const matchesSearch = (
-    user.fullname?.toLowerCase().includes(searchTerm) ||
-    user.email?.toLowerCase().includes(searchTerm) ||
-    user.companyName?.toLowerCase().includes(searchTerm) ||
-    user.mobileNumber?.includes(searchTerm)
-  );
+  const usersToDisplay = users;
 
-  const matchesDate = (
-    searchDate === "" || (userDate && userDate === searchDate)
-  );
+  // 🚨 Filter users is now performed only on the users fetched for the current page.
+  const filteredUsers = users.filter((user) => {
+    const userDate = user.createdAt ? new Date(user.createdAt).toISOString().split("T")[0] : null;
 
-const matchesRemark = (
-  remarkFilter === "" || user.remark === remarkFilter
-);
+    const matchesSearch = (
+      user.fullname?.toLowerCase().includes(searchTerm) ||
+      user.email?.toLowerCase().includes(searchTerm) ||
+      user.companyName?.toLowerCase().includes(searchTerm) ||
+      user.mobileNumber?.includes(searchTerm)
+    );
 
+    const matchesDate = (
+      searchDate === "" || (userDate && userDate === searchDate)
+    );
 
-  return matchesSearch && matchesDate && matchesRemark;
-});
+    const matchesRemark = (
+      remarkFilter === "" || user.remark === remarkFilter
+    );
 
+    return matchesSearch && matchesDate && matchesRemark;
+  });
 
   // calculatedprogreessbar
   const calculateProgress = (product) => {
@@ -254,18 +306,18 @@ const matchesRemark = (
       type="text"
       placeholder="Search by name, email, company name, or phone number"
       value={searchTerm}
-      onChange={handleSearch}
+   onChange={handleSearch} // ✅ Call updated handler
   className="min-w-[250px]"
     />
     <Form.Control
       type="date"
       value={searchDate}
-      onChange={handleDateFilter}
+      onChange={handleDateFilter} // ✅ Call updated handler
        className="min-w-[180px]"
     />
     <Form.Select
       value={remarkFilter}
-      onChange={(e) => setRemarkFilter(e.target.value)}
+     onChange={handleRemarkFilterChange} // ✅ Call updated handler
      className="min-w-[200px]"
     >
       <option value="">All Remarks</option>
@@ -289,12 +341,13 @@ const matchesRemark = (
       <option value="Paid Client">Paid Client</option>
       <option value="Other">Other</option>
     </Form.Select>
-    <Button
+<Button
       variant="secondary"
       onClick={() => {
         setSearchTerm("");
         setSearchDate("");
         setRemarkFilter("");
+        setCurrentPage(1); // ✅ Reset page on reset filters
       }}
       className="min-w-[100px]"
     >
@@ -302,12 +355,39 @@ const matchesRemark = (
     </Button>
   </Form>
   
-
+{/* ✅ PAGINATION CONTROLS AND COUNT */}
+      <div className="d-flex justify-content-between align-items-center mb-3">
+          <h5 className="text-muted text-sm">
+            Total Users: <strong>{totalUsersCount}</strong> | Showing: **Page {currentPage} of {totalPages}**
+          </h5>
+          <nav>
+            <ul className="pagination pagination-sm m-0">
+              <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                <Button className="page-link" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1 || loading}>Previous</Button>
+              </li>
+              {/* Simple Page Number Display */}
+              <li className="page-item active">
+                  <Button className="page-link" disabled>
+                    {currentPage}
+                  </Button>
+              </li>
+              <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                <Button className="page-link" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages || loading}>Next</Button>
+              </li>
+            </ul>
+          </nav>
+      </div>
+      
       {loading ? (
         <div className="text-center">
           <Spinner animation="border" variant="primary" />
+          <p className="mt-3 text-secondary">Loading a large dataset. This may take a moment...</p>
         </div>
-      ) : (
+        ) : fetchError ? ( // ✅ Display dedicated error message
+          <div className="alert alert-danger text-center">
+            <strong>Error:</strong> {fetchError}. Please check server logs and network.
+          </div>
+      ) :  (
         <Table className="common-shad striped bordered hover responsive ">
           <thead className="table-dark"><tr><th>#</th>
               <th>Full Name</th>
@@ -329,8 +409,8 @@ const matchesRemark = (
               <th>Action</th></tr>
           </thead>
           <tbody>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map((user, index) => (
+           {usersToDisplay.length > 0 ? ( 
+              usersToDisplay.map((user, index) => (
                 <React.Fragment key={user._id}>
                   <tr className="text-sm"><td>{index + 1}</td><td>{user.fullname}</td><td>{user.email} | {user.mobileNumber}</td><td>{user.companyName} | {user.products?.length} | {user.supportPerson?.name}</td>
 
