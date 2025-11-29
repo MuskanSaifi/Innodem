@@ -1,11 +1,30 @@
+// src/app/company/[slug]/page.js
+
 import React from 'react';
 import { notFound } from 'next/navigation';
 
+// 🔑 Helper function for masking sensitive data
+const maskData = (data) => {
+  if (!data || typeof data !== 'string' || data.length < 5) {
+    return '—'; // Return default for invalid or short data
+  }
+  const visibleLength = 4;
+  const maskedPart = '*'.repeat(data.length - visibleLength);
+  const visiblePart = data.slice(-visibleLength);
+  return `${maskedPart}${visiblePart}`; // Example: *****1234
+};
+
 export default async function CompanyProfile({ params }) {
-  const slug = params.slug;  // Directly access slug
+  // 1. AWAIT the params object to ensure it is fully resolved
+  // This satisfies the Next.js warning/error.
+  const resolvedParams = await params; 
+  
+  // 2. Access the slug from the resolved object
+  const slug = resolvedParams?.slug; 
 
   if (!slug) {
     notFound();
+    return null; 
   }
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/userprofile/profile/userprofile/${slug}`, {
@@ -19,6 +38,12 @@ export default async function CompanyProfile({ params }) {
   }
 
   const { user, businessProfile } = data;
+
+  // Mask the sensitive fields once here
+  const maskedOfficeContact = maskData(businessProfile.officeContact);
+  const maskedGstNumber = maskData(businessProfile.gstNumber);
+  const maskedAadharNumber = maskData(businessProfile.aadharNumber);
+  const maskedPanNumber = maskData(businessProfile.panNumber);
 
   return (
 <section className='mt-5'>
@@ -48,14 +73,16 @@ export default async function CompanyProfile({ params }) {
   <p className="text-gray-800">{businessProfile.ownershipType || '—'}</p>
 </div>
 
+{/* MASKED FIELD */}
 <div className="bg-green-50 p-4 rounded-xl shadow-sm">
   <div className="text-gray-600">📞 Contact Number</div>
-  <p className="text-gray-800">{businessProfile.officeContact || '—'}</p>
+  <p className="text-gray-800">{maskedOfficeContact}</p>
 </div>
 
+{/* MASKED FIELD */}
 <div className="bg-yellow-50 p-4 rounded-xl shadow-sm">
   <div className="text-gray-600">🧾 GST Number</div>
-  <p className="text-gray-800">{businessProfile.gstNumber || '—'}</p>
+  <p className="text-gray-800">{maskedGstNumber}</p>
 </div>
 
 <div className="bg-blue-50 p-4 rounded-xl shadow-sm sm:col-span-2">
@@ -76,7 +103,7 @@ export default async function CompanyProfile({ params }) {
     </div>
     </section>
 
-    {/* Products Section */}
+    {/* Products Section (No change needed here) */}
     <section className="py-16 bg-white">
       <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">Our Products</h2>
       {user.products && user.products.length > 0 ? (
@@ -122,7 +149,8 @@ export default async function CompanyProfile({ params }) {
               <tbody>
                 {[
                   ['Company Name', businessProfile.companyName],
-                  ['Office Contact', businessProfile.officeContact],
+                  // MASKED FIELD
+                  ['Office Contact', maskedOfficeContact],
                   ['Fax Number', businessProfile.faxNumber],
                   ['Ownership Type', businessProfile.ownershipType],
                   ['Annual Turnover', businessProfile.annualTurnover],
@@ -133,9 +161,12 @@ export default async function CompanyProfile({ params }) {
                   ['City', businessProfile.city],
                   ['State', businessProfile.state],
                   ['Country', businessProfile.country],
-                  ['GST Number', businessProfile.gstNumber],
-                  ['Aadhar Number', businessProfile.aadharNumber],
-                  ['PAN Number', businessProfile.panNumber],
+                  // MASKED FIELD
+                  ['GST Number', maskedGstNumber],
+                  // MASKED FIELD
+                  ['Aadhar Number', maskedAadharNumber],
+                  // MASKED FIELD
+                  ['PAN Number', maskedPanNumber],
                   ['IEC Number', businessProfile.iecNumber],
                   ['TAN Number', businessProfile.tanNumber],
                   ['VAT Number', businessProfile.vatNumber],
@@ -176,7 +207,7 @@ export default async function CompanyProfile({ params }) {
     </section>
 
 
-    {/* CTA Section */}
+    {/* CTA Section (No change needed here) */}
     <section className="py-16 bg-indigo-600 text-white text-center">
       <div className="max-w-4xl mx-auto space-y-6">
         <h2 className="text-3xl font-bold">Interested in Our Products?</h2>
@@ -195,8 +226,7 @@ export default async function CompanyProfile({ params }) {
     </section>
   </div>
 
-  {/* Right Side - Fixed Seller Details */}
-{/* Right Side - Fixed Seller Details */}
+  {/* Right Side - Fixed Seller Details (No change needed here) */}
 <div className="w-full lg:w-1/4 mt-10 lg:mt-0">
   <div className="lg:sticky lg:top-6">
     <div className="bg-white rounded-lg shadow-md border p-6">
