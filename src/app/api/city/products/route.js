@@ -1,4 +1,5 @@
-// app/api/city/products/route.js
+// app/api/city/products/route.js (UPDATED GET function)
+
 import connectdb from "@/lib/dbConnect";
 import Product from "@/models/Product";
 import { NextResponse } from "next/server";
@@ -9,18 +10,22 @@ export async function GET(req) {
 
     const { searchParams } = new URL(req.url);
     const city = searchParams.get("city");
-    const product = searchParams.get("product");
+    // ✅ CHANGED: 'product' is now 'productslug'
+    const productSlug = searchParams.get("productslug"); 
 
-    if (!city || !product) {
+    if (!city || !productSlug) { // ✅ Updated check
       return NextResponse.json(
-        { message: "City and product parameters are required" },
+        { message: "City and productslug parameters are required" },
         { status: 400 }
       );
     }
 
+    // ✅ CHANGED: Filtering by productslug instead of name
     const products = await Product.find({
-      city: { $regex: `^${city}$`, $options: "i" },
-      name: { $regex: product, $options: "i" },
+      // City search remains exact match (case-insensitive)
+      city: { $regex: `^${city}$`, $options: "i" }, 
+      // Filter by the slug (case-insensitive)
+      productslug: { $regex: `^${productSlug}$`, $options: "i" },
     })
       .populate("userId", "companyName mobileNumber email")
       .populate("category")
