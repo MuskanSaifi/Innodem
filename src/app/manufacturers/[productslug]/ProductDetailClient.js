@@ -16,6 +16,19 @@ import {
 } from "../../store/wishlistSlice";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 
+// 🔑 Helper function for masking sensitive data (e.g., GST/PAN/Aadhar)
+const maskData = (data) => {
+  if (!data || typeof data !== 'string' || data.length < 5) {
+    return 'N/A'; // Return default for invalid or short data
+  }
+  const visibleLength = 4;
+  // Ensure the data is treated as a string before slicing
+  const dataString = String(data); 
+  const maskedPart = '*'.repeat(dataString.length - visibleLength);
+  const visiblePart = dataString.slice(-visibleLength);
+  return `${maskedPart}${visiblePart}`; // Example: XXXXXXXXXXXXXXXX1234
+};
+
 const ProductDetailClient = ({ productslug: propProductSlug }) => {
   const params = useParams();
   const slugFromURL = params?.productslug || propProductSlug;
@@ -100,6 +113,11 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
       dispatch(addProductToWishlist(productId));
     }
   };
+
+  // 🔒 Mask GST Number once businessProfile is available
+  const maskedGstNumber = businessProfile 
+    ? maskData(businessProfile.gstNumber)
+    : 'N/A';
 
   return (
     <div className="container mt-4 mb-5">
@@ -268,8 +286,9 @@ const ProductDetailClient = ({ productslug: propProductSlug }) => {
                           <p className="mb-1">
                             <strong>Company Name:</strong> {businessProfile.companyName}
                           </p>
-                          <p className="mb-1">
-                            <strong>GST Number:</strong> {businessProfile.gstNumber}
+                         <p className="mb-1">
+                            {/* MASKING APPLIED HERE */}
+                            <strong>GST Number:</strong> {maskedGstNumber}
                           </p>
                           <p className="mb-1">
                             <strong>Year Established:</strong>{" "}

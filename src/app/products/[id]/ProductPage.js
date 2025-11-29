@@ -18,6 +18,20 @@ import {
 
 import { blockSeller } from "../../store/blockedSlice";
 
+// 🔑 Helper function for masking sensitive data (e.g., GST/PAN/Aadhar)
+const maskData = (data) => {
+  if (!data || typeof data !== 'string' || data.length < 5) {
+    return 'N/A'; // Return default for invalid or short data
+  }
+  const visibleLength = 4;
+  // Ensure the data is treated as a string before slicing
+  const dataString = String(data); 
+  const maskedPart = '*'.repeat(dataString.length - visibleLength);
+  const visiblePart = dataString.slice(-visibleLength);
+  return `${maskedPart}${visiblePart}`; // Example: XXXXXXXXXXXXXXXX1234
+};
+
+
 const ProductDetailPage = () => {
   const { id } = useParams();
   const router = useRouter();
@@ -250,6 +264,12 @@ const ProductDetailPage = () => {
   if (loading) return <Skeleton count={5} />;
   if (error) return <p className="text-red-500">{error}</p>;
   if (!product) return <p>Product not found.</p>;
+
+  // 🔒 Apply Masking here, after checking if product and businessProfile exist
+  const maskedGstNumber = product.businessProfile 
+    ? maskData(product.businessProfile.gstNumber)
+    : 'N/A';
+
   return (
     <section className="min-h-screen bg-white py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -573,16 +593,18 @@ const ProductDetailPage = () => {
                           </div>
                         </div>
 
-                        {/* GST Number */}
+                  {/* GST Number (UPDATED FOR MASKING) */}
                         <div className="flex items-start space-x-4">
                           <div className="bg-orange-100 p-3 rounded-full">
                             ✅
                           </div>
                           <div>
                             <p className="text-gray-700 font-semibold mb-0">GST NO</p>
-                            <p className="text-gray-500 text-sm">{product.businessProfile.gstNumber || "N/A"}</p>
+                            {/* Masked Value used here */}
+                            <p className="text-gray-500 text-sm">{maskedGstNumber}</p>
                           </div>
                         </div>
+                        {/* CLOSING DIVS WERE HERE */}
 
                         {/* Payment Mode (using samplePolicy as a placeholder based on previous context) */}
                         <div className="flex items-start space-x-4">
