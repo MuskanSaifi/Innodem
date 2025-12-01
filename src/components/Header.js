@@ -326,28 +326,27 @@ const handleLogout = () => {
                           onChange={(e) => setCitySearch(e.target.value)}
                         />
                       </div>
-                      <ul className="max-h-60 overflow-y-auto">
-                        {cities?.length > 0 ? (
-                          cities
-                            .filter((city) =>
-                              city.toLowerCase().includes(citySearch.toLowerCase())
-                            )
-                            .map((city, index) => (
-                              <li key={index}>
-                                <button
-                                  className="w-full text-left ps-2 p-1 hover:bg-gray-100"
-                                  onClick={() => router.push(`/${city}`)}
-                                >
-                                  {city}
-                                </button>
-                              </li>
-                            ))
-                        ) : (
-                          <p className="text-gray-500 px-4 py-2">
-                            No cities found
-                          </p>
-                        )}
-                      </ul>
+                     <ul className="max-h-60 overflow-y-auto">
+  {cities?.length > 0 ? (
+    cities
+      .filter((city) =>
+        city.toLowerCase().includes(citySearch.toLowerCase())
+      )
+      .map((city, index) => (
+        <li key={index}>
+          <button
+            className="w-full text-left ps-2 p-1 hover:bg-gray-100"
+            onClick={() => router.push(`/${city.toLowerCase()}`)} // ✅ ALWAYS LOWERCASE URL
+          >
+            {city}
+          </button>
+        </li>
+      ))
+  ) : (
+    <p className="text-gray-500 px-4 py-2">No cities found</p>
+  )}
+</ul>
+
                     </div>
                   )}
                 </div>

@@ -2,43 +2,41 @@ import connectdb from "@/lib/dbConnect";
 import Product from "@/models/Product";
 import ProductListClient from "./ProductListClient";
 
+// --- DYNAMIC METADATA GENERATION ---
 export async function generateMetadata({ params: rawParams }) {
   const params = await rawParams;
   const { city, productslug } = params;
 
   await connectdb();
 
+  // ✅ UPDATED: Populate 'category' to get the category name for the SEO formula.
   const product = await Product.findOne({ productslug })
     .populate("userId")
+    .populate("category") // <-- Added for Category Name
     .lean();
 
-  const formattedCity = city.replace(/-/g, " ");
-  const formattedProduct = productslug.replace(/-/g, " ");
+  // --- Formatting Variables ---
+  const formattedSlug = productslug.replace(/-/g, " ");
+  // City name should be capitalized for display in metadata (e.g., Kolkata)
+  const displayCity = city.charAt(0).toUpperCase() + city.slice(1).toLowerCase();
+  
 
-  const title = product
-    ? `${product.name} in ${formattedCity} | ${product?.userId?.companyName || "Top Supplier"}`
-    : `Best ${formattedProduct} in ${formattedCity} | Manufacturers & Suppliers`;
+  // --- APPLY NEW FORMULAS ---
 
-  const description = product
-    ? `Buy ${product.name} in ${formattedCity} at wholesale prices. Contact ${product?.userId?.companyName}.`
-    : `Find top manufacturers & wholesalers of ${formattedProduct} in ${formattedCity}.`;
+  // Title Formula: Best {Category} in {City} - Top Manufacturers, Suppliers & Wholesalers
+  const title = `${product?.name} in ${displayCity} - Best Manufacturers, Suppliers & Wholesalers `;
 
-  const keywords = product
-    ? [
-        product.name,
-        `${product.name} in ${formattedCity}`,
-        `${product.name} price`,
-        `${product.name} manufacturers`,
-        product?.userId?.companyName || "Top Supplier",
-        formattedCity,
-      ]
-    : [
-        formattedProduct,
-        `${formattedProduct} in ${formattedCity}`,
-        `${formattedProduct} suppliers`,
-        `${formattedProduct} manufacturers`,
-        formattedCity,
-      ];
+  // Meta Description Formula: Buy {Category} in {City} at wholesale prices. Connect with verified manufacturers, suppliers and exporters for bulk orders. Fast delivery & quality products.
+  const description = `Buy ${product?.name} in ${displayCity} at wholesale prices. Connect with verified manufacturers, suppliers and exporters for bulk orders. Fast delivery & quality products.`;
+
+  // --- Keywords (Updated to focus on Category/City) ---
+  const keywords = [
+    product?.name,
+    `${product?.name} in ${displayCity}`,
+    `${product?.name} suppliers`,
+    `${product?.name} manufacturers`,
+    displayCity,
+  ];
 
   return {
     title,
@@ -68,13 +66,22 @@ export async function generateMetadata({ params: rawParams }) {
     },
   };
 }
+// --- END DYNAMIC METADATA GENERATION ---
+
 
 export default async function Page({ params: rawParams }) {
   const params = await rawParams;
   const { city, productslug } = params;
 
   await connectdb();
-  const products = await Product.find({ productslug }).lean();
+  // Fetch all products matching the slug in the city
+  const products = await Product.find({ 
+    productslug,
+    // Add city filter here to ensure products are relevant to the URL context
+    city: { $regex: `^${city}$`, $options: "i" }
+  })
+    .populate("userId")
+    .lean();
 
   return (
     <ProductListClient

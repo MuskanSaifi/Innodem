@@ -7,6 +7,7 @@ import { Navigation } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/navigation";
+import Link from "next/link";
 
 const arrowStyles = `
 .swiper-button-prev,
@@ -165,13 +166,12 @@ function ProductCard({ product }) {
 
         {/* ACTION BUTTONS */}
         <div className="flex gap-2 mt-3">
-          <button className="bg-green-600 hover:bg-green-700 text-white text-xs font-semibold px-3 py-2 rounded w-full">
-            Contact Supplier
-          </button>
+        <Link href={`/products/${product._id}`} className="w-full">
+  <button className="bg-green-600 hover:bg-green-700 text-white text-xs font-semibold px-3 py-2 rounded w-full">
+    Contact Supplier
+  </button>
+</Link>
 
-          <button className="border border-green-600 text-green-600 hover:bg-green-50 text-xs font-semibold px-3 py-2 rounded w-full">
-            View Mobile
-          </button>
         </div>
 
       </div>
