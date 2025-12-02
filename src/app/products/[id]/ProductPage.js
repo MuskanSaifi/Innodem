@@ -483,7 +483,7 @@ const ProductDetailPage = () => {
                           </tr>
                           <tr className="even:bg-gray-50">
                             <td className="py-2 px-3 font-medium text-gray-600">Stock</td>
-                            <td className="py-2 px-3">{product.stock ?? "Not Available"}</td>
+                            <td className="py-2 px-3">{product.stockQuantity ?? "In Stock"}</td>
                           </tr>
                           {/* Add more specifications based on your schema if needed */}
                           <tr className="even:bg-gray-50">

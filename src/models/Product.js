@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema(
     price: { type: Number },
     currency: { type: String, default: "INR" },
     minimumOrderQuantity: { type: Number },
-    moqUnit: { type: String, default:"Number" },
+    moqUnit: { type: String, },
     images: [
       {
         url: { type: String, required: true },
@@ -107,6 +107,11 @@ const productSchema = new mongoose.Schema(
       minOrderedPacks: { type: Number }, // Assuming this should be a Number
       isReturnable: { type: String, enum: ["Yes", "No", null], default: null},
       stockQuantity: { type: Number }, // Assuming this should be a Number
+stock: { 
+  type: String, 
+  default: "In stock" 
+},
+
       weightPerUnit: { type: Number }, // Assuming this should be a Number
       weightUnit: { type: String },
       shippingType: {

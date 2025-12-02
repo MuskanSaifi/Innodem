@@ -93,11 +93,15 @@ function ProductCard({ product }) {
       ? product.images
       : [{ url: "/default-product.jpg" }];
 
-  const displayPrice = product.price
-    ? `₹${product.price.toLocaleString("en-IN")}`
-    : "Price on Request";
+// ⭐ Proper currency-based display price
+const displayPrice = product.price
+  ? new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: product.currency || "INR",
+    }).format(product.price)
+  : "Price on Request";
 
-  const unit = product.moqUnit || "Piece";
+
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-xl transition p-0 overflow-hidden relative">
@@ -133,14 +137,14 @@ function ProductCard({ product }) {
 
         {/* PRICE */}
         <p className="text-lg font-bold mt-1 text-red-600">
-          {displayPrice}
-          <span className="text-xs text-gray-600"> / {unit}</span>
+  {displayPrice}
+          <span className="text-xs text-gray-600"></span>
         </p>
 
         {/* MOQ */}
         {product.minimumOrderQuantity > 0 && (
           <p className="text-xs text-gray-700 mt-1">
-            MOQ: {product.minimumOrderQuantity} {unit}
+            MOQ: {product.minimumOrderQuantity} 
           </p>
         )}
 

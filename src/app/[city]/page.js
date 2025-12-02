@@ -5,6 +5,26 @@ import Product from "@/models/Product";
 import Link from "next/link";
 import Image from "next/image";
 
+// ⭐ Add Dynamic Meta Tags
+export async function generateMetadata({ params }) {
+  const cityRaw = await params;
+  const city = cityRaw.city.toLowerCase();
+  const displayCity = city.charAt(0).toUpperCase() + city.slice(1);
+
+  return {
+    title: `Top Business Directory in ${displayCity} | Verified local Suppliers & Manufacturers`,
+    description: `Explore top verified suppliers and manufacturers in  ${displayCity}. Find trusted local businesses, products, and complete contact details.
+    `,
+    keywords: [
+      `${displayCity} business directory`,
+      `${displayCity} suppliers`,
+      `${displayCity} manufacturers`,
+      `local businesses in ${displayCity}`,
+      `Dial Export Mart`,
+    ],
+  };
+}
+
 export default async function CityPage({ params }) {
   const raw = await params;
   const cityParam = raw.city;
@@ -21,7 +41,6 @@ export default async function CityPage({ params }) {
 
   let products;
   try {
-    // 🔥 Fetch unique products for this city (case-insensitive)
     products = await Product.aggregate([
       {
         $match: {

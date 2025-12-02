@@ -40,7 +40,8 @@ const [availableCities, setAvailableCities] = useState([]);
             country: "",
             state: "",
             city: "",
-            stock: "",
+
+            stockQuantity: "",
             images: [],
             // ✅ Trade Information (Fix enum defaults)
             tradeInformation: {
@@ -515,7 +516,8 @@ const handleSubmit = async (e) => {
 <option value="Grams">Gram</option>
 <option value="Metric Tons">Metric Ton</option>
 <option value="Ton/Tons">Ton</option>
-<option value="Piece/Pieces">Piece</option>
+<option value="Piece">Piece</option>
+<option value="Pieces">Pieces</option>
 <option value="Unit/Units">Unit</option>
 <option value="Dozen">Dozen</option>
 <option value="Pairs">Pair</option>
@@ -1263,7 +1265,8 @@ const handleSubmit = async (e) => {
 <option value="Grams">Grams</option>
 <option value="Metric Tons">Metric Tons</option>
 <option value="Ton/Tons">Ton/Tons</option>
-<option value="Piece/Pieces">Piece/Pieces</option>
+<option value="Piece">Piece</option>
+<option value="Pieces">Pieces</option>
 <option value="Unit/Units">Unit/Units</option>
 <option value="Dozen">Dozen</option>
 <option value="Pair/Pairs">Pair/Pairs</option>
