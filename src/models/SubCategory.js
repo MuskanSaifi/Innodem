@@ -16,7 +16,6 @@ const subcategorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-
 // ✅ Ensure model is not re-registered
 const SubCategory = mongoose.models.SubCategory || mongoose.model("SubCategory", subcategorySchema);
 export default SubCategory;
