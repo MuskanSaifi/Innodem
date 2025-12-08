@@ -2,10 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default async function CountryPage({ params }) {
-  const raw = await params;
-  const slugParam = raw.slug;
+  const { slug } = await params;  // 🔥 Important Fix
 
-  const countrySlug = slugParam.toLowerCase();
+  const countrySlug = slug.toLowerCase();
   const countryName = countrySlug.replace(/-/g, " ");
 
   const res = await fetch(
@@ -15,80 +14,63 @@ export default async function CountryPage({ params }) {
 
   const data = await res.json();
 
-  const products = data?.products || [];
   const categories = data?.categories || [];
   const subcategories = data?.subcategories || [];
 
-  return (
-    <div className="container mx-auto px-4 py-8">
+return (
+  <div className="container mx-auto px-4 py-10">
 
-      <h1 className="text-2xl font-bold mb-4 capitalize">
-        Products from {countryName}
+    {/* Country Header */}
+    <div className="text-center mb-12">
+      <h1 className="text-4xl font-extrabold text-gray-800">
+        Explore The Best Of{" "}
+        <span className="text-orange-500 capitalize">{countryName}</span>
       </h1>
-
-      {/* 🔥 Show Categories */}
-      {categories.length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">Categories</h2>
-          <div className="flex flex-wrap gap-3">
-            {categories.map(cat => (
-              <Link
-                key={cat._id}
-                href={`/category/${cat.slug}`}
-                className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200"
-              >
-                {cat.name}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 🔥 Show Subcategories */}
-      {subcategories.length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">Subcategories</h2>
-          <div className="flex flex-wrap gap-3">
-            {subcategories.map(sub => (
-              <Link
-                key={sub._id}
-                href={`/subcategory/${sub.slug}`}
-                className="px-4 py-2 bg-blue-100 rounded-lg hover:bg-blue-200"
-              >
-                {sub.name}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 🔥 Product Grid */}
-      {products.length === 0 ? (
-        <p className="text-gray-600">No matching products found</p>
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-          {products.map((item) => (
-            <Link
-              key={item._id}
-              href={`/${countrySlug}/${item.productslug}`}
-              className="block border p-3 rounded-lg hover:shadow-md"
-            >
-            
-              <Image
-                src={item.images?.[0]?.url || "/no-image.png"}
-                alt={item.name}
-                width={500}
-                height={500}
-                className="rounded-lg object-cover h-40 w-full"
-              />
-
-              <h2 className="mt-2 text-lg font-semibold">{item.name}</h2>
-              <p className="text-gray-500 text-sm">Price: ₹{item.price}</p>
-            </Link>
-          ))}
-        </div>
-      )}
+      <p className="text-gray-600 mt-2 text-lg">
+        Manufacturers & Suppliers from {countryName}
+      </p>
     </div>
-  );
-}
 
+    {/* Category Cards */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      {categories.map((cat) => (
+        <div
+          key={cat._id}
+          className="rounded-2xl border bg-white p-6 shadow-sm hover:shadow-lg transition-all duration-300"
+        >
+          {/* Category Header */}
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-gray-800">{cat.name}</h2>
+            <div className="h-12 w-12 rounded-full bg-orange-100 flex items-center justify-center">
+              <span className="text-orange-500 text-2xl">📦</span>
+            </div>
+          </div>
+
+          {/* Subcategories */}
+          <ul className="space-y-2 mt-4">
+            {subcategories
+              .filter((s) => s.category == cat._id)
+              .map((sub) => (
+                <li key={sub._id}>
+                  <Link
+                    href={`/subcategory/${sub.subcategoryslug}`}
+                    className="flex items-center text-gray-700 hover:text-orange-500 transition"
+                  >
+                    <span className="mr-2">→</span>
+                    {sub.name}
+                  </Link>
+                </li>
+              ))}
+
+            {/* If no subcategories */}
+            {subcategories.filter((s) => s.category == cat._id).length === 0 && (
+              <p className="text-gray-400 text-sm">No subcategories available</p>
+            )}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+}
