@@ -111,7 +111,7 @@ export default async function CityPage({ params }) {
             {catProducts.slice(0, 6).map((product) => (
               <Link
                 key={product._id}
-                href={`/${city}/${encodeURIComponent(product.productslug)}`}
+                href={`/city/${city}/${encodeURIComponent(product.productslug)}`}
                 className="block"
               >
                 <div className="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1 overflow-hidden h-full">

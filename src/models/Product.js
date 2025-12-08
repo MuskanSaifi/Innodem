@@ -20,9 +20,9 @@ const productSchema = new mongoose.Schema(
     video: { type: String },
     youtubeUrl: { type: String },
     description: { type: String },
-    country: {type: String},
-    state: {type: String},
-    city: {type: String},
+country: { type: String, lowercase: true },
+    state: {type: String, lowercase: true },
+    city: {type: String, lowercase: true },
     cityimage: {type: String},
    
     // for admin
