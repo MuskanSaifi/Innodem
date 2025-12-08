@@ -73,6 +73,7 @@ export default async function CountryPage({ params }) {
               href={`/${countrySlug}/${item.productslug}`}
               className="block border p-3 rounded-lg hover:shadow-md"
             >
+            
               <Image
                 src={item.images?.[0]?.url || "/no-image.png"}
                 alt={item.name}
