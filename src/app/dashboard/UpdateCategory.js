@@ -1,10 +1,15 @@
-// src/app/dashboard/UpdateCategory.js
 "use client";
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Image from "next/image";
+
+// Redux
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCategories } from "@/app/store/categorySlice";
+
+// Tiptap Editor
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Heading from "@tiptap/extension-heading";
@@ -17,105 +22,106 @@ import ListItem from "@tiptap/extension-list-item";
 import Blockquote from "@tiptap/extension-blockquote";
 import CodeBlock from "@tiptap/extension-code-block";
 import Link from "@tiptap/extension-link";
-import ImageExtension from "@tiptap/extension-image"; // For inline images
+import ImageExtension from "@tiptap/extension-image";
 
-// Helper to generate slug, reused from CreateCategoryForm
-const generateSlug = (text) => {
-  return text
+// Helper to generate slug
+const generateSlug = (text) =>
+  text
     .toLowerCase()
     .trim()
     .replace(/[^a-z0-9\s-]/g, "")
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-");
-};
-
 
 const UpdateCategory = () => {
-  const [categories, setCategories] = useState([]);
-  const [allSubCategories, setAllSubCategories] = useState([]); // To hold all subcategories for the dropdown
+  const dispatch = useDispatch();
+
+  // ⭐ Get categories from Redux
+  const { data: categories, loading: catLoading } = useSelector(
+    (state) => state.categories
+  );
+
+  const [allSubCategories, setAllSubCategories] = useState([]);
+  const [previewImage, setPreviewImage] = useState("");
+  const [slugEdited, setSlugEdited] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [categoryData, setCategoryData] = useState({
     id: "",
     name: "",
     icon: "",
-    categoryslug: "", // Added
-    metatitle: "", // Added
-    metadescription: "", // Added
-    metakeywords: "", // Added (matching schema)
-    content: "", // Added
-    isTrending: false, // Added
+    categoryslug: "",
+    metatitle: "",
+    metadescription: "",
+    metakeywords: "",
+    content: "",
+    isTrending: false,
     subcategories: [],
   });
-  const [previewImage, setPreviewImage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [slugEdited, setSlugEdited] = useState(false); // To prevent slug auto-update on every change
 
-  // Tiptap Editor for content
+  // Fetch categories once from Redux
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
+  // Fetch all subcategories (manual)
+  useEffect(() => {
+    fetchAllSubCategories();
+  }, []);
+
+  // Load Subcategories manually
+  const fetchAllSubCategories = async () => {
+    try {
+      const result = await axios.get(`/api/adminprofile/subcategory`);
+      setAllSubCategories(result.data);
+    } catch (error) {
+      toast.error("Failed to fetch subcategories.");
+    }
+  };
+
+  // Tiptap Editor
   const editor = useEditor({
     extensions: [
       StarterKit,
-      ImageExtension.configure({
-        inline: true,
-        allowBase64: true, // Consider using Cloudinary for prod
-      }),
-Heading.configure({ levels: [1, 2, 3, 4, 5, 6] }),
-      Bold, Italic, Underline, BulletList, OrderedList, ListItem, Blockquote, CodeBlock,
+      ImageExtension.configure({ inline: true }),
+      Heading.configure({ levels: [1, 2, 3, 4, 5, 6] }),
+      Bold,
+      Italic,
+      Underline,
+      BulletList,
+      OrderedList,
+      ListItem,
+      Blockquote,
+      CodeBlock,
       Link.configure({ openOnClick: false }),
     ],
-    content: categoryData.content, // Initial content from categoryData
+    content: categoryData.content,
     onUpdate: ({ editor }) => {
       setCategoryData((prev) => ({ ...prev, content: editor.getHTML() }));
     },
   });
 
-  // Effect to update editor content when categoryData.content changes (e.g., when a new category is selected)
+  // Update editor when category changes
   useEffect(() => {
     if (editor && editor.getHTML() !== categoryData.content) {
       editor.commands.setContent(categoryData.content || "", false);
     }
   }, [categoryData.content, editor]);
 
-
+  // Auto-update slug
   useEffect(() => {
-    fetchCategories();
-    fetchAllSubCategories(); // Fetch all subcategories for the selection dropdown
-  }, []);
-
-  // Auto-generate slug when name changes, unless manually edited
-  useEffect(() => {
-    if (!slugEdited && categoryData.id) { // Only auto-generate if a category is selected and slug not manually edited
+    if (!slugEdited && categoryData.id) {
       setCategoryData((prev) => ({
         ...prev,
         categoryslug: generateSlug(prev.name),
       }));
     }
-  }, [categoryData.name, slugEdited, categoryData.id]);
+  }, [categoryData.name, slugEdited]);
 
-
-  // Fetch categories
-  const fetchCategories = async () => {
-    try {
-      const result = await axios.get(`/api/adminprofile/category`);
-      setCategories(result.data);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-      toast.error("Failed to fetch categories.");
-    }
-  };
-
-  // Fetch all subcategories
-  const fetchAllSubCategories = async () => {
-    try {
-      const result = await axios.get(`/api/adminprofile/subcategory`); // Assuming this API returns all subcategories
-      setAllSubCategories(result.data);
-    } catch (error) {
-      console.error("Error fetching all subcategories:", error);
-      toast.error("Failed to fetch subcategories.");
-    }
-  };
-
-  // Handle category selection
+  // When user selects a Category
   const handleCategorySelectChange = (e) => {
-    const selectedCat = categories.find((cat) => cat._id === e.target.value);
+    const selectedCat = categories.find((c) => c._id === e.target.value);
+
     if (selectedCat) {
       setCategoryData({
         id: selectedCat._id,
@@ -127,320 +133,191 @@ Heading.configure({ levels: [1, 2, 3, 4, 5, 6] }),
         metakeywords: selectedCat.metakeywords || "",
         content: selectedCat.content || "",
         isTrending: selectedCat.isTrending || false,
-        subcategories: selectedCat.subcategories.map((sub) => sub._id), // Extract IDs
+        subcategories: selectedCat.subcategories.map((s) => s._id),
       });
       setPreviewImage(selectedCat.icon || "");
-      setSlugEdited(false); // Reset slugEdited when a new category is selected
-    } else {
-      // Reset form if no category is selected
-      setCategoryData({
-        id: "", name: "", icon: "", categoryslug: "", metatitle: "",
-        metadescription: "", metakeywords: "", content: "", isTrending: false,
-        subcategories: []
-      });
-      setPreviewImage("");
-      editor?.commands.clearContent();
       setSlugEdited(false);
+    } else {
+      resetForm();
     }
   };
 
-  // Handle direct input changes for text fields, including slug
+  const resetForm = () => {
+    setCategoryData({
+      id: "",
+      name: "",
+      icon: "",
+      categoryslug: "",
+      metatitle: "",
+      metadescription: "",
+      metakeywords: "",
+      content: "",
+      isTrending: false,
+      subcategories: [],
+    });
+    setPreviewImage("");
+    editor?.commands.clearContent();
+  };
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
+
     setCategoryData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
-    if (name === "categoryslug") {
-      setSlugEdited(true); // Mark slug as manually edited
-    }
+
+    if (name === "categoryslug") setSlugEdited(true);
   };
 
-  // Handle image selection & convert to Base64
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCategoryData({ ...categoryData, icon: reader.result });
-        setPreviewImage(reader.result); // Show preview
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+    if (!file) return;
 
-  // Handle inline image upload for editor
-  const handleInlineImageUpload = async () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-    input.onchange = async () => {
-      const file = input.files[0];
-      if (!file) return;
-
-      const formData = new FormData();
-      formData.append("file", file);
-
-      // This API endpoint handles Cloudinary upload for inline images in categories
-      const res = await fetch("/api/upload-category-editor-image", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-      if (data.url) {
-        editor.chain().focus().setImage({ src: data.url }).run();
-      } else {
-        console.error("❌ Failed to get URL from inline image upload.");
-        toast.error("Failed to upload inline image.");
-      }
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setCategoryData((prev) => ({ ...prev, icon: reader.result }));
+      setPreviewImage(reader.result);
     };
-    input.click();
+    reader.readAsDataURL(file);
   };
 
-
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    if (!categoryData.id) {
-      toast.error("Please select a category to update.");
-      setLoading(false);
-      return;
-    }
-    if (!categoryData.name || !categoryData.categoryslug || !categoryData.metatitle || !categoryData.metadescription || !categoryData.metakeywords) {
-      toast.error("Please fill in all required text fields.");
-      setLoading(false);
-      return;
-    }
-
-
     try {
-      const response = await axios.patch(`/api/adminprofile/category`, categoryData);
+      await axios.patch(`/api/adminprofile/category`, categoryData);
+      toast.success("Category updated successfully!");
 
-      if (response.status === 200) {
-        toast.success("Category updated successfully!");
-        // Reset form
-        setCategoryData({
-          id: "", name: "", icon: "", categoryslug: "", metatitle: "",
-          metadescription: "", metakeywords: "", content: "", isTrending: false,
-          subcategories: []
-        });
-        setPreviewImage("");
-        editor?.commands.clearContent();
-        setSlugEdited(false);
-        fetchCategories(); // Refresh categories list
-      }
-    } catch (error) {
-      console.error("Error updating category:", error.response?.data?.error || error.message);
-      toast.error(error.response?.data?.error || "Failed to update category. Please try again.");
-    } finally {
-      setLoading(false);
+      dispatch(fetchCategories()); // refresh redux
+      resetForm();
+    } catch (err) {
+      toast.error(err.response?.data?.error || "Update failed.");
     }
+
+    setLoading(false);
   };
 
   return (
-    <div className="update-category-form p-4">
-      <h3>Update Category & Add Subcategories in category</h3>
+    <div className="p-4">
+      <h3>Update Category</h3>
 
-      {/* Select Category */}
-      <div className="mb-3">
-        <label htmlFor="selectCategory" className="form-label">Select Category:</label>
-        <select
-          id="selectCategory"
-          className="form-control"
-          value={categoryData.id}
-          onChange={handleCategorySelectChange}
-        >
-          <option value="">-- Select a Category --</option>
-          {categories.map((category) => (
-            <option key={category._id} value={category._id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
-      </div>
+      {/* Category Selection */}
+      <select
+        className="form-control mb-3"
+        value={categoryData.id}
+        onChange={handleCategorySelectChange}
+      >
+        <option value="">-- Select Category --</option>
 
-      {categoryData.id && ( // Only show form if a category is selected
+        {catLoading && <option>Loading...</option>}
+
+        {categories.map((cat) => (
+          <option key={cat._id} value={cat._id}>
+            {cat.name}
+          </option>
+        ))}
+      </select>
+
+      {/* Only show form when category is selected */}
+      {categoryData.id && (
         <form onSubmit={handleSubmit}>
-          {/* Category Name Input */}
-          <div className="mb-3">
-            <label htmlFor="categoryName" className="form-label">Category Name:</label>
-            <input
-              id="categoryName"
-              className="form-control"
-              type="text"
-              name="name"
-              placeholder="Enter category name"
-              value={categoryData.name}
-              onChange={handleInputChange}
-              required
-            />
+          {/* Name */}
+          <input
+            type="text"
+            name="name"
+            className="form-control mb-3"
+            value={categoryData.name}
+            onChange={handleInputChange}
+          />
+
+          {/* Slug */}
+          <input
+            type="text"
+            name="categoryslug"
+            className="form-control mb-3"
+            value={categoryData.categoryslug}
+            onChange={handleInputChange}
+          />
+
+          {/* Meta Fields */}
+          <input
+            type="text"
+            name="metatitle"
+            placeholder="Meta Title"
+            className="form-control mb-3"
+            value={categoryData.metatitle}
+            onChange={handleInputChange}
+          />
+
+          <textarea
+            name="metadescription"
+            placeholder="Meta Description"
+            className="form-control mb-3"
+            value={categoryData.metadescription}
+            onChange={handleInputChange}
+          ></textarea>
+
+          <input
+            type="text"
+            name="metakeywords"
+            placeholder="Meta Keywords"
+            className="form-control mb-3"
+            value={categoryData.metakeywords}
+            onChange={handleInputChange}
+          />
+
+          {/* Editor */}
+          <div className="border rounded p-2 bg-white mb-3">
+            <EditorContent editor={editor} className="min-h-[200px]" />
           </div>
-
-          {/* Category Slug Input */}
-          <div className="mb-3">
-            <label htmlFor="categorySlug" className="form-label">Category Slug:</label>
-            <input
-              id="categorySlug"
-              className="form-control"
-              type="text"
-              name="categoryslug"
-              placeholder="Category URL Slug"
-              value={categoryData.categoryslug}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-
-          {/* Meta Title */}
-          <div className="mb-3">
-            <label htmlFor="metaTitle" className="form-label">Meta Title:</label>
-            <input
-              id="metaTitle"
-              className="form-control"
-              type="text"
-              name="metatitle"
-              placeholder="Meta Title"
-              value={categoryData.metatitle}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          {/* Meta Description */}
-          <div className="mb-3">
-            <label htmlFor="metaDescription" className="form-label">Meta Description:</label>
-            <textarea
-              id="metaDescription"
-              className="form-control"
-              name="metadescription"
-              placeholder="Meta Description"
-              rows="3"
-              value={categoryData.metadescription}
-              onChange={handleInputChange}
-            ></textarea>
-          </div>
-
-          {/* Meta Keywords */}
-          <div className="mb-3">
-            <label htmlFor="metaKeywords" className="form-label">Meta Keywords:</label>
-            <input
-              id="metaKeywords"
-              className="form-control"
-              type="text"
-              name="metakeywords"
-              placeholder="Meta Keywords (comma-separated)"
-              value={categoryData.metakeywords}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          {/* Rich Text Editor for Content */}
-          <div className="mb-3">
-            <label htmlFor="categoryContent" className="form-label">Category Content:</label>
-            {editor && (
-              <div className="toolbar mb-2 border rounded p-2 bg-light">
-                <button type="button" onClick={() => editor.chain().focus().toggleBold().run()} className="btn btn-sm btn-outline-secondary me-1">Bold</button>
-                <button type="button" onClick={() => editor.chain().focus().toggleItalic().run()} className="btn btn-sm btn-outline-secondary me-1">Italic</button>
-                <button type="button" onClick={() => editor.chain().focus().toggleUnderline().run()} className="btn btn-sm btn-outline-secondary me-1">Underline</button>
-                <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className="btn btn-sm btn-outline-secondary me-1">H1</button>
-                <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} className="btn btn-sm btn-outline-secondary me-1">H2</button>
-                <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} className="btn btn-sm btn-outline-secondary me-1">H3</button>
-                <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()} className="btn btn-sm btn-outline-secondary me-1">H4</button>
-                <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()} className="btn btn-sm btn-outline-secondary me-1">H5</button>
-                <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()} className="btn btn-sm btn-outline-secondary me-1">H6</button>
-
-                <button type="button" onClick={() => editor.chain().focus().toggleBulletList().run()} className="btn btn-sm btn-outline-secondary me-1">Bullet List</button>
-                <button type="button" onClick={() => editor.chain().focus().toggleOrderedList().run()} className="btn btn-sm btn-outline-secondary me-1">Ordered List</button>
-                <button type="button" onClick={() => editor.chain().focus().toggleBlockquote().run()} className="btn btn-sm btn-outline-secondary me-1">Blockquote</button>
-                <button type="button" onClick={() => editor.chain().focus().toggleCodeBlock().run()} className="btn btn-sm btn-outline-secondary me-1">Code</button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const url = prompt("Enter link URL");
-                    if (url) editor.chain().focus().setLink({ href: url }).run();
-                  }}
-                  className="btn btn-sm btn-outline-secondary me-1"
-                >
-                  Link
-                </button>
-                <button
-                  type="button"
-                  onClick={handleInlineImageUpload}
-                  className="btn btn-sm btn-outline-secondary me-1"
-                >
-                  Upload Inline Image
-                </button>
-              </div>
-            )}
-            <div className="editor-wrapper border p-2 rounded bg-white">
-              {editor ? <EditorContent editor={editor} className="min-h-[200px]" /> : <p>Loading Editor...</p>}
-            </div>
-          </div>
-
 
           {/* Icon Upload */}
-          <div className="mb-3">
-            <label htmlFor="categoryIcon" className="form-label">Category Icon:</label>
-            <input id="categoryIcon" type="file" className="form-control" accept="image/*" onChange={handleImageChange} />
-          </div>
+          <input type="file" className="form-control mb-3" onChange={handleImageChange} />
 
-          {/* Image Preview */}
           {previewImage && (
-            <div className="mb-3">
-              <Image
-                src={previewImage}
-                alt="Category Preview"
-                width={100}
-                height={100}
-                className="object-cover"
-                unoptimized
-                onError={(e) => console.error("Image failed to load", e)}
-              />
-            </div>
+            <Image
+              src={previewImage}
+              width={120}
+              height={120}
+              alt="Preview"
+              className="rounded"
+            />
           )}
 
-          {/* Is Trending Checkbox */}
-          <div className="mb-3 form-check">
+          {/* Trending Checkbox */}
+          <label className="mt-3 d-flex gap-2 align-items-center">
             <input
               type="checkbox"
-              className="form-check-input"
-              id="isTrending"
               name="isTrending"
               checked={categoryData.isTrending}
               onChange={handleInputChange}
             />
-            <label className="form-check-label" htmlFor="isTrending">Is Trending</label>
-          </div>
+            Trending Category
+          </label>
 
+          {/* Subcategory Multi-select */}
+          <select
+            multiple
+            className="form-control mb-3"
+            value={categoryData.subcategories}
+            onChange={(e) =>
+              setCategoryData({
+                ...categoryData,
+                subcategories: Array.from(e.target.selectedOptions, (o) => o.value),
+              })
+            }
+          >
+            {allSubCategories.map((s) => (
+              <option key={s._id} value={s._id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
 
-          {/* Select Subcategories */}
-          <div className="mb-3">
-            <label htmlFor="selectSubcategories" className="form-label">Select Subcategories:</label>
-            <select
-              id="selectSubcategories"
-              className="form-control"
-              multiple
-              value={categoryData.subcategories}
-              onChange={(e) =>
-                setCategoryData({
-                  ...categoryData,
-                  subcategories: Array.from(e.target.selectedOptions, (option) => option.value),
-                })
-              }
-            >
-              {allSubCategories.map((sub) => (
-                <option key={sub._id} value={sub._id}>
-                  {sub.name} ({sub.category?.name || 'Unassigned'})
-                </option>
-              ))}
-            </select>
-            <small className="form-text text-muted">Hold Ctrl (Windows) or Cmd (Mac) to select multiple subcategories.</small>
-          </div>
-
-          {/* Submit Button */}
-          <button className="btn btn-primary" type="submit" disabled={loading}>
+          {/* Submit */}
+          <button className="btn btn-primary" disabled={loading}>
             {loading ? "Updating..." : "Update Category"}
           </button>
         </form>

@@ -1,35 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCategories } from "@/app/store/categorySlice";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 export default function CategoryList() {
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
   const router = useRouter();
 
+  // ⬇️ Using Redux State
+  const { data: categories, loading, error } = useSelector(
+    (state) => state.categories
+  );
+
   useEffect(() => {
-    async function fetchCategories() {
-      try {
-        const response = await fetch("/api/adminprofile/category");
-        if (!response.ok) {
-          throw new Error("Failed to fetch categories");
-        }
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
-        const data = await response.json();
-        setCategories(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchCategories();
-  }, []);
-
+  // Loader UI
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -38,6 +28,7 @@ export default function CategoryList() {
     );
   }
 
+  // Error UI
   if (error) {
     return (
       <div className="text-center text-red-500 font-semibold mt-4">
@@ -53,7 +44,7 @@ export default function CategoryList() {
           Browse Categories
         </h2>
 
-        {categories.length === 0 ? (
+        {!categories || categories.length === 0 ? (
           <p className="text-center text-gray-500">No categories available.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -61,7 +52,9 @@ export default function CategoryList() {
               <div
                 key={category._id}
                 className="bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-xl transition-all duration-300 ease-in-out cursor-pointer"
-                onClick={() => router.push(`/seller/${category.categoryslug}`)}
+                onClick={() =>
+                  router.push(`/seller/${category.categoryslug}`)
+                }
               >
                 {/* Category Image */}
                 <div className="w-20 h-20 mx-auto rounded-full overflow-hidden p-3 shadow-md mb-4">
@@ -81,38 +74,35 @@ export default function CategoryList() {
                 </h3>
 
                 {/* Subcategories */}
-         {category.subcategories && category.subcategories.length > 0 && (
-  <div
-    className="flex flex-col gap-2 overflow-y-auto mt-3"
-    style={{
-      maxHeight: "180px", // FIXED MAX HEIGHT
-    }}
-  >
-    {category.subcategories.map((sub) => (
-      <div
-        key={sub._id}
-        onClick={(e) => {
-          e.stopPropagation();
-          router.push(
-            `/seller/${category.categoryslug}/${sub.subcategoryslug}`
-          );
-        }}
-        className="flex items-center gap-2 bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium hover:bg-indigo-200 transition cursor-pointer"
-      >
-        <Image
-          src={sub.icon || "/no-image.png"}
-          alt={sub.name}
-          width={22}
-          height={22}
-          className="rounded-full object-cover"
-          unoptimized
-        />
-        {sub.name}
-      </div>
-    ))}
-  </div>
-)}
-
+                {category.subcategories?.length > 0 && (
+                  <div
+                    className="flex flex-col gap-2 overflow-y-auto mt-3"
+                    style={{ maxHeight: "180px" }}
+                  >
+                    {category.subcategories.map((sub) => (
+                      <div
+                        key={sub._id}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(
+                            `/seller/${category.categoryslug}/${sub.subcategoryslug}`
+                          );
+                        }}
+                        className="flex items-center gap-2 bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium hover:bg-indigo-200 transition cursor-pointer"
+                      >
+                        <Image
+                          src={sub.icon || "/no-image.png"}
+                          alt={sub.name}
+                          width={22}
+                          height={22}
+                          className="rounded-full object-cover"
+                          unoptimized
+                        />
+                        {sub.name}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>

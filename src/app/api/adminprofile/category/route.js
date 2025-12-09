@@ -8,6 +8,92 @@ import BusinessProfile from "@/models/BusinessProfile"; // Assuming you have Bus
 import cloudinary from "@/lib/cloudinary"; // Cloudinary config
 import { URL } from "url";
 
+
+export async function GET() {
+  try {
+    await connectDB();
+
+    // 1) Fetch all categories with subcategories + products + users (single query)
+    const categories = await Category.find()
+      .populate({
+        path: "subcategories",
+        populate: {
+          path: "products",
+          select:
+            "name description price images productslug tradeShopping userId minimumOrderQuantity currency tags",
+          populate: {
+            path: "userId",
+            model: "User",
+            select: "fullname mobileNumber",
+          },
+        },
+      })
+      .lean(); // 🔥 Very important for performance
+
+    if (!categories.length) {
+      return new Response(JSON.stringify({ message: "No categories found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // 2) Collect ALL unique userIds from products
+    const userIdSet = new Set();
+
+    for (const category of categories) {
+      for (const subcat of category.subcategories || []) {
+        for (const product of subcat.products || []) {
+          const uid =
+            product.userId?._id?.toString() || product.userId?.toString();
+          if (uid) userIdSet.add(uid);
+        }
+      }
+    }
+
+    const userIds = [...userIdSet];
+
+    // 3) Fetch ALL BusinessProfiles in ONE query
+    const businessProfiles = await BusinessProfile.find({
+      userId: { $in: userIds },
+    })
+      .select(
+        "userId companyName address city state country gstNumber trustSealVerified yearOfEstablishment"
+      )
+      .lean();
+
+    // 4) Create map: userId -> businessProfile
+    const bpMap = {};
+    for (const bp of businessProfiles) {
+      bpMap[bp.userId.toString()] = bp;
+    }
+
+    // 5) Attach businessProfile to each product in memory (no extra DB calls)
+    for (const category of categories) {
+      for (const subcat of category.subcategories || []) {
+        for (const product of subcat.products || []) {
+          const uid =
+            product.userId?._id?.toString() || product.userId?.toString();
+          product.businessProfile = uid ? bpMap[uid] || null : null;
+        }
+      }
+    }
+
+    // 6) Return final result
+    return new Response(JSON.stringify(categories), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    console.error("❌ Optimized Category API Error:", error);
+    return new Response(
+      JSON.stringify({
+        error: error.message || "Failed to fetch categories",
+      }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
+}
+
 export async function PATCH(req) {
   try {
     await connectDB();
@@ -178,71 +264,6 @@ export async function POST(req) {
   }
 }
 
-
-export async function GET() {
-  try {
-    await connectDB();
-    const categories = await Category.find()
-      .populate({
-        path: "subcategories",
-        populate: {
-          path: "products",
-          // Select all necessary fields for display and filtering
-          select: "name description price images productslug tradeShopping userId minimumOrderQuantity currency tags",
-          populate: [
-            {
-              path: "userId",
-              model: "User",
-              select: "fullname mobileNumber", // Assuming you want user info
-            },
-          ],
-        },
-      })
-      .exec();
-
-    // Manually populate business profiles for each product's userId
-    const categoriesWithBusinessProfiles = await Promise.all(
-      categories.map(async (category) => {
-        const subcategoriesWithBusinessProfiles = await Promise.all(
-          category.subcategories.map(async (subcat) => {
-            const productsWithBusinessProfiles = await Promise.all(
-              subcat.products.map(async (product) => {
-                let businessProfile = null;
-                if (product.userId) {
-                  // Fetch BusinessProfile based on userId
-                  businessProfile = await BusinessProfile.findOne({
-                    userId: product.userId._id,
-                  }).select("companyName address city state country gstNumber trustSealVerified yearOfEstablishment");
-                }
-                return { ...product.toObject(), businessProfile: businessProfile ? businessProfile.toObject() : null };
-              })
-            );
-            return { ...subcat.toObject(), products: productsWithBusinessProfiles };
-          })
-        );
-        return { ...category.toObject(), subcategories: subcategoriesWithBusinessProfiles };
-      })
-    );
-
-    if (!categoriesWithBusinessProfiles.length) {
-      return new Response(JSON.stringify({ message: "No categories found" }), {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    return new Response(JSON.stringify(categoriesWithBusinessProfiles), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (error) {
-    console.error("❌ Error fetching categories:", error);
-    return new Response(
-      JSON.stringify({ error: error.message || "Failed to fetch categories" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
-  }
-}
 
 
 
